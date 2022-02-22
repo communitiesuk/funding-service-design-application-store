@@ -1,0 +1,24 @@
+on:
+  workflow_dispatch:
+  push:
+    # branches:
+    # - master
+    # - FS-389
+    # - FS-390
+
+    paths-ignore:
+      - '**/README.md'
+
+jobs:
+  test_and_deploy:
+    uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@main
+    with:
+      app_name: ${{ github.event.repository.name }}
+    secrets:
+      CF_API: ${{secrets.CF_API}}
+      CF_ORG: ${{secrets.CF_ORG}}
+      CF_SPACE: ${{secrets.CF_SPACE}}
+      CF_USER: ${{secrets.CF_USER}}
+      CF_PASSWORD: ${{secrets.CF_PASSWORD}}
+
+        

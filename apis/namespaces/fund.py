@@ -1,7 +1,8 @@
 from flask_restx import Namespace, Resource, fields, reqparse
 from slugify import slugify
 import datetime
-from dateutil import parser
+from dateutil import parser as date_parser
+from dateutil.tz import UTC
 import uuid
 import json
 
@@ -54,15 +55,15 @@ class applicationDAO(object):
         applications_within_period = {}
         if datetime_start and datetime_end:
             # convert string dates into datetimes
-            start = parser.parse(datetime_start)
-            end = parser.parse(datetime_end)
+            start = date_parser.parse(datetime_start).astimezone(UTC)
+            end = date_parser.parse(datetime_end).astimezone(UTC)
 
             # compare period limits against application dates within fund
-            for application in fund_data:
-                data = fund_data[application]
-                time = parser.parse(data['date_submitted'])
-                if time > start and time < end:
-                    applications_within_period[application] = data
+            for applicationId in fund_data:
+                application_data = fund_data[applicationId]
+                application_date = application_data['date_submitted'].astimezone(UTC)
+                if application_date > start and application_date < end:
+                    applications_within_period[applicationId] = application_data
             return json.loads(json.dumps(applications_within_period, default=str))
         else:
             return json.loads(json.dumps(fund_data, default=str))
@@ -111,7 +112,7 @@ class Application(Resource):
     def get(self, fund_name):
         args = self.query_params_parser.parse_args()
         datetime_start = args['datetime_start']
-        datetime_end = args['datetime_start']
+        datetime_end = args['datetime_end']
         return DAO.get_applications_for_fund(fund_name, datetime_start, datetime_end)
 
 

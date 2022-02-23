@@ -8,18 +8,10 @@ import json
 # Set up namespace (acts as a 'mini' api)
 api = Namespace("fund", description="application operations")
 
-# For query parameters
-arg_parser = reqparse.RequestParser()
-
 # create a data model
 applicationModel = api.model('application', {
-    'id': fields.Integer(required=False),
-    'name': fields.String(required=True, description='The name of the fund.'),
-    'questions': fields.String(required=True, description='The payload of application questions.'),
-    'date_submitted': fields.DateTime(
-        required=False,
-        description='The time the application was received by the application store.'
-    )
+    'name': fields.String(required=True, description='Required: The name of the fund.'),
+    'questions': fields.String(required=True, description='Required: The payload of application questions and answers.')
 })
 
 
@@ -57,28 +49,27 @@ class applicationDAO(object):
             return self.funds[application_fund_name][application_id]
 
 
-def get_applications_for_fund(self, fund_name, datetime_start, datetime_end):
-    fund_data = self.funds[fund_name]
-    applications_within_period = {}
+    def get_applications_for_fund(self, fund_name, datetime_start, datetime_end):
+        fund_data = self.funds[fund_name]
+        applications_within_period = {}
+        if datetime_start and datetime_end:
+            # convert string dates into datetimes
+            start = parser.parse(datetime_start)
+            end = parser.parse(datetime_end)
 
-    if datetime_start and datetime_end:
-        # convert string dates into datetimes
-        start = parser.parse(datetime_start)
-        end = parser.parse(datetime_end)
-
-        # compare period limits against application dates within fund
-        for application in fund_data:
-            data = fund_data[application]
-            time = parser.parse(data['date_submitted'])
-            if time > start and time < end:
-                applications_within_period[application] = data
-        return applications_within_period
-    else:
-        return fund_data
+            # compare period limits against application dates within fund
+            for application in fund_data:
+                data = fund_data[application]
+                time = parser.parse(data['date_submitted'])
+                if time > start and time < end:
+                    applications_within_period[application] = data
+            return json.loads(json.dumps(applications_within_period, default=str))
+        else:
+            return json.loads(json.dumps(fund_data, default=str))
 
 
-def get_application_by_id(self, fund_name, application_id):
-    return self.funds[fund_name][application_id]
+    def get_application_by_id(self, fund_name, application_id):
+        return self.funds[fund_name][application_id]
 
 
 # In memory data object instance
@@ -111,12 +102,14 @@ class NewApplication(Resource):
 # GET ALL APPLICATIONS FOR A FUND
 @api.route('/<string:fund_name>/applications')
 class Application(Resource):
-    arg_parser.add_argument('datetime_start', type=str, help='period start')
-    arg_parser.add_argument('datetime_end', type=str, help='period end')
+    # For query parameters
+    query_params_parser = reqparse.RequestParser()
+    query_params_parser.add_argument('datetime_start', type=str, help='Lower bound datetime of the period to search applications (optional)')
+    query_params_parser.add_argument('datetime_end', type=str, help='Upper bound datetime of the period to search applications (optional)')
 
-    @api.doc('get_applications', parser=arg_parser)
+    @api.doc('get_applications', parser=query_params_parser)
     def get(self, fund_name):
-        args = arg_parser.parse_args()
+        args = self.query_params_parser.parse_args()
         datetime_start = args['datetime_start']
         datetime_end = args['datetime_start']
         return DAO.get_applications_for_fund(fund_name, datetime_start, datetime_end)
@@ -125,10 +118,12 @@ class Application(Resource):
 # GET AN APPLICATION FOR A FUND WITH ID {?}
 @api.route('/<string:fund_name>')
 class Application(Resource):
-    arg_parser.add_argument('application_id', type=str, help='application id')
+    # For query parameters
+    query_params_parser = reqparse.RequestParser()
+    query_params_parser.add_argument('application_id', type=str, help='Application id')
 
-    @api.doc('get_applications', parser=arg_parser)
+    @api.doc('get_applications', parser=query_params_parser)
     def get(self, fund_name):
-        args = arg_parser.parse_args()
+        args = self.query_params_parser.parse_args()
         application_id = args['application_id']
         return DAO.get_application_by_id(fund_name, application_id)

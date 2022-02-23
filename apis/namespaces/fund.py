@@ -8,10 +8,8 @@ import json
 # Set up namespace (acts as a 'mini' api)
 api = Namespace("fund", description="application operations")
 
+# For query parameters
 arg_parser = reqparse.RequestParser()
-arg_parser.add_argument('period_start', type=str, help='period start')
-arg_parser.add_argument('period_end', type=str, help='period end')
-arg_parser.add_argument('application_id', type=str, help='application id')
 
 # create a data model
 applicationModel = api.model('application', {
@@ -59,14 +57,14 @@ class applicationDAO(object):
             return self.funds[application_fund_name][application_id]
 
 
-def get_applications_for_fund(self, fund_name, period_start, period_end):
+def get_applications_for_fund(self, fund_name, datetime_start, datetime_end):
     fund_data = self.funds[fund_name]
     applications_within_period = {}
 
-    if period_start and period_end:
+    if datetime_start and datetime_end:
         # convert string dates into datetimes
-        start = parser.parse(period_start)
-        end = parser.parse(period_end)
+        start = parser.parse(datetime_start)
+        end = parser.parse(datetime_end)
 
         # compare period limits against application dates within fund
         for application in fund_data:
@@ -113,17 +111,22 @@ class NewApplication(Resource):
 # GET ALL APPLICATIONS FOR A FUND
 @api.route('/<string:fund_name>/applications')
 class Application(Resource):
+    arg_parser.add_argument('datetime_start', type=str, help='period start')
+    arg_parser.add_argument('datetime_end', type=str, help='period end')
+
     @api.doc('get_applications', parser=arg_parser)
     def get(self, fund_name):
         args = arg_parser.parse_args()
-        period_start = args['period_start']
-        period_end = args['period_start']
-        return DAO.get_applications_for_fund(fund_name, period_start, period_end)
+        datetime_start = args['datetime_start']
+        datetime_end = args['datetime_start']
+        return DAO.get_applications_for_fund(fund_name, datetime_start, datetime_end)
 
 
 # GET AN APPLICATION FOR A FUND WITH ID {?}
 @api.route('/<string:fund_name>')
 class Application(Resource):
+    arg_parser.add_argument('application_id', type=str, help='application id')
+
     @api.doc('get_applications', parser=arg_parser)
     def get(self, fund_name):
         args = arg_parser.parse_args()

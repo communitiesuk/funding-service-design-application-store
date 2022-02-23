@@ -5,7 +5,6 @@ from dateutil.tz import UTC
 import uuid
 import json
 
-
 """
 Data Access Object
 A data access object (DAO) is a pattern that provides an abstract interface 
@@ -16,7 +15,18 @@ to some type of database or other persistence mechanism.
 class applicationDAO(object):
     def __init__(self):
         self.counter = 0
-        self.funds = {}
+        self.funds = {
+            "slugify-test-fund": {
+                "id1": {
+                    "name": "Fund Name",
+                    "questions": {
+                        "key": "value"
+                    },
+                    "date_submitted": "2022-01-01 17:30:00+00:00",
+                    "id": "id1"
+                }
+            }
+        }
 
     def get_funds(self):
         # return all funds (have to replace the date object with a string to send)
@@ -56,8 +66,14 @@ class applicationDAO(object):
             return json.loads(json.dumps(fund_data, default=str))
 
     def get_application_by_id(self, fund_name, application_id):
-        application_data = self.funds[fund_name][application_id]
-        return json.loads(json.dumps(application_data, default=str))
+        if application_id:
+            try:
+                application_data = self.funds[fund_name][application_id]
+                return json.loads(json.dumps(application_data, default=str))
+            except:
+                return 'Fund/Application Id not recognised', 400
+        else:
+            return 'No application ID provided', 400
 
     def delete_application_by_id(self, fund_name, application_id):
         print('ere')
@@ -70,3 +86,16 @@ class applicationDAO(object):
             self.funds = {}
         else:
             return 'No key provided. Clear unsuccessful'
+
+
+# Sample data
+application_data = [{
+    'name': 'Test Fund',
+    'questions': {"test": "data"}
+}]
+
+# In memory data object instance
+APPLICATIONS = applicationDAO()
+
+for application in application_data:
+    APPLICATIONS.create_application(application)

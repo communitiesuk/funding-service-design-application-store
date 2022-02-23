@@ -1,7 +1,5 @@
 from flask_restx import Api
-
-from application.namespaces.fund import api as fund_api
-# from .dog import api as dog_api
+from apis.namespaces.fund import api as fund_api
 
 api = Api(
     title='Funding Service Design Application Store MVC API',
@@ -10,4 +8,3 @@ api = Api(
 )
 
 api.add_namespace(fund_api)
-# api.add_namespace(dog_api)

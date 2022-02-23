@@ -1,11 +1,15 @@
+"""The entry point for app.py to start our app
+"""
+from apis import api
 from flask import Flask
-from werkzeug.middleware.proxy_fix import ProxyFix
 
-from application import api
 
-app = Flask(__name__)
-app.wsgi_app = ProxyFix(app.wsgi_app)
+def create_app() -> Flask:
+    flask_app = Flask(__name__)
+    # if __name__ == "__main__":
+    api.init_app(flask_app)
 
-api.init_app(app)
+    return flask_app
 
-app.run(debug=True)
+
+app = create_app()

@@ -1,8 +1,8 @@
 # Funding service design application store.
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-![Funding Service Design Application Store Deploy]()
-[![CodeQL]()
+![Funding Service Design Application Store Deploy](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/govcloud.yml/badge.svg)
+[![CodeQL](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml)
 
 Repo for the funding service design application store.
 

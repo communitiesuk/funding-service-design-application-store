@@ -18,7 +18,7 @@ class applicationDAO(object):
         self.funds = {
             "slugify-test-fund": {
                 "id1": {
-                    "name": "Fund Name",
+                    "name": "Slugify Test Fund",
                     "questions": {
                         "key": "value"
                     },

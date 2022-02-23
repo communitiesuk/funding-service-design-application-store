@@ -70,7 +70,8 @@ class applicationDAO(object):
 
 
     def get_application_by_id(self, fund_name, application_id):
-        return self.funds[fund_name][application_id]
+        application_data = self.funds[fund_name][application_id]
+        return json.loads(json.dumps(application_data, default=str))
 
 
 # In memory data object instance
@@ -101,7 +102,7 @@ class NewApplication(Resource):
 
 
 # GET ALL APPLICATIONS FOR A FUND
-@api.route('/<string:fund_name>/applications')
+@api.route('/<string:slugify_fund_name>/applications')
 class Application(Resource):
     # For query parameters
     query_params_parser = reqparse.RequestParser()
@@ -109,22 +110,22 @@ class Application(Resource):
     query_params_parser.add_argument('datetime_end', type=str, help='Upper bound datetime of the period to search applications (optional)')
 
     @api.doc('get_applications', parser=query_params_parser)
-    def get(self, fund_name):
+    def get(self, slugify_fund_name):
         args = self.query_params_parser.parse_args()
         datetime_start = args['datetime_start']
         datetime_end = args['datetime_end']
-        return DAO.get_applications_for_fund(fund_name, datetime_start, datetime_end)
+        return DAO.get_applications_for_fund(slugify_fund_name, datetime_start, datetime_end)
 
 
 # GET AN APPLICATION FOR A FUND WITH ID {?}
-@api.route('/<string:fund_name>')
+@api.route('/<string:slugify_fund_name>')
 class Application(Resource):
     # For query parameters
     query_params_parser = reqparse.RequestParser()
     query_params_parser.add_argument('application_id', type=str, help='Application id')
 
     @api.doc('get_applications', parser=query_params_parser)
-    def get(self, fund_name):
+    def get(self, slugify_fund_name):
         args = self.query_params_parser.parse_args()
         application_id = args['application_id']
-        return DAO.get_application_by_id(fund_name, application_id)
+        return DAO.get_application_by_id(slugify_fund_name, application_id)

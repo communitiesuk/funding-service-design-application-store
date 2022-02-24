@@ -16,16 +16,16 @@ class applicationDAO(object):
     def __init__(self):
         self.counter = 0
         self.funds = {
-            "slugify-test-fund": {
-                "id1": {
-                    "name": "Slugify Test Fund",
+            "slugified_test_fund_name": [
+                {
+                    "id": "uuidv4",
+                    "name": "Test Fund Name",
                     "questions": {
-                        "key": "value"
+                        "q1": "a1"
                     },
-                    "date_submitted": datetime.datetime.now(),
-                    "id": "id1"
+                    "date_submitted": date_parser.parse("2021-12-25 00:00:00")
                 }
-            }
+            ]
         }
 
     def get_funds(self):
@@ -41,64 +41,65 @@ class applicationDAO(object):
 
         if application_fund_name not in self.funds:
             # create a new fund entry
-            self.funds[application_fund_name] = {}
+            self.funds[application_fund_name] = []
 
         # place application within the fund
-        self.funds[application_fund_name][application_id] = application
-        return self.funds[application_fund_name][application_id]
+        self.funds[application_fund_name].append(application)
+        return application
 
     def get_applications_for_fund(self, fund_name, datetime_start, datetime_end):
         fund_data = self.funds[fund_name]
-        applications_within_period = {}
+        applications_within_period = []
         if datetime_start and datetime_end:
             # convert string dates into datetimes
             start = date_parser.parse(datetime_start).astimezone(UTC)
             end = date_parser.parse(datetime_end).astimezone(UTC)
 
             # compare period limits against application dates within fund
-            for applicationId in fund_data:
-                application_data = fund_data[applicationId]
-                application_date = application_data['date_submitted'].astimezone(UTC)
-                if start <= application_date <= end:
-                    applications_within_period[applicationId] = application_data
+            for application in self.funds[fund_name]:
+                if start < application['date_submitted'].astimezone(UTC) < end:
+                    applications_within_period.append(application)
             return json.loads(json.dumps(applications_within_period, default=str))
         else:
             return json.loads(json.dumps(fund_data, default=str))
 
     def get_application_by_id(self, fund_name, application_id):
-        if application_id:
-            try:
-                application_data = self.funds[fund_name][application_id]
-                return json.loads(json.dumps(application_data, default=str))
-            except:
-                return f"Applciation id: {application_id} not found in fund: {fund_name}", 400
-        else:
-            return 'No application ID provided', 400
+        try:
+            for application in self.funds[fund_name]:
+                if application['id'] == application_id:
+                    return json.loads(json.dumps(application, default=str))
+            return f"Application id: {application_id} not found in fund: {fund_name}", 400
+        except:
+            return f"Fund: {fund_name} not found.", 400
 
     def delete_application_by_id(self, fund_name, application_id):
-        fund = self.funds[fund_name]
         try:
-            del fund[application_id]
-            return f"{application_id} deleted", 204
+            for application in self.funds[fund_name]:
+                if application['id'] == application_id:
+                    self.funds[fund_name].remove(application)
+                    return f"{application_id} deleted", 204
+            return f"Application id: {application_id} not found in fund: {fund_name}", 400
         except:
-            return f"Applciation id: {application_id} not found in fund: {fund_name}", 400
-        pass
+            return f"Fund: {fund_name} not found.", 400
 
-    def delete_all(self, delete_key):
-        if delete_key == 'positive-clear':
-            self.funds = {}
-        else:
-            return 'No key provided. Clear unsuccessful'
+
+def delete_all(self, delete_key):
+    if delete_key == 'positive-clear':
+        self.funds = {}
+    else:
+        return 'No key provided. Clear unsuccessful'
 
 
 # Sample data
-application_data = [{
-    'name': 'Test Fund',
-    'questions': {"test": "data"}
-}]
+sample_application_data = [
+    #     {
+    #     'name': 'Test Fund',
+    #     'questions': {"test": "data"}
+    # }
+]
 
 # In memory data object instance
 APPLICATIONS = applicationDAO()
 
-for application in application_data:
+for application in sample_application_data:
     APPLICATIONS.create_application(application)

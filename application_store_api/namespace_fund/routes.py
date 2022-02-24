@@ -3,7 +3,7 @@ from application_store_api.namespace_fund.store import APPLICATIONS
 from application_store_api.namespace_fund.api import fund_ns, applicationModel
 
 # GET/DELETE All funds
-@fund_ns.route('/')
+@fund_ns.route('/all_funds')
 class Fund(Resource):
     # For query parameters
     query_params_parser = reqparse.RequestParser()
@@ -14,7 +14,7 @@ class Fund(Resource):
         return APPLICATIONS.get_funds()
 
     # Remove once data store is persisted outside of application memory
-    @fund_ns.doc('list_funds')
+    @fund_ns.doc('list_funds', parser=query_params_parser)
     def delete(self):
         args = self.query_params_parser.parse_args()
         delete_key = args['delete_key']
@@ -37,8 +37,18 @@ class Application(Resource):
     # For query parameters
     query_params_parser = reqparse.RequestParser()
     query_params_parser.add_argument('application_id', type=str, help='Application id')
-    query_params_parser.add_argument('datetime_start', type=str, help='Lower bound datetime of the period to search applications (optional)')
-    query_params_parser.add_argument('datetime_end', type=str, help='Upper bound datetime of the period to search applications (optional)')
+    query_params_parser.add_argument(
+        'datetime_start',
+        type=str,
+        help='When an application_id has not been provided.'
+             ' Lower bound datetime of the period to search applications (optional)'
+    )
+    query_params_parser.add_argument(
+        'datetime_end',
+        type=str,
+        help='When an application_id has not been provided.'
+             ' Upper bound datetime of the period to search applications (optional)'
+    )
 
     @fund_ns.doc('get_applications', parser=query_params_parser)
     def get(self, slugify_fund_name):

@@ -24,6 +24,14 @@ class applicationDAO(object):
                         "q1": "a1"
                     },
                     "date_submitted": date_parser.parse("2021-12-25 00:00:00")
+                },
+                {
+                    "id": "uuidv4-2",
+                    "name": "Test Fund Name",
+                    "questions": {
+                        "q1": "a1"
+                    },
+                    "date_submitted": date_parser.parse("2022-12-25 00:00:00")
                 }
             ]
         }
@@ -48,22 +56,26 @@ class applicationDAO(object):
         return application
 
     def get_applications_for_fund(self, fund_name, datetime_start, datetime_end):
-        fund_data = self.funds[fund_name]
-        applications_within_period = []
-        if datetime_start and datetime_end:
-            # convert string dates into datetimes
-            start = date_parser.parse(datetime_start).astimezone(UTC)
-            end = date_parser.parse(datetime_end).astimezone(UTC)
+        try:
+            fund_data = self.funds[fund_name]
+            applications_within_period = []
+            if datetime_start and datetime_end:
+                # convert string dates into datetimes
+                start = date_parser.parse(datetime_start).astimezone(UTC)
+                end = date_parser.parse(datetime_end).astimezone(UTC)
 
-            # compare period limits against application dates within fund
-            for application in self.funds[fund_name]:
-                if start < application['date_submitted'].astimezone(UTC) < end:
-                    applications_within_period.append(application)
-            return json.loads(json.dumps(applications_within_period, default=str))
-        else:
-            return json.loads(json.dumps(fund_data, default=str))
+                # compare period limits against application dates within fund
+                for application in self.funds[fund_name]:
+                    if start < application['date_submitted'].astimezone(UTC) < end:
+                        applications_within_period.append(application)
+                return json.loads(json.dumps(applications_within_period, default=str))
+            else:
+                return json.loads(json.dumps(fund_data, default=str))
+        except:
+            return f"Fund: {fund_name} not found.", 400
 
     def get_application_by_id(self, fund_name, application_id):
+
         try:
             for application in self.funds[fund_name]:
                 if application['id'] == application_id:
@@ -73,6 +85,7 @@ class applicationDAO(object):
             return f"Fund: {fund_name} not found.", 400
 
     def delete_application_by_id(self, fund_name, application_id):
+
         try:
             for application in self.funds[fund_name]:
                 if application['id'] == application_id:
@@ -82,20 +95,20 @@ class applicationDAO(object):
         except:
             return f"Fund: {fund_name} not found.", 400
 
+    def delete_all(self, delete_key):
 
-def delete_all(self, delete_key):
-    if delete_key == 'positive-clear':
-        self.funds = {}
-    else:
-        return 'No key provided. Clear unsuccessful'
+        if delete_key == 'positive-clear':
+            self.funds = {}
+        else:
+            return 'No key provided. Clear unsuccessful'
 
 
 # Sample data
 sample_application_data = [
-    #     {
-    #     'name': 'Test Fund',
-    #     'questions': {"test": "data"}
-    # }
+    {
+        'name': 'Sample_Fund',
+        'questions': {"test": "data"}
+    }
 ]
 
 # In memory data object instance

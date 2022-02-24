@@ -11,3 +11,4 @@ def flask_test_client():
     """
     with create_app().test_client() as test_client:
         yield test_client
+

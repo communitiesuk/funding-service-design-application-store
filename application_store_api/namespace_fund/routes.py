@@ -34,20 +34,19 @@ class NewApplication(Resource):
 # GET all applications for a fund 'fund/fund-name' or a specific application fund/fund-name?application_id={Id}
 @fund_ns.route('/<string:slugify_fund_name>')
 class Application(Resource):
-    # For query parameters
     query_params_parser = reqparse.RequestParser()
     query_params_parser.add_argument('application_id', type=str, help='Application id')
     query_params_parser.add_argument(
         'datetime_start',
         type=str,
         help='When an application_id has not been provided.'
-             ' Lower bound datetime of the period to search applications (optional)'
+             ' Lower bound datetime of a period to search all of the applications within a specified fund (optional)'
     )
     query_params_parser.add_argument(
         'datetime_end',
         type=str,
         help='When an application_id has not been provided.'
-             ' Upper bound datetime of the period to search applications (optional)'
+             ' Upper bound datetime of a period to search all of the applications within a specified fund (optional)'
     )
 
     @fund_ns.doc('get_applications', parser=query_params_parser)

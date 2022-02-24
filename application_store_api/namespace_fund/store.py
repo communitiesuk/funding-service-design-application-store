@@ -22,7 +22,7 @@ class applicationDAO(object):
                     "questions": {
                         "key": "value"
                     },
-                    "date_submitted": "2022-01-01 17:30:00+00:00",
+                    "date_submitted": datetime.datetime.now(),
                     "id": "id1"
                 }
             }
@@ -71,15 +71,18 @@ class applicationDAO(object):
                 application_data = self.funds[fund_name][application_id]
                 return json.loads(json.dumps(application_data, default=str))
             except:
-                return 'Fund/Application Id not recognised', 400
+                return f"Applciation id: {application_id} not found in fund: {fund_name}", 400
         else:
             return 'No application ID provided', 400
 
     def delete_application_by_id(self, fund_name, application_id):
-        print('ere')
         fund = self.funds[fund_name]
-        del fund[application_id]
-        print('del')
+        try:
+            del fund[application_id]
+            return f"{application_id} deleted", 204
+        except:
+            return f"Applciation id: {application_id} not found in fund: {fund_name}", 400
+        pass
 
     def delete_all(self, delete_key):
         if delete_key == 'positive-clear':

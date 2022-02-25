@@ -6,7 +6,6 @@ from flask import Flask
 
 def create_app() -> Flask:
     flask_app = Flask(__name__)
-    # if __name__ == "__main__":
     application_store_api.init_app(flask_app)
     return flask_app
 

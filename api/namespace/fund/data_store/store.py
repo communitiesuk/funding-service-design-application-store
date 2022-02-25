@@ -3,7 +3,7 @@ import json
 import uuid
 
 from api.namespace.fund.data_store.data import (
-    funding_service_design_application,
+    initial_fund_store_application,
 )
 from api.namespace.fund.data_store.data import (
     initial_fund_store_state,
@@ -19,7 +19,7 @@ to some type of database or other persistence mechanism.
 """
 
 
-class application_data_access_object(object):
+class applicationDataAccessObject(object):
     def __init__(self):
         self.counter = 0
         self.funds = initial_fund_store_state
@@ -29,18 +29,18 @@ class application_data_access_object(object):
         return json.loads(json.dumps(self.funds, default=str))
 
     def create_application(self, application):
-        application_fund_name = slugify(application["name"])
+        fund_name = slugify(application["name"])
         application["date_submitted"] = datetime.datetime.now(
             datetime.timezone.utc
         )
         application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
 
-        if application_fund_name not in self.funds:
+        if fund_name not in self.funds:
             # create a new fund entry
-            self.funds[application_fund_name] = []
+            self.funds[fund_name] = []
 
         # place application within the fund
-        self.funds[application_fund_name].append(application)
+        self.funds[fund_name].append(application)
         return application
 
     def get_applications_for_fund(
@@ -108,10 +108,10 @@ class application_data_access_object(object):
 
 
 # Sample data
-sample_application_data = [funding_service_design_application]
+sample_application_data = [initial_fund_store_application]
 
 # In memory data object instance
-APPLICATIONS = application_data_access_object()
+APPLICATIONS = applicationDataAccessObject()
 
 for application in sample_application_data:
     APPLICATIONS.create_application(application)

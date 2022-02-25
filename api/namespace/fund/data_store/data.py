@@ -41,7 +41,7 @@ initial_fund_store_state = {
     ]
 }
 
-funding_service_design_application = {
+initial_fund_store_application = {
     "name": "Funding Service Design",
     "questions": [
         {

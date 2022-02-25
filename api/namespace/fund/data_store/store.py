@@ -3,9 +3,6 @@ import json
 import uuid
 
 from api.namespace.fund.data_store.data import (
-    initial_fund_store_application,
-)
-from api.namespace.fund.data_store.data import (
     initial_fund_store_state,
 )
 from dateutil import parser as date_parser
@@ -107,11 +104,5 @@ class applicationDataAccessObject(object):
             return "No key provided. Clear unsuccessful"
 
 
-# Sample data
-sample_application_data = [initial_fund_store_application]
-
 # In memory data object instance
 APPLICATIONS = applicationDataAccessObject()
-
-for application in sample_application_data:
-    APPLICATIONS.create_application(application)

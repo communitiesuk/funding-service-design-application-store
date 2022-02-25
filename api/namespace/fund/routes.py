@@ -1,8 +1,6 @@
-from application_store_api.namespace_fund.data_store.store import APPLICATIONS
-from application_store_api.namespace_fund.fund_ns import (
-    application_model_inbound,
-)
-from application_store_api.namespace_fund.fund_ns import fund_ns
+from api.namespace.fund.data_store.store import APPLICATIONS
+from api.namespace.fund.fund_ns import application_model_inbound
+from api.namespace.fund.fund_ns import fund_ns
 from flask_restx import reqparse
 from flask_restx import Resource
 

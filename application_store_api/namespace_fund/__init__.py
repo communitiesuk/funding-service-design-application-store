@@ -1,1 +1,0 @@
-from application_store_api.namespace_fund.routes import fund_ns

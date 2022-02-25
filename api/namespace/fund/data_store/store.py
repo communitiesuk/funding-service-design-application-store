@@ -2,10 +2,10 @@ import datetime
 import json
 import uuid
 
-from application_store_api.namespace_fund.data_store.data import (
+from api.namespace.fund.data_store.data import (
     funding_service_design_application,
 )
-from application_store_api.namespace_fund.data_store.data import (
+from api.namespace.fund.data_store.data import (
     initial_fund_store_state,
 )
 from dateutil import parser as date_parser

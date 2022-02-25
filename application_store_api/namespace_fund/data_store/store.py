@@ -30,10 +30,10 @@ class application_data_access_object(object):
 
     def create_application(self, application):
         application_fund_name = slugify(application["name"])
-        application_id = str(uuid.uuid4())  # cant be uuid in restx handler
-        current_time = datetime.datetime.now(datetime.timezone.utc)
-        application["date_submitted"] = current_time
-        application["id"] = application_id
+        application["date_submitted"] = datetime.datetime.now(
+            datetime.timezone.utc
+        )
+        application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
 
         if application_fund_name not in self.funds:
             # create a new fund entry
@@ -58,8 +58,8 @@ class application_data_access_object(object):
                 for application in self.funds[fund_name]:
                     if (
                         start
-                        < application["date_submitted"].astimezone(UTC)
-                        < end
+                        <= application["date_submitted"].astimezone(UTC)
+                        <= end
                     ):
                         applications_within_period.append(application)
                 return json.loads(

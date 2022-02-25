@@ -38,9 +38,9 @@ class NewApplication(Resource):
 
 
 """
-GET all applications for a fund 'fund/fund-name'
+GET all applications for a fund 'fund/{fund-name}'
 OR GET all applications for a fund in a specified period
-'fund/fund-name/<date range parameters>'
+'fund/{fund-name}/<date range parameters>'
 OR GET a specific application fund/fund-name?application_id={Id}
 """
 

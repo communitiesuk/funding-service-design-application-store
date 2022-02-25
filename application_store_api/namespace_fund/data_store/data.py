@@ -57,7 +57,7 @@ funding_service_design_application = {
                     "key": "email-about-you",
                     "title": "Email",
                     "type": "text",
-                    "answer": "santa_sleighing_it@badboy.com",
+                    "answer": "santa@badboy.com",
                 },
                 {
                     "key": "applicant_telephone_number",
@@ -82,7 +82,7 @@ funding_service_design_application = {
                     "key": "org_name",
                     "title": "Organisation name",
                     "type": "text",
-                    "answer": "Present Sack inc.",
+                    "answer": "Presents-R-US inc.",
                 },
                 {
                     "key": "org_address",

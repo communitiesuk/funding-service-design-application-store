@@ -1,5 +1,6 @@
 from tests.helpers import expected_data_within_get_response, post_data, count_fund_applications
 
+
 def test_fund_endpoint_get(flask_test_client):
     """
     GIVEN We have a functioning Application Store API
@@ -10,10 +11,21 @@ def test_fund_endpoint_get(flask_test_client):
     expected_data = {
         "id": "uuidv4",
         "name": "Test Fund Name",
-        "questions": {
-            "q1": "a1"
-        },
-        "date_submitted": "2021-12-25 00:00:00"
+        "questions": [
+            {
+                "question": "Q1",
+                "category:": None,
+                "fields": [
+                    {
+                        "key": "applicant_name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Adam"
+                    }
+                ]
+            }
+        ],
+        "date_submitted": "2021-12-24 00:00:00"
     }
 
     expected_data_within_get_response(flask_test_client,
@@ -31,9 +43,20 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
         {
             "id": "uuidv4-2",
             "name": "Test Fund Name",
-            "questions": {
-                "q1": "a1"
-            },
+            "questions": [
+                {
+                    "question": "Q1",
+                    "category:": None,
+                    "fields": [
+                        {
+                            "key": "applicant_name",
+                            "title": "Applicant name",
+                            "type": "text",
+                            "answer": "Adam"
+                        }
+                    ]
+                }
+            ],
             "date_submitted": "2022-12-25 00:00:00"
         }
     ]
@@ -44,7 +67,6 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
 
 
 def test_fund_endpoint_post_application_is_successful(flask_test_client):
-
     """
     GIVEN We have a functioning Application Store API
     WHEN a number of new application are posted

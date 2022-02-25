@@ -20,17 +20,33 @@ class applicationDAO(object):
                 {
                     "id": "uuidv4",
                     "name": "Test Fund Name",
-                    "questions": {
-                        "q1": "a1"
-                    },
-                    "date_submitted": date_parser.parse("2021-12-25 00:00:00")
+                    "questions": [
+                        {
+                            "question": "Q1",
+                            "fields": [{
+                                "key": "applicant_name",
+                                "title": "Applicant name",
+                                "type": "text",
+                                "answer": "Adam"
+                            }]
+                        }
+                    ],
+                    "date_submitted": date_parser.parse("2021-12-24 00:00:00")
                 },
                 {
                     "id": "uuidv4-2",
                     "name": "Test Fund Name",
-                    "questions": {
-                        "q1": "a1"
-                    },
+                    "questions": [
+                        {
+                            "question": "Q1",
+                            "fields": [{
+                                "key": "applicant_name",
+                                "title": "Applicant name",
+                                "type": "text",
+                                "answer": "Adam"
+                            }]
+                        }
+                    ],
                     "date_submitted": date_parser.parse("2022-12-25 00:00:00")
                 }
             ]
@@ -107,7 +123,17 @@ class applicationDAO(object):
 sample_application_data = [
     {
         'name': 'Sample_Fund',
-        'questions': {"test": "data"}
+        'questions': [
+            {
+                "question": "Q1",
+                "fields": [{
+                    "key": "applicant_name",
+                    "title": "Applicant name",
+                    "type": "text",
+                    "answer": "Adam"
+                }]
+            }
+        ],
     }
 ]
 

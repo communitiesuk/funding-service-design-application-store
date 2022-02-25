@@ -1,11 +1,10 @@
 from flask_restx import Resource, reqparse
 from application_store_api.namespace_fund.store import APPLICATIONS
-from application_store_api.namespace_fund.api import fund_ns, applicationModel
+from application_store_api.namespace_fund.api import fund_ns, application_model_inbound, application_model_outbound
 
-# GET/DELETE All funds
+# GET/DELETE all funds
 @fund_ns.route('/all_funds')
 class Fund(Resource):
-    # For query parameters
     query_params_parser = reqparse.RequestParser()
     query_params_parser.add_argument('delete_key', type=str, help='key to clear data store')
 
@@ -25,13 +24,16 @@ class Fund(Resource):
 @fund_ns.route('/new_application')
 class NewApplication(Resource):
     @fund_ns.doc('create_application')
-    @fund_ns.expect(applicationModel)
-    @fund_ns.marshal_with(applicationModel, code=201)
+    @fund_ns.expect(application_model_inbound)
+    @fund_ns.marshal_with(application_model_inbound, code=201)
     def post(self):
         return APPLICATIONS.create_application(fund_ns.payload), 201
 
-
-# GET all applications for a fund 'fund/fund-name' or a specific application fund/fund-name?application_id={Id}
+"""
+GET all applications for a fund 'fund/fund-name' 
+OR GET all applications for a fund in a specified period 'fund/fund-name/<date range parameters>' 
+OR GET a specific application fund/fund-name?application_id={Id}
+"""
 @fund_ns.route('/<string:slugify_fund_name>')
 class Application(Resource):
     query_params_parser = reqparse.RequestParser()
@@ -50,6 +52,8 @@ class Application(Resource):
     )
 
     @fund_ns.doc('get_applications', parser=query_params_parser)
+    @fund_ns.expect(application_model_outbound)
+    @fund_ns.marshal_with(application_model_outbound, code=201)
     def get(self, slugify_fund_name):
         args = self.query_params_parser.parse_args()
 

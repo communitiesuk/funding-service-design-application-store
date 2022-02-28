@@ -2,9 +2,8 @@ import datetime
 import json
 import uuid
 
-from api.namespace.fund.data_store.data import (
-    initial_fund_store_state,
-)
+from api.namespace.fund.data_store.data import initial_fund_store_application
+from api.namespace.fund.data_store.data import initial_fund_store_state
 from dateutil import parser as date_parser
 from dateutil.tz import UTC
 from slugify import slugify
@@ -106,3 +105,5 @@ class ApplicationDataAccessObject(object):
 
 # In memory data object instance
 APPLICATIONS = ApplicationDataAccessObject()
+
+APPLICATIONS.create_application(initial_fund_store_application)

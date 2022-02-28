@@ -57,7 +57,7 @@ initial_fund_store_application = {
                     "key": "email-about-you",
                     "title": "Email",
                     "type": "text",
-                    "answer": "santa@badboy.com",
+                    "answer": "santa@sleighing_it.com",
                 },
                 {
                     "key": "applicant_telephone_number",

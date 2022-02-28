@@ -16,7 +16,7 @@ to some type of database or other persistence mechanism.
 """
 
 
-class applicationDataAccessObject(object):
+class ApplicationDataAccessObject(object):
     def __init__(self):
         self.counter = 0
         self.funds = initial_fund_store_state
@@ -64,7 +64,7 @@ class applicationDataAccessObject(object):
                 )
             else:
                 return json.loads(json.dumps(fund_data, default=str))
-        except Exception:
+        except KeyError:
             return f"Fund: {fund_name} not found.", 400
 
     def get_application_by_id(self, fund_name, application_id):
@@ -78,7 +78,7 @@ class applicationDataAccessObject(object):
                 f" {fund_name}",
                 400,
             )
-        except Exception:
+        except KeyError:
             return f"Fund: {fund_name} not found.", 400
 
     def delete_application_by_id(self, fund_name, application_id):
@@ -93,7 +93,7 @@ class applicationDataAccessObject(object):
                 f" {fund_name}",
                 400,
             )
-        except Exception:
+        except KeyError:
             return f"Fund: {fund_name} not found.", 400
 
     def delete_all(self, delete_key):
@@ -105,4 +105,4 @@ class applicationDataAccessObject(object):
 
 
 # In memory data object instance
-APPLICATIONS = applicationDataAccessObject()
+APPLICATIONS = ApplicationDataAccessObject()

@@ -47,7 +47,7 @@ def test_fund_endpoint_get_by_application_id(flask_test_client):
     )
 
 
-def test_fund_endpoint_post_application_is_successful(flask_test_client):
+def test_application_post_and_application_get(flask_test_client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a number of new application are posted

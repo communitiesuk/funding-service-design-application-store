@@ -119,13 +119,13 @@ initial_fund_store_application = {
                     "key": "org_accountant",
                     "title": "Your Accountant",
                     "type": "text",
-                    "answer": "as",
+                    "answer": "Mrs Claus",
                 },
                 {
                     "key": "uoDsSL",
                     "title": "Responsible person",
                     "type": "text",
-                    "answer": "as",
+                    "answer": "The Snowman",
                 },
                 {
                     "key": "cFmoxP",
@@ -139,7 +139,7 @@ initial_fund_store_application = {
                     "key": "QKxzxf",
                     "title": "Who is endorsing your application?",
                     "type": "text",
-                    "answer": "weqwe",
+                    "answer": "The tooth fairy",
                 },
                 {
                     "key": "ymIxKr",

@@ -5,7 +5,11 @@ from flask_restx import reqparse
 from flask_restx import Resource
 
 
-# GET/DELETE all funds
+"""
+GET/DELETE all funds
+"""
+
+
 @fund_ns.route("/all_funds")
 class Fund(Resource):
     query_params_parser = reqparse.RequestParser()
@@ -25,7 +29,11 @@ class Fund(Resource):
         return APPLICATIONS.delete_all(delete_key)
 
 
-# POST a new application
+"""
+POST a new application
+"""
+
+
 @fund_ns.route("/new_application")
 class NewApplication(Resource):
     @fund_ns.doc("create_application")

@@ -20,8 +20,11 @@ class ApplicationDataAccessObject(object):
         self.counter = 0
         self.funds = initial_fund_store_state
 
+    """
+        return all funds (replace the date object with a string to send)
+    """
+
     def get_funds(self):
-        # return all funds (replace the date object with a string to send)
         return json.loads(json.dumps(self.funds, default=str))
 
     def create_application(self, application):
@@ -32,10 +35,8 @@ class ApplicationDataAccessObject(object):
         application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
 
         if fund_name not in self.funds:
-            # create a new fund entry
             self.funds[fund_name] = []
 
-        # place application within the fund
         self.funds[fund_name].append(application)
         return application
 
@@ -46,7 +47,6 @@ class ApplicationDataAccessObject(object):
             fund_data = self.funds[fund_name]
             applications_within_period = []
             if datetime_start and datetime_end:
-                # convert string dates into datetimes
                 start = date_parser.parse(datetime_start).astimezone(UTC)
                 end = date_parser.parse(datetime_end).astimezone(UTC)
 
@@ -103,7 +103,10 @@ class ApplicationDataAccessObject(object):
             return "No key provided. Clear unsuccessful"
 
 
-# In memory data object instance
+"""
+An in memory data object instance
+"""
+
 APPLICATIONS = ApplicationDataAccessObject()
 
 APPLICATIONS.create_application(initial_fund_store_application)

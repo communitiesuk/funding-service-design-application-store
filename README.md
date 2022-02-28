@@ -2,9 +2,9 @@
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 
-[![Funding Service Design Application Store Deploy](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/govcloud.yml/badge.svg&#41;)
+[![Deploy to Gov PaaS](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/deploy.yml/badge.svg)](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/deploy.yml)
 
-[![CodeQL] (https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml/badge.svg&#41;]&#40;https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml&#41;)
+[![CodeQL](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml)
 
 This is a Flask API that provides access to the Funding Service Design Application Store. The frontend repository for
 this data store is [here](https://github.com/communitiesuk/funding-service-design-frontend).

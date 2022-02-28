@@ -4,7 +4,6 @@ from api.namespace.fund.fund_ns import fund_ns
 from flask_restx import reqparse
 from flask_restx import Resource
 
-
 """
 GET/DELETE all funds
 """
@@ -57,40 +56,18 @@ class Application(Resource):
     query_params_parser.add_argument(
         "application_id", type=str, help="Application id"
     )
-    query_params_parser.add_argument(
-        "datetime_start",
-        type=str,
-        help=(
-            "When an application_id has not been provided. Lower bound"
-            " datetime of a period to search all of the applications within a"
-            " specified fund (optional)"
-        ),
-    )
-    query_params_parser.add_argument(
-        "datetime_end",
-        type=str,
-        help=(
-            "When an application_id has not been provided. Upper bound"
-            " datetime of a period to search all of the applications within a"
-            " specified fund (optional)"
-        ),
-    )
 
     @fund_ns.doc("get_applications", parser=query_params_parser)
     def get(self, slugify_fund_name):
         args = self.query_params_parser.parse_args()
 
-        datetime_end = args["datetime_end"]
-        datetime_start = args["datetime_start"]
         application_id = args["application_id"]
         if application_id:
             return APPLICATIONS.get_application_by_id(
                 slugify_fund_name, application_id
             )
         else:
-            return APPLICATIONS.get_applications_for_fund(
-                slugify_fund_name, datetime_start, datetime_end
-            )
+            return APPLICATIONS.get_applications_for_fund(slugify_fund_name)
 
     @fund_ns.doc("delete_application", parser=query_params_parser)
     @fund_ns.response(204, "application deleted")

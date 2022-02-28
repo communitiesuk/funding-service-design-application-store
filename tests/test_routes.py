@@ -3,7 +3,7 @@ from tests.helpers import expected_data_within_get_response
 from tests.helpers import post_data
 
 
-def test_fund_endpoint_get(flask_test_client):
+def test_fund_endpoint_get_by_application_id(flask_test_client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a GET /fund/fund-name?application_id request is sent
@@ -28,6 +28,17 @@ def test_fund_endpoint_get(flask_test_client):
         ],
         "date_submitted": "2021-12-24 00:00:00",
     }
+
+    application_data = {
+        "name": "Test Fund Name",
+        "questions": {"question": "A1"},
+    }
+    post_data(flask_test_client, "/fund/new_application", application_data)
+
+    i = 0
+    while i < 200:
+        post_data(flask_test_client, "/fund/new_application", application_data)
+        i += 1
 
     expected_data_within_get_response(
         flask_test_client,
@@ -83,11 +94,11 @@ def test_fund_endpoint_post_application_is_successful(flask_test_client):
     expected_length_fund_a_after = 2
     expected_length_fund_b = 1
 
-    application_data_1 = {"name": "fund-a", "questions": {"Q1": "A1"}}
+    application_data_1 = {"name": "fund-a", "questions": {"question": "A1"}}
 
-    application_data_2 = {"name": "fund-b", "questions": {"Q2": "A2"}}
+    application_data_2 = {"name": "fund-b", "questions": {"question": "A2"}}
 
-    application_data_3 = {"name": "fund-a", "questions": {"Q3": "A3"}}
+    application_data_3 = {"name": "fund-a", "questions": {"question": "A3"}}
 
     post_data(flask_test_client, "/fund/new_application", application_data_1)
     count_fund_applications(

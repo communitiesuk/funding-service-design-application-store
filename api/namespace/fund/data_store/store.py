@@ -4,6 +4,8 @@ import uuid
 
 from api.namespace.fund.data_store.data import initial_fund_store_application
 from api.namespace.fund.data_store.data import initial_fund_store_state
+from dateutil import parser as date_parser
+from dateutil.tz import UTC
 from slugify import slugify
 
 """
@@ -38,10 +40,29 @@ class ApplicationDataAccessObject(object):
         self.funds[fund_name].append(application)
         return application
 
-    def get_applications_for_fund(self, fund_name):
+    def get_applications_for_fund(
+        self, fund_name, datetime_start, datetime_end
+    ):
         try:
             fund_data = self.funds[fund_name]
-            return json.loads(json.dumps(fund_data, default=str))
+            applications_within_period = []
+            if datetime_start and datetime_end:
+                start = date_parser.parse(datetime_start).astimezone(UTC)
+                end = date_parser.parse(datetime_end).astimezone(UTC)
+
+                # compare period limits against application dates within fund
+                for application in self.funds[fund_name]:
+                    if (
+                        start
+                        <= application["date_submitted"].astimezone(UTC)
+                        <= end
+                    ):
+                        applications_within_period.append(application)
+                return json.loads(
+                    json.dumps(applications_within_period, default=str)
+                )
+            else:
+                return json.loads(json.dumps(fund_data, default=str))
         except KeyError:
             return f"Fund: {fund_name} not found.", 400
 

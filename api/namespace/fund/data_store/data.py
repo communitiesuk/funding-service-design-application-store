@@ -13,7 +13,7 @@ initial_fund_store_state = {
                             "key": "applicant_name",
                             "title": "Applicant name",
                             "type": "text",
-                            "answer": "Adam",
+                            "answer": "Applicant",
                         }
                     ],
                 }
@@ -31,7 +31,7 @@ initial_fund_store_state = {
                             "key": "applicant_name",
                             "title": "Applicant name",
                             "type": "text",
-                            "answer": "Adam",
+                            "answer": "Applicant",
                         }
                     ],
                 }

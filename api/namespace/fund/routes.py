@@ -20,13 +20,6 @@ class Fund(Resource):
     def get(self):
         return APPLICATIONS.get_funds()
 
-    # Remove once data store is persisted outside of application memory
-    @fund_ns.doc("list_funds", parser=query_params_parser)
-    def delete(self):
-        args = self.query_params_parser.parse_args()
-        delete_key = args["delete_key"]
-        return APPLICATIONS.delete_all(delete_key)
-
 
 """
 POST a new application

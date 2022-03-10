@@ -21,7 +21,7 @@ def test_fund_endpoint_get_by_application_id(flask_test_client):
                         "key": "applicant_name",
                         "title": "Applicant name",
                         "type": "text",
-                        "answer": "Adam",
+                        "answer": "Applicant",
                     }
                 ],
             }
@@ -66,7 +66,7 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
                             "key": "applicant_name",
                             "title": "Applicant name",
                             "type": "text",
-                            "answer": "Adam",
+                            "answer": "Applicant",
                         }
                     ],
                 }

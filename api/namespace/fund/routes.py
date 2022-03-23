@@ -4,10 +4,6 @@ from api.namespace.fund.fund_ns import fund_ns
 from flask_restx import reqparse
 from flask_restx import Resource
 
-APPLICATIONS.get_status("uuidv4")
-output = APPLICATIONS.update_question_status_to_COMPLETED("uuidv4", "Q1")
-print(f"New status: {output}")
-
 
 @fund_ns.route("/status/<application_id>", methods=["GET"])
 class ApplicationStatus(Resource):

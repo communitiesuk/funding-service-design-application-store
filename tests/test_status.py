@@ -3,7 +3,7 @@ from tests.helpers import expected_data_within_put_response
 
 
 def test_get_status_response(flask_test_client):
-    """_summary_: Function send an application id as
+    """_summary_: Function sends an application id as
     a key with endpoint & returns expected output
 
     Args:
@@ -21,15 +21,51 @@ def test_get_status_response(flask_test_client):
 
 
 def test_update_status_response(flask_test_client):
-    """_summary_: Function send an application id as
-    a key with endpoint & returns expected output
+    """_summary_: Function sends an application_id
+    as endpoint AND question & status as args
+    & returns expected output
 
     Args:
         flask_test_client
     """
 
-    expected_data = {"Q1": "COMPLETED"}
+    expected_data_NOT_STARTED = {
+        "Application id": "uuidv4",
+        "Questions": {"Q1": "NOT STARTED"},
+    }
+    expected_data_within_get_response(
+        flask_test_client,
+        "/fund/status/uuidv4",
+        expected_data_NOT_STARTED,
+        debug=True,
+    )
 
+    expected_data_IN_PROGRESS = {
+        "Application id": "uuidv4",
+        "Questions": {"Q1": "IN_PROGRESS"},
+    }
     expected_data_within_put_response(
-        flask_test_client, "/fund/status/uuidv4/Q1", expected_data, debug=True
+        flask_test_client,
+        "/fund/status/uuidv4" + "?new_status=IN_PROGRESS&question_name=Q1",
+    )
+    expected_data_within_get_response(
+        flask_test_client,
+        "/fund/status/uuidv4",
+        expected_data_IN_PROGRESS,
+        debug=True,
+    )
+
+    expected_data_COMPLETED = {
+        "Application id": "uuidv4",
+        "Questions": {"Q1": "COMPLETED"},
+    }
+    expected_data_within_put_response(
+        flask_test_client,
+        "/fund/status/uuidv4" + "?new_status=COMPLETED&question_name=Q1",
+    )
+    expected_data_within_get_response(
+        flask_test_client,
+        "/fund/status/uuidv4",
+        expected_data_COMPLETED,
+        debug=True,
     )

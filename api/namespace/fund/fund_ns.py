@@ -25,6 +25,10 @@ questions_model = fund_ns.model(
         "fields": fields.Raw(required=True),
         "category": fields.String(required=False, description="Category"),
         "index": fields.Integer(required=False, description="Index"),
+        "status": fields.String(
+            required=False,
+            description="Status of the assessment for this question",
+        ),
     },
 )
 

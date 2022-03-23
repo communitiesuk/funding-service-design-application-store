@@ -16,6 +16,7 @@ def test_fund_endpoint_get_by_application_id(flask_test_client):
         "questions": [
             {
                 "question": "Q1",
+                "status": "NOT STARTED",
                 "fields": [
                     {
                         "key": "applicant_name",
@@ -61,6 +62,7 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
             "questions": [
                 {
                     "question": "Q1",
+                    "status": "NOT STARTED",
                     "fields": [
                         {
                             "key": "applicant_name",

@@ -5,7 +5,7 @@ from flask_restx import reqparse
 from flask_restx import Resource
 
 
-@fund_ns.route("/status/<application_id>", methods=["GET"])
+@fund_ns.route("/status/<application_id>", methods=["GET", "PUT"])
 class ApplicationStatus(Resource):
     """Summary: Function is a get method which
     returns status of each question page from
@@ -18,11 +18,14 @@ class ApplicationStatus(Resource):
         Status of a question from each page
     """
 
-    status_params_parser = reqparse.RequestParser()
-    status_params_parser.add_argument(
-        "status",
+    query_params_parser = reqparse.RequestParser()
+    query_params_parser.add_argument(
+        "new_status", type=str, help="What the status will be changed to."
+    )
+    query_params_parser.add_argument(
+        "question_name",
         type=str,
-        help="application status is set to NOT_STARTED  by default",
+        help="The name of the question to be accessed.",
     )
 
     def get(self, application_id):
@@ -31,30 +34,23 @@ class ApplicationStatus(Resource):
             for status in application_status.values():
                 return {"Application id": application_id, "Questions": status}
 
+    @fund_ns.doc("put_status", parser=query_params_parser)
+    def put(self, application_id):
 
-@fund_ns.route("/status/<application_id>/<question_name>", methods=["PUT"])
-class UpdateApplicationStatus(Resource):
+        args = self.query_params_parser.parse_args()
 
-    """_summary_:
-        Function is a put method which
-        updates the question status from
-        "NOT STARTED" to "COMPLETED"
-    Args:
-        application_id (str): Takes an application and runs through
-        get status function to validate the application id against
-        the database.
-        question_name (str): Takes an question name and runs through
-        get status function to check the retrive the question
-    Returns:
-         returns updated status -> "COMPLETED"
-    """
+        question_name = args["question_name"]
 
-    def put(self, application_id, question_name):
-        question_status = APPLICATIONS.update_question_status_to_COMPLETED(
-            application_id=application_id, question_name=question_name
+        new_status = args["new_status"]
+
+        status_update = APPLICATIONS.update_status(
+            application_id, question_name, new_status
         )
 
-        return {question_name: question_status}
+        if status_update:
+            return 200
+        else:
+            return 404
 
 
 @fund_ns.route("/all_funds")

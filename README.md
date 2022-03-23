@@ -21,7 +21,7 @@ Clone the repository
 
 ### Create a Virtual environment
 
-    python -m venv .venv
+    python3 -m venv .venv
 
 ### Enter the virtual environment
 

@@ -23,6 +23,9 @@ class ApplicationDataAccessObject(object):
         self.counter = 0
         self.funds = initial_fund_store_state
 
+    def get_funds(self):
+        return json.loads(json.dumps(self.funds, default=str))
+
     def create_status(self, application):
         """Summary:
             Function create status & set to NOT_STARTED
@@ -32,6 +35,25 @@ class ApplicationDataAccessObject(object):
         """
         for question in application["questions"]:
             question["status"] = "NOT STARTED"
+
+    def get_status(self, application_id):
+        """Summary:
+            Function returns status of each question page from
+            application with question page title/name.
+        Args:
+            application: Takes an application_id
+        Returns:
+            Status of a question from each page
+        """
+        status = {}
+        for funds in self.funds.values():
+            for fund in funds:
+                if application_id == fund["id"]:
+                    status[application_id] = {
+                        data.get("question"): data.get("status")
+                        for data in fund.get("questions")
+                    }
+        return status
 
     def update_status(
         self, application_id: str, question_name: str, new_status: str
@@ -57,28 +79,6 @@ class ApplicationDataAccessObject(object):
                             question["status"] = new_status
                             return True
         return False
-
-    def get_funds(self):
-        return json.loads(json.dumps(self.funds, default=str))
-
-    def get_status(self, application_id):
-        """Summary:
-            Function returns status of each question page from
-            application with question page title/name.
-        Args:
-            application: Takes an application_id
-        Returns:
-            Status of a question from each page
-        """
-        status = {}
-        for funds in self.funds.values():
-            for fund in funds:
-                if application_id == fund["id"]:
-                    status[application_id] = {
-                        data.get("question"): data.get("status")
-                        for data in fund.get("questions")
-                    }
-        return status
 
     def create_application(self, application):
         fund_name = slugify(application["name"])

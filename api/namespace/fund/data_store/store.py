@@ -75,16 +75,14 @@ class ApplicationDataAccessObject(object):
         application_data = self.get_status(application_id)
         if application_id in application_data:
             for questions in application_data.values():
-                print(f"All questions: {questions}")
                 if question_name in questions:
-                    print(f"Question name: {question_name}")
                     status += str(questions[question_name])
                 else:
                     return f"Question name '{question_name}' does not exist"
 
         else:
             return f"Application id '{application_id}' does not exist"
-        print(f"Old status: {status}")
+
         status = "COMPLETED"
         return status
 

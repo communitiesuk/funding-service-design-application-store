@@ -24,7 +24,7 @@ def expected_data_within_get_response(
 
 
 def expected_data_within_put_response(
-    test_client, endpoint: str, expected_data, debug: bool = False
+    test_client, endpoint, debug: bool = False
 ):
     """
     Given a endpoint and expected content,
@@ -33,16 +33,11 @@ def expected_data_within_put_response(
     Args:
         test_client: A flask test client
         endpoint (str): The PUT request endpoint
-        expected_data: The content we expect to find
 
     """
 
     response = test_client.put(endpoint, follow_redirects=True)
-    response_data = json.loads(response.data)
-    if debug:
-        print("RESPONSE DATA:", response_data)
-        print("Expected DATA:", expected_data)
-    assert response_data == expected_data
+    assert response.status_code == 200
 
 
 def post_data(flask_test_client, endpoint: str, post_data: dict):

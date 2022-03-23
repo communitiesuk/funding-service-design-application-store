@@ -78,7 +78,7 @@ class ApplicationDataAccessObject(object):
                 print(f"All questions: {questions}")
                 if question_name in questions:
                     print(f"Question name: {question_name}")
-                    status += questions[question_name]
+                    status += str(questions[question_name])
                 else:
                     return f"Question name '{question_name}' does not exist"
 

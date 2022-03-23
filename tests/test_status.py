@@ -1,16 +1,7 @@
-import pytest
-from app import create_app
 from tests.helpers import expected_data_within_get_response
 from tests.helpers import expected_data_within_put_response
 
 
-@pytest.fixture(scope="session")
-def app():
-    app = create_app()
-    return app
-
-
-@pytest.mark.usefixtures("live_server")
 def test_get_status_response(flask_test_client):
     """_summary_: Function send an application id as
     a key with endpoint & returns expected output
@@ -29,7 +20,6 @@ def test_get_status_response(flask_test_client):
     )
 
 
-@pytest.mark.usefixtures("live_server")
 def test_update_status_response(flask_test_client):
     """_summary_: Function send an application id as
     a key with endpoint & returns expected output

@@ -33,6 +33,31 @@ class ApplicationDataAccessObject(object):
         for question in application["questions"]:
             question["status"] = "NOT STARTED"
 
+    def update_status(
+        self, application_id: str, question_name: str, new_status: str
+    ) -> None:
+        """_summary_:
+            Function returns status of each question page from
+            application with question page title/name.
+
+        Args:
+            application_id (str): Takes an application_id
+            question_name (str): Takes an question name
+            new_status (str): Takes a status name to be updated
+
+        Returns:
+            returns updated status.
+        """
+
+        for fund in self.funds.values():
+            for application in fund:
+                if application["id"] == application_id:
+                    for question in application["questions"]:
+                        if question["question"] == question_name:
+                            question["status"] = new_status
+                            return True
+        return False
+
     def get_funds(self):
         return json.loads(json.dumps(self.funds, default=str))
 
@@ -53,37 +78,6 @@ class ApplicationDataAccessObject(object):
                         data.get("question"): data.get("status")
                         for data in fund.get("questions")
                     }
-        return status
-
-    def update_question_status_to_COMPLETED(
-        self, application_id, question_name
-    ):
-        """_summary_:
-            Function updates the question status from
-            "NOT STARTED" to "COMPLETED"
-        Args:
-            application_id (str): Takes an application and runs through
-            get status function to validate the application id against
-            the database.
-            question_name (str): Takes an question name and runs through
-            get status function to check the retrive the question data.
-        Returns:
-            _type_: returns updated status -> "COMPLETED"
-        """
-
-        status = ""
-        application_data = self.get_status(application_id)
-        if application_id in application_data:
-            for questions in application_data.values():
-                if question_name in questions:
-                    status += str(questions[question_name])
-                else:
-                    return f"Question name '{question_name}' does not exist"
-
-        else:
-            return f"Application id '{application_id}' does not exist"
-
-        status = "COMPLETED"
         return status
 
     def create_application(self, application):

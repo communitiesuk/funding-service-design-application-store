@@ -8,6 +8,7 @@ initial_fund_store_state = {
             "questions": [
                 {
                     "question": "Q1",
+                    "status": "NOT STARTED",
                     "fields": [
                         {
                             "key": "applicant_name",
@@ -26,6 +27,7 @@ initial_fund_store_state = {
             "questions": [
                 {
                     "question": "Q1",
+                    "status": "NOT STARTED",
                     "fields": [
                         {
                             "key": "applicant_name",

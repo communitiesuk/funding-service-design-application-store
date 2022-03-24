@@ -17,7 +17,19 @@ initial_fund_store_state = {
                             "answer": "Applicant",
                         }
                     ],
-                }
+                },
+                {
+                    "question": "Q2",
+                    "status": "COMPLETED",
+                    "fields": [
+                        {
+                            "key": "applicant_name",
+                            "title": "Applicant name",
+                            "type": "text",
+                            "answer": "Applicant",
+                        }
+                    ],
+                },
             ],
             "date_submitted": date_parser.parse("2021-12-24 00:00:00"),
         },

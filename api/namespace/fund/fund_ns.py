@@ -9,13 +9,8 @@ Namespace acts as part of an api (with the same methods as api)
 fund_ns = Namespace("fund", description="application operations")
 
 
-"""
-Data models belonging to 'fund' namespace
-"""
-
-
-questions_model = fund_ns.model(
-    "questions",
+question_model = fund_ns.model(
+    "question",
     {
         "question": fields.String(
             required=True,
@@ -24,10 +19,6 @@ questions_model = fund_ns.model(
         "fields": fields.Raw(required=True),
         "category": fields.String(required=False, description="Category"),
         "index": fields.Integer(required=False, description="Index"),
-        "status": fields.String(
-            required=False,
-            description="Status of the assessment for this question",
-        ),
     },
 )
 
@@ -37,15 +28,39 @@ application_model_inbound = fund_ns.model(
         "name": fields.String(
             required=True, description="Required: The name of the fund."
         ),
-        "questions": fields.Nested(
-            questions_model,
-            required=True,
-            description=(
-                "Required: The payload of application questions and answers."
+        "questions": fields.List(
+            fields.Nested(
+                question_model,
+                required=True,
+                description=(
+                    "Required: The payload of application questions and"
+                    " answers."
+                ),
             ),
         ),
         "metadata": fields.String(
             required=False, description="Fund metadata."
         ),
+    },
+)
+
+question_status_model = fund_ns.model(
+    "question",
+    {
+        "question": fields.String(
+            required=False,
+        ),
+        "status": fields.String(required=False),
+    },
+)
+
+
+application_get_status_model = fund_ns.model(
+    "questions_status",
+    {
+        "application_id": fields.String(
+            required=True, description="Required: application id of the fund."
+        ),
+        "questions": fields.Nested(question_status_model, required=False),
     },
 )

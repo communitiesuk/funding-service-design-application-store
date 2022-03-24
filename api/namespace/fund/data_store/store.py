@@ -37,7 +37,6 @@ class ApplicationDataAccessObject(object):
             self.funds[fund_name] = []
         self.funds[fund_name].append(application)
         self.create_status(application)
-        # pprint(application)
         return application
 
     def create_status(self, application):
@@ -47,9 +46,10 @@ class ApplicationDataAccessObject(object):
         Args:
             application: Takes an application/fund
         """
-        # pprint(application)
         for question in application.get("questions"):
-
+            print("\n")
+            print(question)
+            print("\n")
             question["status"] = "NOT STARTED"
 
     def get_status(self, application_id):

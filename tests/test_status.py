@@ -11,7 +11,7 @@ def test_update_status_response(flask_test_client):
         flask_test_client
     """
 
-    expected_data_NOT_STARTED = {"Q1": "NOT STARTED"}
+    expected_data_NOT_STARTED = {"Q1": "NOT STARTED", "Q2": "COMPLETED"}
 
     expected_data_within_get_response(
         flask_test_client,
@@ -20,10 +20,10 @@ def test_update_status_response(flask_test_client):
         debug=True,
     )
 
-    expected_data_IN_PROGRESS = {"Q1": "IN_PROGRESS"}
+    expected_data_IN_PROGRESS = {"Q1": "IN PROGRESS", "Q2": "COMPLETED"}
     expected_data_within_put_response(
         flask_test_client,
-        "/fund/status/uuidv4" + "?new_status=IN_PROGRESS&question_name=Q1",
+        "/fund/status/uuidv4" + "?new_status=IN PROGRESS&question_name=Q1",
     )
     expected_data_within_get_response(
         flask_test_client,
@@ -32,7 +32,7 @@ def test_update_status_response(flask_test_client):
         debug=True,
     )
 
-    expected_data_COMPLETED = {"Q1": "COMPLETED"}
+    expected_data_COMPLETED = {"Q1": "COMPLETED", "Q2": "COMPLETED"}
 
     expected_data_within_put_response(
         flask_test_client,

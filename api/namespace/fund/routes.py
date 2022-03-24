@@ -1,6 +1,7 @@
 from api.namespace.fund.data_store.store import APPLICATIONS
 from api.namespace.fund.fund_ns import application_model_inbound
 from api.namespace.fund.fund_ns import fund_ns
+from flask import abort
 from flask_restx import reqparse
 from flask_restx import Resource
 
@@ -30,9 +31,9 @@ class ApplicationStatus(Resource):
 
     def get(self, application_id):
         application_status = APPLICATIONS.get_status(application_id)
-        for application_id in application_status:
-            for status in application_status.values():
-                return {"Application id": application_id, "Questions": status}
+        if not application_status:
+            abort(404)
+        return application_status
 
     @fund_ns.doc("put_status", parser=query_params_parser)
     def put(self, application_id):

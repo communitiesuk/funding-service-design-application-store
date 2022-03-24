@@ -26,6 +26,20 @@ class ApplicationDataAccessObject(object):
     def get_funds(self):
         return json.loads(json.dumps(self.funds, default=str))
 
+    def create_application(self, application):
+        fund_name = slugify(application["name"])
+        application["date_submitted"] = datetime.datetime.now(
+            datetime.timezone.utc
+        )
+        application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
+
+        if fund_name not in self.funds:
+            self.funds[fund_name] = []
+        self.funds[fund_name].append(application)
+        self.create_status(application)
+        # pprint(application)
+        return application
+
     def create_status(self, application):
         """Summary:
             Function create status & set to NOT_STARTED
@@ -33,7 +47,9 @@ class ApplicationDataAccessObject(object):
         Args:
             application: Takes an application/fund
         """
-        for question in application["questions"]:
+        # pprint(application)
+        for question in application.get("questions"):
+
             question["status"] = "NOT STARTED"
 
     def get_status(self, application_id):
@@ -45,15 +61,14 @@ class ApplicationDataAccessObject(object):
         Returns:
             Status of a question from each page
         """
-        status = {}
         for funds in self.funds.values():
             for fund in funds:
                 if application_id == fund["id"]:
-                    status[application_id] = {
+                    status = {
                         data.get("question"): data.get("status")
                         for data in fund.get("questions")
                     }
-        return status
+                    return status
 
     def update_status(
         self, application_id: str, question_name: str, new_status: str
@@ -79,19 +94,6 @@ class ApplicationDataAccessObject(object):
                             question["status"] = new_status
                             return True
         return False
-
-    def create_application(self, application):
-        fund_name = slugify(application["name"])
-        application["date_submitted"] = datetime.datetime.now(
-            datetime.timezone.utc
-        )
-        application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
-
-        if fund_name not in self.funds:
-            self.funds[fund_name] = []
-        self.funds[fund_name].append(application)
-        self.create_status(application)
-        return application
 
     def get_applications_for_fund(
         self, fund_name, datetime_start, datetime_end

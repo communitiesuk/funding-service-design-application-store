@@ -43,24 +43,3 @@ application_model_inbound = fund_ns.model(
         ),
     },
 )
-
-question_status_model = fund_ns.model(
-    "question",
-    {
-        "question": fields.String(
-            required=False,
-        ),
-        "status": fields.String(required=False),
-    },
-)
-
-
-application_get_status_model = fund_ns.model(
-    "questions_status",
-    {
-        "application_id": fields.String(
-            required=True, description="Required: application id of the fund."
-        ),
-        "questions": fields.Nested(question_status_model, required=False),
-    },
-)

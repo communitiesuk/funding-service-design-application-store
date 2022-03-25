@@ -47,9 +47,6 @@ class ApplicationDataAccessObject(object):
             application: Takes an application/fund
         """
         for question in application.get("questions"):
-            print("\n")
-            print(question)
-            print("\n")
             question["status"] = "NOT STARTED"
 
     def get_status(self, application_id):

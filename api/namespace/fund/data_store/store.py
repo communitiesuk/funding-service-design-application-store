@@ -7,6 +7,8 @@ from api.namespace.fund.data_store.data import initial_fund_store_state
 from dateutil import parser as date_parser
 from dateutil.tz import UTC
 from slugify import slugify
+from operator import itemgetter
+from distutils.util import strtobool
 
 """
 Data Access Object
@@ -27,12 +29,28 @@ class ApplicationDataAccessObject(object):
     def get_funds(self):
         return json.loads(json.dumps(self.funds, default=str))
 
+    @property
+    def applications_index(self):
+        applications = []
+        for fund_name, fund_applications in self.funds.items():
+            for fund_application in fund_applications:
+                application_summary = {
+                    "id": fund_application.get("id"),
+                    "status": fund_application.get("status"),
+                    "assessment_deadline": fund_application.get("assessment_deadline"),
+                    "fund_id": fund_name,
+                }
+                applications.append(application_summary)
+        return json.loads(json.dumps(applications, default=str))
+
     def create_application(self, application):
         fund_name = slugify(application["name"])
         application["date_submitted"] = datetime.datetime.now(
             datetime.timezone.utc
         )
         application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
+        application["assessment_deadline"] = datetime.datetime(2022, 8, 28)
+        application["status"] = "not started"
 
         if fund_name not in self.funds:
             self.funds[fund_name] = []
@@ -65,6 +83,32 @@ class ApplicationDataAccessObject(object):
                 return json.loads(json.dumps(fund_data, default=str))
         except KeyError:
             return f"Fund: {fund_name} not found.", 400
+
+    def search_applications(self, params):
+        matching_applications = []
+        status_only = params.get("status_only")
+        id_contains = params.get("id_contains")
+        order_by = params.get("order_by", "id")
+        order_rev = params.get("order_rev", False)
+
+        for application in self.applications_index:
+            match = True
+            if status_only and status_only != application.get("status_only"):
+                match = False
+            if id_contains and not id_contains in application.get("id"):
+                match = False
+            if match:
+                matching_applications.append(application)
+
+        if order_by and order_by in ["id", "status"]:
+            matching_applications = sorted(
+                matching_applications,
+                key=itemgetter(order_by),
+                reverse=strtobool(order_rev))
+
+        return matching_applications
+
+
 
     def get_application_by_id(self, fund_name, application_id):
 

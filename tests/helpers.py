@@ -2,7 +2,7 @@ import json
 
 
 def expected_data_within_get_response(
-    test_client, endpoint: str, expected_data, debug: bool = False
+    test_client, endpoint: str, expected_data
 ):
     """
     Given a endpoint and expected content,
@@ -14,18 +14,12 @@ def expected_data_within_get_response(
         expected_data: The content we expect to find
 
     """
-
     response = test_client.get(endpoint, follow_redirects=True)
     response_data = json.loads(response.data)
-    if debug:
-        print("RESPONSE DATA:", response_data)
-        print("Expected DATA:", expected_data)
     assert response_data == expected_data
 
 
-def expected_data_within_put_response(
-    test_client, endpoint, debug: bool = False
-):
+def put_response_return_200(test_client, endpoint, debug: bool = False):
     """
     Given a endpoint and expected content,
     check to see if response contains expected data

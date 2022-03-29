@@ -93,9 +93,9 @@ class ApplicationDataAccessObject(object):
 
         for application in self.applications_index:
             match = True
-            if status_only and status_only != application.get("status_only"):
+            if status_only and status_only != application.get("status"):
                 match = False
-            if id_contains and not id_contains in application.get("id"):
+            if id_contains and id_contains not in application.get("id"):
                 match = False
             if match:
                 matching_applications.append(application)

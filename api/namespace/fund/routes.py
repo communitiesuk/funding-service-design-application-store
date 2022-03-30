@@ -57,15 +57,9 @@ class ApplicationStatus(Resource):
 @fund_ns.route("/all_funds")
 class Fund(Resource):
     """
-    GET/DELETE all funds
+    GET all funds
     """
 
-    query_params_parser = reqparse.RequestParser()
-    query_params_parser.add_argument(
-        "delete_key", type=str, help="key to clear data store"
-    )
-
-    @fund_ns.doc("list_funds")
     def get(self):
         return APPLICATIONS.get_funds()
 
@@ -130,12 +124,3 @@ class Application(Resource):
             return APPLICATIONS.get_applications_for_fund(
                 slugify_fund_name, datetime_start, datetime_end
             )
-
-    @fund_ns.doc("delete_application", parser=query_params_parser)
-    @fund_ns.response(204, "application deleted")
-    def delete(self, slugify_fund_name):
-        args = self.query_params_parser.parse_args()
-        application_id = args["application_id"]
-        return APPLICATIONS.delete_application_by_id(
-            slugify_fund_name, application_id
-        )

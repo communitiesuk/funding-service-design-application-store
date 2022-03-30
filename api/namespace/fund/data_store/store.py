@@ -112,8 +112,6 @@ class ApplicationDataAccessObject(object):
 
         return matching_applications
 
-
-
     def get_application_by_id(self, fund_name, application_id):
 
         try:

@@ -60,7 +60,7 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
         {
             "id": "uuidv4-2",
             "name": "Test Fund Name",
-            "status": "NOT_STARTED",
+            "status": "COMPLETED",
             "assessment_deadline": "2022-08-28 00:00:00",
             "questions": [
                 {
@@ -83,6 +83,89 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
         flask_test_client,
         "/fund/slugified_test_fund_name"
         "?datetime_start=2022-01-01&datetime_end=2022-12-28",
+        expected_data,
+    )
+
+
+def test_search_endpoint_get_applications_by_status(flask_test_client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a request for applications with a given status
+    THEN the response should only contain the applications that
+    have that status
+    """
+    expected_data = [
+        {
+            "id": "uuidv4",
+            "status": "NOT_STARTED",
+            "assessment_deadline": "2022-08-28 00:00:00",
+            "fund_id": "slugified_test_fund_name"
+        },
+        {
+            "id": "uuidv4-2",
+            "status": "COMPLETED",
+            "assessment_deadline": "2022-08-28 00:00:00",
+            "fund_id": "slugified_test_fund_name"
+        }
+    ]
+
+    expected_data_within_get_response(
+        flask_test_client,
+        "/search"
+        "?status_only=completed",
+        expected_data,
+    )
+
+
+def test_search_endpoint_get_applications_by_id_contains(flask_test_client):
+        """
+        GIVEN We have a functioning Application Store API
+        WHEN a request for applications whose id's contain a given string
+        THEN the response should only contain the applications that
+        have ids that contain that string
+        """
+        expected_data = [
+            {
+                "id": "uuidv4-2",
+                "status": "COMPLETED",
+                "assessment_deadline": "2022-08-28 00:00:00",
+                "fund_id": "slugified_test_fund_name"
+            }
+        ]
+
+        expected_data_within_get_response(
+            flask_test_client,
+            "/search"
+            "?id_contains=v4-2",
+            expected_data,
+        )
+
+
+def test_search_endpoint_get_applications_sorted_by_rev_id(flask_test_client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a request for applications reverse sorted by id
+    THEN the response should return applications in the requested order
+    """
+    expected_data = [
+        {
+            "id": "uuidv4-2",
+            "status": "COMPLETED",
+            "assessment_deadline": "2022-08-28 00:00:00",
+            "fund_id": "slugified_test_fund_name"
+        },
+        {
+            "id": "uuidv4",
+            "status": "NOT_STARTED",
+            "assessment_deadline": "2022-08-28 00:00:00",
+            "fund_id": "slugified_test_fund_name"
+        }
+    ]
+
+    expected_data_within_get_response(
+        flask_test_client,
+        "/search"
+        "?order_by=id&order_rev=1",
         expected_data,
     )
 
@@ -118,34 +201,4 @@ def test_fund_endpoint_post_application_is_successful(flask_test_client):
     )
     count_fund_applications(
         flask_test_client, "fund-b", expected_length_fund_b
-    )
-
-
-def test_search_endpoint_get_applications_by_status(flask_test_client):
-    """
-    GIVEN We have a functioning Application Store API
-    WHEN a request for fund applications within a given time period
-    THEN the response should only contain the applications that
-    fall within the time period
-    """
-    expected_data = [
-        {
-            "id": "uuidv4",
-            "status": "NOT_STARTED",
-            "assessment_deadline": "2022-08-28 00:00:00",
-            "fund_id": "slugified_test_fund_name"
-        },
-        {
-            "id": "uuidv4-2",
-            "status": "NOT_STARTED",
-            "assessment_deadline": "2022-08-28 00:00:00",
-            "fund_id": "slugified_test_fund_name"
-        }
-    ]
-
-    expected_data_within_get_response(
-        flask_test_client,
-        "/search/"
-        "?status_only=not%20started",
-        expected_data,
     )

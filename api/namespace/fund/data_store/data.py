@@ -25,7 +25,7 @@ initial_fund_store_state = {
         {
             "id": "uuidv4-2",
             "name": "Test Fund Name",
-            "status": "NOT_STARTED",
+            "status": "COMPLETED",
             "assessment_deadline": date_parser.parse("2022-08-28 00:00:00"),
             "questions": [
                 {

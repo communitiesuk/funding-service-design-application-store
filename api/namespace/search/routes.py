@@ -26,4 +26,8 @@ class Application(Resource):
     @search_ns.doc("get_applications", parser=query_params_parser)
     def get(self):
         args = self.query_params_parser.parse_args()
-        return APPLICATIONS.search_applications(args)
+        response_headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": True
+        }
+        return APPLICATIONS.search_applications(args), 200, response_headers

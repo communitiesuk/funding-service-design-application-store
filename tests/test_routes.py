@@ -87,23 +87,22 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
     )
 
 
-def test_search_endpoint_get_applications_by_status(flask_test_client):
+def test_search_endpoint_get_applications(flask_test_client):
     """
     GIVEN We have a functioning Application Store API
-    WHEN a request for applications with a given status
-    THEN the response should only contain the applications that
-    have that status
+    WHEN a request for applications with no set params
+    THEN the response should return all applications
     """
     expected_data = [
         {
             "id": "uuidv4",
-            "status": "NOT_STARTED",
+            "status": "COMPLETED",
             "assessment_deadline": "2022-08-28 00:00:00",
             "fund_id": "slugified_test_fund_name"
         },
         {
             "id": "uuidv4-2",
-            "status": "COMPLETED",
+            "status": "NOT_STARTED",
             "assessment_deadline": "2022-08-28 00:00:00",
             "fund_id": "slugified_test_fund_name"
         }
@@ -113,6 +112,30 @@ def test_search_endpoint_get_applications_by_status(flask_test_client):
         flask_test_client,
         "/search"
         "?status_only=completed",
+        expected_data,
+    )
+
+
+def test_search_endpoint_get_applications_by_status(flask_test_client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a request for applications with a given status
+    THEN the response should only contain the applications that
+    have that status
+    """
+    expected_data = [
+        {
+            "id": "uuidv4-2",
+            "status": "NOT_STARTED",
+            "assessment_deadline": "2022-08-28 00:00:00",
+            "fund_id": "slugified_test_fund_name"
+        }
+    ]
+
+    expected_data_within_get_response(
+        flask_test_client,
+        "/search"
+        "?status_only=not%20started",
         expected_data,
     )
 
@@ -127,7 +150,7 @@ def test_search_endpoint_get_applications_by_id_contains(flask_test_client):
         expected_data = [
             {
                 "id": "uuidv4-2",
-                "status": "COMPLETED",
+                "status": "NOT_STARTED",
                 "assessment_deadline": "2022-08-28 00:00:00",
                 "fund_id": "slugified_test_fund_name"
             }
@@ -150,13 +173,13 @@ def test_search_endpoint_get_applications_sorted_by_rev_id(flask_test_client):
     expected_data = [
         {
             "id": "uuidv4-2",
-            "status": "COMPLETED",
+            "status": "NOT_STARTED",
             "assessment_deadline": "2022-08-28 00:00:00",
             "fund_id": "slugified_test_fund_name"
         },
         {
             "id": "uuidv4",
-            "status": "NOT_STARTED",
+            "status": "COMPLETED",
             "assessment_deadline": "2022-08-28 00:00:00",
             "fund_id": "slugified_test_fund_name"
         }

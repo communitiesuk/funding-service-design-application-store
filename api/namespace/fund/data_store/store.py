@@ -44,28 +44,25 @@ class ApplicationDataAccessObject(object):
 
     def create_application(self, application):
         fund_name = slugify(application["name"])
+
+        if fund_name not in self.funds:
+            self.funds[fund_name] = []
+        self.funds[fund_name].append(self.set_defaults(application))
+        return application
+
+    @staticmethod
+    def set_defaults(application):
         application["date_submitted"] = datetime.datetime.now(
             datetime.timezone.utc
         )
         application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
         application["assessment_deadline"] = datetime.datetime(2022, 8, 28)
         application["status"] = "NOT_STARTED"
+        for question in application.get("questions"):
+            question.update({"status": "NOT STARTED"})
 
-        if fund_name not in self.funds:
-            self.funds[fund_name] = []
-        self.funds[fund_name].append(application)
-        self.create_status(application)
         return application
 
-    def create_status(self, application):
-        """Summary:
-            Function create status & set to NOT_STARTED
-            by deafult to each question page
-        Args:
-            application: Takes an application/fund
-        """
-        for question in application.get("questions"):
-            question["status"] = "NOT STARTED"
 
     def get_status(self, application_id):
         """Summary:

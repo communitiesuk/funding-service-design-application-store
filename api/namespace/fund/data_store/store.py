@@ -50,7 +50,7 @@ class ApplicationDataAccessObject(object):
         )
         application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
         application["assessment_deadline"] = datetime.datetime(2022, 8, 28)
-        application["status"] = "NOT STARTED"
+        application["status"] = "NOT_STARTED"
 
         if fund_name not in self.funds:
             self.funds[fund_name] = []
@@ -96,8 +96,9 @@ class ApplicationDataAccessObject(object):
 
         for application in self.applications_index:
             match = True
-            if status_only and slugify(str(status_only).upper() != application.get("status"):
+            if status_only and slugify(str(status_only).upper()) != application.get("status"):
                 match = False
+                print(application)
             if id_contains and id_contains not in application.get("id"):
                 match = False
             if match:

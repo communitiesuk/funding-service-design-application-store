@@ -13,7 +13,7 @@ def test_fund_endpoint_get_by_application_id(flask_test_client):
     expected_data = {
         "id": "uuidv4",
         "name": "Test Fund Name",
-        "status": "NOT STARTED",
+        "status": "NOT_STARTED",
         "assessment_deadline": "2022-08-28 00:00:00",
         "questions": [
             {
@@ -60,7 +60,7 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
         {
             "id": "uuidv4-2",
             "name": "Test Fund Name",
-            "status": "NOT STARTED",
+            "status": "NOT_STARTED",
             "assessment_deadline": "2022-08-28 00:00:00",
             "questions": [
                 {
@@ -118,4 +118,34 @@ def test_fund_endpoint_post_application_is_successful(flask_test_client):
     )
     count_fund_applications(
         flask_test_client, "fund-b", expected_length_fund_b
+    )
+
+
+def test_search_endpoint_get_applications_by_status(flask_test_client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a request for fund applications within a given time period
+    THEN the response should only contain the applications that
+    fall within the time period
+    """
+    expected_data = [
+        {
+            "id": "uuidv4",
+            "status": "NOT_STARTED",
+            "assessment_deadline": "2022-08-28 00:00:00",
+            "fund_id": "slugified_test_fund_name"
+        },
+        {
+            "id": "uuidv4-2",
+            "status": "NOT_STARTED",
+            "assessment_deadline": "2022-08-28 00:00:00",
+            "fund_id": "slugified_test_fund_name"
+        }
+    ]
+
+    expected_data_within_get_response(
+        flask_test_client,
+        "/search/"
+        "?status_only=not%20started",
+        expected_data,
     )

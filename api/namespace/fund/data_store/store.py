@@ -1,3 +1,8 @@
+"""
+Data Access Object
+A data access object (DAO) is a pattern that provides an abstract interface
+to some type of database or other persistence mechanism.
+"""
 import datetime
 import json
 import uuid
@@ -10,21 +15,15 @@ from slugify import slugify
 from operator import itemgetter
 from distutils.util import strtobool
 
-"""
-Data Access Object
-A data access object (DAO) is a pattern that provides an abstract interface
-to some type of database or other persistence mechanism.
-"""
-
 
 class ApplicationDataAccessObject(object):
+    """
+    return all funds (replace the date object with a string to send)
+    """
+
     def __init__(self):
         self.counter = 0
         self.funds = initial_fund_store_state
-
-    """
-        return all funds (replace the date object with a string to send)
-    """
 
     def get_funds(self):
         return json.loads(json.dumps(self.funds, default=str))
@@ -54,7 +53,6 @@ class ApplicationDataAccessObject(object):
 
         if fund_name not in self.funds:
             self.funds[fund_name] = []
-
         self.funds[fund_name].append(application)
         self.create_status(application)
         return application
@@ -209,10 +207,10 @@ class ApplicationDataAccessObject(object):
             return "No key provided. Clear unsuccessful"
 
 
-"""
-An in memory data object instance
-"""
+# An in memory data object instance
+
 
 APPLICATIONS = ApplicationDataAccessObject()
+
 
 APPLICATIONS.create_application(initial_fund_store_application)

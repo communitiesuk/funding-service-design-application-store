@@ -14,7 +14,6 @@ def expected_data_within_get_response(
         expected_data: The content we expect to find
 
     """
-
     response = test_client.get(endpoint, follow_redirects=True)
     response_data = json.loads(response.data)
     assert response_data == expected_data

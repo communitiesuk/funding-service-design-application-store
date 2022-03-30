@@ -1,4 +1,5 @@
 from api.namespace.fund.routes import fund_ns
+from api.namespace.search.routes import search_ns
 from flask_restx import Api
 
 api = Api(
@@ -8,3 +9,4 @@ api = Api(
 )
 
 api.add_namespace(fund_ns)
+api.add_namespace(search_ns)

@@ -18,6 +18,7 @@ def test_fund_endpoint_get_by_application_id(flask_test_client):
         "questions": [
             {
                 "question": "Q1",
+                "status": "NOT STARTED",
                 "fields": [
                     {
                         "key": "applicant_name",
@@ -26,7 +27,19 @@ def test_fund_endpoint_get_by_application_id(flask_test_client):
                         "answer": "Applicant",
                     }
                 ],
-            }
+            },
+            {
+                "question": "Q2",
+                "status": "COMPLETED",
+                "fields": [
+                    {
+                        "key": "applicant_name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Applicant",
+                    }
+                ],
+            },
         ],
         "date_submitted": "2021-12-24 00:00:00",
     }
@@ -65,6 +78,7 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
             "questions": [
                 {
                     "question": "Q1",
+                    "status": "NOT STARTED",
                     "fields": [
                         {
                             "key": "applicant_name",

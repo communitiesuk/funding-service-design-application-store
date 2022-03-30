@@ -92,13 +92,19 @@ class ApplicationDataAccessObject(object):
         status_only = params.get("status_only")
         id_contains = params.get("id_contains")
         order_by = params.get("order_by", "id")
-        order_rev = params.get("order_rev", False)
+        order_rev = params.get("order_rev") or False
+        try:
+            order_rev = strtobool(order_rev)
+        except ValueError:
+            pass
+        except AttributeError:
+            pass
 
         for application in self.applications_index:
             match = True
-            if status_only and slugify(str(status_only).upper()) != application.get("status"):
+            if status_only and \
+                    status_only.replace(" ", "_").upper() != application.get("status"):
                 match = False
-                print(application)
             if id_contains and id_contains not in application.get("id"):
                 match = False
             if match:
@@ -108,7 +114,7 @@ class ApplicationDataAccessObject(object):
             matching_applications = sorted(
                 matching_applications,
                 key=itemgetter(order_by),
-                reverse=strtobool(order_rev))
+                reverse=order_rev)
 
         return matching_applications
 

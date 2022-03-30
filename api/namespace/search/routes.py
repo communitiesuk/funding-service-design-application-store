@@ -4,13 +4,11 @@ from flask_restx import reqparse
 from flask_restx import Resource
 
 
-"""
-GET all relevant applications 'search/?{params}'
-"""
-
-
-@search_ns.route("/")
+@search_ns.route("")
 class Application(Resource):
+    """
+    GET all relevant applications with endpoint '/search?{params}'
+    """
     query_params_parser = reqparse.RequestParser()
     query_params_parser.add_argument(
         "id_contains", type=str, help="Application id contains string"

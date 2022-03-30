@@ -9,6 +9,11 @@ Namespace acts as part of an api (with the same methods as api)
 fund_ns = Namespace("fund", description="application operations")
 
 
+"""
+Data models belonging to 'fund' namespace
+"""
+
+
 question_model = fund_ns.model(
     "question",
     {

@@ -16,13 +16,15 @@ def expected_data_within_get_response(
     """
     response = test_client.get(endpoint, follow_redirects=True)
     response_data = json.loads(response.data)
-    assert response_data == expected_data
+    print(endpoint)
+    print(response_data)
+    assert response_data == expected_data, response_data
 
 
-def put_response_return_200(test_client, endpoint, debug: bool = False):
+def put_response_return_200(test_client, endpoint):
     """
-    Given a endpoint and expected content,
-    check to see if response contains expected data
+    Given a endpoint
+    check to see if returns a 200 success response
 
     Args:
         test_client: A flask test client

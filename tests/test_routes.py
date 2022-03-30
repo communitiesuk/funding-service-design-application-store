@@ -87,7 +87,7 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
     )
 
 
-def test_search_endpoint_get_applications(flask_test_client):
+def test_search_endpoint_get_all_applications(flask_test_client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications with no set params

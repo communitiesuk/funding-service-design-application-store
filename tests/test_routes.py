@@ -13,7 +13,7 @@ def test_fund_endpoint_get_by_application_id(flask_test_client):
     expected_data = {
         "id": "uuidv4",
         "name": "Test Fund Name",
-        "status": "not started",
+        "status": "NOT STARTED",
         "assessment_deadline": "2022-08-28 00:00:00",
         "questions": [
             {
@@ -60,7 +60,7 @@ def test_fund_endpoint_get_applications_by_time_period(flask_test_client):
         {
             "id": "uuidv4-2",
             "name": "Test Fund Name",
-            "status": "not started",
+            "status": "NOT STARTED",
             "assessment_deadline": "2022-08-28 00:00:00",
             "questions": [
                 {

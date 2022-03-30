@@ -50,7 +50,7 @@ class ApplicationDataAccessObject(object):
         )
         application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
         application["assessment_deadline"] = datetime.datetime(2022, 8, 28)
-        application["status"] = "not started"
+        application["status"] = "NOT STARTED"
 
         if fund_name not in self.funds:
             self.funds[fund_name] = []
@@ -85,6 +85,9 @@ class ApplicationDataAccessObject(object):
             return f"Fund: {fund_name} not found.", 400
 
     def search_applications(self, params):
+        """
+        Returns a list of applications matching required params
+        """
         matching_applications = []
         status_only = params.get("status_only")
         id_contains = params.get("id_contains")
@@ -93,7 +96,7 @@ class ApplicationDataAccessObject(object):
 
         for application in self.applications_index:
             match = True
-            if status_only and status_only != application.get("status"):
+            if status_only and slugify(str(status_only).upper() != application.get("status"):
                 match = False
             if id_contains and id_contains not in application.get("id"):
                 match = False

@@ -14,6 +14,7 @@ from dateutil.tz import UTC
 from slugify import slugify
 from operator import itemgetter
 from distutils.util import strtobool
+from external_data.data import get_round
 
 
 class ApplicationDataAccessObject(object):
@@ -43,33 +44,38 @@ class ApplicationDataAccessObject(object):
         return json.loads(json.dumps(applications, default=str))
 
     def create_application(self, application):
-        fund_name = slugify(application["name"])
+        fund_id = slugify(application["name"])
+        return self.add_application(fund_id, application)
 
-        if fund_name not in self.funds:
-            self.funds[fund_name] = []
-        self.funds[fund_name].append(self.set_defaults(application))
+    def add_application(self, fund_id: str, application: dict):
+        if fund_id not in self.funds:
+            self.funds[fund_id] = []
+        self.funds[fund_id].append(self.set_defaults(fund_id, application))
         return application
 
     @staticmethod
-    def set_defaults(application):
-        application["date_submitted"] = datetime.datetime.now(
+    def set_defaults(fund_id: str, application: dict):
+        date_submitted = datetime.datetime.now(
             datetime.timezone.utc
         )
+        round_id = application.get("round_id")
+        fund_round = get_round(fund_id, round_id, date_submitted)
+
+        application["date_submitted"] = date_submitted
         application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
-        application["assessment_deadline"] = datetime.datetime(2022, 8, 28)
+        application["assessment_deadline"] = fund_round.assessment_deadline
         application["status"] = "NOT_STARTED"
         for question in application.get("questions"):
             question.update({"status": "NOT STARTED"})
 
         return application
 
-
     def get_status(self, application_id):
         """Summary:
             Function returns status of each question page from
             application with question page title/name.
         Args:
-            application: Takes an application_id
+            application_id: Takes an application_id
         Returns:
             Status of a question from each page
         """

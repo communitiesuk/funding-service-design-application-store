@@ -1,0 +1,113 @@
+{
+  "fund_store/funds/": [
+    {
+      "fund_name": "Funding Service Design",
+      "fund_id": "funding-service-design",
+      "fund_description": "An example fund for testing the funding service"
+    }
+  ],
+  "fund_store/funds/funding-service-design": {
+    "fund_name": "Funding Service Design",
+    "fund_id": "funding-service-design",
+    "fund_description": "An example fund for testing the funding service"
+  },
+  "round_store/fund/fund-a": [
+    {
+      "fund_id": "funding-a",
+      "round_title": "Spring",
+      "round_id": "spring",
+      "eligibility_criteria": {
+        "maximum_project_cost": 1000000
+      },
+      "opens": "2022-02-01T00:00:01",
+      "deadline": "2022-06-01T00:00:00",
+      "assessment_deadline": "2022-09-30T00:00:00",
+      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    }
+  ],
+  "round_store/fund/fund-b": [
+    {
+      "fund_id": "funding-a",
+      "round_title": "Spring",
+      "round_id": "spring",
+      "eligibility_criteria": {
+        "maximum_project_cost": 1000000
+      },
+      "opens": "2022-02-01T00:00:01",
+      "deadline": "2022-06-01T00:00:00",
+      "assessment_deadline": "2022-09-30T00:00:00",
+      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    }
+  ],
+  "round_store/fund/funding-service-design": [
+    {
+      "fund_id": "funding-service-design",
+      "round_title": "Spring",
+      "round_id": "spring",
+      "eligibility_criteria": {
+        "maximum_project_cost": 1000000
+      },
+      "opens": "2022-02-01T00:00:01",
+      "deadline": "2022-06-01T00:00:00",
+      "assessment_deadline": "2022-09-30T00:00:00",
+      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    },
+    {
+      "fund_id": "funding-service-design",
+      "round_title": "Summer",
+      "round_id": "summer",
+      "eligibility_criteria": {
+        "maximum_project_cost": 1000000
+      },
+      "opens": "2022-06-01T00:00:01",
+      "deadline": "2022-08-31T00:00:00",
+      "assessment_deadline": "2022-12-30T00:00:00",
+      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    },
+    {
+      "fund_id": "funding-service-design",
+      "round_title": "Autumn",
+      "round_id": "autumn",
+      "eligibility_criteria": {
+        "maximum_project_cost": 10000000
+      },
+      "opens": "2022-09-01T00:00:01",
+      "deadline": "2022-11-30T00:00:00",
+      "assessment_deadline": "2023-03-30T00:00:00",
+      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    }
+  ],
+  "round_store/fund/funding-service-design/round/spring": {
+    "fund_id": "funding-service-design",
+    "round_title": "Spring",
+    "round_id": "spring",
+    "eligibility_criteria": {
+      "maximum_project_cost": 1000000
+    },
+    "opens": "2022-02-01T00:00:01",
+    "deadline": "2022-06-01T00:00:00",
+    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+  },
+  "round_store/fund/funding-service-design/round/summer": {
+    "fund_id": "funding-service-design",
+    "round_title": "Summer",
+    "round_id": "summer",
+    "eligibility_criteria": {
+      "maximum_project_cost": 1000000
+    },
+    "opens": "2022-06-01T00:00:01",
+    "deadline": "2022-08-31T00:00:00",
+    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+  },
+  "round_store/fund/funding-service-design/round/autumn": {
+    "fund_id": "funding-service-design",
+    "round_title": "Autumn",
+    "round_id": "autumn",
+    "eligibility_criteria": {
+      "maximum_project_cost": 10000000
+    },
+    "opens": "2022-09-01T00:00:01",
+    "deadline": "2022-11-30T00:00:00",
+    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+  }
+}

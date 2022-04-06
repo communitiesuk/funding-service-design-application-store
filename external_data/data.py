@@ -91,6 +91,8 @@ def get_round(fund_id: str, round_id: str = None, date_submitted: datetime = Non
         round_response = get_data(round_endpoint)
         if round_response and "round_id" in round_response:
             fund_round = Round.from_json(round_response)
+        if not fund_round:
+            raise Exception(f"Round with id '{round_id}' for fund {fund_id} could not be found")
 
     elif date_submitted:
         rounds = get_rounds(fund_id)
@@ -100,4 +102,7 @@ def get_round(fund_id: str, round_id: str = None, date_submitted: datetime = Non
                 round_deadline = pytz.utc.localize(datetime.fromisoformat(listed_round.deadline))
                 if round_opens < date_submitted < round_deadline:
                     fund_round = listed_round
+        if not fund_round:
+            raise Exception(f"Active round for application submitted at"
+                            f" {str(date_submitted)} fund {fund_id} could not be found")
     return fund_round

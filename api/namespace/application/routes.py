@@ -8,7 +8,7 @@ from flask_restx import reqparse
 from flask_restx import Resource
 
 
-@application_ns.route("/", methods=["GET", "POST"])
+@application_ns.route("", methods=["GET", "POST"])
 class ApplicationCreate(Resource):
     """
     Create a new application

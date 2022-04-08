@@ -156,7 +156,7 @@ class ApplicationDataAccessObject(object):
             if match:
                 matching_applications.append(application)
 
-        if order_by and order_by in ["id", "status"]:
+        if order_by and order_by in ["id", "status", "assessment_deadline"]:
             matching_applications = sorted(
                 matching_applications,
                 key=itemgetter(order_by),

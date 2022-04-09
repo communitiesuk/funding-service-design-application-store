@@ -1,12 +1,8 @@
-from flask_restx import Namespace
+"""
+Namespace for operations on single applications
+"""
 
-"""
-Namespace acts as part of an api (with the same methods as api)
-"""
+from flask_restx import Namespace
 
 
 application_ns = Namespace("application", path="", description="single application operations")
-
-
-
-

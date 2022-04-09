@@ -82,22 +82,28 @@ application_status = application_ns.model(
             description="The id of the application"
         ),
         "status": fields.String(
-            description="The status of the application"
+            description="The status of the application",
+            example="NOT_STARTED"
         ),
         "fund_id": fields.String(
-            description="The id of the fund"
+            description="The id of the fund",
+            example="funding-service-design"
         ),
         "fund_name": fields.String(
-            description="The name of the fund"
+            description="The name of the fund",
+            example="Funding Service Design"
         ),
         "round_id": fields.String(
-            description="The id of the round"
+            description="The id of the round",
+            example="spring"
         ),
         "date_submitted": fields.String(
-            description="The datetime the application was submitted"
+            description="The datetime the application was submitted",
+            example="2022-12-25 00:00:00"
         ),
         "assessment_deadline": fields.String(
-            description="The assessment deadline for this application's round"
+            description="The assessment deadline for this application's round",
+            example="2022-12-25 00:00:00"
         ),
         "questions": fields.List(
             fields.Nested(

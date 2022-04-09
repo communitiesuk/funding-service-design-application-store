@@ -40,7 +40,12 @@ question_status = application_ns.model(
         "question": fields.String(
             required=True,
             description="The questions and corresponding answers",
+            example="About you"
         ),
-        "status": fields.String(required=False, description="Status"),
+        "status": fields.String(
+            required=False,
+            description="Status",
+            example="COMPLETED"
+        ),
     },
 )

@@ -1,6 +1,5 @@
 import json
-from slugify import slugify
-from typing import List
+from deepdiff import DeepDiff
 
 
 def expected_data_within_get_response(
@@ -19,22 +18,10 @@ def expected_data_within_get_response(
     response = test_client.get(endpoint, follow_redirects=True)
     response_data = json.loads(response.data)
 
-    if isinstance(expected_data, List):
-        for idx, data in enumerate(expected_data):
-            if isinstance(data, dict):
-                if isinstance(response_data, List):
-                    for key, value in response_data[idx].items():
-                        assert value == data[key]
-                elif isinstance(response_data, dict):
-                    raise Exception("Expecting response json to be a list")
-            else:
-                assert response_data[idx] == expected_data[idx]
-    elif isinstance(expected_data, dict):
-        if isinstance(response_data, dict):
-            for key, value in response_data.items():
-                assert value == expected_data[key]
-        else:
-            raise Exception("Expecting response json to be a dict")
+    diff = DeepDiff(expected_data, response_data)
+
+    error_message = "Expected data does not match response: " + str(diff)
+    assert diff == {}, error_message
 
 
 def put_response_return_200(test_client, endpoint):

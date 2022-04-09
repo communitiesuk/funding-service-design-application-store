@@ -1,8 +1,3 @@
-"""
-Data Access Object
-A data access object (DAO) is a pattern that provides an abstract interface
-to some type of database or other persistence mechanism.
-"""
 import datetime
 import uuid
 
@@ -12,22 +7,20 @@ from dateutil import parser as date_parser
 from dateutil.tz import UTC
 from slugify import slugify
 from operator import itemgetter
-from distutils.util import strtobool
 from external_data.data import get_round
 
 
 class ApplicationDataAccessObject(object):
     """
-    return all funds (replace the date object with a string to send)
+    A data interface to our currently in-memory data store
     """
-
     def __init__(self):
-        self.applications: dict = initial_application_store_state
+        self._applications: dict = initial_application_store_state
 
     @property
     def applications_index(self) -> dict:
         applications = {}
-        for application_id, application in self.applications.items():
+        for application_id, application in self._applications.items():
             application_summary = {
                 "id": application.get("id"),
                 "status": application.get("status"),
@@ -43,11 +36,11 @@ class ApplicationDataAccessObject(object):
     def create_application(self, application):
         fund_id = slugify(application["name"])
         application_id, new_application = self.set_attributes(fund_id, application)
-        self.applications.update({application_id: new_application})
+        self._applications.update({application_id: new_application})
         return new_application
 
     def get_application(self, application_id: str):
-        return self.applications.get(application_id)
+        return self._applications.get(application_id)
 
     @staticmethod
     def set_attributes(fund_id: str, application_raw: dict) -> tuple:
@@ -82,7 +75,7 @@ class ApplicationDataAccessObject(object):
         application_summary = self.applications_index.get(application_id)
         if application_summary:
             questions = []
-            for question in self.applications[application_id].get("questions"):
+            for question in self._applications[application_id].get("questions"):
                 questions.append({
                     "question": question.get("question"),
                     "status": question.get("status"),
@@ -103,7 +96,7 @@ class ApplicationDataAccessObject(object):
 
         Returns: status confirmation dict or False.
         """
-        application = self.applications.get(application_id)
+        application = self._applications.get(application_id)
         for question in application["questions"]:
             if question["question"] == question_name:
                 question["status"] = new_status
@@ -121,13 +114,7 @@ class ApplicationDataAccessObject(object):
         status_only = params.get("status_only")
         id_contains = params.get("id_contains")
         order_by = params.get("order_by", "id")
-        order_rev = params.get("order_rev") or False
-        try:
-            order_rev = strtobool(order_rev)
-        except ValueError:
-            pass
-        except AttributeError:
-            pass
+        order_rev = params.get("order_rev") == "1"
 
         for application_id, application in self.applications_index.items():
             match = True

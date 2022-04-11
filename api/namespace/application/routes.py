@@ -15,7 +15,7 @@ class ApplicationCreate(Resource):
     """
 
     @application_ns.doc("create_application")
-    @application_ns.expect(application_inbound, validate=True)
+    @application_ns.expect(application_inbound)
     @application_ns.marshal_with(application_full, code=201)
     def post(self):
         return APPLICATIONS.create_application(application_ns.payload), 201

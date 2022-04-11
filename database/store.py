@@ -25,7 +25,6 @@ class ApplicationDataAccessObject(object):
                 "id": application.get("id"),
                 "status": application.get("status"),
                 "fund_id": application.get("fund_id"),
-                "fund_name": application.get("fund_name"),
                 "round_id": application.get("round_id"),
                 "date_submitted": application.get("date_submitted"),
                 "assessment_deadline": application.get("assessment_deadline"),
@@ -45,6 +44,8 @@ class ApplicationDataAccessObject(object):
     @staticmethod
     def set_attributes(fund_id: str, application_raw: dict) -> tuple:
         application = application_raw
+        # Remove name property (replace with fund_id)
+        application.pop("name")
         date_submitted = datetime.datetime.now(
             datetime.timezone.utc
         )
@@ -54,8 +55,6 @@ class ApplicationDataAccessObject(object):
         application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler
         application["status"] = "NOT_STARTED"
         application["fund_id"] = fund_id
-        # Rename key "name" to "fund_name"
-        application["fund_name"] = application.pop("name")
         application["round_id"] = fund_round.identifier
         application["date_submitted"] = date_submitted
         application["assessment_deadline"] = fund_round.assessment_deadline

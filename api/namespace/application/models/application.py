@@ -44,10 +44,6 @@ application_full = application_ns.model(
             description="The id of the fund",
             example="funding-service-design"
         ),
-        "fund_name": fields.String(
-            description="The name of the fund",
-            example="Funding Service Design"
-        ),
         "round_id": fields.String(
             description="The id of the round",
             example="spring"
@@ -88,10 +84,6 @@ application_status = application_ns.model(
         "fund_id": fields.String(
             description="The id of the fund",
             example="funding-service-design"
-        ),
-        "fund_name": fields.String(
-            description="The name of the fund",
-            example="Funding Service Design"
         ),
         "round_id": fields.String(
             description="The id of the round",

@@ -44,7 +44,6 @@ def test_get_applications_by_status_completed(flask_test_client):
             "id": "uuidv4",
             "status": "COMPLETED",
             "fund_id": "test-fund-name",
-            "fund_name": "Test Fund Name",
             "round_id": "spring",
             "date_submitted": "2021-12-24 00:00:00",
             "assessment_deadline": "2022-08-28 00:00:00"
@@ -96,7 +95,6 @@ def test_get_applications_by_id_contains(flask_test_client):
                 "id": "uuidv4-2",
                 "status": "NOT_STARTED",
                 "fund_id": "test-fund-name",
-                "fund_name": "Test Fund Name",
                 "round_id": "spring",
                 "date_submitted": "2022-12-25 00:00:00",
                 "assessment_deadline": "2022-08-28 00:00:00"
@@ -152,7 +150,6 @@ def test_get_application_by_application_id(flask_test_client):
         "id": "uuidv4",
         "status": "COMPLETED",
         "fund_id": "test-fund-name",
-        "fund_name": "Test Fund Name",
         "round_id": "spring",
         "date_submitted": "2021-12-24 00:00:00",
         "assessment_deadline": "2022-08-28 00:00:00",
@@ -219,7 +216,6 @@ def test_get_fund_applications_by_time_period(flask_test_client):
             "id": "uuidv4-2",
             "status": "NOT_STARTED",
             "fund_id": "test-fund-name",
-            "fund_name": "Test Fund Name",
             "round_id": "spring",
             "date_submitted": "2022-12-25 00:00:00",
             "assessment_deadline": "2022-08-28 00:00:00",

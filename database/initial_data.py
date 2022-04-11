@@ -1,65 +1,75 @@
 from dateutil import parser as date_parser
 
-initial_fund_store_state = {
-    "slugified_test_fund_name": [
-        {
-            "id": "uuidv4",
-            "name": "Test Fund Name",
-            "status": "COMPLETED",
-            "assessment_deadline": date_parser.parse("2022-08-28 00:00:00"),
-            "questions": [
-                {
-                    "question": "Q1",
-                    "status": "NOT STARTED",
-                    "fields": [
-                        {
-                            "key": "applicant_name",
-                            "title": "Applicant name",
-                            "type": "text",
-                            "answer": "Applicant",
-                        }
-                    ],
-                },
-                {
-                    "question": "Q2",
-                    "status": "COMPLETED",
-                    "fields": [
-                        {
-                            "key": "applicant_name",
-                            "title": "Applicant name",
-                            "type": "text",
-                            "answer": "Applicant",
-                        }
-                    ],
-                },
-            ],
-            "date_submitted": date_parser.parse("2021-12-24 00:00:00"),
-        },
-        {
-            "id": "uuidv4-2",
-            "name": "Test Fund Name",
-            "status": "NOT_STARTED",
-            "assessment_deadline": date_parser.parse("2022-08-28 00:00:00"),
-            "questions": [
-                {
-                    "question": "Q1",
-                    "status": "NOT STARTED",
-                    "fields": [
-                        {
-                            "key": "applicant_name",
-                            "title": "Applicant name",
-                            "type": "text",
-                            "answer": "Applicant",
-                        }
-                    ],
-                }
-            ],
-            "date_submitted": date_parser.parse("2022-12-25 00:00:00"),
-        },
-    ]
+initial_application_store_state = {
+    "uuidv4": {
+        "id": "uuidv4",
+        "status": "COMPLETED",
+        "fund_id": "test-fund-name",
+        "fund_name": "Test Fund Name",
+        "round_id": "spring",
+        "date_submitted": date_parser.parse("2021-12-24 00:00:00"),
+        "assessment_deadline": date_parser.parse("2022-08-28 00:00:00"),
+        "questions": [
+            {
+                "question": "Q1",
+                "status": "NOT STARTED",
+                "fields": [
+                    {
+                        "key": "applicant_name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Applicant",
+                    }
+                ],
+                "category": "",
+                "index": 0
+            },
+            {
+                "question": "Q2",
+                "status": "COMPLETED",
+                "fields": [
+                    {
+                        "key": "applicant_name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Applicant",
+                    }
+                ],
+                "category": "",
+                "index": 0
+            },
+        ],
+        "metadata": {"paymentSkipped": "false"}
+    },
+    "uuidv4-2": {
+        "id": "uuidv4-2",
+        "status": "NOT_STARTED",
+        "fund_id": "test-fund-name",
+        "fund_name": "Test Fund Name",
+        "round_id": "spring",
+        "date_submitted": date_parser.parse("2022-12-25 00:00:00"),
+        "assessment_deadline": date_parser.parse("2022-08-28 00:00:00"),
+        "questions": [
+            {
+                "question": "Q1",
+                "status": "NOT STARTED",
+                "fields": [
+                    {
+                        "key": "applicant_name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Applicant",
+                    }
+                ],
+                "category": "",
+                "index": 0
+            }
+        ],
+        "metadata": {"paymentSkipped": "false"}
+    }
 }
 
-initial_fund_store_application = {
+initial_application = {
     "name": "Funding Service Design",
     "questions": [
         {

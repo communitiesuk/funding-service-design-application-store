@@ -1,4 +1,5 @@
 import json
+from deepdiff import DeepDiff
 
 
 def expected_data_within_get_response(
@@ -16,9 +17,11 @@ def expected_data_within_get_response(
     """
     response = test_client.get(endpoint, follow_redirects=True)
     response_data = json.loads(response.data)
-    print(endpoint)
-    print(response_data)
-    assert response_data == expected_data, response_data
+
+    diff = DeepDiff(expected_data, response_data)
+
+    error_message = "Expected data does not match response: " + str(diff)
+    assert diff == {}, error_message
 
 
 def put_response_return_200(test_client, endpoint):
@@ -36,48 +39,56 @@ def put_response_return_200(test_client, endpoint):
     assert response.status_code == 200
 
 
-def post_data(flask_test_client, endpoint: str, post_data: dict):
+def post_data(test_client, endpoint: str, data: dict):
     """Given an endpoint and data, check to see if response contains expected data
 
     Args:
         test_client: A flask test client
         endpoint (str): The POST request endpoint
-        post_data (dict): The content to post to the endpoint provided
+        data (dict): The content to post to the endpoint provided
     """
 
-    flask_test_client.post(
-        endpoint, data=json.dumps(post_data), content_type="application/json"
+    response = test_client.post(
+        endpoint, data=json.dumps(data),
+        content_type="application/json",
+        follow_redirects=True
     )
+    print(response.data)
 
 
-def put_data(flask_test_client, endpoint: str, post_data: dict):
+def put_data(test_client, endpoint: str, data: dict):
     """Given an endpoint and data, check to see if response contains expected data
 
     Args:
         test_client: A flask test client
         endpoint (str): The POST request endpoint
-        post_data (dict): The content to post to the endpoint provided
+        data (dict): The content to post to the endpoint provided
     """
 
-    flask_test_client.put(
-        endpoint, data=json.dumps(post_data), content_type="application/json"
+    test_client.put(
+        endpoint,
+        data=json.dumps(post_data),
+        content_type="application/json",
+        follow_redirects=True
     )
 
 
 def count_fund_applications(
-    test_client, fund_name: str, expected_application_count
+    test_client, fund_id: str, expected_application_count
 ):
     """
-    Given a fund_name, check the number of applications stored within
+    Given a fund_id, check the number of applications for it
 
     Args:
         test_client: A flask test client
-        fund_name (str): The name of the fund to count applications
+        fund_id (str): The id of the fund to count applications
         expected_application_count (int):
-        The expected number of applications within the fund
+        The expected number of applications for the fund
 
     """
-
-    response = test_client.get(f"/fund/{fund_name}", follow_redirects=True)
+    fund_applications_endpoint = f"/applications/search?fund_id={fund_id}"
+    response = test_client.get(fund_applications_endpoint, follow_redirects=True)
     response_data = json.loads(response.data)
-    assert len(response_data) == expected_application_count
+    error_message = "Response from " + fund_applications_endpoint + " found " + str(len(response_data)) \
+                    + " items, but expected " + str(expected_application_count)
+    assert len(response_data) == expected_application_count, error_message

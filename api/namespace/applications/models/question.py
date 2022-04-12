@@ -1,8 +1,8 @@
-from api.namespace.application.application_ns import application_ns
+from api.namespace.applications.applications_ns import applications_ns
 from flask_restx import fields
-from api.namespace.application.models.field import field
+from api.namespace.applications.models.field import field
 
-question = application_ns.model(
+question = applications_ns.model(
     "question",
     {
         "question": fields.String(
@@ -34,7 +34,7 @@ question = application_ns.model(
     },
 )
 
-question_status = application_ns.model(
+question_status = applications_ns.model(
     "question_status",
     {
         "question": fields.String(

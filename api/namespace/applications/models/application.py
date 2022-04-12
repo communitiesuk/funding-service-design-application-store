@@ -1,11 +1,11 @@
-from api.namespace.application.application_ns import application_ns
-from api.namespace.application.models.question import question
-from api.namespace.application.models.question import question_status
-from api.namespace.application.models.metadata import metadata
+from api.namespace.applications.applications_ns import applications_ns
+from api.namespace.applications.models.question import question
+from api.namespace.applications.models.question import question_status
+from api.namespace.applications.models.metadata import metadata
 
 from flask_restx import fields
 
-application_inbound = application_ns.model(
+application_inbound = applications_ns.model(
     "application_inbound",
     {
         "name": fields.String(
@@ -30,7 +30,7 @@ application_inbound = application_ns.model(
     },
 )
 
-application_full = application_ns.model(
+application_full = applications_ns.model(
     "application_full",
     {
         "id": fields.String(
@@ -71,7 +71,7 @@ application_full = application_ns.model(
     },
 )
 
-application_status = application_ns.model(
+application_status = applications_ns.model(
     "application_status",
     {
         "id": fields.String(

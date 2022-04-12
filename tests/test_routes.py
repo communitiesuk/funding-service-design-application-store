@@ -142,7 +142,7 @@ def test_get_applications_by_id_contains(flask_test_client):
 def test_get_application_by_application_id(flask_test_client):
     """
     GIVEN We have a functioning Application Store API
-    WHEN a GET /application/<application_id> request is sent
+    WHEN a GET /applications/<application_id> request is sent
     THEN the response should contain the application object
     """
 
@@ -190,16 +190,16 @@ def test_get_application_by_application_id(flask_test_client):
         "name": "Test Fund Name",
         "questions": [{"question": "A1"}],
     }
-    post_data(flask_test_client, "/application", application_data)
+    post_data(flask_test_client, "/applications", application_data)
 
     i = 0
     while i < 200:
-        post_data(flask_test_client, "/application", application_data)
+        post_data(flask_test_client, "/applications", application_data)
         i += 1
 
     expected_data_within_get_response(
         flask_test_client,
-        "/application/uuidv4",
+        "/applications/uuidv4",
         expected_data,
     )
 
@@ -239,7 +239,7 @@ def test_post_application_is_successful(flask_test_client):
 
     # Post one Fund A application and check length
     application_data_a1 = {"name": "Fund A", "questions": [{"question": "A1"}]}
-    post_data(flask_test_client, "/application", application_data_a1)
+    post_data(flask_test_client, "/applications", application_data_a1)
 
     expected_length_fund_a = 1
     count_fund_applications(
@@ -248,7 +248,7 @@ def test_post_application_is_successful(flask_test_client):
 
     # Post first Fund B application and check length
     application_data_b1 = {"name": "Fund B", "questions": [{"question": "A2"}]}
-    post_data(flask_test_client, "/application", application_data_b1)
+    post_data(flask_test_client, "/applications", application_data_b1)
 
     expected_length_fund_b = 1
     count_fund_applications(
@@ -257,7 +257,7 @@ def test_post_application_is_successful(flask_test_client):
 
     # Post second Fund B application and check length
     application_data_b2 = {"name": "Fund B", "questions": [{"question": "A3"}]}
-    post_data(flask_test_client, "/application", application_data_b2)
+    post_data(flask_test_client, "/applications", application_data_b2)
 
     expected_length_fund_b = 2
     count_fund_applications(

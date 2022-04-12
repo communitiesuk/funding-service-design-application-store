@@ -1,8 +1,8 @@
-from api.namespace.application.application_ns import application_ns
+from api.namespace.applications.applications_ns import applications_ns
 from flask_restx import fields
 
 
-field = application_ns.model(
+field = applications_ns.model(
     "field",
     {
         "key": fields.String(

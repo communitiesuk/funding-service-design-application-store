@@ -1,15 +1,15 @@
 import json
 import os
+from datetime import datetime
 from typing import List
 
-import requests
-from datetime import datetime
 import pytz
-from external_data.models.fund import Fund
-from external_data.models.round import Round
+import requests
 from config import FLASK_ROOT
 from config import FUND_STORE_API_HOST
 from config import ROUND_STORE_API_HOST
+from external_data.models.fund import Fund
+from external_data.models.round import Round
 
 # Fund Store Endpoints
 FUNDS_ENDPOINT = "/funds/"
@@ -77,7 +77,9 @@ def get_rounds(fund_id: str) -> Fund | List:
     return rounds
 
 
-def get_round(fund_id: str, round_id: str = None, date_submitted: datetime = None) -> Round | None:
+def get_round(
+    fund_id: str, round_id: str = None, date_submitted: datetime = None
+) -> Round | None:
     """
     Gets round from round store api using round_id if given.
     If no round_id is provided, attempts to find the correct round
@@ -92,17 +94,26 @@ def get_round(fund_id: str, round_id: str = None, date_submitted: datetime = Non
         if round_response and "round_id" in round_response:
             fund_round = Round.from_json(round_response)
         if not isinstance(fund_round, Round):
-            raise Exception(f"Round with id '{round_id}' for fund {fund_id} could not be found")
+            raise Exception(
+                f"Round with id '{round_id}' for fund {fund_id} could not be"
+                " found"
+            )
 
     elif date_submitted:
         rounds = get_rounds(fund_id)
         if rounds:
             for listed_round in rounds:
-                round_opens = pytz.utc.localize(datetime.fromisoformat(listed_round.opens))
-                round_deadline = pytz.utc.localize(datetime.fromisoformat(listed_round.deadline))
+                round_opens = pytz.utc.localize(
+                    datetime.fromisoformat(listed_round.opens)
+                )
+                round_deadline = pytz.utc.localize(
+                    datetime.fromisoformat(listed_round.deadline)
+                )
                 if round_opens < date_submitted < round_deadline:
                     fund_round = listed_round
         if not isinstance(fund_round, Round):
-            raise Exception(f"Active round for application submitted at"
-                            f" {str(date_submitted)} fund {fund_id} could not be found")
+            raise Exception(
+                "Active round for application submitted at"
+                f" {str(date_submitted)} fund {fund_id} could not be found"
+            )
     return fund_round

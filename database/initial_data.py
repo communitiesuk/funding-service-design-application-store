@@ -22,7 +22,7 @@ initial_application_store_state = {
                     }
                 ],
                 "category": "",
-                "index": 0
+                "index": 0,
             },
             {
                 "question": "Q2",
@@ -36,10 +36,10 @@ initial_application_store_state = {
                     }
                 ],
                 "category": "",
-                "index": 0
+                "index": 0,
             },
         ],
-        "metadata": {"paymentSkipped": "false"}
+        "metadata": {"paymentSkipped": "false"},
     },
     "uuidv4-2": {
         "id": "uuidv4-2",
@@ -62,11 +62,11 @@ initial_application_store_state = {
                     }
                 ],
                 "category": "",
-                "index": 0
+                "index": 0,
             }
         ],
-        "metadata": {"paymentSkipped": "false"}
-    }
+        "metadata": {"paymentSkipped": "false"},
+    },
 }
 
 initial_application = {

@@ -28,7 +28,7 @@ def test_update_status_response(flask_test_client):
                 "question": "Q2",
                 "status": "COMPLETED",
             },
-        ]
+        ],
     }
     expected_data_within_get_response(
         flask_test_client,
@@ -53,11 +53,12 @@ def test_update_status_response(flask_test_client):
                 "question": "Q2",
                 "status": "COMPLETED",
             },
-        ]
+        ],
     }
     put_response_return_200(
         flask_test_client,
-        "/applications/uuidv4/status" + "?new_status=IN PROGRESS&question_name=Q1",
+        "/applications/uuidv4/status"
+        + "?new_status=IN PROGRESS&question_name=Q1",
     )
     expected_data_within_get_response(
         flask_test_client,
@@ -82,11 +83,12 @@ def test_update_status_response(flask_test_client):
                 "question": "Q2",
                 "status": "COMPLETED",
             },
-        ]
+        ],
     }
     put_response_return_200(
         flask_test_client,
-        "/applications/uuidv4/status" + "?new_status=COMPLETED&question_name=Q1",
+        "/applications/uuidv4/status"
+        + "?new_status=COMPLETED&question_name=Q1",
     )
     expected_data_within_get_response(
         flask_test_client,

@@ -1,19 +1,20 @@
 import datetime
 import uuid
+from operator import itemgetter
 
 from database.initial_data import initial_application
 from database.initial_data import initial_application_store_state
 from dateutil import parser as date_parser
 from dateutil.tz import UTC
-from slugify import slugify
-from operator import itemgetter
 from external_data.data import get_round
+from slugify import slugify
 
 
 class ApplicationDataAccessObject(object):
     """
     A data interface to our currently in-memory data store
     """
+
     def __init__(self):
         self._applications: dict = initial_application_store_state
 
@@ -29,12 +30,14 @@ class ApplicationDataAccessObject(object):
                 "date_submitted": application.get("date_submitted"),
                 "assessment_deadline": application.get("assessment_deadline"),
             }
-            applications.update({application.get("id") : application_summary})
+            applications.update({application.get("id"): application_summary})
         return applications
 
     def create_application(self, application):
         fund_id = slugify(application["name"])
-        application_id, new_application = self.set_attributes(fund_id, application)
+        application_id, new_application = self.set_attributes(
+            fund_id, application
+        )
         self._applications.update({application_id: new_application})
         return new_application
 
@@ -46,9 +49,7 @@ class ApplicationDataAccessObject(object):
         application = application_raw
         # Remove name property (replace with fund_id)
         application.pop("name")
-        date_submitted = datetime.datetime.now(
-            datetime.timezone.utc
-        )
+        date_submitted = datetime.datetime.now(datetime.timezone.utc)
         round_id = application_raw.get("round_id")  # Get round_id if set
         fund_round = get_round(fund_id, round_id, date_submitted)
 
@@ -74,11 +75,15 @@ class ApplicationDataAccessObject(object):
         application_summary = self.applications_index.get(application_id)
         if application_summary:
             questions = []
-            for question in self._applications[application_id].get("questions"):
-                questions.append({
-                    "question": question.get("question"),
-                    "status": question.get("status"),
-                })
+            for question in self._applications[application_id].get(
+                "questions"
+            ):
+                questions.append(
+                    {
+                        "question": question.get("question"),
+                        "status": question.get("status"),
+                    }
+                )
             application_summary.update({"questions": questions})
             return application_summary
 
@@ -119,8 +124,9 @@ class ApplicationDataAccessObject(object):
             match = True
 
             # Exclude results if given parameters are not a match
-            if status_only and \
-                    status_only.replace(" ", "_").upper() != application.get("status"):
+            if status_only and status_only.replace(
+                " ", "_"
+            ).upper() != application.get("status"):
                 match = False
 
             if id_contains and id_contains not in application.get("id"):
@@ -146,7 +152,8 @@ class ApplicationDataAccessObject(object):
             matching_applications = sorted(
                 matching_applications,
                 key=itemgetter(order_by),
-                reverse=order_rev)
+                reverse=order_rev,
+            )
 
         return matching_applications
 

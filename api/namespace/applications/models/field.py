@@ -8,22 +8,18 @@ field = applications_ns.model(
         "key": fields.String(
             required=True,
             description="Field key or name attribute",
-            example="applicant_name"
+            example="applicant_name",
         ),
         "title": fields.String(
-            required=True,
-            description="Field title",
-            example="Applicant name"
+            required=True, description="Field title", example="Applicant name"
         ),
         "type": fields.String(
-            required=True,
-            description="Field type",
-            example="text"
+            required=True, description="Field type", example="text"
         ),
         "answer": fields.String(
             required=True,
             description="Field answer or value",
-            example="Applicant"
+            example="Applicant",
         ),
     },
 )

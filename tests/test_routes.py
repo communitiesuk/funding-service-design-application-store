@@ -1,7 +1,8 @@
+import time
+
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_get_response
 from tests.helpers import post_data
-import time
 
 
 # TODO: Not possible to test all applications currently as unpredictable UID in default data
@@ -32,6 +33,7 @@ import time
 #         expected_data,
 #     )
 
+
 def test_get_applications_by_status_completed(flask_test_client):
     """
     GIVEN We have a functioning Application Store API
@@ -46,14 +48,13 @@ def test_get_applications_by_status_completed(flask_test_client):
             "fund_id": "test-fund-name",
             "round_id": "spring",
             "date_submitted": "2021-12-24 00:00:00",
-            "assessment_deadline": "2022-08-28 00:00:00"
+            "assessment_deadline": "2022-08-28 00:00:00",
         }
     ]
 
     expected_data_within_get_response(
         flask_test_client,
-        "/applications/search"
-        "?status_only=completed",
+        "/applications/search?status_only=completed",
         expected_data,
     )
 
@@ -84,29 +85,28 @@ def test_get_applications_by_status_completed(flask_test_client):
 
 
 def test_get_applications_by_id_contains(flask_test_client):
-        """
-        GIVEN We have a functioning Application Store API
-        WHEN a request for applications whose id's contain a given string
-        THEN the response should only contain the applications that
-        have ids that contain that string
-        """
-        expected_data = [
-            {
-                "id": "uuidv4-2",
-                "status": "NOT_STARTED",
-                "fund_id": "test-fund-name",
-                "round_id": "spring",
-                "date_submitted": "2022-12-25 00:00:00",
-                "assessment_deadline": "2022-08-28 00:00:00"
-            }
-        ]
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a request for applications whose id's contain a given string
+    THEN the response should only contain the applications that
+    have ids that contain that string
+    """
+    expected_data = [
+        {
+            "id": "uuidv4-2",
+            "status": "NOT_STARTED",
+            "fund_id": "test-fund-name",
+            "round_id": "spring",
+            "date_submitted": "2022-12-25 00:00:00",
+            "assessment_deadline": "2022-08-28 00:00:00",
+        }
+    ]
 
-        expected_data_within_get_response(
-            flask_test_client,
-            "/applications/search"
-            "?id_contains=v4-2",
-            expected_data,
-        )
+    expected_data_within_get_response(
+        flask_test_client,
+        "/applications/search?id_contains=v4-2",
+        expected_data,
+    )
 
 
 # TODO: Not possible to test all applications currently as unpredictable UID in default data
@@ -166,7 +166,7 @@ def test_get_application_by_application_id(flask_test_client):
                     }
                 ],
                 "category": "",
-                "index": 0
+                "index": 0,
             },
             {
                 "question": "Q2",
@@ -180,10 +180,10 @@ def test_get_application_by_application_id(flask_test_client):
                     }
                 ],
                 "category": "",
-                "index": 0
+                "index": 0,
             },
         ],
-        "metadata": {"paymentSkipped": "false"}
+        "metadata": {"paymentSkipped": "false"},
     }
 
     application_data = {
@@ -263,7 +263,3 @@ def test_post_application_is_successful(flask_test_client):
     count_fund_applications(
         flask_test_client, "fund-b", expected_length_fund_b
     )
-
-
-
-

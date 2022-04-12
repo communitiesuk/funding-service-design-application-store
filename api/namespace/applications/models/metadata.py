@@ -6,7 +6,7 @@ metadata = applications_ns.model(
     {
         "paymentSkipped": fields.String(
             description="Shows payment process has been skipped",
-            example="false"
+            example="false",
         ),
     },
 )

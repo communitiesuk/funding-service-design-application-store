@@ -1,4 +1,5 @@
 import json
+
 from deepdiff import DeepDiff
 
 
@@ -49,9 +50,10 @@ def post_data(test_client, endpoint: str, data: dict):
     """
 
     response = test_client.post(
-        endpoint, data=json.dumps(data),
+        endpoint,
+        data=json.dumps(data),
         content_type="application/json",
-        follow_redirects=True
+        follow_redirects=True,
     )
     print(response.data)
 
@@ -69,7 +71,7 @@ def put_data(test_client, endpoint: str, data: dict):
         endpoint,
         data=json.dumps(post_data),
         content_type="application/json",
-        follow_redirects=True
+        follow_redirects=True,
     )
 
 
@@ -87,8 +89,16 @@ def count_fund_applications(
 
     """
     fund_applications_endpoint = f"/applications/search?fund_id={fund_id}"
-    response = test_client.get(fund_applications_endpoint, follow_redirects=True)
+    response = test_client.get(
+        fund_applications_endpoint, follow_redirects=True
+    )
     response_data = json.loads(response.data)
-    error_message = "Response from " + fund_applications_endpoint + " found " + str(len(response_data)) \
-                    + " items, but expected " + str(expected_application_count)
+    error_message = (
+        "Response from "
+        + fund_applications_endpoint
+        + " found "
+        + str(len(response_data))
+        + " items, but expected "
+        + str(expected_application_count)
+    )
     assert len(response_data) == expected_application_count, error_message

@@ -1,6 +1,6 @@
 from api.namespace.applications.applications_ns import applications_ns
-from flask_restx import fields
 from api.namespace.applications.models.field import field
+from flask_restx import fields
 
 question = applications_ns.model(
     "question",
@@ -8,12 +8,10 @@ question = applications_ns.model(
         "question": fields.String(
             required=True,
             description="The questions and corresponding answers",
-            example="About you"
+            example="About you",
         ),
         "status": fields.String(
-            required=False,
-            description="Status",
-            example="COMPLETED"
+            required=False, description="Status", example="COMPLETED"
         ),
         "fields": fields.List(
             fields.Nested(
@@ -22,14 +20,10 @@ question = applications_ns.model(
             )
         ),
         "category": fields.String(
-            required=False,
-            description="Category",
-            example="abcxyz"
+            required=False, description="Category", example="abcxyz"
         ),
         "index": fields.Integer(
-            required=False,
-            description="Index",
-            example=0
+            required=False, description="Index", example=0
         ),
     },
 )
@@ -40,12 +34,10 @@ question_status = applications_ns.model(
         "question": fields.String(
             required=True,
             description="The questions and corresponding answers",
-            example="About you"
+            example="About you",
         ),
         "status": fields.String(
-            required=False,
-            description="Status",
-            example="COMPLETED"
+            required=False, description="Status", example="COMPLETED"
         ),
     },
 )

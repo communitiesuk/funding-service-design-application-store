@@ -16,8 +16,8 @@ FUNDS_ENDPOINT = "/funds/"
 FUND_ENDPOINT = "/funds/{fund_id}"
 
 # Round Store Endpoints
-ROUNDS_ENDPOINT = "/fund/{fund_id}"
-ROUND_ENDPOINT = "/fund/{fund_id}/round/{round_id}"
+ROUNDS_ENDPOINT = "/funds/{fund_id}/rounds"
+ROUND_ENDPOINT = "/funds/{fund_id}/rounds/{round_id}"
 
 
 def get_data(endpoint: str):

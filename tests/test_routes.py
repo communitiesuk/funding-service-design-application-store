@@ -27,10 +27,12 @@ from tests.helpers import post_data
 #         }
 #     ]
 #
+#     exclude_regex_paths = r"root\[\d+\]\['id'\]"
 #     expected_data_within_get_response(
 #         flask_test_client,
-#         "/search",
+#         "/applications",
 #         expected_data,
+#         exclude_regex_paths=exclude_regex_paths
 #     )
 
 
@@ -54,10 +56,9 @@ def test_get_applications_by_status_completed(flask_test_client):
 
     expected_data_within_get_response(
         flask_test_client,
-        "/applications/search?status_only=completed",
+        "/applications?status_only=completed",
         expected_data,
     )
-
 
 # TODO: Not possible to test all applications currently as unpredictable UID in default data
 # def test_search_endpoint_get_applications_by_status(flask_test_client):
@@ -76,11 +77,13 @@ def test_get_applications_by_status_completed(flask_test_client):
 #         }
 #     ]
 #
+#     exclude_regex_paths = r"root\[\d+\]\['id'\]"
 #     expected_data_within_get_response(
 #         flask_test_client,
-#         "/search"
+#         "/applications"
 #         "?status_only=not%20started",
 #         expected_data,
+#         exclude_regex_paths=exclude_regex_paths
 #     )
 
 
@@ -104,7 +107,7 @@ def test_get_applications_by_id_contains(flask_test_client):
 
     expected_data_within_get_response(
         flask_test_client,
-        "/applications/search?id_contains=v4-2",
+        "/applications?id_contains=v4-2",
         expected_data,
     )
 
@@ -131,11 +134,13 @@ def test_get_applications_by_id_contains(flask_test_client):
 #         }
 #     ]
 #
+#     exclude_regex_paths = r"root\[\d+\]\['id'\]"
 #     expected_data_within_get_response(
 #         flask_test_client,
-#         "/search"
+#         "/applications"
 #         "?order_by=id&order_rev=1",
 #         expected_data,
+#         exclude_regex_paths=exclude_regex_paths
 #     )
 
 
@@ -224,7 +229,7 @@ def test_get_fund_applications_by_time_period(flask_test_client):
 
     expected_data_within_get_response(
         flask_test_client,
-        "/applications/search"
+        "/applications"
         "?fund_id=test-fund-name&datetime_start=2022-01-01&datetime_end=2022-12-28",
         expected_data,
     )
@@ -237,29 +242,20 @@ def test_post_application_is_successful(flask_test_client):
     THEN the application stores these applications within the correct fund
     """
 
-    # Post one Fund A application and check length
-    application_data_a1 = {"name": "Fund A", "questions": [{"question": "A1"}]}
+    # Post one Funding Service Design application and check length
+    application_data_a1 = {"name": "Funding Service Design", "questions": [{"question": "A1"}]}
     post_data(flask_test_client, "/applications", application_data_a1)
 
-    expected_length_fund_a = 1
+    expected_length_first_post = 2
     count_fund_applications(
-        flask_test_client, "fund-a", expected_length_fund_a
-    )
-
-    # Post first Fund B application and check length
-    application_data_b1 = {"name": "Fund B", "questions": [{"question": "A2"}]}
-    post_data(flask_test_client, "/applications", application_data_b1)
-
-    expected_length_fund_b = 1
-    count_fund_applications(
-        flask_test_client, "fund-b", expected_length_fund_b
+        flask_test_client, "funding-service-design", expected_length_first_post
     )
 
     # Post second Fund B application and check length
-    application_data_b2 = {"name": "Fund B", "questions": [{"question": "A3"}]}
+    application_data_b2 = {"name": "Funding Service Design", "questions": [{"question": "A3"}]}
     post_data(flask_test_client, "/applications", application_data_b2)
 
-    expected_length_fund_b = 2
+    expected_length_second_post = 3
     count_fund_applications(
-        flask_test_client, "fund-b", expected_length_fund_b
+        flask_test_client, "funding-service-design", expected_length_second_post
     )

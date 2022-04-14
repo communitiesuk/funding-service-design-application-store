@@ -10,7 +10,7 @@ from flask_restx import reqparse
 from flask_restx import Resource
 
 
-@applications_ns.route("/search")
+@applications_ns.route("")
 class SearchApplications(Resource):
     """
     GET all relevant applications with endpoint '/search?{params}'

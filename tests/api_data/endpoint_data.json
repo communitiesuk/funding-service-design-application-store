@@ -11,7 +11,7 @@
     "fund_id": "funding-service-design",
     "fund_description": "An example fund for testing the funding service"
   },
-  "round_store/fund/fund-a": [
+  "round_store/funds/fund-a/rounds": [
     {
       "fund_id": "funding-a",
       "round_title": "Spring",
@@ -25,7 +25,7 @@
       "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
     }
   ],
-  "round_store/fund/fund-b": [
+  "round_store/funds/fund-b/rounds": [
     {
       "fund_id": "funding-a",
       "round_title": "Spring",
@@ -39,7 +39,7 @@
       "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
     }
   ],
-  "round_store/fund/funding-service-design": [
+  "round_store/funds/funding-service-design/rounds": [
     {
       "fund_id": "funding-service-design",
       "round_title": "Spring",
@@ -77,7 +77,7 @@
       "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
     }
   ],
-  "round_store/fund/funding-service-design/round/spring": {
+  "round_store/funds/funding-service-design/rounds/spring": {
     "fund_id": "funding-service-design",
     "round_title": "Spring",
     "round_id": "spring",
@@ -88,7 +88,7 @@
     "deadline": "2022-06-01T00:00:00",
     "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
   },
-  "round_store/fund/funding-service-design/round/summer": {
+  "round_store/funds/funding-service-design/rounds/summer": {
     "fund_id": "funding-service-design",
     "round_title": "Summer",
     "round_id": "summer",
@@ -99,7 +99,7 @@
     "deadline": "2022-08-31T00:00:00",
     "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
   },
-  "round_store/fund/funding-service-design/round/autumn": {
+  "round_store/funds/funding-service-design/rounds/autumn": {
     "fund_id": "funding-service-design",
     "round_title": "Autumn",
     "round_id": "autumn",

@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 from typing import List
-
+from termcolor import colored
 import pytz
 import requests
 from config import FLASK_ROOT
@@ -69,7 +69,7 @@ def get_fund(fund_id: str) -> Fund | None:
 def get_rounds(fund_id: str) -> Fund | List:
     endpoint = ROUND_STORE_API_HOST + ROUNDS_ENDPOINT.format(fund_id=fund_id)
     response = get_data(endpoint)
-    print(endpoint)
+    print(colored(endpoint, "green"))
     rounds = []
     if response and len(response) > 0:
         for round_data in response:

@@ -24,6 +24,7 @@ class ApplicationDataAccessObject(object):
         for application_id, application in self._applications.items():
             application_summary = {
                 "id": application.get("id"),
+                "account_id": application.get("account_id"),
                 "status": application.get("status"),
                 "fund_id": application.get("fund_id"),
                 "round_id": application.get("round_id"),
@@ -115,6 +116,7 @@ class ApplicationDataAccessObject(object):
         datetime_start = params.get("datetime_start")
         datetime_end = params.get("datetime_end")
         fund_id = params.get("fund_id")
+        account_id = params.get("account_id")
         status_only = params.get("status_only")
         id_contains = params.get("id_contains")
         order_by = params.get("order_by", "id")
@@ -133,6 +135,9 @@ class ApplicationDataAccessObject(object):
                 match = False
 
             if fund_id and fund_id != application.get("fund_id"):
+                match = False
+
+            if account_id and account_id != application.get("account_id"):
                 match = False
 
             if datetime_start:

@@ -5,7 +5,6 @@ from api.namespace.applications.models.application import application_status
 from api.namespace.applications.models.applications import applications_result
 from database.store import APPLICATIONS
 from flask import abort
-from flask_restx import fields
 from flask_restx import reqparse
 from flask_restx import Resource
 
@@ -22,6 +21,9 @@ class SearchApplications(Resource):
     )
     query_params_parser.add_argument(
         "fund_id", type=str, help="Application fund_id"
+    )
+    query_params_parser.add_argument(
+        "account_id", type=str, help="Application account_id"
     )
     query_params_parser.add_argument(
         "order_by", type=str, help="Order results by parameter"

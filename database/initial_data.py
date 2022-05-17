@@ -5,6 +5,7 @@ initial_application_store_state = {
         "id": "uuidv4",
         "status": "COMPLETED",
         "fund_id": "test-fund-name",
+        "account_id": "1",
         "fund_name": "Test Fund Name",
         "round_id": "spring",
         "date_submitted": date_parser.parse("2021-12-24 00:00:00"),
@@ -44,6 +45,7 @@ initial_application_store_state = {
     "uuidv4-2": {
         "id": "uuidv4-2",
         "status": "NOT_STARTED",
+        "account_id": "2",
         "fund_id": "test-fund-name",
         "fund_name": "Test Fund Name",
         "round_id": "spring",

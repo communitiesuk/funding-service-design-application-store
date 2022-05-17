@@ -11,7 +11,7 @@ from database.store import APPLICATIONS
 from flask import abort
 from flask_restx import reqparse
 from flask_restx import Resource
-
+from flask import request
 
 @applications_ns.route("/search")
 class SearchApplications(Resource):
@@ -59,6 +59,22 @@ class SearchApplications(Resource):
             "Access-Control-Allow-Credentials": True,
         }
         return APPLICATIONS.search_applications(args), 200, response_headers
+
+@applications_ns.route("/application/sections")
+class Section(Resource):
+
+    @applications_ns.doc("post_section")
+    def post(self):
+        request_json = request.json()
+        section_name = request_json["name"]
+        application_id = request_json["metadata"]["application_id"]
+
+        status = "NOT STARTED"
+        payload = request_json
+        section_dict = {"status" : status, "payload" : request_json, "name" : section_name}
+
+        updated_section = APPLICATIONS.post_section(application_id, section_name, section_dict)
+        return updated_section, 201
 
 
 @applications_ns.route("/application")

@@ -73,7 +73,7 @@ class ApplicationDataAccessObject(object):
             section_name
         ]
 
-    def post_section(self, application_id, section_name, new_json):
+    def put_post_section(self, application_id, section_name, new_json):
         self._macro_applications[application_id]["sections"][section_name].update(new_json)
         return self._macro_applications[application_id]["sections"][section_name]
 

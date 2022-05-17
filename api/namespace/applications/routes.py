@@ -6,7 +6,6 @@ from api.namespace.applications.models.application import application_full
 from api.namespace.applications.models.application import application_inbound
 from api.namespace.applications.models.application import application_status
 from api.namespace.applications.models.applications import applications_result
-from api.namespace.applications.models.macro import macro
 from database.store import APPLICATIONS
 from flask import abort
 from flask_restx import reqparse
@@ -70,10 +69,25 @@ class Section(Resource):
         application_id = request_json["metadata"]["application_id"]
 
         status = "NOT STARTED"
-        payload = request_json
+
         section_dict = {"status" : status, "payload" : request_json, "name" : section_name}
 
-        updated_section = APPLICATIONS.post_section(application_id, section_name, section_dict)
+        updated_section = APPLICATIONS.put_post_section(application_id, section_name, section_dict)
+
+        return updated_section, 201
+    
+    @applications_ns.doc("put_section")
+    def put(self):
+        request_json = request.json()
+        section_name = request_json["name"]
+        application_id = request_json["metadata"]["application_id"]
+
+        status = "IN PROGRESS"
+
+        section_dict = {"status" : status, "payload" : request_json, "name" : section_name}
+
+        updated_section = APPLICATIONS.put_post_section(application_id, section_name, section_dict)
+
         return updated_section, 201
 
 
@@ -158,7 +172,7 @@ class Application(Resource):
     def get(self, application_id):
         return APPLICATIONS.get_application(application_id), 200
 
-
+# TODO Do this
 @applications_ns.route("/<application_id>/status", methods=["GET", "PUT"])
 class ApplicationStatus(Resource):
     """

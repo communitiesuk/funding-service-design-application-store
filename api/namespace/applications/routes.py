@@ -1,11 +1,14 @@
+from dataclasses import dataclass
+from email import parser
+
 from api.namespace.applications.applications_ns import applications_ns
 from api.namespace.applications.models.application import application_full
 from api.namespace.applications.models.application import application_inbound
 from api.namespace.applications.models.application import application_status
 from api.namespace.applications.models.applications import applications_result
+from api.namespace.applications.models.macro import macro
 from database.store import APPLICATIONS
 from flask import abort
-from flask_restx import fields
 from flask_restx import reqparse
 from flask_restx import Resource
 
@@ -56,6 +59,63 @@ class SearchApplications(Resource):
             "Access-Control-Allow-Credentials": True,
         }
         return APPLICATIONS.search_applications(args), 200, response_headers
+
+
+@applications_ns.route("/application")
+class MacroApplication(Resource):
+
+    parser = reqparse.RequestParser()
+    parser.add_argument("account_id")
+    parser.add_argument("round_id")
+    parser.add_argument("fund_id")
+
+    @applications_ns.doc("post_application", parser=parser)
+    def post(self):
+        args = self.parser.parse_args()
+        account_id = args["account_id"]
+        round_id = args["round_id"]
+        fund_id = args["fund_id"]
+        macro_dict = APPLICATIONS.create_macro_application(
+            account_id=account_id, fund_id=fund_id, round_id=round_id
+        )
+        return macro_dict, 201
+
+    @applications_ns.doc("get_application", parser=parser)
+    def get(self):
+        args = self.parser.parse_args()
+        account_id = args["account_id"]
+        round_id = args["round_id"]
+        fund_id = args["fund_id"]
+        found_dicts = [
+            application_json
+            for application_json in APPLICATIONS._macro_applications.values()
+            if application_json["account_id"] == account_id
+            and application_json["round_id"] == round_id
+            and application_json["fund_id"] == fund_id
+        ]
+        return found_dicts, 200
+
+
+@applications_ns.route("/application/<application_id>/submit")
+class SubmitApplication(Resource):
+    @applications_ns.doc("submit_application")
+    def post(self, application_id):
+        try:
+            return_dict = APPLICATIONS.submit_macro_application(application_id)
+            return return_dict, 201
+        except KeyError:
+            return "", 404
+
+
+@applications_ns.route("/application/<application_id>")
+class GetApplication(Resource):
+    @applications_ns.doc("get_macro_application")
+    def get(self, application_id):
+        try:
+            return_dict = APPLICATIONS.get_macro_application(application_id)
+            return return_dict, 200
+        except KeyError:
+            return "", 404
 
 
 @applications_ns.route("", methods=["GET", "POST"])

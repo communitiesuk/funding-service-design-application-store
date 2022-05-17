@@ -17,6 +17,7 @@ class ApplicationDataAccessObject(object):
 
     def __init__(self):
         self._applications: dict = initial_application_store_state
+        self._macro_applications: dict = {}
 
     @property
     def applications_index(self) -> dict:
@@ -40,6 +41,41 @@ class ApplicationDataAccessObject(object):
         )
         self._applications.update({application_id: new_application})
         return new_application
+
+    def create_macro_application(self, account_id, fund_id, round_id):
+
+        macro_application_id = str(uuid.uuid4())
+
+        macro_application_dict = {
+            "application_id": macro_application_id,
+            "account_id": account_id,
+            "round_id": round_id,
+            "fund_id": fund_id,
+            "sections": [],
+            "submission_stamp": None,
+        }
+
+        self._macro_applications[macro_application_id] = macro_application_dict
+
+        return macro_application_dict
+
+    def get_macro_application(self, macro_id):
+        return self._macro_applications.get(macro_id)
+
+    def submit_macro_application(self, application_id):
+        self._macro_applications[application_id]["submission_stamp"] = str(
+            datetime.datetime.now(datetime.timezone.utc)
+        )
+        return self._macro_applications[application_id]
+
+    def get_section(self, application_id, section_name):
+        return self._macro_applications[application_id]["sections"][
+            section_name
+        ]
+
+    def post_section(self, application_id, section_name, new_json):
+        self._macro_applications[application_id]["sections"][section_name].update(new_json)
+        return self._macro_applications[application_id]["sections"][section_name]
 
     def get_application(self, application_id: str):
         return self._applications.get(application_id)

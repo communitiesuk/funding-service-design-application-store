@@ -1,11 +1,9 @@
-import time
-
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_get_response
 from tests.helpers import post_data
 
 
-# TODO: Not possible to test all applications currently as unpredictable UID in default data
+# TODO: Not possible to test all applications currently as unpredictable UID in default data # noqa: E501
 # def test_search_endpoint_get_all_applications(flask_test_client):
 #     """
 #     GIVEN We have a functioning Application Store API
@@ -59,7 +57,32 @@ def test_get_applications_by_status_completed(flask_test_client):
     )
 
 
-# TODO: Not possible to test all applications currently as unpredictable UID in default data
+def test_get_applications_by_account_id(flask_test_client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a request for applications with a given account_id
+    THEN the response should only contain the applications that
+    have that account_id
+    """
+    expected_data = [
+        {
+            "id": "uuidv4",
+            "status": "COMPLETED",
+            "fund_id": "test-fund-name",
+            "round_id": "spring",
+            "date_submitted": "2021-12-24 00:00:00",
+            "assessment_deadline": "2022-08-28 00:00:00",
+        }
+    ]
+
+    expected_data_within_get_response(
+        flask_test_client,
+        "/applications/search?account_id=1",
+        expected_data,
+    )
+
+
+# TODO: Not possible to test all applications currently as unpredictable UID in default data # noqa: E501
 # def test_search_endpoint_get_applications_by_status(flask_test_client):
 #     """
 #     GIVEN We have a functioning Application Store API
@@ -109,8 +132,8 @@ def test_get_applications_by_id_contains(flask_test_client):
     )
 
 
-# TODO: Not possible to test all applications currently as unpredictable UID in default data
-# def test_search_endpoint_get_applications_sorted_by_rev_id(flask_test_client):
+# TODO: Not possible to test all applications currently as unpredictable UID in default data # noqa: E501
+# def test_search_endpoint_get_applications_sorted_by_rev_id(flask_test_client): # noqa: E501
 #     """
 #     GIVEN We have a functioning Application Store API
 #     WHEN a request for applications reverse sorted by id
@@ -225,7 +248,7 @@ def test_get_fund_applications_by_time_period(flask_test_client):
     expected_data_within_get_response(
         flask_test_client,
         "/applications/search"
-        "?fund_id=test-fund-name&datetime_start=2022-01-01&datetime_end=2022-12-28",
+        "?fund_id=test-fund-name&datetime_start=2022-01-01&datetime_end=2022-12-28",  # noqa: E501
         expected_data,
     )
 

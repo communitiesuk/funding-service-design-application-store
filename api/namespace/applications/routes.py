@@ -64,7 +64,8 @@ class Section(Resource):
 
     @applications_ns.doc("post_section")
     def post(self):
-        request_json = request.json()
+        request_json = request.get_json(force=True)
+        # name of json form/section
         section_name = request_json["name"]
         application_id = request_json["metadata"]["application_id"]
 
@@ -78,13 +79,13 @@ class Section(Resource):
     
     @applications_ns.doc("put_section")
     def put(self):
-        request_json = request.json()
+        request_json = request.get_json(force=True)
         section_name = request_json["name"]
         application_id = request_json["metadata"]["application_id"]
 
         status = "IN PROGRESS"
 
-        section_dict = {"status" : status, "payload" : request_json, "name" : section_name}
+        section_dict = {"status" : status, "payload" : request_json, "section_name" : section_name}
 
         updated_section = APPLICATIONS.put_post_section(application_id, section_name, section_dict)
 

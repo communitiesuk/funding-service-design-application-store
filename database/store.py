@@ -1,9 +1,8 @@
 import datetime
 import uuid
 from operator import itemgetter
-
-from database.initial_data import initial_application
 from database.initial_data import initial_application_store_state
+from database.initial_data import initial_macro_application
 from dateutil import parser as date_parser
 from dateutil.tz import UTC
 from external_data.data import get_round
@@ -16,7 +15,7 @@ class ApplicationDataAccessObject(object):
     """
 
     def __init__(self):
-        self._applications: dict = initial_application_store_state
+        # self._applications: dict = initial_application_store_state
         self._macro_applications: dict = {}
 
     @property
@@ -42,16 +41,17 @@ class ApplicationDataAccessObject(object):
         self._applications.update({application_id: new_application})
         return new_application
 
-    def create_macro_application(self, account_id, fund_id, round_id):
+    def create_macro_application(self, account_id, fund_id, round_id, sections):
 
-        macro_application_id = str(uuid.uuid4())
+        # temp hardcode application_id until application minting is available
+        macro_application_id = '1'
 
         macro_application_dict = {
             "application_id": macro_application_id,
             "account_id": account_id,
             "round_id": round_id,
             "fund_id": fund_id,
-            "sections": [],
+            "sections": sections,
             "submission_stamp": None,
         }
 
@@ -74,8 +74,9 @@ class ApplicationDataAccessObject(object):
         ]
 
     def put_post_section(self, application_id, section_name, new_json):
-        self._macro_applications[application_id]["sections"][section_name].update(new_json)
-        return self._macro_applications[application_id]["sections"][section_name]
+        for index, section in enumerate(self._macro_applications[application_id]["sections"]):
+            if section["section_name"].lower() == section_name.lower():
+                self._macro_applications[application_id]["sections"][index] = new_json
 
     def get_application(self, application_id: str):
         return self._applications.get(application_id)
@@ -198,6 +199,4 @@ class ApplicationDataAccessObject(object):
 
 
 APPLICATIONS = ApplicationDataAccessObject()
-
-
-APPLICATIONS.create_application(initial_application)
+APPLICATIONS.create_macro_application(initial_macro_application["account_id"], initial_macro_application["fund_id"],initial_macro_application["round_id"], initial_macro_application["sections"])

@@ -80,7 +80,7 @@ initial_macro_application = {
                 "name": "about-your-org",
                 "questions": [
                     {
-                        "question": "About your organisation",
+                        "question": "Application information",
                         "fields": [
                             {
                                 "key": "application-name",
@@ -109,7 +109,7 @@ initial_macro_application = {
                         ]
                     },
                     {
-                        "question": "About your organisation",
+                        "question": "Organisation information",
                         "fields": [
                             {
                                 "key": "organisation-name",
@@ -138,7 +138,7 @@ initial_macro_application = {
                         ]
                     },
                     {
-                        "question": "About your organisation",
+                        "question": "Responsible people",
                         "fields": [
                             {
                                 "key": "organisation-accountant",
@@ -185,7 +185,7 @@ initial_macro_application = {
                 "name": "about-your-project",
                 "questions": [
                     {
-                        "question": "About your project",
+                        "question": "Project details",
                         "fields": [
                             {
                                 "key": "your-project-name",
@@ -220,7 +220,7 @@ initial_macro_application = {
                         ]
                     },
                     {
-                        "question": "About your project",
+                        "question": "Funding requested",
                         "fields": [
                             {
                                 "key": "about-your-project-capital-expenditure",
@@ -243,7 +243,7 @@ initial_macro_application = {
                         ]
                     },
                     {
-                        "question": "About your project",
+                        "question": "Project aims",
                         "fields": [
                             {
                                 "key": "about-your-project-policy-aims",
@@ -298,7 +298,7 @@ initial_macro_application = {
                         ]
                     },
                     {
-                        "question": "Plan your project",
+                        "question": "Delivery partner",
                         "fields": [
                             {
                                 "key": "plan-your-project-will-work-with-delivery-partner",
@@ -361,7 +361,7 @@ initial_macro_application = {
                         ]
                     },
                     {
-                        "question": "Plan your project",
+                        "question": "Who will govern",
                         "fields": [
                             {
                                 "key": "plan-your-project-govern-role",
@@ -378,7 +378,7 @@ initial_macro_application = {
                         ]
                     },
                     {
-                        "question": "Plan your project",
+                        "question": "Governance processes",
                         "fields": [
                             {
                                 "key": "plan-your-project-what-governance-processes",

@@ -69,7 +69,7 @@ class Section(Resource):
         section_name = request_json["name"]
         application_id = request_json["metadata"]["application_id"]
 
-        status = "NOT STARTED"
+        status = "Complete"
 
         section_dict = {"status" : status, "payload" : request_json, "name" : section_name}
 
@@ -83,7 +83,7 @@ class Section(Resource):
         section_name = request_json["name"]
         application_id = request_json["metadata"]["application_id"]
 
-        status = "IN PROGRESS"
+        status = "Complete"
 
         section_dict = {"status" : status, "payload" : request_json, "section_name" : section_name}
 

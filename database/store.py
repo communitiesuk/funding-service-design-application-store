@@ -143,7 +143,7 @@ class ApplicationDataAccessObject(object):
         application["started_at"] = date_started.strftime("%Y-%m-%d %H:%M:%S")
         for section in sections:
             for question in section.get("questions"):
-                question.update({"status": "NOT STARTED"})
+                question.update({"status": "NOT_STARTED"})
         application["sections"] = sections
         return application["id"], application
 

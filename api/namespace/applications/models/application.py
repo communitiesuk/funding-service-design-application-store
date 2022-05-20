@@ -1,28 +1,21 @@
 from api.namespace.applications.applications_ns import applications_ns
-from api.namespace.applications.models.metadata import metadata
-from api.namespace.applications.models.question import question
-from api.namespace.applications.models.question import question_status
+from api.namespace.applications.models.section import section
+from api.namespace.applications.models.section import section_status
 from flask_restx import fields
 
-application_inbound = applications_ns.model(
-    "application_inbound",
+
+create_application = applications_ns.model(
+    "create_application",
     {
-        "name": fields.String(
-            required=True,
-            description="The name of the fund",
-            example="Funding Service Design",
+        "account_id": fields.String(
+            description="The account_id of the owner of the application.",
+            example="usera",
         ),
-        "questions": fields.List(
-            fields.Nested(
-                question,
-                required=True,
-                description=(
-                    "The payload of application questions and answers."
-                ),
-            ),
+        "fund_id": fields.String(
+            description="The id of the fund", example="funding-service-design"
         ),
-        "metadata": fields.Nested(
-            metadata, description="Application metadata"
+        "round_id": fields.String(
+            description="The id of the round", example="summer"
         ),
     },
 )
@@ -33,6 +26,9 @@ application_full = applications_ns.model(
         "id": fields.String(
             description="The id of the application.",
         ),
+        "account_id": fields.String(
+            description="The account_id of the owner of the application.",
+        ),
         "status": fields.String(
             description="The status of the application", example="NOT_STARTED"
         ),
@@ -42,22 +38,63 @@ application_full = applications_ns.model(
         "round_id": fields.String(
             description="The id of the round", example="spring"
         ),
+        "project_name": fields.String(
+            description="The name of the project",
+            example="Redcar Community Centre",
+        ),
         "date_submitted": fields.String(
             description="The datetime the application was submitted",
             example="2022-12-25 00:00:00",
         ),
-        "assessment_deadline": fields.String(
-            description="The assessment deadline for this application's round",
+        "started_at": fields.String(
+            description="When the application was started",
             example="2022-12-25 00:00:00",
         ),
-        "questions": fields.List(
+        "last_edited": fields.String(
+            description="When the application was last edited",
+            example="2022-12-25 00:00:00",
+        ),
+        "sections": fields.List(
             fields.Nested(
-                question,
-                description="Application questions and answers.",
+                section,
+                required=True,
+                description="Application section questions and answers.",
             ),
         ),
-        "metadata": fields.Nested(
-            metadata, description="Application metadata"
+    },
+)
+
+application_result = applications_ns.model(
+    "application_result",
+    {
+        "id": fields.String(description="The id of the application"),
+        "status": fields.String(
+            description="The status of the application", example="NOT_STARTED"
+        ),
+        "account_id": fields.String(
+            description="The account_id of the owner of the application.",
+        ),
+        "fund_id": fields.String(
+            description="The id of the fund", example="funding-service-design"
+        ),
+        "round_id": fields.String(
+            description="The id of the round", example="spring"
+        ),
+        "project_name": fields.String(
+            description="The name of the project",
+            example="Redcar Community Centre",
+        ),
+        "date_submitted": fields.String(
+            description="The datetime the application was submitted",
+            example="2022-12-25 00:00:00",
+        ),
+        "started_at": fields.String(
+            description="When the application was started",
+            example="2022-12-25 00:00:00",
+        ),
+        "last_edited": fields.String(
+            description="When the application was last edited",
+            example="2022-12-25 00:00:00",
         ),
     },
 )
@@ -69,24 +106,35 @@ application_status = applications_ns.model(
         "status": fields.String(
             description="The status of the application", example="NOT_STARTED"
         ),
+        "account_id": fields.String(
+            description="The account_id of the owner of the application.",
+        ),
         "fund_id": fields.String(
             description="The id of the fund", example="funding-service-design"
         ),
         "round_id": fields.String(
             description="The id of the round", example="spring"
         ),
+        "project_name": fields.String(
+            description="The name of the project",
+            example="Redcar Community Centre",
+        ),
         "date_submitted": fields.String(
             description="The datetime the application was submitted",
             example="2022-12-25 00:00:00",
         ),
-        "assessment_deadline": fields.String(
-            description="The assessment deadline for this application's round",
+        "started_at": fields.String(
+            description="When the application was started",
             example="2022-12-25 00:00:00",
         ),
-        "questions": fields.List(
+        "last_edited": fields.String(
+            description="When the application was last edited",
+            example="2022-12-25 00:00:00",
+        ),
+        "sections": fields.List(
             fields.Nested(
-                question_status,
-                description="Questions and their assessment status",
+                section_status,
+                description="Sections, questions and their completion status",
             ),
         ),
     },

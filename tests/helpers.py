@@ -3,8 +3,13 @@ import json
 from deepdiff import DeepDiff
 
 
-def expected_data_within_get_response(
-    test_client, endpoint: str, expected_data
+def expected_data_within_response(
+    test_client,
+    endpoint: str,
+    expected_data,
+    method="get",
+    data=None,
+    exclude_regex_paths=None,
 ):
     """
     Given a endpoint and expected content,
@@ -12,14 +17,28 @@ def expected_data_within_get_response(
 
     Args:
         test_client: A flask test client
-        endpoint (str): The GET request endpoint
+        endpoint (str): The request endpoint
+        method (str): The method of the request
+        data: The data to post/put if required
         expected_data: The content we expect to find
+        exclude_regex_paths: paths to exclude from diff
 
     """
-    response = test_client.get(endpoint, follow_redirects=True)
+    if method == "put":
+        print(endpoint)
+        print(data)
+        response = test_client.put(endpoint, data=data, follow_redirects=True)
+        print(expected_data)
+        print(response.data)
+    elif method == "post":
+        response = test_client.post(endpoint, data=data, follow_redirects=True)
+    else:
+        response = test_client.get(endpoint, follow_redirects=True)
     response_data = json.loads(response.data)
 
-    diff = DeepDiff(expected_data, response_data)
+    diff = DeepDiff(
+        expected_data, response_data, exclude_regex_paths=exclude_regex_paths
+    )
 
     error_message = "Expected data does not match response: " + str(diff)
     assert diff == {}, error_message
@@ -88,7 +107,7 @@ def count_fund_applications(
         The expected number of applications for the fund
 
     """
-    fund_applications_endpoint = f"/applications/search?fund_id={fund_id}"
+    fund_applications_endpoint = f"/applications?fund_id={fund_id}"
     response = test_client.get(
         fund_applications_endpoint, follow_redirects=True
     )

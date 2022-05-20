@@ -1,21 +1,51 @@
 {
   "fund_store/funds/": [
     {
+      "fund_name": "Fund A",
+      "fund_id": "fund-a",
+      "fund_description": "An example fund for testing the funding service"
+    },
+    {
+      "fund_name": "Fund B",
+      "fund_id": "fund-b",
+      "fund_description": "An example fund for testing the funding service"
+    },
+    {
       "fund_name": "Funding Service Design",
       "fund_id": "funding-service-design",
       "fund_description": "An example fund for testing the funding service"
+    },
+    {
+      "fund_name": "Community Ownership Fund",
+      "fund_id": "community-ownership-fund",
+      "fund_description": "An example Community Ownership Fund for testing the funding service"
     }
   ],
+  "fund_store/funds/fund-a": {
+    "fund_name": "Fund A",
+    "fund_id": "fund-a",
+    "fund_description": "An example fund for testing the funding service"
+  },
+  "fund_store/funds/fund-b": {
+    "fund_name": "Fund B",
+    "fund_id": "fund-b",
+    "fund_description": "An example fund for testing the funding service"
+  },
   "fund_store/funds/funding-service-design": {
     "fund_name": "Funding Service Design",
     "fund_id": "funding-service-design",
     "fund_description": "An example fund for testing the funding service"
   },
+  "fund_store/funds/community-ownership-fund": {
+      "fund_name": "Community Ownership Fund",
+      "fund_id": "community-ownership-fund",
+      "fund_description": "An example Community Ownership Fund for testing the funding service"
+  },
   "round_store/fund/fund-a": [
     {
       "fund_id": "funding-a",
-      "round_title": "Spring",
-      "round_id": "spring",
+      "round_title": "Summer",
+      "round_id": "summer",
       "eligibility_criteria": {
         "maximum_project_cost": 1000000
       },
@@ -28,8 +58,8 @@
   "round_store/fund/fund-b": [
     {
       "fund_id": "funding-a",
-      "round_title": "Spring",
-      "round_id": "spring",
+      "round_title": "Summer",
+      "round_id": "summer",
       "eligibility_criteria": {
         "maximum_project_cost": 1000000
       },
@@ -77,6 +107,28 @@
       "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
     }
   ],
+  "round_store/fund/fund-a/round/summer": {
+    "fund_id": "funding-service-design",
+    "round_title": "Spring",
+    "round_id": "spring",
+    "eligibility_criteria": {
+      "maximum_project_cost": 1000000
+    },
+    "opens": "2022-02-01T00:00:01",
+    "deadline": "2022-06-01T00:00:00",
+    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+  },
+  "round_store/fund/fund-b/round/summer": {
+    "fund_id": "funding-service-design",
+    "round_title": "Spring",
+    "round_id": "spring",
+    "eligibility_criteria": {
+      "maximum_project_cost": 1000000
+    },
+    "opens": "2022-02-01T00:00:01",
+    "deadline": "2022-06-01T00:00:00",
+    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+  },
   "round_store/fund/funding-service-design/round/spring": {
     "fund_id": "funding-service-design",
     "round_title": "Spring",

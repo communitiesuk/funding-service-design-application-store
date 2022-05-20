@@ -72,10 +72,10 @@ class Applications(Resource):
         account_id = args["account_id"]
         round_id = args["round_id"]
         fund_id = args["fund_id"]
-        macro_dict = APPLICATIONS.create_application(
+        application = APPLICATIONS.create_application(
             account_id=account_id, fund_id=fund_id, round_id=round_id
         )
-        return macro_dict, 201
+        return application, 201
 
 
 @applications_ns.route("/sections")

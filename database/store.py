@@ -25,6 +25,7 @@ class ApplicationDataAccessObject(object):
         for application_id, application in self._applications.items():
             application_summary = {
                 "id": application.get("id"),
+                "account_id": application.get("account_id"),
                 "status": application.get("status"),
                 "account_id": application.get("account_id"),
                 "fund_id": application.get("fund_id"),

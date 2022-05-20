@@ -37,7 +37,7 @@ Clone the repository
 
 From the top-level directory enter the command to install pip and the dependencies of the project
 
-    python3 -m pip install --upgrade pip && pip install -r requirements.txt
+    python3 -m pip install --upgrade pip && pip install -r requirements-dev.txt
 
 ## How to use
 

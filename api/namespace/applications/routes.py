@@ -27,6 +27,9 @@ class Applications(Resource):
         "fund_id", type=str, help="Application fund_id"
     )
     query_params_parser.add_argument(
+        "account_id", type=str, help="Application account_id"
+    )
+    query_params_parser.add_argument(
         "order_by", type=str, help="Order results by parameter"
     )
     query_params_parser.add_argument(

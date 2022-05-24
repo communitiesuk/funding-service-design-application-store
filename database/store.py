@@ -24,6 +24,13 @@ class ApplicationDataAccessObject(object):
 
     @property
     def applications_index(self) -> dict:
+        """
+        A dictionary of summary information for applications
+        for search purposes
+
+        Returns:
+            dict of metadata for each application
+        """
         applications = {}
         for application_id, application in self._applications.items():
             application_summary = {
@@ -41,6 +48,14 @@ class ApplicationDataAccessObject(object):
         return applications
 
     def create_application(self, account_id, fund_id, round_id):
+        """
+        Mints a fresh application for a given account_id, fund and round
+
+        Args:
+            account_id: (str) The account_id of the user
+            fund_id: (str) The id of the fund to create an application for
+            round_id: (str) The id of the round to create an application for
+        """
         sections = self._get_sections(fund_id, round_id)
         application_id, new_application = self._set_attributes(
             account_id, fund_id, round_id, sections
@@ -49,6 +64,17 @@ class ApplicationDataAccessObject(object):
         return new_application
 
     def _get_sections(self, fund_id: str, round_id: str):
+        """
+        Get the list of sections required to populate a blank
+        application for a fund round
+
+        Args:
+            fund_id: (str) The id of the fund
+            round_id: (str) The id of the fund round
+
+        Returns:
+            A list of json sections to populate the form
+        """
         fund = get_fund(fund_id)
         fund_round = get_round(fund_id, round_id)
         if fund and fund_round:
@@ -63,6 +89,15 @@ class ApplicationDataAccessObject(object):
         )
 
     def submit_application(self, application_id):
+        """
+        Sets an application status to SUBMITTED, adds a date_submitted
+        timestamp and sends a notification with the full application
+        content to the account holder's email address
+        Args:
+            application_id: (str) the id of the application to submit
+        Returns:
+            The application json
+        """
         application = self._applications[application_id]
         application["date_submitted"] = datetime.datetime.now(
             datetime.timezone.utc
@@ -82,9 +117,25 @@ class ApplicationDataAccessObject(object):
         return self._applications[application_id]
 
     def get_section(self, application_id, section_name):
+        """
+        Returns a single section of an application
+
+        Args:
+            application_id: (str) The id of the application
+            section_name: (str) The name of the section
+        """
         return self._applications[application_id]["sections"][section_name]
 
     def _find_answer_by_key(self, data: dict, target):
+        """
+        Finds an answer value from a target key name if it
+        exists somewhere in the application
+
+        Args:
+            data: (dict) the application dict
+            target: (str) the key name of the application question field
+                eg. "your-project-name"
+        """
         for key, value in data.items():
             if isinstance(value, dict):
                 return self._find_answer_by_key(value, target)
@@ -146,9 +197,24 @@ class ApplicationDataAccessObject(object):
         return None
 
     def get_application(self, application_id: str):
+        """
+        Get an individual application
+
+        Args:
+            application_id: (str) The id of the application
+
+        Returns:
+            Dict of application data
+        """
         return self._applications.get(application_id)
 
     def get_applications(self):
+        """
+        Get a list of all applications
+
+        Returns:
+            List of applications
+        """
         return [
             application
             for application_id, application in self._applications.items()
@@ -158,6 +224,15 @@ class ApplicationDataAccessObject(object):
     def _set_attributes(
         account_id: str, fund_id: str, round_id: str, sections: List
     ) -> tuple:
+        """
+        Sets the default attributes of a new application
+
+        Args:
+            account_id: (str) The account_id to set the application for
+            fund_id: (str) The id of the fund the application is for
+            round_id: (str) The id of the round the application is for
+            sections: (List) The list of form sections for the application
+        """
         application = {}
         date_started = datetime.datetime.now(datetime.timezone.utc)
         application["id"] = str(uuid.uuid4())  # cant be uuid in restx handler

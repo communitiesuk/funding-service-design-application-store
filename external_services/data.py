@@ -18,7 +18,7 @@ from external_services.models.round import Round
 def api_call(endpoint: str, method: str = "GET", params: dict = None):
     if params:
         params = {k: v for k, v in params.items() if v is not None}
-    if endpoint[:4] == "http":
+    if endpoint.startswith("http"):
         if method:
             if method == "POST":
                 return requests.post(endpoint, json=params)
@@ -33,7 +33,7 @@ def api_call(endpoint: str, method: str = "GET", params: dict = None):
 def get_data(endpoint: str, params: dict = None):
     if params:
         params = {k: v for k, v in params.items() if v is not None}
-    if endpoint[:4] == "http":
+    if endpoint.startswith("http"):
         req = requests.PreparedRequest()
         req.prepare_url(endpoint, params)
         response = requests.get(req.url)
@@ -46,7 +46,7 @@ def get_data(endpoint: str, params: dict = None):
 def post_data(endpoint: str, params: dict = None):
     if params:
         params = {k: v for k, v in params.items() if v is not None}
-    if endpoint[:4] == "http":
+    if endpoint.startswith("http"):
         response = requests.post(endpoint, json=params)
         if response.status_code in [200, 201]:
             return response.json()
@@ -94,8 +94,6 @@ def get_funds() -> List[Fund] | None:
 def get_fund(fund_id: str) -> Fund | None:
     endpoint = FUND_STORE_API_HOST + FUND_ENDPOINT.format(fund_id=fund_id)
     response = get_data(endpoint)
-    print(endpoint)
-    print(response)
     if response and "fund_id" in response:
         fund = Fund.from_json(response)
         if "rounds" in response and len(response["rounds"]) > 0:
@@ -122,7 +120,5 @@ def get_round(fund_id: str, round_id: str) -> Round | None:
         fund_id=fund_id, round_id=round_id
     )
     round_response = get_data(round_endpoint)
-    print(round_endpoint)
-    print(round_response)
     if round_response and "round_id" in round_response:
         return Round.from_json(round_response)

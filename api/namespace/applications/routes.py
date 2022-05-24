@@ -81,7 +81,7 @@ class Applications(Resource):
         return application, 201
 
 
-@applications_ns.route("/sections")
+@applications_ns.route("/sections", methods=["PUT"])
 class Section(Resource):
 
     put_section_parser = reqparse.RequestParser()
@@ -108,7 +108,10 @@ class Section(Resource):
             application_id, section_name, section_dict
         )
 
-        return updated_section, 201
+        if updated_section:
+            return updated_section, 201
+        else:
+            abort(400, "No matching application section found")
 
 
 @applications_ns.route("/<application_id>/submit")

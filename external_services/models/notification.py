@@ -4,9 +4,23 @@ from external_services.data import post_data
 
 
 class Notification(object):
-    @classmethod
-    def send(cls, template_type: str, to_email: str, content: dict):
+    """
+    Class for holding Notification operations
+    """
 
+    @staticmethod
+    def send(template_type: str, to_email: str, content: dict):
+        """
+        Sends a notification using the Gov.UK Notify Service
+
+        Args:
+            template_type: (str) A key of the template to use in the
+                DLUHC notifications service (which maps to a
+                Notify Service template key)
+            to_email: (str) The email to send the notification to
+            content: (dict) A dictionary of content to send to
+                fill out the notification template
+        """
         url = NOTIFICATION_SERVICE_HOST + SEND_ENDPOINT
         params = {"type": template_type, "to": to_email, "content": content}
         response = post_data(url, params)

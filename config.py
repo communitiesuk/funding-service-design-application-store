@@ -11,6 +11,8 @@ FLASK_ENV = environ.get("FLASK_ENV") or "development"
 #  APIs
 TEST_FUND_STORE_API_HOST = "fund_store"
 TEST_ROUND_STORE_API_HOST = "round_store"
+TEST_ACCOUNT_STORE_API_HOST = "account_store"
+TEST_NOTIFICATION_SERVICE_HOST = "notification_service"
 
 FUND_STORE_API_HOST = (
     environ.get("FUND_STORE_API_HOST") or TEST_FUND_STORE_API_HOST
@@ -18,3 +20,24 @@ FUND_STORE_API_HOST = (
 ROUND_STORE_API_HOST = (
     environ.get("ROUND_STORE_API_HOST") or TEST_ROUND_STORE_API_HOST
 )
+ACCOUNT_STORE_API_HOST = (
+    environ.get("ACCOUNT_STORE_API_HOST") or TEST_ACCOUNT_STORE_API_HOST
+)
+
+# Notification Service
+NOTIFICATION_SERVICE_HOST = (
+    environ.get("NOTIFICATION_SERVICE_HOST") or TEST_NOTIFICATION_SERVICE_HOST
+)
+SEND_ENDPOINT = "/send"
+NOTIFY_TEMPLATE_SUBMIT_APPLICATION = "APPLICATION_RECORD_OF_SUBMISSION"
+
+# Account Store Endpoints
+ACCOUNTS_ENDPOINT = "/accounts"
+
+# Fund Store Endpoints
+FUNDS_ENDPOINT = "/funds/"
+FUND_ENDPOINT = "/funds/{fund_id}"
+
+# Round Store Endpoints
+ROUNDS_ENDPOINT = "/fund/{fund_id}"
+ROUND_ENDPOINT = "/fund/{fund_id}/round/{round_id}"

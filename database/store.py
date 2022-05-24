@@ -3,12 +3,15 @@ import uuid
 from operator import itemgetter
 from typing import List
 
+from config import NOTIFY_TEMPLATE_SUBMIT_APPLICATION
 from database.initial_data import fund_round_sections
 from database.initial_data import initial_application_store_state
 from dateutil import parser as date_parser
 from dateutil.tz import UTC
-from external_data.data import get_fund
-from external_data.data import get_round
+from external_services.data import get_fund
+from external_services.data import get_round
+from external_services.models.account import AccountMethods
+from external_services.models.notification import Notification
 
 
 class ApplicationDataAccessObject(object):
@@ -27,7 +30,6 @@ class ApplicationDataAccessObject(object):
                 "id": application.get("id"),
                 "account_id": application.get("account_id"),
                 "status": application.get("status"),
-                "account_id": application.get("account_id"),
                 "fund_id": application.get("fund_id"),
                 "round_id": application.get("round_id"),
                 "project_name": application.get("project_name", ""),
@@ -61,23 +63,38 @@ class ApplicationDataAccessObject(object):
         )
 
     def submit_application(self, application_id):
-        self._applications[application_id][
-            "date_submitted"
-        ] = datetime.datetime.now(datetime.timezone.utc).strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
+        application = self._applications[application_id]
+        application["date_submitted"] = datetime.datetime.now(
+            datetime.timezone.utc
+        ).strftime("%Y-%m-%d %H:%M:%S")
         self._update_statuses(application_id)
+        # Get Account Email
+        account = AccountMethods.get_account(
+            account_id=application.get("account_id")
+        )
+
+        # Send notification
+        Notification.send(
+            NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
+            account.email,
+            {"application": self._applications[application_id]},
+        )
         return self._applications[application_id]
 
     def get_section(self, application_id, section_name):
         return self._applications[application_id]["sections"][section_name]
 
-    def _find_value_by_key(self, data: dict, target):
+    def _find_answer_by_key(self, data: dict, target):
         for key, value in data.items():
             if isinstance(value, dict):
-                yield from self._find_value_by_key(value, target)
-            elif key == target:
-                yield value
+                return self._find_answer_by_key(value, target)
+            elif isinstance(value, List):
+                for item in value:
+                    return self._find_answer_by_key(item, target)
+            elif key == "key" and value == target:
+                answer = data.get("answer")
+                if answer:
+                    return answer
 
     def put_section(self, application_id, section_name, new_json):
         """
@@ -94,32 +111,39 @@ class ApplicationDataAccessObject(object):
                     "metadata": section_metadata
                 }
         """
-        # Find matching section, update with put data
+        # Find matching section
+        try:
+            sections = self._applications[application_id]["sections"]
+        except KeyError:
+            return None
+
         section_index = None
-        for index, section in enumerate(
-            self._applications[application_id]["sections"]
-        ):
+        for index, section in enumerate(sections):
             if section["section_name"].lower() == section_name.lower():
                 section_index = index
-                self._applications[application_id]["sections"][
-                    section_index
-                ] = new_json
-                # Update application statuses
-                self._update_statuses(application_id)
-        # Set last edited
-        self._applications[application_id][
-            "last_edited"
-        ] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        # IF section includes "your-project-name" field
-        # THEN update application project name
-        project_name = list(
-            self._find_value_by_key(new_json, "your-project-name")
-        )
-        if len(project_name) == 1:
-            self._applications[application_id]["project_name"] = project_name[
-                0
+                break
+        # If section found, update with put data
+        if section_index is not None:
+            sections[section_index] = new_json
+            # Update application statuses
+            self._update_statuses(application_id)
+            # Set last edited
+            self._applications[application_id][
+                "last_edited"
+            ] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            # IF section includes "your-project-name" field
+            # THEN update application project name
+            project_name = self._find_answer_by_key(
+                new_json, "your-project-name"
+            )
+            if project_name:
+                self._applications[application_id][
+                    "project_name"
+                ] = project_name
+            return self._applications[application_id]["sections"][
+                section_index
             ]
-        return self._applications[application_id]["sections"][section_index]
+        return None
 
     def get_application(self, application_id: str):
         return self._applications.get(application_id)
@@ -172,7 +196,7 @@ class ApplicationDataAccessObject(object):
             for question in section["questions"]:
                 for field in question["fields"]:
                     if application.get("date_submitted"):
-                        question["status"] = "COMPLETED"
+                        question["status"] = "SUBMITTED"
                     elif field["answer"]:
                         question["status"] = "IN_PROGRESS"
                 question["status"] = question.get("status", "NOT_STARTED")
@@ -189,9 +213,11 @@ class ApplicationDataAccessObject(object):
         for section in application["sections"]:
             for question in section["questions"]:
                 if application.get("date_submitted"):
-                    section["status"] = "COMPLETED"
+                    section["status"] = "SUBMITTED"
+                    break
                 elif question["status"] == "IN_PROGRESS":
                     section["status"] = "IN_PROGRESS"
+                    break
             section["status"] = section.get("status", "NOT_STARTED")
         self._applications.update({application_id: application})
 
@@ -204,13 +230,15 @@ class ApplicationDataAccessObject(object):
             application_id: The application id
         """
         application = self._applications[application_id]
-        status_values = [
+        section_statuses = [
             section["status"] for section in application["sections"]
         ]
-        if "IN_PROGRESS" in status_values:
+        if "IN_PROGRESS" in section_statuses:
             status = "IN_PROGRESS"
-        elif "COMPLETED" in status_values:
+        elif "COMPLETED" in section_statuses:
             status = "COMPLETED"
+        elif "SUBMITTED" in section_statuses:
+            status = "SUBMITTED"
         else:
             status = "NOT_STARTED"
         application["status"] = status

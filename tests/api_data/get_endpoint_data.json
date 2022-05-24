@@ -1,4 +1,19 @@
 {
+  "account_store/accounts?email_address=a%40example.com": {
+    "account_id": "usera",
+    "emailAddress": "a@example.com",
+    "applications": []
+  },
+  "account_store/accounts?email_address=b%40example.com": {
+    "account_id": "userb",
+    "emailAddress": "b@example.com",
+    "applications": []
+  },
+  "account_store/accounts?account_id=test-user": {
+    "account_id": "test-user",
+    "emailAddress": "test@example.com",
+    "applications": ["uuidv4"]
+  },
   "fund_store/funds/": [
     {
       "fund_name": "Fund A",

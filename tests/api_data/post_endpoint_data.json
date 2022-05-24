@@ -1,0 +1,7 @@
+{
+  "notification_service/send":{
+    "_default": {
+      "status": "ok"
+    }
+  }
+}

@@ -107,7 +107,7 @@ def test_get_all_applications(flask_test_client):
     ]
     exclude_keys = ["id", "started_at", "project_name"]
     exclude_regex_path_strings = [
-        fr"root\[\d+\]\['{key}'\]" for key in exclude_keys
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
     ]
     exclude_regex_paths = [
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
@@ -275,7 +275,7 @@ def test_get_applications_sorted_by_rev_account_id(flask_test_client):
     ]
     exclude_keys = ["id", "started_at", "project_name"]
     exclude_regex_path_strings = [
-        fr"root\[\d+\]\['{key}'\]" for key in exclude_keys
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
     ]
     exclude_regex_paths = [
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
@@ -309,7 +309,7 @@ def test_get_applications_of_account_id(flask_test_client):
     ]
     exclude_keys = ["id", "started_at"]
     exclude_regex_path_strings = [
-        fr"root\[\d+\]\['{key}'\]" for key in exclude_keys
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
     ]
     exclude_regex_paths = [
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
@@ -378,18 +378,18 @@ def test_update_section_of_application(flask_test_client):
     )
     exclude_keys = ["id", "started_at"]
     exclude_regex_path_strings = [
-        fr"root\[\d+\]\['{key}'\]" for key in exclude_keys
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
     ]
     exclude_question_keys = ["status", "category", "index"]
     exclude_regex_path_strings.extend(
         [
-            fr"root\['questions']\[\d+\]\['{key}'\]"
+            rf"root\['questions']\[\d+\]\['{key}'\]"
             for key in exclude_question_keys
         ]
     )
     exclude_metadata_keys = ["application_id"]
     exclude_regex_path_strings.extend(
-        [fr"root\['metadata']\['{key}'\]" for key in exclude_metadata_keys]
+        [rf"root\['metadata']\['{key}'\]" for key in exclude_metadata_keys]
     )
     exclude_regex_paths = [
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
@@ -425,7 +425,7 @@ def test_get_application_by_application_id(flask_test_client):
     }
 
     exclude_keys = ["sections"]
-    exclude_regex_path_strings = [fr"root\['{key}'\]" for key in exclude_keys]
+    exclude_regex_path_strings = [rf"root\['{key}'\]" for key in exclude_keys]
     exclude_regex_paths = [
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]

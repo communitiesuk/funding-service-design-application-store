@@ -56,14 +56,14 @@ class ApplicationDataAccessObject(object):
             fund_id: (str) The id of the fund to create an application for
             round_id: (str) The id of the round to create an application for
         """
-        sections = self._get_sections(fund_id, round_id)
+        sections = self._get_blank_sections(fund_id, round_id)
         application_id, new_application = self._set_attributes(
             account_id, fund_id, round_id, sections
         )
         self._applications.update({application_id: new_application})
         return new_application
 
-    def _get_sections(self, fund_id: str, round_id: str):
+    def _get_blank_sections(self, fund_id: str, round_id: str):
         """
         Get the list of sections required to populate a blank
         application for a fund round
@@ -83,7 +83,7 @@ class ApplicationDataAccessObject(object):
                 raise Exception(
                     f"Could not find form sections for {fund_id} - {round_id}"
                 )
-            return sections
+            return sections.copy()
         raise Exception(
             f"Could not find fund round for {fund_id} - {round_id}"
         )

@@ -138,3 +138,5 @@ dmypy.json
 .bash_profile
 .DS_Store
 app/.DS_Store
+
+.scratch.*

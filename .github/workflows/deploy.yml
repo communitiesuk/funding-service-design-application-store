@@ -8,7 +8,7 @@ on:
 
 jobs:
   test_and_deploy:
-    uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@performance_testing
+    uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@performance_testing_fixes
     with:
       app_name: ${{ github.event.repository.name }}
       api: true

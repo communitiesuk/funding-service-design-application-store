@@ -620,21 +620,14 @@ default_sections = [
 ]
 
 fund_round_sections = {
-    "fund-a:spring": default_sections,
-    "fund-b:spring": default_sections,
-    "fund-a:summer": default_sections,
-    "fund-b:summer": default_sections,
-    "funding-service-design:spring": default_sections,
-    "funding-service-design:summer": default_sections,
-    "community-ownership-fund:round-2": default_sections,
+    "fund-a:spring": default_sections.copy(),
+    "fund-b:spring": default_sections.copy(),
+    "fund-a:summer": default_sections.copy(),
+    "fund-b:summer": default_sections.copy(),
+    "funding-service-design:spring": default_sections.copy(),
+    "funding-service-design:summer": default_sections.copy(),
+    "community-ownership-fund:round-2": default_sections.copy(),
 }
-
-# initial_macro_application = {
-#     "account_id": "AccountA",
-#     "fund_id": "Community ownership fund application",
-#     "round_id": "Round Two",
-#     "sections": default_sections
-# }
 
 initial_application_store_state = {
     "uuidv4": {

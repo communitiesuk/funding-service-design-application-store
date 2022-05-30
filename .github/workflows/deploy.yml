@@ -12,7 +12,9 @@ jobs:
     with:
       app_name: ${{ github.event.repository.name }}
       api: true
-      run-time: 15s
+      users: 2
+      spawn-rate: 2
+      run-time: 11s
     secrets:
       CF_API: ${{secrets.CF_API}}
       CF_ORG: ${{secrets.CF_ORG}}

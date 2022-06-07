@@ -6,11 +6,10 @@ from typing import List
 import requests
 from config import FLASK_ROOT
 from config import FUND_ENDPOINT
+from config import FUND_ROUND_ENDPOINT
+from config import FUND_ROUNDS_ENDPOINT
 from config import FUND_STORE_API_HOST
 from config import FUNDS_ENDPOINT
-from config import ROUND_ENDPOINT
-from config import ROUND_STORE_API_HOST
-from config import ROUNDS_ENDPOINT
 from external_services.models.fund import Fund
 from external_services.models.round import Round
 
@@ -103,7 +102,9 @@ def get_fund(fund_id: str) -> Fund | None:
 
 
 def get_rounds(fund_id: str) -> Fund | List:
-    endpoint = ROUND_STORE_API_HOST + ROUNDS_ENDPOINT.format(fund_id=fund_id)
+    endpoint = FUND_STORE_API_HOST + FUND_ROUNDS_ENDPOINT.format(
+        fund_id=fund_id
+    )
     response = get_data(endpoint)
     rounds = []
     if response and len(response) > 0:
@@ -116,7 +117,7 @@ def get_round(fund_id: str, round_id: str) -> Round | None:
     """
     Gets round from round store api using round_id if given.
     """
-    round_endpoint = ROUND_STORE_API_HOST + ROUND_ENDPOINT.format(
+    round_endpoint = FUND_STORE_API_HOST + FUND_ROUND_ENDPOINT.format(
         fund_id=fund_id, round_id=round_id
     )
     round_response = get_data(round_endpoint)

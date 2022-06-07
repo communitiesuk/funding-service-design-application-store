@@ -14,7 +14,7 @@
     "emailAddress": "test@example.com",
     "applications": ["uuidv4"]
   },
-  "fund_store/funds/": [
+  "fund_store/funds": [
     {
       "fund_name": "Fund A",
       "fund_id": "fund-a",
@@ -56,7 +56,7 @@
       "fund_id": "community-ownership-fund",
       "fund_description": "An example Community Ownership Fund for testing the funding service"
   },
-  "round_store/fund/fund-a": [
+  "fund_store/funds/fund-a/rounds": [
     {
       "fund_id": "funding-a",
       "round_title": "Summer",
@@ -70,7 +70,7 @@
       "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
     }
   ],
-  "round_store/fund/fund-b": [
+  "fund_store/funds/fund-b/rounds": [
     {
       "fund_id": "funding-a",
       "round_title": "Summer",
@@ -84,7 +84,7 @@
       "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
     }
   ],
-  "round_store/fund/funding-service-design": [
+  "fund_store/funds/funding-service-design/rounds": [
     {
       "fund_id": "funding-service-design",
       "round_title": "Spring",
@@ -122,7 +122,7 @@
       "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
     }
   ],
-  "round_store/fund/fund-a/round/summer": {
+  "fund_store/funds/fund-a/rounds/summer": {
     "fund_id": "funding-service-design",
     "round_title": "Spring",
     "round_id": "spring",
@@ -133,7 +133,7 @@
     "deadline": "2022-06-01T00:00:00",
     "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
   },
-  "round_store/fund/fund-b/round/summer": {
+  "fund_store/funds/fund-b/rounds/summer": {
     "fund_id": "funding-service-design",
     "round_title": "Spring",
     "round_id": "spring",
@@ -144,7 +144,7 @@
     "deadline": "2022-06-01T00:00:00",
     "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
   },
-  "round_store/fund/funding-service-design/round/spring": {
+  "fund_store/funds/funding-service-design/rounds/spring": {
     "fund_id": "funding-service-design",
     "round_title": "Spring",
     "round_id": "spring",
@@ -155,7 +155,7 @@
     "deadline": "2022-06-01T00:00:00",
     "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
   },
-  "round_store/fund/funding-service-design/round/summer": {
+  "fund_store/funds/funding-service-design/rounds/summer": {
     "fund_id": "funding-service-design",
     "round_title": "Summer",
     "round_id": "summer",
@@ -166,7 +166,7 @@
     "deadline": "2022-08-31T00:00:00",
     "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
   },
-  "round_store/fund/funding-service-design/round/autumn": {
+  "fund_store/funds/funding-service-design/rounds/autumn": {
     "fund_id": "funding-service-design",
     "round_title": "Autumn",
     "round_id": "autumn",

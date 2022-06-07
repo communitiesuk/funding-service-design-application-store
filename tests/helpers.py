@@ -25,11 +25,7 @@ def expected_data_within_response(
 
     """
     if method == "put":
-        print(endpoint)
-        print(data)
         response = test_client.put(endpoint, data=data, follow_redirects=True)
-        print(expected_data)
-        print(response.data)
     elif method == "post":
         response = test_client.post(endpoint, data=data, follow_redirects=True)
     else:

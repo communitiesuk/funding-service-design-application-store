@@ -273,7 +273,7 @@ class ApplicationDataAccessObject(object):
                     if application.get("date_submitted"):
                         question["status"] = "SUBMITTED"
                     elif field["answer"]:
-                        question["status"] = "IN_PROGRESS"
+                        question["status"] = "COMPLETED"
                 question["status"] = question.get("status", "NOT_STARTED")
         self._applications.update({application_id: application})
 
@@ -290,6 +290,9 @@ class ApplicationDataAccessObject(object):
                 if application.get("date_submitted"):
                     section["status"] = "SUBMITTED"
                     break
+                elif question["status"] == "COMPLETED":
+                    section["status"] = "COMPLETED"
+                    continue
                 elif question["status"] == "IN_PROGRESS":
                     section["status"] = "IN_PROGRESS"
                     break

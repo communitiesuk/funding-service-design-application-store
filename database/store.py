@@ -286,14 +286,20 @@ class ApplicationDataAccessObject(object):
         """
         application = self._applications[application_id]
         for section in application["sections"]:
+            section["status"] = section.get("status", "NOT_STARTED")
             for question in section["questions"]:
                 if application.get("date_submitted"):
                     section["status"] = "SUBMITTED"
                     break
+                elif question["status"] == "COMPLETED" and section["status"] != "IN_PROGRESS":
+                    section["status"] = "COMPLETED"
+                    continue
+                elif question["status"] == "NOT_STARTED" and section["status"] == "COMPLETED":
+                    section["status"] = "IN_PROGRESS"
+                    continue
                 elif question["status"] == "IN_PROGRESS":
                     section["status"] = "IN_PROGRESS"
                     break
-            section["status"] = section.get("status", "NOT_STARTED")
         self._applications.update({application_id: application})
 
     def _update_status(self, application_id: str):
@@ -309,6 +315,8 @@ class ApplicationDataAccessObject(object):
             section["status"] for section in application["sections"]
         ]
         if "IN_PROGRESS" in section_statuses:
+            status = "IN_PROGRESS"
+        elif "COMPLETED" and "NOT_STARTED" in section_statuses:
             status = "IN_PROGRESS"
         elif "COMPLETED" in section_statuses:
             status = "COMPLETED"

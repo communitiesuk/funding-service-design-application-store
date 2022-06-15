@@ -373,8 +373,9 @@ def test_update_section_of_application(flask_test_client):
     }
     expected_data = section_put.copy()
     section_name = expected_data.pop("name")
+    # The whole section has been submit here so it will have a status of COMPLETE not IN_PROGRESS
     expected_data.update(
-        {"section_name": section_name, "status": "IN_PROGRESS"}
+        {"section_name": section_name, "status": "COMPLETED"}
     )
     exclude_keys = ["id", "started_at"]
     exclude_regex_path_strings = [

@@ -273,7 +273,7 @@ class ApplicationDataAccessObject(object):
                     if application.get("date_submitted"):
                         question["status"] = "SUBMITTED"
                     elif field["answer"]:
-                        question["status"] = "IN_PROGRESS"
+                        question["status"] = "COMPLETED"
                 question["status"] = question.get("status", "NOT_STARTED")
         self._applications.update({application_id: application})
 

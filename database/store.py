@@ -269,12 +269,36 @@ class ApplicationDataAccessObject(object):
         application = self._applications[application_id]
         for section in application["sections"]:
             for question in section["questions"]:
-                for field in question["fields"]:
+                question["status"] = "NOT_STARTED"
+                for index, field in enumerate(question["fields"]):
+                    field_answered = (
+                        True
+                        if "answer" in field
+                        and field["answer"] != ""
+                        and field["answer"] is not None
+                        else False
+                    )
+                    first_field_in_question = True if index == 0 else False
+                    all_fields_complete = (
+                        True if question["status"] == "COMPLETED" else False
+                    )
+                    question_complete_or_partially_complete = (
+                        True
+                        if question["status"] == ("COMPLETED" or "IN_PROGRESS")
+                        else False
+                    )
                     if application.get("date_submitted"):
                         question["status"] = "SUBMITTED"
-                    elif field["answer"]:
+                        break
+                    elif field_answered and (
+                        all_fields_complete or first_field_in_question
+                    ):
                         question["status"] = "COMPLETED"
-                question["status"] = question.get("status", "NOT_STARTED")
+                    elif field_answered:
+                        question["status"] = "IN_PROGRESS"
+                    elif not question_complete_or_partially_complete:
+                        question["status"] = "NOT_STARTED"
+
         self._applications.update({application_id: application})
 
     def _update_section_statuses(self, application_id: str):
@@ -291,10 +315,16 @@ class ApplicationDataAccessObject(object):
                 if application.get("date_submitted"):
                     section["status"] = "SUBMITTED"
                     break
-                elif question["status"] == "COMPLETED" and section["status"] != "IN_PROGRESS":
+                elif (
+                    question["status"] == "COMPLETED"
+                    and section["status"] != "IN_PROGRESS"
+                ):
                     section["status"] = "COMPLETED"
                     continue
-                elif question["status"] == "NOT_STARTED" and section["status"] == "COMPLETED":
+                elif (
+                    question["status"] == "NOT_STARTED"
+                    and section["status"] == "COMPLETED"
+                ):
                     section["status"] = "IN_PROGRESS"
                     continue
                 elif question["status"] == "IN_PROGRESS":

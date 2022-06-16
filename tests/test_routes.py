@@ -373,9 +373,94 @@ def test_update_section_of_application(flask_test_client):
     }
     expected_data = section_put.copy()
     section_name = expected_data.pop("name")
-    # The whole section has been submit here so it will have a status of COMPLETE not IN_PROGRESS
+    # The whole section has been submit here so it will have a status of
+    # COMPLETE not IN_PROGRESS
+    expected_data.update({"section_name": section_name, "status": "COMPLETED"})
+    exclude_keys = ["id", "started_at"]
+    exclude_regex_path_strings = [
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
+    ]
+    exclude_question_keys = ["status", "category", "index"]
+    exclude_regex_path_strings.extend(
+        [
+            rf"root\['questions']\[\d+\]\['{key}'\]"
+            for key in exclude_question_keys
+        ]
+    )
+    exclude_metadata_keys = ["application_id"]
+    exclude_regex_path_strings.extend(
+        [rf"root\['metadata']\['{key}'\]" for key in exclude_metadata_keys]
+    )
+    exclude_regex_paths = [
+        re.compile(regex_string) for regex_string in exclude_regex_path_strings
+    ]
+    expected_data_within_response(
+        flask_test_client,
+        "/applications/sections",
+        expected_data,
+        method="put",
+        data=json.dumps(section_put),
+        exclude_regex_paths=exclude_regex_paths,
+    )
+
+
+def test_update_section_of_application_with_incomplete_answers(
+    flask_test_client,
+):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a request for applications of account_id
+    THEN the response should return applications of the account_id
+    """
+    account_applications_response = flask_test_client.get(
+        "/applications?account_id=userb"
+    )
+    account_applications = account_applications_response.get_json()
+    application_id = account_applications[0]["id"]
+    section_put = {
+        "name": "about-your-org",
+        "questions": [
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "application-name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": None,
+                    },
+                    {
+                        "key": "applicant-email",
+                        "title": "Email",
+                        "type": "text",
+                        "answer": "a@example.com",
+                    },
+                    {
+                        "key": "applicant-telephone-number",
+                        "title": "Phone",
+                        "type": "text",
+                        "answer": "01234 567 890",
+                    },
+                    {
+                        "key": "applicant-website",
+                        "title": "Website",
+                        "type": "text",
+                        "answer": "www.example.com",
+                    },
+                ],
+            }
+        ],
+        "metadata": {
+            "paymentSkipped": "false",
+            "application_id": application_id,
+        },
+    }
+    expected_data = section_put.copy()
+    section_name = expected_data.pop("name")
+    # The whole section has not been submit here (missing answer) so it
+    # will have a status of IN_PROGRESS
     expected_data.update(
-        {"section_name": section_name, "status": "COMPLETED"}
+        {"section_name": section_name, "status": "IN_PROGRESS"}
     )
     exclude_keys = ["id", "started_at"]
     exclude_regex_path_strings = [

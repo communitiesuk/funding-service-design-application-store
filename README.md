@@ -78,5 +78,5 @@ enviroment:
 Once the above is done you will have autoformatting and pep8 compliance built into your workflow. You will be notified
 of any pep8 errors during commits.
 
-In deploy.yml, there are three environment variables called users, spawn-rate and run-time. These are used 
-to override the locust config if the performance tests need to run with different configs for application store. 
+In deploy.yml, there are three environment variables called users, spawn-rate and run-time. These are used
+to override the locust config if the performance tests need to run with different configs for application store.

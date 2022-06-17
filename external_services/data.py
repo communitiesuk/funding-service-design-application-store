@@ -8,6 +8,13 @@ from config import Config
 from external_services.models.fund import Fund
 from external_services.models.round import Round
 
+FLASK_ROOT = Default.FLASK_ROOT
+FUND_ENDPOINT = Default.FUND_ENDPOINT
+FUND_ROUND_ENDPOINT = Default.FUND_ROUND_ENDPOINT
+FUND_ROUNDS_ENDPOINT = Default.FUND_ROUNDS_ENDPOINT
+FUND_STORE_API_HOST = Default.FUND_STORE_API_HOST
+FUNDS_ENDPOINT = Default.FUNDS_ENDPOINT
+
 
 def api_call(endpoint: str, method: str = "GET", params: dict = None):
     if params:

@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
-from config import ACCOUNT_STORE_API_HOST
-from config import ACCOUNTS_ENDPOINT
+from config.default import ACCOUNT_STORE_API_HOST
+from config.default import ACCOUNTS_ENDPOINT
 from external_services.data import get_data
 
 

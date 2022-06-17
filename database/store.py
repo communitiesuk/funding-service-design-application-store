@@ -3,7 +3,7 @@ import uuid
 from operator import itemgetter
 from typing import List
 
-from config import NOTIFY_TEMPLATE_SUBMIT_APPLICATION
+from config.default import Default as Config
 from database.initial_data import fund_round_sections
 from database.initial_data import initial_application_store_state
 from dateutil import parser as date_parser
@@ -110,7 +110,7 @@ class ApplicationDataAccessObject(object):
 
         # Send notification
         Notification.send(
-            NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
+            Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
             account.email,
             {"application": self._applications[application_id]},
         )

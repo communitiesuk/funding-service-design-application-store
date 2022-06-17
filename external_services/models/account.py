@@ -4,6 +4,9 @@ from typing import List
 from config import Config
 from external_services.data import get_data
 
+ACCOUNT_STORE_API_HOST = Default.ACCOUNT_STORE_API_HOST
+ACCOUNTS_ENDPOINT = Default.ACCOUNTS_ENDPOINT
+
 
 @dataclass
 class Account(object):

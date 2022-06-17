@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from typing import List
 
-from config.default import ACCOUNT_STORE_API_HOST
-from config.default import ACCOUNTS_ENDPOINT
+from config.default import Default
 from external_services.data import get_data
+
+ACCOUNT_STORE_API_HOST = Default.ACCOUNT_STORE_API_HOST
+ACCOUNTS_ENDPOINT = Default.ACCOUNTS_ENDPOINT
 
 
 @dataclass

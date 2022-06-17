@@ -1,6 +1,8 @@
-from config.default import NOTIFICATION_SERVICE_HOST
-from config.default import SEND_ENDPOINT
+from config.default import Default
 from external_services.data import post_data
+
+NOTIFICATION_SERVICE_HOST = Default.NOTIFICATION_SERVICE_HOST
+SEND_ENDPOINT = Default.SEND_ENDPOINT
 
 
 class Notification(object):

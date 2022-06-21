@@ -25,9 +25,7 @@ class Notification(object):
         response = post_data(url, params)
         if response:
             return True
-        raise NotificationError(
-            message="Sorry, the notification could not be sent"
-        )
+        raise NotificationError(message="Sorry, the notification could not be sent")
 
 
 class NotificationError(Exception):

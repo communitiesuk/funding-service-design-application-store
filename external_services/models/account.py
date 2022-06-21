@@ -34,9 +34,7 @@ class AccountError(Exception):
 
 class AccountMethods(Account):
     @staticmethod
-    def get_account(
-        email: str = None, account_id: str = None
-    ) -> Account | None:
+    def get_account(email: str = None, account_id: str = None) -> Account | None:
         """
         Get an account from the account store using either
         an email address or account_id.

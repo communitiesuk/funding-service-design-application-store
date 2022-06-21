@@ -5,7 +5,7 @@ from fsd_tech import configclass
 
 
 @configclass
-class DefaultConfig():
+class DefaultConfig:
     #  Application Config
     SECRET_KEY = environ.get("SECRET_KEY") or "dev"
     SESSION_COOKIE_NAME = environ.get("SESSION_COOKIE_NAME") or "session_cookie"
@@ -17,9 +17,7 @@ class DefaultConfig():
     TEST_ACCOUNT_STORE_API_HOST = "account_store"
     TEST_NOTIFICATION_SERVICE_HOST = "notification_service"
 
-    FUND_STORE_API_HOST = (
-        environ.get("FUND_STORE_API_HOST") or TEST_FUND_STORE_API_HOST
-    )
+    FUND_STORE_API_HOST = environ.get("FUND_STORE_API_HOST") or TEST_FUND_STORE_API_HOST
     ACCOUNT_STORE_API_HOST = (
         environ.get("ACCOUNT_STORE_API_HOST") or TEST_ACCOUNT_STORE_API_HOST
     )

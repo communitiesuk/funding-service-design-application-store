@@ -8,7 +8,7 @@ from config.default import DefaultConfig
 
 @configclass
 class DevelopmentConfig(DefaultConfig):
-    
+
     # Add any development specific config here
-    
+
     pass

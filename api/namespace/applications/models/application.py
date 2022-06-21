@@ -14,9 +14,7 @@ create_application = applications_ns.model(
         "fund_id": fields.String(
             description="The id of the fund", example="funding-service-design"
         ),
-        "round_id": fields.String(
-            description="The id of the round", example="summer"
-        ),
+        "round_id": fields.String(description="The id of the round", example="summer"),
     },
 )
 
@@ -35,9 +33,7 @@ application_full = applications_ns.model(
         "fund_id": fields.String(
             description="The id of the fund", example="funding-service-design"
         ),
-        "round_id": fields.String(
-            description="The id of the round", example="spring"
-        ),
+        "round_id": fields.String(description="The id of the round", example="spring"),
         "project_name": fields.String(
             description="The name of the project",
             example="Redcar Community Centre",
@@ -77,9 +73,7 @@ application_result = applications_ns.model(
         "fund_id": fields.String(
             description="The id of the fund", example="funding-service-design"
         ),
-        "round_id": fields.String(
-            description="The id of the round", example="spring"
-        ),
+        "round_id": fields.String(description="The id of the round", example="spring"),
         "project_name": fields.String(
             description="The name of the project",
             example="Redcar Community Centre",
@@ -112,9 +106,7 @@ application_status = applications_ns.model(
         "fund_id": fields.String(
             description="The id of the fund", example="funding-service-design"
         ),
-        "round_id": fields.String(
-            description="The id of the round", example="spring"
-        ),
+        "round_id": fields.String(description="The id of the round", example="spring"),
         "project_name": fields.String(
             description="The name of the project",
             example="Redcar Community Centre",

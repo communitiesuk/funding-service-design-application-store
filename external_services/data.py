@@ -9,7 +9,6 @@ from external_services.models.fund import Fund
 from external_services.models.round import Round
 
 
-
 def api_call(endpoint: str, method: str = "GET", params: dict = None):
     if params:
         params = {k: v for k, v in params.items() if v is not None}

@@ -23,9 +23,7 @@ class Applications(Resource):
     query_params_parser.add_argument(
         "account_id", type=str, help="Application account_id"
     )
-    query_params_parser.add_argument(
-        "fund_id", type=str, help="Application fund_id"
-    )
+    query_params_parser.add_argument("fund_id", type=str, help="Application fund_id")
     query_params_parser.add_argument(
         "account_id", type=str, help="Application account_id"
     )
@@ -35,9 +33,7 @@ class Applications(Resource):
     query_params_parser.add_argument(
         "order_rev",
         type=str,
-        help=(
-            "Order results by descending (default) or ascending (order_rev=1)"
-        ),
+        help=("Order results by descending (default) or ascending (order_rev=1)"),
     )
     query_params_parser.add_argument(
         "status_only", type=str, help="Only return results with given status"
@@ -87,9 +83,7 @@ class Section(Resource):
     put_section_parser = reqparse.RequestParser()
     put_section_parser.add_argument("name", location="json")
 
-    @applications_ns.doc(
-        "put_section", methods=["PUT"], parser=put_section_parser
-    )
+    @applications_ns.doc("put_section", methods=["PUT"], parser=put_section_parser)
     @applications_ns.marshal_with(section, code=201)
     def put(self):
         request_json = request.get_json(force=True)

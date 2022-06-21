@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from config import ACCOUNT_STORE_API_HOST
-from config import ACCOUNTS_ENDPOINT
+from config import Config
 from external_services.data import get_data
 
 
@@ -57,7 +56,7 @@ class AccountMethods(Account):
         if email is account_id is None:
             raise TypeError("Requires an email address or account_id")
 
-        url = ACCOUNT_STORE_API_HOST + ACCOUNTS_ENDPOINT
+        url = Config.ACCOUNT_STORE_API_HOST + Config.ACCOUNTS_ENDPOINT
         params = {"email_address": email, "account_id": account_id}
         response = get_data(url, params)
 

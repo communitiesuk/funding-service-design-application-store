@@ -1,9 +1,9 @@
 FROM python:3.10-slim-bullseye
 
 WORKDIR /app
-COPY . .
+COPY requirements.txt requirements.txt
 RUN python3 -m pip install --upgrade pip && pip install -r requirements.txt
-
+COPY . .
 
 EXPOSE 8080
 ENV FLASK_ENV=development

@@ -22,7 +22,9 @@ def test_create_application_is_successful(flask_test_client):
     post_data(flask_test_client, "/applications", application_data_a1)
 
     expected_length_fund_a = 1
-    count_fund_applications(flask_test_client, "fund-a", expected_length_fund_a)
+    count_fund_applications(
+        flask_test_client, "fund-a", expected_length_fund_a
+    )
 
     # Post first Fund B application and check length
     application_data_b1 = {
@@ -33,7 +35,9 @@ def test_create_application_is_successful(flask_test_client):
     post_data(flask_test_client, "/applications", application_data_b1)
 
     expected_length_fund_b = 1
-    count_fund_applications(flask_test_client, "fund-b", expected_length_fund_b)
+    count_fund_applications(
+        flask_test_client, "fund-b", expected_length_fund_b
+    )
 
     # Post second Fund B application and check length
     application_data_b2 = {
@@ -44,7 +48,9 @@ def test_create_application_is_successful(flask_test_client):
     post_data(flask_test_client, "/applications", application_data_b2)
 
     expected_length_fund_b = 2
-    count_fund_applications(flask_test_client, "fund-b", expected_length_fund_b)
+    count_fund_applications(
+        flask_test_client, "fund-b", expected_length_fund_b
+    )
 
 
 def test_get_all_applications(flask_test_client):
@@ -100,7 +106,9 @@ def test_get_all_applications(flask_test_client):
         },
     ]
     exclude_keys = ["id", "started_at", "project_name"]
-    exclude_regex_path_strings = [rf"root\[\d+\]\['{key}'\]" for key in exclude_keys]
+    exclude_regex_path_strings = [
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
+    ]
     exclude_regex_paths = [
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]
@@ -266,7 +274,9 @@ def test_get_applications_sorted_by_rev_account_id(flask_test_client):
         },
     ]
     exclude_keys = ["id", "started_at", "project_name"]
-    exclude_regex_path_strings = [rf"root\[\d+\]\['{key}'\]" for key in exclude_keys]
+    exclude_regex_path_strings = [
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
+    ]
     exclude_regex_paths = [
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]
@@ -298,7 +308,9 @@ def test_get_applications_of_account_id(flask_test_client):
         }
     ]
     exclude_keys = ["id", "started_at"]
-    exclude_regex_path_strings = [rf"root\[\d+\]\['{key}'\]" for key in exclude_keys]
+    exclude_regex_path_strings = [
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
+    ]
     exclude_regex_paths = [
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]
@@ -365,10 +377,15 @@ def test_update_section_of_application(flask_test_client):
     # COMPLETE not IN_PROGRESS
     expected_data.update({"section_name": section_name, "status": "COMPLETED"})
     exclude_keys = ["id", "started_at"]
-    exclude_regex_path_strings = [rf"root\[\d+\]\['{key}'\]" for key in exclude_keys]
+    exclude_regex_path_strings = [
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
+    ]
     exclude_question_keys = ["status", "category", "index"]
     exclude_regex_path_strings.extend(
-        [rf"root\['questions']\[\d+\]\['{key}'\]" for key in exclude_question_keys]
+        [
+            rf"root\['questions']\[\d+\]\['{key}'\]"
+            for key in exclude_question_keys
+        ]
     )
     exclude_metadata_keys = ["application_id"]
     exclude_regex_path_strings.extend(
@@ -442,12 +459,19 @@ def test_update_section_of_application_with_incomplete_answers(
     section_name = expected_data.pop("name")
     # The whole section has not been submit here (missing answer) so it
     # will have a status of IN_PROGRESS
-    expected_data.update({"section_name": section_name, "status": "IN_PROGRESS"})
+    expected_data.update(
+        {"section_name": section_name, "status": "IN_PROGRESS"}
+    )
     exclude_keys = ["id", "started_at"]
-    exclude_regex_path_strings = [rf"root\[\d+\]\['{key}'\]" for key in exclude_keys]
+    exclude_regex_path_strings = [
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
+    ]
     exclude_question_keys = ["status", "category", "index"]
     exclude_regex_path_strings.extend(
-        [rf"root\['questions']\[\d+\]\['{key}'\]" for key in exclude_question_keys]
+        [
+            rf"root\['questions']\[\d+\]\['{key}'\]"
+            for key in exclude_question_keys
+        ]
     )
     exclude_metadata_keys = ["application_id"]
     exclude_regex_path_strings.extend(

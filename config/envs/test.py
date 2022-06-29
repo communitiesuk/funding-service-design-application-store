@@ -6,6 +6,6 @@ from fsd_utils import configclass
 @configclass
 class TestConfig(DefaultConfig):
 
-    # Add any development specific config here
+    # Add any test specific config here
 
     pass

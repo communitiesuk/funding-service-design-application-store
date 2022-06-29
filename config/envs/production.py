@@ -6,6 +6,6 @@ from fsd_utils import configclass
 @configclass
 class ProductionConfig(DefaultConfig):
 
-    # Add any development specific config here
+    # Add any production specific config here
 
     pass

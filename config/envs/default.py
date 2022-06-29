@@ -10,7 +10,7 @@ class Default:
     #  Application Config
     SECRET_KEY = environ.get("SECRET_KEY") or "dev"
     SESSION_COOKIE_NAME = environ.get("SESSION_COOKIE_NAME", "session_cookie")
-    FLASK_ROOT = str(Path(__file__).parent.parent)
+    FLASK_ROOT = str(Path(__file__).parent.parent.parent)
     FLASK_ENV = environ.get("FLASK_ENV") or "development"
 
     #  APIs

@@ -10,7 +10,7 @@ deepdiff==5.7.0
 flake8==4.0.1
 Flask==2.0.3
 flask-restx==0.5.1
-fsd-tech @ git+https://github.com/communitiesuk/funding-service-design-utils.git@c35a1362832617ca182a7d71683726a37b0fd6f7
+git+https://github.com/communitiesuk/funding-service-design-utils.git@main
 idna==3.3
 iniconfig==1.1.1
 itsdangerous==2.1.0

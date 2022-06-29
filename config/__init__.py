@@ -4,15 +4,15 @@ FLASK_ENV = environ.get("FLASK_ENV")
 
 match FLASK_ENV:
     case "development":
-        from config.development import DevelopmentConfig as Config  # noqa
+        from config.envs.development import DevelopmentConfig as Config  # noqa
     case "dev":
         pass
     case "test":
-        from config.test import TestConfig as Config  # noqa
+        from config.envs.test import TestConfig as Config  # noqa
     case "production":
         pass
     case _:
-        from config.default import DefaultConfig as Config  # noqa
+        from config.envs.default import DefaultConfig as Config  # noqa
 
 try:
     Config.pretty_print()

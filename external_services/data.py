@@ -8,12 +8,12 @@ from config import Config
 from external_services.models.fund import Fund
 from external_services.models.round import Round
 
-FLASK_ROOT = Default.FLASK_ROOT
-FUND_ENDPOINT = Default.FUND_ENDPOINT
-FUND_ROUND_ENDPOINT = Default.FUND_ROUND_ENDPOINT
-FUND_ROUNDS_ENDPOINT = Default.FUND_ROUNDS_ENDPOINT
-FUND_STORE_API_HOST = Default.FUND_STORE_API_HOST
-FUNDS_ENDPOINT = Default.FUNDS_ENDPOINT
+FLASK_ROOT = Config.FLASK_ROOT
+FUND_ENDPOINT = Config.FUND_ENDPOINT
+FUND_ROUND_ENDPOINT = Config.FUND_ROUND_ENDPOINT
+FUND_ROUNDS_ENDPOINT = Config.FUND_ROUNDS_ENDPOINT
+FUND_STORE_API_HOST = Config.FUND_STORE_API_HOST
+FUNDS_ENDPOINT = Config.FUNDS_ENDPOINT
 
 
 def api_call(endpoint: str, method: str = "GET", params: dict = None):
@@ -93,7 +93,9 @@ def get_funds() -> List[Fund] | None:
 
 
 def get_fund(fund_id: str) -> Fund | None:
-    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(fund_id=fund_id)
+    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(
+        fund_id=fund_id
+    )
     response = get_data(endpoint)
     if response and "fund_id" in response:
         fund = Fund.from_json(response)
@@ -119,8 +121,9 @@ def get_round(fund_id: str, round_id: str) -> Round | None:
     """
     Gets round from round store api using round_id if given.
     """
-    round_endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ROUND_ENDPOINT.format(
-        fund_id=fund_id, round_id=round_id
+    round_endpoint = (
+        Config.FUND_STORE_API_HOST
+        + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
     round_response = get_data(round_endpoint)
     if round_response and "round_id" in round_response:

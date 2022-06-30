@@ -1,8 +1,8 @@
 from config import Config
 from external_services.data import post_data
 
-NOTIFICATION_SERVICE_HOST = Default.NOTIFICATION_SERVICE_HOST
-SEND_ENDPOINT = Default.SEND_ENDPOINT
+NOTIFICATION_SERVICE_HOST = Config.NOTIFICATION_SERVICE_HOST
+SEND_ENDPOINT = Config.SEND_ENDPOINT
 
 
 class Notification(object):
@@ -28,7 +28,9 @@ class Notification(object):
         response = post_data(url, params)
         if response:
             return True
-        raise NotificationError(message="Sorry, the notification could not be sent")
+        raise NotificationError(
+            message="Sorry, the notification could not be sent"
+        )
 
 
 class NotificationError(Exception):

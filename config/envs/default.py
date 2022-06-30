@@ -4,6 +4,7 @@ from pathlib import Path
 
 from fsd_utils import configclass
 
+
 @configclass
 class Default:
 

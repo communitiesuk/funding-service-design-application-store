@@ -1,5 +1,6 @@
 from api import api
 from flask import Flask
+import os
 
 
 def create_app() -> Flask:

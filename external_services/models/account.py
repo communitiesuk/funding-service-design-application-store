@@ -4,8 +4,8 @@ from typing import List
 from config import Config
 from external_services.data import get_data
 
-ACCOUNT_STORE_API_HOST = Default.ACCOUNT_STORE_API_HOST
-ACCOUNTS_ENDPOINT = Default.ACCOUNTS_ENDPOINT
+ACCOUNT_STORE_API_HOST = Config.ACCOUNT_STORE_API_HOST
+ACCOUNTS_ENDPOINT = Config.ACCOUNTS_ENDPOINT
 
 
 @dataclass
@@ -37,7 +37,9 @@ class AccountError(Exception):
 
 class AccountMethods(Account):
     @staticmethod
-    def get_account(email: str = None, account_id: str = None) -> Account | None:
+    def get_account(
+        email: str = None, account_id: str = None
+    ) -> Account | None:
         """
         Get an account from the account store using either
         an email address or account_id.

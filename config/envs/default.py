@@ -6,7 +6,7 @@ from fsd_utils import configclass
 
 
 @configclass
-class Default:
+class DefaultConfig:
 
     #  Application Config
     SECRET_KEY = environ.get("SECRET_KEY") or "dev"

@@ -39,6 +39,8 @@ From the top-level directory enter the command to install pip and the dependenci
 
     python3 -m pip install --upgrade pip && pip install -r requirements-dev.txt
 
+NB: requirements-dev.txt and requirements.txt is now updated using 'pip-compile requirements-dev.in' or 'pip-compile requirements.in', in order to update requirements we need to manually add the dependencies in the .in files.
+
 ## How to use
 
 Enter the virtual environment as described above, then run:

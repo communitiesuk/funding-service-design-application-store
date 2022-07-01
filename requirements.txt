@@ -6,6 +6,8 @@
 #
 alembic==1.8.0
     # via flask-migrate
+aniso8601==9.0.1
+    # via flask-restx
 attrs==21.4.0
     # via jsonschema
 certifi==2021.10.8
@@ -30,8 +32,11 @@ flask==2.0.3
     # via
     #   connexion
     #   flask-migrate
+    #   flask-restx
     #   flask-sqlalchemy
 flask-migrate==3.1.0
+    # via -r requirements.in
+flask-restx==0.5.1
     # via -r requirements.in
 flask-sqlalchemy==2.5.1
     # via
@@ -56,6 +61,7 @@ jinja2==3.0.3
 jsonschema==4.4.0
     # via
     #   connexion
+    #   flask-restx
     #   openapi-schema-validator
     #   openapi-spec-validator
 mako==1.2.1
@@ -80,6 +86,8 @@ pyrsistent==0.18.1
     # via jsonschema
 python-dotenv==0.20.0
     # via funding-service-design-utils
+pytz==2022.1
+    # via flask-restx
 pyyaml==6.0
     # via
     #   clickclick
@@ -100,7 +108,9 @@ ruamel-yaml-clib==0.2.6
 semver==2.13.0
     # via prance
 six==1.16.0
-    # via prance
+    # via
+    #   flask-restx
+    #   prance
 slugify==0.0.1
     # via -r requirements.in
 sqlalchemy==1.4.39
@@ -116,6 +126,7 @@ werkzeug==2.0.3
     # via
     #   connexion
     #   flask
+    #   flask-restx
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

@@ -8,6 +8,10 @@ alembic==1.8.0
     # via
     #   -r requirements.txt
     #   flask-migrate
+aniso8601==9.0.1
+    # via
+    #   -r requirements.txt
+    #   flask-restx
 asserts==0.11.1
     # via -r requirements-dev.in
 atomicwrites==1.4.0
@@ -72,9 +76,12 @@ flask==2.0.3
     #   -r requirements.txt
     #   connexion
     #   flask-migrate
+    #   flask-restx
     #   flask-sqlalchemy
     #   pytest-flask
 flask-migrate==3.1.0
+    # via -r requirements.txt
+flask-restx==0.5.1
     # via -r requirements.txt
 flask-sqlalchemy==2.5.1
     # via
@@ -116,6 +123,7 @@ jsonschema==4.4.0
     # via
     #   -r requirements.txt
     #   connexion
+    #   flask-restx
     #   openapi-schema-validator
     #   openapi-spec-validator
 mako==1.2.1
@@ -190,6 +198,10 @@ python-dotenv==0.20.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+pytz==2022.1
+    # via
+    #   -r requirements.txt
+    #   flask-restx
 pyyaml==6.0
     # via
     #   -r requirements.txt
@@ -223,6 +235,7 @@ semver==2.13.0
 six==1.16.0
     # via
     #   -r requirements.txt
+    #   flask-restx
     #   prance
     #   virtualenv
 slugify==0.0.1
@@ -257,6 +270,7 @@ werkzeug==2.0.3
     #   -r requirements.txt
     #   connexion
     #   flask
+    #   flask-restx
     #   pytest-flask
 wheel==0.37.1
     # via pip-tools

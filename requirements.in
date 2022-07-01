@@ -9,3 +9,4 @@ requests
 SQLAlchemy
 swagger-ui-bundle
 slugify
+python-dateutil

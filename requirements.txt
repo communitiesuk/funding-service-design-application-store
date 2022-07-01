@@ -101,6 +101,8 @@ semver==2.13.0
     # via prance
 six==1.16.0
     # via prance
+slugify==0.0.1
+    # via -r requirements.in
 sqlalchemy==1.4.39
     # via
     #   -r requirements.in

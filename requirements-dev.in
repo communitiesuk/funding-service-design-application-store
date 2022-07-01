@@ -7,3 +7,4 @@ pytest
 pytest-env
 pytest-flask
 pip-tools
+asserts

@@ -7,3 +7,4 @@ prance
 requests
 SQLAlchemy
 swagger-ui-bundle
+slugify

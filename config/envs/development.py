@@ -1,4 +1,6 @@
 """Flask configuration."""
+import logging
+
 from config.envs.default import DefaultConfig
 from fsd_utils import configclass
 
@@ -6,6 +8,4 @@ from fsd_utils import configclass
 @configclass
 class DevelopmentConfig(DefaultConfig):
 
-    # Add any development specific config here
-
-    pass
+    FSD_LOGGING_LEVEL = logging.DEBUG

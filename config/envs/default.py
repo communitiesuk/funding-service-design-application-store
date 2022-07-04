@@ -1,4 +1,5 @@
 """Flask configuration."""
+import logging
 from os import environ
 from pathlib import Path
 
@@ -13,6 +14,8 @@ class DefaultConfig:
     SESSION_COOKIE_NAME = environ.get("SESSION_COOKIE_NAME", "session_cookie")
     FLASK_ROOT = str(Path(__file__).parent.parent.parent)
     FLASK_ENV = environ.get("FLASK_ENV") or "development"
+
+    FSD_LOGGING_LEVEL = logging.WARN
 
     #  APIs
     TEST_FUND_STORE_API_HOST = "fund_store"

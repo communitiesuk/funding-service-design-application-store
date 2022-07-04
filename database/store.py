@@ -3,7 +3,7 @@ import uuid
 from operator import itemgetter
 from typing import List
 
-from config import NOTIFY_TEMPLATE_SUBMIT_APPLICATION
+from config import Config
 from database.initial_data import fund_round_sections
 from database.initial_data import initial_application_store_state
 from dateutil import parser as date_parser
@@ -84,9 +84,7 @@ class ApplicationDataAccessObject(object):
                     f"Could not find form sections for {fund_id} - {round_id}"
                 )
             return sections.copy()
-        raise Exception(
-            f"Could not find fund round for {fund_id} - {round_id}"
-        )
+        raise Exception(f"Could not find fund round for {fund_id} - {round_id}")
 
     def submit_application(self, application_id):
         """
@@ -104,13 +102,11 @@ class ApplicationDataAccessObject(object):
         ).strftime("%Y-%m-%d %H:%M:%S")
         self._update_statuses(application_id)
         # Get Account Email
-        account = AccountMethods.get_account(
-            account_id=application.get("account_id")
-        )
+        account = AccountMethods.get_account(account_id=application.get("account_id"))
 
         # Send notification
         Notification.send(
-            NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
+            Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
             account.email,
             {"application": self._applications[application_id]},
         )
@@ -184,16 +180,10 @@ class ApplicationDataAccessObject(object):
             ] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             # IF section includes "your-project-name" field
             # THEN update application project name
-            project_name = self._find_answer_by_key(
-                new_json, "your-project-name"
-            )
+            project_name = self._find_answer_by_key(new_json, "your-project-name")
             if project_name:
-                self._applications[application_id][
-                    "project_name"
-                ] = project_name
-            return self._applications[application_id]["sections"][
-                section_index
-            ]
+                self._applications[application_id]["project_name"] = project_name
+            return self._applications[application_id]["sections"][section_index]
         return None
 
     def get_application(self, application_id: str):
@@ -216,8 +206,7 @@ class ApplicationDataAccessObject(object):
             List of applications
         """
         return [
-            application
-            for application_id, application in self._applications.items()
+            application for application_id, application in self._applications.items()
         ]
 
     @staticmethod
@@ -341,9 +330,7 @@ class ApplicationDataAccessObject(object):
             application_id: The application id
         """
         application = self._applications[application_id]
-        section_statuses = [
-            section["status"] for section in application["sections"]
-        ]
+        section_statuses = [section["status"] for section in application["sections"]]
         if "IN_PROGRESS" in section_statuses:
             status = "IN_PROGRESS"
         elif "COMPLETED" and "NOT_STARTED" in section_statuses:
@@ -407,9 +394,9 @@ class ApplicationDataAccessObject(object):
             match = True
 
             # Exclude results if given parameters are not a match
-            if status_only and status_only.replace(
-                " ", "_"
-            ).upper() != application.get("status"):
+            if status_only and status_only.replace(" ", "_").upper() != application.get(
+                "status"
+            ):
                 match = False
 
             if id_contains and id_contains not in application.get("id"):

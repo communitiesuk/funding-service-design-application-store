@@ -1,6 +1,8 @@
-from config import NOTIFICATION_SERVICE_HOST
-from config import SEND_ENDPOINT
+from config import Config
 from external_services.data import post_data
+
+NOTIFICATION_SERVICE_HOST = Config.NOTIFICATION_SERVICE_HOST
+SEND_ENDPOINT = Config.SEND_ENDPOINT
 
 
 class Notification(object):
@@ -21,7 +23,7 @@ class Notification(object):
             content: (dict) A dictionary of content to send to
                 fill out the notification template
         """
-        url = NOTIFICATION_SERVICE_HOST + SEND_ENDPOINT
+        url = Config.NOTIFICATION_SERVICE_HOST + Config.SEND_ENDPOINT
         params = {"type": template_type, "to": to_email, "content": content}
         response = post_data(url, params)
         if response:

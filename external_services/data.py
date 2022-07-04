@@ -4,14 +4,16 @@ import urllib.parse
 from typing import List
 
 import requests
-from config import FLASK_ROOT
-from config import FUND_ENDPOINT
-from config import FUND_ROUND_ENDPOINT
-from config import FUND_ROUNDS_ENDPOINT
-from config import FUND_STORE_API_HOST
-from config import FUNDS_ENDPOINT
+from config import Config
 from external_services.models.fund import Fund
 from external_services.models.round import Round
+
+FLASK_ROOT = Config.FLASK_ROOT
+FUND_ENDPOINT = Config.FUND_ENDPOINT
+FUND_ROUND_ENDPOINT = Config.FUND_ROUND_ENDPOINT
+FUND_ROUNDS_ENDPOINT = Config.FUND_ROUNDS_ENDPOINT
+FUND_STORE_API_HOST = Config.FUND_STORE_API_HOST
+FUNDS_ENDPOINT = Config.FUNDS_ENDPOINT
 
 
 def api_call(endpoint: str, method: str = "GET", params: dict = None):
@@ -81,7 +83,7 @@ def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
 
 
 def get_funds() -> List[Fund] | None:
-    endpoint = FUND_STORE_API_HOST + FUNDS_ENDPOINT
+    endpoint = Config.FUND_STORE_API_HOST + Config.FUNDS_ENDPOINT
     response = get_data(endpoint)
     if response and len(response) > 0:
         funds = []
@@ -91,7 +93,9 @@ def get_funds() -> List[Fund] | None:
 
 
 def get_fund(fund_id: str) -> Fund | None:
-    endpoint = FUND_STORE_API_HOST + FUND_ENDPOINT.format(fund_id=fund_id)
+    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(
+        fund_id=fund_id
+    )
     response = get_data(endpoint)
     if response and "fund_id" in response:
         fund = Fund.from_json(response)
@@ -102,7 +106,7 @@ def get_fund(fund_id: str) -> Fund | None:
 
 
 def get_rounds(fund_id: str) -> Fund | List:
-    endpoint = FUND_STORE_API_HOST + FUND_ROUNDS_ENDPOINT.format(
+    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ROUNDS_ENDPOINT.format(
         fund_id=fund_id
     )
     response = get_data(endpoint)
@@ -117,8 +121,9 @@ def get_round(fund_id: str, round_id: str) -> Round | None:
     """
     Gets round from round store api using round_id if given.
     """
-    round_endpoint = FUND_STORE_API_HOST + FUND_ROUND_ENDPOINT.format(
-        fund_id=fund_id, round_id=round_id
+    round_endpoint = (
+        Config.FUND_STORE_API_HOST
+        + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
     round_response = get_data(round_endpoint)
     if round_response and "round_id" in round_response:

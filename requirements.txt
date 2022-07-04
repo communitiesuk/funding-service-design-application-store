@@ -22,18 +22,17 @@ click==8.0.3
     #   flask
 clickclick==20.10.2
     # via connexion
-colorama==0.4.5
-    # via click
 commonmark==0.9.1
     # via rich
 connexion==2.14.0
     # via -r requirements.in
-flask==2.0.3
+flask==2.1.2
     # via
     #   connexion
     #   flask-migrate
     #   flask-restx
     #   flask-sqlalchemy
+    #   funding-service-design-utils
 flask-migrate==3.1.0
     # via -r requirements.in
 flask-restx==0.5.1
@@ -42,10 +41,10 @@ flask-sqlalchemy==2.5.1
     # via
     #   -r requirements.in
     #   flask-migrate
-git+https://github.com/communitiesuk/funding-service-design-utils.git@main
+funding-service-design-utils @ git+https://github.com/communitiesuk/funding-service-design-utils.git@main
     # via -r requirements.in
-greenlet==1.1.2
-    # via sqlalchemy
+gunicorn==20.1.0
+    # via funding-service-design-utils
 idna==3.3
     # via requests
 inflection==0.5.1
@@ -88,8 +87,12 @@ python-dateutil==2.8.2
     # via -r requirements.in
 python-dotenv==0.20.0
     # via funding-service-design-utils
+python-json-logger==2.0.2
+    # via funding-service-design-utils
 pytz==2022.1
-    # via flask-restx
+    # via
+    #   flask-restx
+    #   funding-service-design-utils
 pyyaml==6.0
     # via
     #   clickclick

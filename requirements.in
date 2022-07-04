@@ -2,7 +2,7 @@ connexion
 Flask-Migrate
 Flask-SQLAlchemy
 flask_restx
-https://github.com/communitiesuk/funding-service-design-utils/archive/refs/tags/0.0.5.tar.gz
+git+https://github.com/communitiesuk/funding-service-design-utils.git@main
 openapi-spec-validator
 prance
 requests

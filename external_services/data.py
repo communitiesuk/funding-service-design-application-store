@@ -8,13 +8,6 @@ from config import Config
 from external_services.models.fund import Fund
 from external_services.models.round import Round
 
-FLASK_ROOT = Config.FLASK_ROOT
-FUND_ENDPOINT = Config.FUND_ENDPOINT
-FUND_ROUND_ENDPOINT = Config.FUND_ROUND_ENDPOINT
-FUND_ROUNDS_ENDPOINT = Config.FUND_ROUNDS_ENDPOINT
-FUND_STORE_API_HOST = Config.FUND_STORE_API_HOST
-FUNDS_ENDPOINT = Config.FUNDS_ENDPOINT
-
 
 def api_call(endpoint: str, method: str = "GET", params: dict = None):
     if params:
@@ -57,7 +50,7 @@ def post_data(endpoint: str, params: dict = None):
 
 def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
     api_data_json = os.path.join(
-        FLASK_ROOT,
+        Config.FLASK_ROOT,
         "tests",
         "api_data",
         method.lower() + "_endpoint_data.json",

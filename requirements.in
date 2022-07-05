@@ -1,0 +1,12 @@
+connexion
+Flask-Migrate
+Flask-SQLAlchemy
+flask_restx
+git+https://github.com/communitiesuk/funding-service-design-utils.git@main
+openapi-spec-validator
+prance
+requests
+SQLAlchemy
+swagger-ui-bundle
+slugify
+python-dateutil

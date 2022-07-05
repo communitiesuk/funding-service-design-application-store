@@ -16,10 +16,14 @@ section_inbound = applications_ns.model(
             fields.Nested(
                 question,
                 required=True,
-                description=("The payload of application questions and answers."),
+                description=(
+                    "The payload of application questions and answers."
+                ),
             ),
         ),
-        "metadata": fields.Nested(metadata, description="Application metadata"),
+        "metadata": fields.Nested(
+            metadata, description="Application metadata"
+        ),
     },
 )
 
@@ -39,10 +43,14 @@ section = applications_ns.model(
             fields.Nested(
                 question,
                 required=True,
-                description=("The payload of application questions and answers."),
+                description=(
+                    "The payload of application questions and answers."
+                ),
             ),
         ),
-        "metadata": fields.Nested(metadata, description="Application metadata"),
+        "metadata": fields.Nested(
+            metadata, description="Application metadata"
+        ),
     },
 )
 

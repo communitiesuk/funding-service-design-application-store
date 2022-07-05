@@ -43,6 +43,8 @@ flask-sqlalchemy==2.5.1
     #   flask-migrate
 funding-service-design-utils @ git+https://github.com/communitiesuk/funding-service-design-utils.git@main
     # via -r requirements.in
+greenlet==1.1.2
+    # via sqlalchemy
 gunicorn==20.1.0
     # via funding-service-design-utils
 idna==3.3

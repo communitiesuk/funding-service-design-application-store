@@ -13,7 +13,9 @@ field = applications_ns.model(
         "title": fields.String(
             required=True, description="Field title", example="Applicant name"
         ),
-        "type": fields.String(required=True, description="Field type", example="text"),
+        "type": fields.String(
+            required=True, description="Field type", example="text"
+        ),
         "answer": fields.String(
             required=True,
             description="Field answer or value",

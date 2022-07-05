@@ -35,11 +35,17 @@ Clone the repository
 
 ### Install dependencies
 
+requirements-dev.txt and requirements.txt are updated using [pip-tools pip-compile](https://github.com/jazzband/pip-tools)
+To update requirements please manually add the dependencies in the .in files (not the requirements.txt files)
+Then run (in the following order):
+
+    pip-compile requirements.in
+
+    pip-compile requirements-dev.in
+
 From the top-level directory enter the command to install pip and the dependencies of the project
 
     python3 -m pip install --upgrade pip && pip install -r requirements-dev.txt
-
-NB: requirements-dev.txt and requirements.txt is now updated using 'pip-compile requirements-dev.in' or 'pip-compile requirements.in', in order to update requirements we need to manually add the dependencies in the .in files.
 
 ## How to use
 

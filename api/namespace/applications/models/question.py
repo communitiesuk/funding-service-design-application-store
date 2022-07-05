@@ -22,7 +22,9 @@ question = applications_ns.model(
         "category": fields.String(
             required=False, description="Category", example="abcxyz"
         ),
-        "index": fields.Integer(required=False, description="Index", example=0),
+        "index": fields.Integer(
+            required=False, description="Index", example=0
+        ),
     },
 )
 

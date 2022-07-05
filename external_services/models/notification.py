@@ -1,9 +1,6 @@
 from config import Config
 from external_services.data import post_data
 
-NOTIFICATION_SERVICE_HOST = Config.NOTIFICATION_SERVICE_HOST
-SEND_ENDPOINT = Config.SEND_ENDPOINT
-
 
 class Notification(object):
     """

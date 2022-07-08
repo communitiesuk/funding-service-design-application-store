@@ -5,9 +5,9 @@ from typing import List
 
 import requests
 from config import Config
+from external_services.exceptions import DataRetrivalError
 from external_services.models.fund import Fund
 from external_services.models.round import Round
-from external_services.exceptions import DataRetrivalError
 
 
 def api_call(endpoint: str, method: str = "GET", params: dict = None):
@@ -26,26 +26,26 @@ def api_call(endpoint: str, method: str = "GET", params: dict = None):
 
 
 def get_data(endpoint: str, params: dict = None):
-    try:
-        if params:
-            params = {k: v for k, v in params.items() if v is not None}
-        if endpoint.startswith("http"):
-            req = requests.PreparedRequest()
-            req.prepare_url(endpoint, params)
-            response = requests.get(req.url)
-            if response.status_code == 200:
-                return response.json()
+    if params:
+        params = {k: v for k, v in params.items() if v is not None}
+    if endpoint.startswith("http"):
+        req = requests.PreparedRequest()
+        req.prepare_url(endpoint, params)
+        response = requests.get(req.url)
+        if response.status_code == 200:
+            return response.json()
         else:
-            return local_api_call(endpoint, params, "get")
-    
-    except:  # noqa
-        raise DataRetrivalError(
-            message=(
-                f"get_data function failed at {__name__},"
-                f" for the endpoint: '{endpoint}' and"
-                f"parameters: '{params}'"
+            raise DataRetrivalError(
+                message=(
+                    f"get_data function failed at {__name__},"
+                    f" for the endpoint: '{endpoint}' and"
+                    f"parameters: '{params}' with the status"
+                    f"code: {response.status_code}."
+                )
             )
-        )
+    else:
+        return local_api_call(endpoint, params, "get")
+
 
 def post_data(endpoint: str, params: dict = None):
     if params:

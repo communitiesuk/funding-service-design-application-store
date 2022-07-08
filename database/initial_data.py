@@ -617,10 +617,10 @@ initial_application_store_state = {
         "status": "NOT_STARTED",
         "fund_id": "funding-service-design",
         "round_id": "summer",
-        "project_name": None,
+        "project_name": "Test project",
         "date_submitted": None,
         "started_at": "2022-05-20 14:47:12",
-        "last_edited": None,
+        "last_edited": "2022-06-20 14:47:12",
         "sections": default_sections,
     }
 }

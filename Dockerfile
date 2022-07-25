@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.10-bullseye
 
 # install git as pip needs to clone fsd_utils
 RUN apt update && apt -yq install git

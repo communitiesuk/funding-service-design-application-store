@@ -1,7 +1,7 @@
 ---
 applications:
 - name: funding-service-design-application-store-dev
-  memory: 64M
+  memory: 256M
   buildpacks:
   - https://github.com/cloudfoundry/python-buildpack.git
   command: flask run --host 0.0.0.0 --port 8080
@@ -10,7 +10,7 @@ applications:
     ACCOUNT_STORE_API_HOST: https://funding-service-design-account-store-dev.london.cloudapps.digital
 
 - name: funding-service-design-application-store-test
-  memory: 64M
+  memory: 256M
   buildpacks:
   - https://github.com/cloudfoundry/python-buildpack.git
   command: flask run --host 0.0.0.0 --port 8080

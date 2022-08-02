@@ -18,18 +18,6 @@ from external_services.data import get_round
 from external_services.models.account import AccountMethods
 from external_services.models.notification import Notification
 
-def get_application_sections(application_id):
-
-    pass
-
-def get_application(application_id):
-
-    pass
-
-
-
-
-
 class ApplicationDataAccessObject(object):
     """
     A data interface to our currently in-memory data store

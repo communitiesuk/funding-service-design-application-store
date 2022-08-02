@@ -1,4 +1,7 @@
-class Status(enum.Enum):
+from enum import Enum
+
+
+class Status(Enum.Enum):
     NOT_STARTED = 0
     IN_PROGRESS = 1
     SUBMITTED = 2

@@ -12,7 +12,7 @@ def started_at():
     formatted_date = raw_date.strftime("%Y-%m-%d %H:%M:%S")
     return formatted_date
 
-class applications(db.model):
+class Applications(db.model):
 
         id = db.Column(
             "id",
@@ -42,7 +42,6 @@ class applications(db.model):
         project_name = db.Column(
             "project_name", 
             db.String(),
-            nullable=False
         )
 
         started_at = db.Column("created_at", DateTime(), default=datetime.utcnow)
@@ -56,4 +55,18 @@ class applications(db.model):
 
         date_submitted = db.Column("date_submitted", DateTime())
 
-        last_edited = db.Column("last_edited", DateTime()) 
+        last_edited = db.Column("last_edited", DateTime())
+        
+        def as_json(self):
+
+            return {
+                "id" : str(self.id),
+                "account_id" : self.account_id,
+                "round_id" : self.round_id,
+                "fund_id" : self.fund_id,
+                "project_name" : self.project_name,
+                "started_at" : self.started_at.strftime("%Y-%m-%d %H:%M:%S"),
+                "status" : self.status,
+                "date_submitted" : self.date_submitted,
+                "last_edited" : self.last_edited
+            }

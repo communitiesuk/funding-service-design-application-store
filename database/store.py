@@ -1,7 +1,12 @@
 import datetime
+from tkinter import SE
 import uuid
 from operator import itemgetter
 from typing import List
+
+from db.models.applications import Applications
+from db.models.sections import Sections
+from db import db
 
 from config import Config
 from database.initial_data import fund_round_sections
@@ -12,6 +17,17 @@ from external_services.data import get_fund
 from external_services.data import get_round
 from external_services.models.account import AccountMethods
 from external_services.models.notification import Notification
+
+def get_application_sections(application_id):
+
+    pass
+
+def get_application(application_id):
+
+    pass
+
+
+
 
 
 class ApplicationDataAccessObject(object):
@@ -47,6 +63,61 @@ class ApplicationDataAccessObject(object):
             applications.update({application.get("id"): application_summary})
         return applications
 
+        
+    @staticmethod
+    def add_new_section(section_dict, application_id, status="NOT_STARTED"):
+
+        new_section_row = Sections(application_id=application_id, status=status, json=section_dict)
+
+        db.session.add(new_section_row)
+        db.commit()
+
+    @staticmethod
+    def get_sections_by_app_id(app_id, as_json=True):
+
+        sections = db.session.query(Sections).filter(Sections.application_id == app_id).all()
+
+        if as_json:
+
+            return [ section.json for section in sections ]
+
+        else:
+
+            return sections
+
+
+    @staticmethod
+    def get_application_by_id(app_id):
+
+        application = db.session.get(Applications, app_id)
+
+        sections = ApplicationDataAccessObject.get_sections_by_app_id(app_id)
+
+        return {**application.as_json(), "sections" : sections}
+        
+    @staticmethod
+    def create_application_postgres(account_id,fund_id,round_id):
+
+        sections = ApplicationDataAccessObject._get_blank_sections()
+
+        new_application_row = Applications(account_id=account_id, fund_id=fund_id, round_id=round_id)
+
+        application_id = new_application_row.id
+
+        db.session.add(new_application_row)
+
+        db.session.commit()
+
+        for section in sections:
+            for question in section.get("questions"):
+                question.update({"status": "NOT_STARTED"})
+
+            ApplicationDataAccessObject.add_new_section(application_id=application_id, json=section)
+
+        sections = ApplicationDataAccessObject.get_sections_by_app_id(application_id)
+        
+        return {**new_application_row, "sections" : sections} 
+
     def create_application(self, account_id, fund_id, round_id):
         """
         Mints a fresh application for a given account_id, fund and round
@@ -80,7 +151,7 @@ class ApplicationDataAccessObject(object):
         if fund and fund_round:
             sections = fund_round_sections.get(":".join([fund_id, round_id]))
             if not sections:
-                raise Exception(
+                raise Exception(        
                     f"Could not find form sections for {fund_id} - {round_id}"
                 )
             return sections.copy()
@@ -121,6 +192,16 @@ class ApplicationDataAccessObject(object):
             section_name: (str) The name of the section
         """
         return self._applications[application_id]["sections"][section_name]
+
+    def get_section_postgres(self, application_id, section_name):
+
+        sections = self.get_sections_by_app_id(application_id)
+
+        for section in sections:
+
+            if section["section_name"] == section_name:
+
+                return section
 
     def _find_answer_by_key(self, data: dict, target):
         """
@@ -343,6 +424,53 @@ class ApplicationDataAccessObject(object):
             status = "NOT_STARTED"
         application["status"] = status
         self._applications.update({application_id: application})
+
+    def update_section_postgres(self, application_id, section_name, new_json):
+
+            section_sql_row = db.session.query(Sections).filter(Sections.application_id == application_id, Sections.section_name == section_name).one()
+
+            section_sql_row.json = new_json
+
+            db.session.commit()
+
+    def update_application_postgres(self, application_id,application_dict):
+
+        sections_sql_rows = self.get_sections_by_app_id(application_id, as_json=False)
+
+        sections_json = application_dict.pop("sections")
+
+        db.session.query(Applications).update(application_dict)
+
+        db.session.commit()
+
+        for section_json in sections_json:
+
+            section_name = section_json["section_name"]
+
+            self.update_section_postgres(application_id=application_id, section_name=section_name, new_json=section_json)
+
+    def _update_status_postgres(self, application_id: str):
+        """
+        Updates the application status for an entire application,
+        based on status of individual sections
+
+        Args:
+            application_id: The application id
+        """
+        application = self.get_application_by_id(application_id)
+        section_statuses = [section["status"] for section in application["sections"]]
+        if "IN_PROGRESS" in section_statuses:
+            status = "IN_PROGRESS"
+        elif "COMPLETED" and "NOT_STARTED" in section_statuses:
+            status = "IN_PROGRESS"
+        elif "COMPLETED" in section_statuses:
+            status = "COMPLETED"
+        elif "SUBMITTED" in section_statuses:
+            status = "SUBMITTED"
+        else:
+            status = "NOT_STARTED"
+        application["status"] = status
+        self.update_application_postgres(application_id, application)
 
     def get_status(self, application_id: str):
         """

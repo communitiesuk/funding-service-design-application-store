@@ -66,10 +66,10 @@ def test_get_all_applications(flask_test_client):
             "account_id": "test-user",
             "fund_id": "funding-service-design",
             "round_id": "summer",
-            "project_name": None,
+            "project_name": "Test project",
             "date_submitted": None,
             "started_at": "2022-05-20 14:47:12",
-            "last_edited": None,
+            "last_edited": "2022-06-20 14:47:12",
         },
         {
             "id": "string",
@@ -221,7 +221,7 @@ def test_get_all_applications(flask_test_client):
 #     )
 
 
-def test_get_applications_sorted_by_rev_account_id(flask_test_client):
+def test_get_applications_sorted_by_reverse_account_id(flask_test_client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications reverse sorted by account_id
@@ -267,10 +267,10 @@ def test_get_applications_sorted_by_rev_account_id(flask_test_client):
             "account_id": "test-user",
             "fund_id": "funding-service-design",
             "round_id": "summer",
-            "project_name": None,
+            "project_name": "Test project",
             "date_submitted": None,
             "started_at": "2022-05-20 14:47:12",
-            "last_edited": None,
+            "last_edited": "2022-06-20 14:47:12",
         },
     ]
     exclude_keys = ["id", "started_at", "project_name"]
@@ -503,10 +503,10 @@ def test_get_application_by_application_id(flask_test_client):
         "status": "NOT_STARTED",
         "fund_id": "funding-service-design",
         "round_id": "summer",
-        "project_name": None,
+        "project_name": "Test project",
         "date_submitted": None,
         "started_at": "2022-05-20 14:47:12",
-        "last_edited": None,
+        "last_edited": "2022-06-20 14:47:12",
         "sections": [],
     }
 

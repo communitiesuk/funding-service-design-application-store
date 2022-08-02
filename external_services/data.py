@@ -5,6 +5,7 @@ from typing import List
 
 import requests
 from config import Config
+from external_services.exceptions import DataRetrivalError
 from external_services.models.fund import Fund
 from external_services.models.round import Round
 
@@ -33,6 +34,15 @@ def get_data(endpoint: str, params: dict = None):
         response = requests.get(req.url)
         if response.status_code == 200:
             return response.json()
+        else:
+            raise DataRetrivalError(
+                message=(
+                    f"get_data function failed at {__name__},"
+                    f" for the endpoint: '{endpoint}' and"
+                    f"parameters: '{params}' with the status"
+                    f"code: {response.status_code}."
+                )
+            )
     else:
         return local_api_call(endpoint, params, "get")
 

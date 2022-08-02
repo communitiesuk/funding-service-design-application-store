@@ -10,6 +10,16 @@ def create_app() -> Flask:
 
     api.init_app(flask_app)
     logging.init_app(flask_app)
+
+    from db import db, migrate
+
+    # Bind SQLAlchemy ORM to Flask app
+    db.init_app(flask_app)
+    # Bind Flask-Migrate db utilities to Flask app
+    migrate.init_app(
+    flask_app, db, directory="db/migrations", render_as_batch=True
+    )
+
     return flask_app
 
 

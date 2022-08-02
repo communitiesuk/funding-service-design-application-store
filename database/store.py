@@ -65,7 +65,7 @@ class ApplicationDataAccessObject(object):
 
         
     @staticmethod
-    def add_new_section(section_dict, application_id, status="NOT_STARTED"):
+    def add_new_section_postgres(section_dict, application_id, status="NOT_STARTED"):
 
         new_section_row = Sections(application_id=application_id, status=status, json=section_dict)
 
@@ -73,7 +73,7 @@ class ApplicationDataAccessObject(object):
         db.commit()
 
     @staticmethod
-    def get_sections_by_app_id(app_id, as_json=True):
+    def get_sections_by_app_id_postgres(app_id, as_json=True):
 
         sections = db.session.query(Sections).filter(Sections.application_id == app_id).all()
 
@@ -87,11 +87,11 @@ class ApplicationDataAccessObject(object):
 
 
     @staticmethod
-    def get_application_by_id(app_id):
+    def get_application_by_id_postgres(app_id):
 
         application = db.session.get(Applications, app_id)
 
-        sections = ApplicationDataAccessObject.get_sections_by_app_id(app_id)
+        sections = ApplicationDataAccessObject.get_sections_by_app_id_postgres(app_id)
 
         return {**application.as_json(), "sections" : sections}
         
@@ -112,9 +112,9 @@ class ApplicationDataAccessObject(object):
             for question in section.get("questions"):
                 question.update({"status": "NOT_STARTED"})
 
-            ApplicationDataAccessObject.add_new_section(application_id=application_id, json=section)
+            ApplicationDataAccessObject.add_new_section_postgres(application_id=application_id, json=section)
 
-        sections = ApplicationDataAccessObject.get_sections_by_app_id(application_id)
+        sections = ApplicationDataAccessObject.get_sections_by_app_id_postgres(application_id)
         
         return {**new_application_row, "sections" : sections} 
 
@@ -157,6 +157,28 @@ class ApplicationDataAccessObject(object):
             return sections.copy()
         raise Exception(f"Could not find fund round for {fund_id} - {round_id}")
 
+    def submit_application_postgres(self,application_id):
+
+        application = self.get_application_by_id_postgres(application_id)
+
+        application["date_submitted"] = datetime.datetime.now(
+            datetime.timezone.utc
+        ).strftime("%Y-%m-%d %H:%M:%S")
+
+        self._update_statuses_postgres(application_id)
+
+        account = AccountMethods.get_account(account_id=application.get("account_id"))
+
+        # Send notification
+        Notification.send(
+            Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
+            account.email,
+            {"application": self._applications[application_id]},
+        )
+
+
+
+
     def submit_application(self, application_id):
         """
         Sets an application status to SUBMITTED, adds a date_submitted
@@ -195,7 +217,7 @@ class ApplicationDataAccessObject(object):
 
     def get_section_postgres(self, application_id, section_name):
 
-        sections = self.get_sections_by_app_id(application_id)
+        sections = self.get_sections_by_app_id_postgres(application_id)
 
         for section in sections:
 
@@ -329,6 +351,18 @@ class ApplicationDataAccessObject(object):
         self._update_section_statuses(application_id)
         self._update_status(application_id)
 
+    def _update_statuses_postgres(self, application_id: str):
+        """
+        Updates the statuses for an entire application,
+        sections and questions
+
+        Args:
+            application_id: The application id
+        """
+        self._update_question_statuses_postgres(application_id)
+        self._update_section_statuses_postgres(application_id)
+        self._update_status_postgres(application_id)
+
     def _update_question_statuses(self, application_id: str):
         """
         Updates the question statuses of each question if a value is present
@@ -371,6 +405,48 @@ class ApplicationDataAccessObject(object):
 
         self._applications.update({application_id: application})
 
+    def _update_question_statuses_postgres(self, application_id: str):
+        """
+        Updates the question statuses of each question if a value is present
+
+        Args:
+            application_id: The application id
+        """
+        application = self.get_application_by_id_postgres(application_id)
+        for section in application["sections"]:
+            for question in section["questions"]:
+                question["status"] = "NOT_STARTED"
+                for index, field in enumerate(question["fields"]):
+                    field_answered = (
+                        True
+                        if "answer" in field
+                        and field["answer"] != ""
+                        and field["answer"] is not None
+                        else False
+                    )
+                    first_field_in_question = True if index == 0 else False
+                    all_fields_complete = (
+                        True if question["status"] == "COMPLETED" else False
+                    )
+                    question_complete_or_partially_complete = (
+                        True
+                        if question["status"] == ("COMPLETED" or "IN_PROGRESS")
+                        else False
+                    )
+                    if application.get("date_submitted"):
+                        question["status"] = "SUBMITTED"
+                        break
+                    elif field_answered and (
+                        all_fields_complete or first_field_in_question
+                    ):
+                        question["status"] = "COMPLETED"
+                    elif field_answered:
+                        question["status"] = "IN_PROGRESS"
+                    elif not question_complete_or_partially_complete:
+                        question["status"] = "NOT_STARTED"
+
+        self.update_application_postgres(application_id, application)
+
     def _update_section_statuses(self, application_id: str):
         """
         Updates the question statuses of each question if a value is present
@@ -402,6 +478,37 @@ class ApplicationDataAccessObject(object):
                     break
         self._applications.update({application_id: application})
 
+    def _update_section_statuses_postgres(self, application_id: str):
+        """
+        Updates the question statuses of each question if a value is present
+
+        Args:
+            application_id: The application id
+        """
+        application = self.get_application_by_id_postgres(application_id)
+        for section in application["sections"]:
+            section["status"] = section.get("status", "NOT_STARTED")
+            for question in section["questions"]:
+                if application.get("date_submitted"):
+                    section["status"] = "SUBMITTED"
+                    break
+                elif (
+                    question["status"] == "COMPLETED"
+                    and section["status"] != "IN_PROGRESS"
+                ):
+                    section["status"] = "COMPLETED"
+                    continue
+                elif (
+                    question["status"] == "NOT_STARTED"
+                    and section["status"] == "COMPLETED"
+                ):
+                    section["status"] = "IN_PROGRESS"
+                    continue
+                elif question["status"] == "IN_PROGRESS":
+                    section["status"] = "IN_PROGRESS"
+                    break
+        self.update_application_postgres(application_id, application)
+
     def _update_status(self, application_id: str):
         """
         Updates the application status for an entire application,
@@ -425,6 +532,30 @@ class ApplicationDataAccessObject(object):
         application["status"] = status
         self._applications.update({application_id: application})
 
+    def _update_status_postgres(self, application_id: str):
+        """
+        Updates the application status for an entire application,
+        based on status of individual sections
+
+        Args:
+            application_id: The application id
+        """
+        application = self.get_application_by_id_postgres(application_id)
+        section_statuses = [section["status"] for section in application["sections"]]
+        if "IN_PROGRESS" in section_statuses:
+            status = "IN_PROGRESS"
+        elif "COMPLETED" and "NOT_STARTED" in section_statuses:
+            status = "IN_PROGRESS"
+        elif "COMPLETED" in section_statuses:
+            status = "COMPLETED"
+        elif "SUBMITTED" in section_statuses:
+            status = "SUBMITTED"
+        else:
+            status = "NOT_STARTED"
+        application["status"] = status
+        self.update_application_postgres(application_id, application)
+
+
     def update_section_postgres(self, application_id, section_name, new_json):
 
             section_sql_row = db.session.query(Sections).filter(Sections.application_id == application_id, Sections.section_name == section_name).one()
@@ -435,7 +566,7 @@ class ApplicationDataAccessObject(object):
 
     def update_application_postgres(self, application_id,application_dict):
 
-        sections_sql_rows = self.get_sections_by_app_id(application_id, as_json=False)
+        sections_sql_rows = self.get_sections_by_app_id_postgres(application_id, as_json=False)
 
         sections_json = application_dict.pop("sections")
 
@@ -457,7 +588,7 @@ class ApplicationDataAccessObject(object):
         Args:
             application_id: The application id
         """
-        application = self.get_application_by_id(application_id)
+        application = self.get_application_by_id_postgres(application_id)
         section_statuses = [section["status"] for section in application["sections"]]
         if "IN_PROGRESS" in section_statuses:
             status = "IN_PROGRESS"
@@ -503,6 +634,38 @@ class ApplicationDataAccessObject(object):
 
             application_summary.update({"sections": sections})
             return application_summary
+
+    def get_status_postgres(self, application_id: str):
+        """
+        Summary:
+            Get status of application and questions
+        Args:
+            application_id: Takes an application_id
+        Returns:
+            Summary of application and assessment status of each question
+        """
+        application = self.get_application_by_id_postgres(application_id)
+        if application:
+            sections = []
+            for section in application["sections"]:
+                questions = []
+                status = "NOT_STARTED"
+                for question in section.get("questions"):
+                    questions.append(
+                        {
+                            "question": question.get("question"),
+                            "status": question.get("status"),
+                        }
+                    )
+                status_values = [question["status"] for question in questions]
+                if "IN_PROGRESS" in status_values:
+                    status = "IN_PROGRESS"
+                elif "COMPLETED" in status_values:
+                    status = "COMPLETED"
+                sections.append({"status": status, "questions": questions})
+
+            application.update({"sections": sections})
+            return application
 
     def search_applications(self, params):
         """

@@ -85,7 +85,7 @@ def get_funds() -> List[Fund] | None:
         return funds
 
 
-def get_fund(fund_id: str) -> Fund | None:
+def  get_fund(fund_id: str) -> Fund | None:
     endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(
         fund_id=fund_id
     )

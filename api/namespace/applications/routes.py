@@ -3,11 +3,15 @@ from api.namespace.applications.models.application import application_full
 from api.namespace.applications.models.application import application_result
 from api.namespace.applications.models.application import application_status
 from api.namespace.applications.models.section import section
+from api.namespace.applications.helpers.helpers import ApplicationHelpers
 from database.store import APPLICATIONS
 from flask import abort
 from flask import request
 from flask_restx import reqparse
 from flask_restx import Resource
+
+from db.models.applications import ApplicationsMethods
+from db.models.sections import SectionsMethods
 
 
 @applications_ns.route("")
@@ -25,9 +29,6 @@ class Applications(Resource):
     )
     query_params_parser.add_argument(
         "fund_id", type=str, help="Application fund_id"
-    )
-    query_params_parser.add_argument(
-        "account_id", type=str, help="Application account_id"
     )
     query_params_parser.add_argument(
         "order_by", type=str, help="Order results by parameter"
@@ -61,7 +62,21 @@ class Applications(Resource):
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": True,
         }
-        return APPLICATIONS.search_applications(args), 200, response_headers
+        filters = {
+            "started_at": args.get("datetime_start"),
+            "date_submitted": args.get("datetime_end"),
+            "fund_id": args.get("fund_id"),
+            "account_id": args.get("account_id"),
+            "status": args.get("status_only"),
+            "id": args.get("id_contains")
+        }
+        matched_applications = ApplicationsMethods.search_applications(filters, True) # []
+
+        order_by = args.get("order_by", "id")
+        order_rev = args.get("order_rev") == "1"
+        ApplicationHelpers.order_applications(matched_applications, order_by, order_rev)
+
+        return matched_applications, 200, response_headers
 
     create_application_parser = reqparse.RequestParser()
     create_application_parser.add_argument("account_id", location="json")
@@ -75,8 +90,12 @@ class Applications(Resource):
         account_id = args["account_id"]
         round_id = args["round_id"]
         fund_id = args["fund_id"]
-        application = APPLICATIONS.create_application(
+        blank_sections = ApplicationHelpers.get_blank_sections(fund_id, round_id)
+        application = ApplicationsMethods.create_application(
             account_id=account_id, fund_id=fund_id, round_id=round_id
+        )
+        sections = SectionsMethods.add_new_sections(
+            sections=blank_sections, application_id=application.id
         )
         return application, 201
 

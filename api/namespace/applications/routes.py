@@ -4,6 +4,7 @@ from api.namespace.applications.models.application import application_result
 from api.namespace.applications.models.application import application_status
 from api.namespace.applications.models.section import section
 from api.namespace.applications.helpers.helpers import ApplicationHelpers
+
 from database.store import APPLICATIONS
 from flask import abort
 from flask import request
@@ -11,7 +12,9 @@ from flask_restx import reqparse
 from flask_restx import Resource
 
 from db.models.applications import ApplicationsMethods
-from db.models.sections import SectionsMethods
+from db.models.forms import SectionsMethods
+
+import sqlalchemy.orm.exc
 
 
 @applications_ns.route("")
@@ -99,7 +102,7 @@ class Applications(Resource):
         )
         return application, 201
 
-
+# j
 @applications_ns.route("/sections", methods=["PUT"])
 class Section(Resource):
 
@@ -123,16 +126,20 @@ class Section(Resource):
             "metadata": section_metadata,
         }
 
-        updated_section = APPLICATIONS.put_section(
-            application_id, section_name, section_dict
-        )
+        try:
 
-        if updated_section:
+            updated_section = SectionsMethods.update_section(
+                application_id, section_name, section_dict
+            )
+
             return updated_section, 201
-        else:
-            abort(400, "No matching application section found")
+
+        except sqlalchemy.orm.exc.NoResultFound as e:
+
+            abort(404, f"No matching application section found : {e}")
 
 
+# j
 @applications_ns.route("/<application_id>/submit")
 class SubmitApplication(Resource):
     @applications_ns.doc("submit_application")

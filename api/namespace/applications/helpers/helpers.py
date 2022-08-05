@@ -3,7 +3,7 @@ import uuid
 from operator import itemgetter
 from typing import List
 from db.models.applications import Applications
-from db.models.sections import Sections, SectionsMethods
+from db.models.forms import Forms, SectionsMethods
 from db import db
 from os import getenv
 from database.initial_data import initial_application_store_state

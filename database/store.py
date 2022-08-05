@@ -5,7 +5,7 @@ from operator import itemgetter
 from typing import List
 
 from db.models.applications import Applications
-from db.models.sections import Sections
+from db.models.forms import Forms
 from db import db
 
 from config import Config
@@ -55,7 +55,7 @@ class ApplicationDataAccessObject(object):
     @staticmethod
     def add_new_section_postgres(section_dict, application_id, status="NOT_STARTED"):
 
-        new_section_row = Sections(application_id=application_id, status=status, json=section_dict)
+        new_section_row = Forms(application_id=application_id, status=status, json=section_dict)
 
         db.session.add(new_section_row)
         db.commit()
@@ -63,7 +63,7 @@ class ApplicationDataAccessObject(object):
     @staticmethod
     def get_sections_by_app_id_postgres(app_id, as_json=True):
 
-        sections = db.session.query(Sections).filter(Sections.application_id == app_id).all()
+        sections = db.session.query(Forms).filter(Forms.application_id == app_id).all()
 
         if as_json:
 
@@ -546,7 +546,7 @@ class ApplicationDataAccessObject(object):
 
     def update_section_postgres(self, application_id, section_name, new_json):
 
-            section_sql_row = db.session.query(Sections).filter(Sections.application_id == application_id, Sections.section_name == section_name).one()
+            section_sql_row = db.session.query(Forms).filter(Forms.application_id == application_id, Forms.section == section_name).one()
 
             section_sql_row.json = new_json
 

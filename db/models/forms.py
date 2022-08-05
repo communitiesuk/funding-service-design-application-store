@@ -3,11 +3,12 @@ from db.models.applications import Applications
 from db.models.common import Status
 from sqlalchemy.types import JSON
 from sqlalchemy_utils.types import UUIDType
+import sqlalchemy.orm.exc
 import uuid
 from sqlalchemy.orm.properties import ColumnProperty
 
 
-class Sections(db.Model):
+class Forms(db.Model):
 
         id = db.Column(
             "id",
@@ -23,27 +24,34 @@ class Sections(db.Model):
             nullable=False
         )
 
-
         json = db.Column(
             "json",
             JSON()
         )
 
-        section_name = ColumnProperty(json["section_name"])
-        status = ColumnProperty(json["status"])
+        status = db.Column(
+            "status",
+            db.Enum(Status),
+            default="NOT_STARTED",
+            nullable=False
+        )
+
+        name = db.Column("name", db.String(), nullable=False)
+
+        section = db.Column("section", db.String(), nullable=False)
         
-        def as_section_json(self):
+        def as_form_json(self):
 
             return {"status" : self.status, **self.json}
 
 class SectionsMethods():
     @staticmethod
-    def add_new_sections(sections, application_id, status="NOT_STARTED"):
+    def add_new_sections(sections, application_id):
         for section in sections:
             for question in section.get("questions"):
                 question.update({"status": "NOT_STARTED"})
         
-            new_section_row = Sections(application_id=application_id, json=section)
+            new_section_row = Forms(application_id=application_id, json=section)
             db.session.add(new_section_row)
             db.session.commit()
 
@@ -52,7 +60,7 @@ class SectionsMethods():
     @staticmethod
     def get_sections_by_app_id(application_id, as_json=True):
 
-        sections = db.session.query(Sections).filter(Sections.application_id == application_id).all()
+        sections = db.session.query(Forms).filter(Forms.application_id == application_id).all()
 
         if as_json:
 
@@ -76,11 +84,27 @@ class SectionsMethods():
 
                 
     @staticmethod
-    def update_section(self, application_id, section_name, new_json):
+    def update_section(application_id, section_name, new_json):
 
-            section_sql_row = db.session.query(Sections).filter(Sections.application_id == application_id, Sections.section_name == section_name).one()
+        try:
+
+            section_sql_row = db.session.query(Forms).filter(Forms.application_id == application_id, Forms.section == section_name).one()
 
             section_sql_row.json = new_json
 
             db.session.commit()
+
+            return new_json
+
+        except sqlalchemy.orm.exc.NoResultFound as e:
+
+            raise e
+
+    @staticmethod
+    def update_section_status(application_id, section_name):
+
+        
+
+
+
 

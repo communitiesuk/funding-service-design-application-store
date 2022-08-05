@@ -9,7 +9,6 @@ from db.models.forms import Forms
 from db import db
 
 from config import Config
-from database.initial_data import fund_round_sections
 # from database.initial_data import initial_application_store_state
 from dateutil import parser as date_parser
 from dateutil.tz import UTC

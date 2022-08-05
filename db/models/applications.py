@@ -1,8 +1,9 @@
-from datetime import datetime
+import datetime
 from db import db
 from sqlalchemy import DateTime
 from db.models.common import Status
 from sqlalchemy_utils.types import UUIDType
+from sqlalchemy.sql import func
 import uuid
 
 def started_at():
@@ -44,7 +45,7 @@ class Applications(db.Model):
             db.String(),
         )
 
-        started_at = db.Column("created_at", DateTime(), default=datetime.today())
+        started_at = db.Column("started_at", DateTime(), server_default=func.now())
         
         status = db.Column(
             "status",

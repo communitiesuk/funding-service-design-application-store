@@ -12,7 +12,7 @@ from flask_restx import reqparse
 from flask_restx import Resource
 
 from db.models.applications import ApplicationsMethods
-from db.models.forms import SectionsMethods
+from db.models.forms import FormsMethods
 
 import sqlalchemy.orm.exc
 
@@ -93,12 +93,12 @@ class Applications(Resource):
         account_id = args["account_id"]
         round_id = args["round_id"]
         fund_id = args["fund_id"]
-        blank_sections = ApplicationHelpers.get_blank_sections(fund_id, round_id)
+        empty_forms = ApplicationHelpers.get_blank_sections(fund_id, round_id)
         application = ApplicationsMethods.create_application(
             account_id=account_id, fund_id=fund_id, round_id=round_id
         )
-        sections = SectionsMethods.add_new_sections(
-            sections=blank_sections, application_id=application.id
+        forms = FormsMethods.add_new_forms(
+            forms=empty_forms, application_id=application.id
         )
         return application, 201
 

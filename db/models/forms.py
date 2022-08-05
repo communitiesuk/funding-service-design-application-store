@@ -44,18 +44,17 @@ class Forms(db.Model):
 
             return {"status" : self.status, **self.json}
 
-class SectionsMethods():
+class FormsMethods():
     @staticmethod
-    def add_new_sections(sections, application_id):
-        for section in sections:
-            for question in section.get("questions"):
+    def add_new_forms(forms, application_id):
+        for form in forms:
+            for question in form.get("questions"):
                 question.update({"status": "NOT_STARTED"})
-        
-            new_section_row = Forms(application_id=application_id, json=section)
-            db.session.add(new_section_row)
+            new_form_row = Forms(application_id=application_id, json=form, name=form["form"], status=form["status"], section=form["section"])
+            db.session.add(new_form_row)
             db.session.commit()
 
-        return {"sections" : sections} 
+        return {"sections" : forms} 
 
     @staticmethod
     def get_sections_by_app_id(application_id, as_json=True):
@@ -100,11 +99,5 @@ class SectionsMethods():
 
             raise e
 
-    @staticmethod
-    def update_section_status(application_id, section_name):
-
-        
-
-
-
-
+    # @staticmethod
+    # def update_section_status(application_id, section_name):

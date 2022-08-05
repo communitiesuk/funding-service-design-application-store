@@ -10,7 +10,7 @@ from db import db
 
 from config import Config
 from database.initial_data import fund_round_sections
-from database.initial_data import initial_application_store_state
+# from database.initial_data import initial_application_store_state
 from dateutil import parser as date_parser
 from dateutil.tz import UTC
 from external_services.data import get_fund
@@ -718,4 +718,4 @@ class ApplicationDataAccessObject(object):
 # An in memory data object instance
 
 APPLICATIONS = ApplicationDataAccessObject()
-APPLICATIONS._applications = initial_application_store_state
+# APPLICATIONS._applications = initial_application_store_state

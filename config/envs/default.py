@@ -50,542 +50,30 @@ class DefaultConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # COF SECTION CONFIGURATION
-    DEFAULT_SECTIONS = [
+    COF_R2_FORMS = [
     {
         "status": "NOT_STARTED",
-        "section_name": "about-your-org",
+        "section": "unknown",
+        "form": "about-the-applicant",
         "questions": [
             {
-                "question": "Application information",
+                "question": "About your organisation",
                 "fields": [
                     {
-                        "key": "application-name",
-                        "title": "Applicant name",
+                        "key": "ZBjDTn",
+                        "title": "Name of lead contact",
                         "type": "text",
                         "answer": "",
                     },
                     {
-                        "key": "applicant-email",
-                        "title": "Email",
+                        "key": "LZBrEj",
+                        "title": "Lead contact email address",
                         "type": "text",
                         "answer": "",
                     },
                     {
-                        "key": "applicant-telephone-number",
-                        "title": "Telephone number",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "applicant-website",
-                        "title": "Website",
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "question": "Organisation information",
-                "fields": [
-                    {
-                        "key": "organisation-name",
-                        "title": "Organisation name",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "organisation-address",
-                        "title": "Organisation address",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "type-of-organisation",
-                        "title": "Type of organisation",
-                        "type": "list",
-                        "answer": "",
-                    },
-                    {
-                        "key": "delivered-projects-like-this-before",
-                        "title": ("Have you delivered projects like this before?"),
-                        "type": "list",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "question": "Responsible people",
-                "fields": [
-                    {
-                        "key": "organisation-accountant",
-                        "title": "Your accountant",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "responsible-person",
-                        "title": "Responsible person",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "SpLmlI",
-                        "title": "Do you have endorsements for this ",
-                        "type": "list",
-                        "answer": "",
-                    },
-                    {
-                        "key": "organisation-do-you-have-endorsements",
-                        "title": (
-                            "Do you have endorsements to support your" " application?"
-                        ),
-                        "type": "list",
-                        "answer": "",
-                    },
-                    {
-                        "key": "who-is-endorsing-your-application",
-                        "title": "Who is endorsing your application?",
-                        "type": "list",
-                        "answer": "",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        "section_name": "about-your-project",
-        "status": "NOT_STARTED",
-        "questions": [
-            {
-                "question": "Project details",
-                "fields": [
-                    {
-                        "key": "your-project-name",
-                        "title": "Project name",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "your-project-location",
-                        "title": "Project location",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "your-project-sector",
-                        "title": "Project sector",
-                        "type": "list",
-                        "answer": "",
-                    },
-                    {
-                        "key": "your-project-long-description",
-                        "title": "Project description",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "your-project-short-description",
-                        "title": "Project summary",
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "question": "Funding requested",
-                "fields": [
-                    {
-                        "key": "about-your-project-capital-expenditure",
-                        "title": "Capital expenditure",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "about-your-project-revenue",
-                        "title": "Revenue",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "about-your-project-subsidy",
-                        "title": "Subsidy",
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "question": "Project aims",
-                "fields": [
-                    {
-                        "key": "about-your-project-policy-aims",
-                        "title": (
-                            "Which policy aims will your project deliver" " against?"
-                        ),
-                        "type": "list",
-                        "answer": "",
-                    }
-                ],
-            },
-        ],
-    },
-    {
-        "section_name": "plan-your-project",
-        "status": "NOT_STARTED",
-        "questions": [
-            {
-                "question": "Plan your project",
-                "fields": [
-                    {
-                        "key": "plan-your-project-start-date",
-                        "title": "When will you start your project?",
-                        "type": "monthYear",
-                        "answer": "",
-                    },
-                    {
-                        "key": "plan-your-project-activity-name",
-                        "title": "Activity",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "plan-your-project-activity-duration",
-                        "title": "Duration",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "plan-your-project-activity-cost",
-                        "title": "Cost",
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "question": "Delivery partner",
-                "fields": [
-                    {
-                        "key": ("plan-your-project-will-work-with-delivery-partner"),
-                        "title": (
-                            "Will you work with a delivery partner on this" " project?"
-                        ),
-                        "type": "list",
-                        "answer": "",
-                    }
-                ],
-            },
-            {
-                "question": "Plan your project (With Delivery Partner Page)",
-                "fields": [
-                    {
-                        "key": "plan-your-project-delivery-partner",
-                        "title": ("Who is your delivery partner on this project?"),
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "plan-your-project-why-this-partner",
-                        "title": (
-                            "Why is this delivery partner the best choice for"
-                            " this project?"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "plan-your-project-what-skills",
-                        "title": (
-                            "What skills and expertise are needed to deliver"
-                            " this project?"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "question": ("Plan your project (without delivery partner page)"),
-                "fields": [
-                    {
-                        "key": "plan-your-project-internal-resources",
-                        "title": (
-                            "Do you have the internal resources needed to"
-                            " deliver this project?"
-                        ),
-                        "type": "list",
-                        "answer": "",
-                    },
-                    {
-                        "key": ("plan-your-project-how-did-you-internal-resources"),
-                        "title": ("If yes to the above, how did you work that out?"),
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": ("plan-your-project-how-will-you-recruit-resources"),
-                        "title": (
-                            "If no, tell us how you are going to recruit the"
-                            " resources you need"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "plan-your-project-which-skills-needed",
-                        "title": (
-                            "What skills and expertise are needed to deliver"
-                            " this project?"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "question": "Who will govern",
-                "fields": [
-                    {
-                        "key": "plan-your-project-govern-role",
-                        "title": "Role",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "plan-your-project-govern-resposibility",
-                        "title": "Responsibility",
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "question": "Governance processes",
-                "fields": [
-                    {
-                        "key": "plan-your-project-what-governance-processes",
-                        "title": (
-                            "What governance processes do you have in place to"
-                            " make sure the project succeeds?"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    }
-                ],
-            },
-        ],
-    },
-    {
-        "section_name": "deliver-your-project",
-        "status": "NOT_STARTED",
-        "questions": [
-            {
-                "category": "ZtqkbP",
-                "question": "What your project benefits are",
-                "fields": [
-                    {
-                        "key": "eblbkX",
-                        "title": "Outcome 1",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "oQEWUg",
-                        "title": "Outcome 2",
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "category": "ZtqkbP",
-                "question": "Who your project benefits",
-                "fields": [
-                    {
-                        "key": "YaGZms",
-                        "title": "Who does your project benefit?",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "SYlMhT",
-                        "title": "How can you prove this quantitatively?",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "MNkdUT",
-                        "title": "How can you prove this qualitatively?",
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "category": "ZtqkbP",
-                "question": "Your project budget",
-                "fields": [
-                    {
-                        "key": "kKyBnL",
-                        "title": "Add your costs",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "zyfPIu",
-                        "title": "Project cost type",
-                        "type": "list",
-                        "answer": "",
-                    },
-                    {
-                        "key": "tfqDZZ",
-                        "title": "Cost",
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "question": "Your project risks",
-                "fields": [
-                    {
-                        "key": "ZJUaPq",
-                        "title": ("Describe your organisation's attitude to risk"),
-                        "type": "list",
-                        "answer": "",
-                    },
-                    {
-                        "key": "cMdGPb",
-                        "title": "Explain your answer",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "LpKdsv",
-                        "title": (
-                            "How does your organisation balance innovation"
-                            " with risk?"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "category": "ZtqkbP",
-                "question": "Your risk register",
-                "fields": [
-                    {
-                        "key": "WcJUsi",
-                        "title": "Risk",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "OecMxU",
-                        "title": "Mitigation",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "rDyIBy",
-                        "title": "Risk Level",
-                        "type": "list",
-                        "answer": "",
-                    },
-                    {
-                        "key": "XBxwLy",
-                        "title": "Categorise your risk",
-                        "type": "list",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "category": "ZtqkbP",
-                "question": "How you manage risk",
-                "fields": [
-                    {
-                        "key": "NNYdkz",
-                        "title": (
-                            "Tell us how you identified the risks in your risk"
-                            " register"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "ihDAjW",
-                        "title": (
-                            "Tell us how you will manage the risks in your"
-                            " risk register"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "category": "ZtqkbP",
-                "question": "Monitoring and evaluation plan",
-                "fields": [
-                    {
-                        "key": "mvBPSb",
-                        "title": "What do you want to know?",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "ASwuiF",
-                        "title": "How will you know it?",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "eAJwgs",
-                        "title": "Where will the data come from?",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "ktaiVA",
-                        "title": "Who will capture the data?",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "MiosEa",
-                        "title": "When will data be captured?",
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "NrdwqP",
-                        "title": "How much will it cost?",
-                        "type": "text",
-                        "answer": "",
-                    },
-                ],
-            },
-            {
-                "category": "ZtqkbP",
-                "question": "How you measure progress",
-                "fields": [
-                    {
-                        "key": "VWskeQ",
-                        "title": (
-                            "How are you going to make sure that the project"
-                            " is delivered on time?"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "iiGucM",
-                        "title": (
-                            "How are you going to make sure that the project"
-                            " is delivered on budget?"
-                        ),
+                        "key": "lRfhGB",
+                        "title": "Lead contact telephone number",
                         "type": "text",
                         "answer": "",
                     },
@@ -594,70 +82,812 @@ class DefaultConfig:
         ],
     },
     {
-        "section_name": "declaration",
         "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "assest-information",
+        "questions": [
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "yaQoxU",
+                        "title": "Asset type",
+                        "type": "list",
+                        "answer": ""
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "VWkLlk",
+                        "title": "What do you intend to do with the asset?",
+                        "type": "list",
+                        "answer": ""
+                    },
+                    {
+                        "key": "IRfSZp",
+                        "title": "Do you know who currently owns your asset?",
+                        "type": "list",
+                        "answer": ""
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "FtDJfK",
+                        "title": "Describe the current ownership status",
+                        "type": "text",
+                        "answer": ""
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "gkulUE",
+                        "title": "Is the asset currently for sale?",
+                        "type": "list",
+                        "answer": ""
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "FXQwZT",
+                        "title": "Describe the expected sale process, and whether the owner is currently willing to sell",
+                        "type": "text",
+                        "answer": ""
+                    },
+                    {
+                        "key": "ghzLRv",
+                        "title": "Expected date of sale",
+                        "type": "date",
+                        "answer": ""
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "Wyesgy",
+                        "title": "Is your asset currently publicly owned?",
+                        "type": "list",
+                        "answer": ""
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "hvzzWB",
+                        "title": "Is this a registered asset of community value (ACV)?",
+                        "type": "list",
+                        "answer": ""
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "VwxiGn",
+                        "title": "Is the asset listed for disposal, or part of a Community Asset Transfer?",
+                        "type": "list",
+                        "answer": ""
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "UDTxqC",
+                        "title": "Why is the asset at risk of closure?",
+                        "type": "list",
+                        "answer": ""
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "community-benefits",
+        "questions": [
+            {
+                "question": "Potential to deliver community benefits",
+                "fields": [
+                    {
+                        "key": "QjJtbs",
+                        "title": "What community benefits do you expect to deliver with this project?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                    {
+                        "key": "gDTsgG",
+                        "title": "Tell us about these benefits in detail, and explain how you will measure the benefits it will bring for the community",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "kYjJFy",
+                        "title": "Explain how you will deliver and sustain these benefits over time",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "UbjYqE",
+                        "title": "Explain how community ownership of the asset will be inclusive and benefit the wider community",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "community-engagement",
+        "questions": [
+            {
+                "question": "Strategic case",
+                "fields": [
+                    {
+                        "key": "HJBgvw",
+                        "title": "Tell us how you have engaged with the community about your intention to take ownership of the asset, and explain how this has shaped your project plans",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "JCACTy",
+                        "title": "Have you done any fundraising in the community?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "Strategic case",
+                "fields": [
+                    {
+                        "key": "NZKHOp",
+                        "title": "Tell us how your project supports any wider local plans",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "community-representation",
+        "questions": [
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "JnvsPq",
+                        "title": "List the members of your board",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "yMCivI",
+                        "title": "Tell us about your governance and membership structures",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "NUZOvS",
+                        "title": "Explain how you will consider the views of the community in the running of the asset",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "community-use",
+        "questions": [
+            {
+                "question": "Strategic case",
+                "fields": [
+                    {
+                        "key": "CDwTrG",
+                        "title": "What policy aims will your project deliver against?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                    {
+                        "key": "kxgWTy",
+                        "title": "Who in the community uses the asset, or has used it in the past, and who benefits from it?",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "SCyzGs",
+                        "title": "Add another community user",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "GNhrIs",
+                        "title": "Tell us how losing the asset would affect, or has already affected, people in the community",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "qsZLjZ",
+                        "title": "Why will the asset be lost without community intervention?",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "declarations",
         "questions": [
             {
                 "question": "Declarations",
                 "fields": [
                     {
-                        "key": "declarations-state-aid",
-                        "title": (
-                            "Would funding your organisation be classed as"
-                            " State Aid?"
-                        ),
+                        "key": "LlvhYl",
+                        "title": "Confirm you have considered subsidy control / state aid implications for your project, and the information you have given us is correct",
                         "type": "list",
                         "answer": "",
                     },
                     {
-                        "key": "declarations-explain-state-aid",
-                        "title": (
-                            "If yes to the above, explain how your project is"
-                            " compliant with the UK subsidy control regime"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "declarations-protected-characteristics",
-                        "title": (
-                            "Describe how your project will impact people with"
-                            " protected characteristics?"
-                        ),
-                        "type": "text",
-                        "answer": "",
-                    },
-                    {
-                        "key": "declarations-environmental",
-                        "title": (
-                            "Does your application comply with all relevant"
-                            " environmental standards?"
-                        ),
+                        "key": "wJrJWY",
+                        "title": "Confirm you have considered people with protected characteristics throughout the planning of your project",
                         "type": "list",
                         "answer": "",
                     },
                     {
-                        "key": "declarations-support-environmental",
-                        "title": (
-                            "If yes to the above, upload a file in support of"
-                            " your answer"
-                        ),
-                        "type": "file",
+                        "key": "COiwQr",
+                        "title": "Confirm you have considered sustainability and the environment throughout the planning of your project, including compliance with the government's Net Zero ambitions",
+                        "type": "list",
                         "answer": "",
                     },
                 ],
-            }
+            },
         ],
-        "metadata": {},
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "environmental-sustainability",
+        "questions": [
+            {
+                "question": "Strategic case",
+                "fields": [
+                    {
+                        "key": "CvVZJv",
+                        "title": "Tell us how you have considered the environmental sustainability of your project",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "feasibility",
+        "questions": [
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "ieRCkI",
+                        "title": "Tell us about the feasibility studies you have carried out for your project",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "aAeszH",
+                        "title": "Do you need to do any further feasibility work?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "funding-required",
+        "questions": [
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "yquoIb",
+                        "title": "Have you already secured this (your match) funding?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "fnIdkJ",
+                        "title": "Asset value",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "inclusiveness-and-intergration",
+        "questions": [
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "YbfbSC",
+                        "title": "Describe anything that might prevent people from using the asset or participating in its running",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "KuhSWw",
+                        "title": "Tell us how you will make your project accessible and inclusive to everyone in the community",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "bkJsiO",
+                        "title": "Describe how the project will bring people together from all over the community",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "local-support",
+        "questions": [
+            {
+                "question": "Strategic case",
+                "fields": [
+                    {
+                        "key": "KqoaJL",
+                        "title": "Is there local support for your project?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "organisation-information",
+        "questions": [
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "MhTuux",
+                        "title": "Organisation name",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "dUFZQE",
+                        "title": "Does your organisation use any other names?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "vvankL",
+                        "title": "What is your organisation's main purpose?",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "mnXlnA",
+                        "title": "Tell us about your organisation's main activities",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "SULcMg",
+                        "title": "Add another activity",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "CxyfYS",
+                        "title": "Have you delivered projects like this before?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "HQXgYz",
+                        "title": "Type of organisation",
+                        "type": "other",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "HmuXka",
+                        "title": "Type of organisation  (other)",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "Sudpvz",
+                        "title": "Which regulatory body is your company registered with?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "PRDPBF",
+                        "title": "Is your organisation a trading subsidiary of a parent company?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "zjnAVS",
+                        "title": "Organisation address",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "WQbjia",
+                        "title": "County",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "NlIgBS",
+                        "title": "Is your correspondence address different to the organisation address?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "EsVKLG",
+                        "title": "Website and social media",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "project-costs",
+        "questions": [
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "WDDkVB",
+                        "title": "Summarise your cash flow for the running of the asset",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "oaIntA",
+                        "title": "If successful, will you use your funding in the next 12 months",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "project-information",
+        "questions": [
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "RKuzIW",
+                        "title": "Have you been given funding through the Community Ownership Fund before?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "iktvZS",
+                        "title": "Name of previous project",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "LQcTUZ",
+                        "title": "Amount of funding received",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "uKwRXL",
+                        "title": "Project name",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "BfYLWC",
+                        "title": "Tell us how the asset is currently being used, or how it has been used before, and why it's important to the community",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "KZKFGE",
+                        "title": "Explain why the asset is at risk of being lost to the community, or why it has already been lost",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "efPrAo",
+                        "title": "Give a brief summary of your project, including what you hope to achieve",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "HhXUhD",
+                        "title": "Address of the community asset",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "rmiVDZ",
+                        "title": "County",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "SdZbFW",
+                        "title": "In which constituency is your asset?",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "project-qualification",
+        "questions": [
+            {
+                "question": "Subsidy control / state aid",
+                "fields": [
+                    {
+                        "key": "HvxXPI",
+                        "title": "Does your project meet the definition of a subsidy?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "risk",
+        "questions": [
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "pwslCf",
+                        "title": "Type of risk",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "tpXXWt",
+                        "title": "Describe the risk",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "fCddUh",
+                        "title": "Level of risk",
+                        "type": "list",
+                        "answer": "",
+                    },
+                    {
+                        "key": "PqVZFh",
+                        "title": "Likelihood of risk",
+                        "type": "list",
+                        "answer": "",
+                    },
+                    {
+                        "key": "BtljVL",
+                        "title": "Timeframe of risk",
+                        "type": "list",
+                        "answer": "",
+                    },
+                    {
+                        "key": "mYRwas",
+                        "title": "Mitigation",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "xGAVRU",
+                        "title": "Risk after mitgation",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "skills-and-resources",
+        "questions": [
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "CBIWnt",
+                        "title": "Do you have experience of managing a community asset?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "QWveYc",
+                        "title": "Describe any experience you have with community assets similar to this",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "vKnMPG",
+                        "title": "Do you have any plans to recruit people to help you manage the asset?",
+                        "type": "list",
+                        "answer": "",
+                    },
+                ],
+            },
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "VNjRgZ",
+                        "title": "Tell us about the roles you will recruit",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "section": "unknown",
+        "form": "value-to-the-community",
+        "questions": [
+            {
+                "question": "Added value to the community",
+                "fields": [
+                    {
+                        "key": "oOPUXI",
+                        "title": "Tell us about your local community as a whole",
+                        "type": "text",
+                        "answer": "",
+                    },
+                    {
+                        "key": "NKOmNL",
+                        "title": "Describe any specific challenges your community faces, and how the asset will address these",
+                        "type": "text",
+                        "answer": "",
+                    },
+                ],
+            },
+        ],
     },
 ]
 
-    FUND_ROUND_SECTIONS = {
-    "fund-a:spring": DEFAULT_SECTIONS.copy(),
-    "fund-b:spring": DEFAULT_SECTIONS.copy(),
-    "fund-a:summer": DEFAULT_SECTIONS.copy(),
-    "fund-b:summer": DEFAULT_SECTIONS.copy(),
-    "funding-service-design:spring": DEFAULT_SECTIONS.copy(),
-    "funding-service-design:summer": DEFAULT_SECTIONS.copy(),
-    "community-ownership-fund:round-2": DEFAULT_SECTIONS.copy(),
+    FUND_ROUND_FORMS = {
+    "fund-a:spring": COF_R2_FORMS.copy(),
+    "fund-b:spring": COF_R2_FORMS.copy(),
+    "fund-a:summer": COF_R2_FORMS.copy(),
+    "fund-b:summer": COF_R2_FORMS.copy(),
+    "funding-service-design:spring": COF_R2_FORMS.copy(),
+    "funding-service-design:summer": COF_R2_FORMS.copy(),
+    "community-ownership-fund:round-2": COF_R2_FORMS.copy(),
 }

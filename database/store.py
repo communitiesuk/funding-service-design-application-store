@@ -143,27 +143,6 @@ class ApplicationDataAccessObject(object):
             return sections.copy()
         raise Exception(f"Could not find fund round for {fund_id} - {round_id}")
 
-    def submit_application_postgres(self,application_id):
-
-        application = self.get_application_by_id_postgres(application_id)
-
-        application["date_submitted"] = datetime.datetime.now(
-            datetime.timezone.utc
-        ).strftime("%Y-%m-%d %H:%M:%S")
-
-        self._update_statuses_postgres(application_id)
-
-        account = AccountMethods.get_account(account_id=application.get("account_id"))
-
-        # Send notification
-        Notification.send(
-            Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
-            account.email,
-            {"application": self._applications[application_id]},
-        )
-
-
-
 
     def submit_application(self, application_id):
         """

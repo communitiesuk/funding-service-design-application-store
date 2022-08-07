@@ -15,4 +15,5 @@ SQLAlchemy
 Flask-SQLAlchemy
 Flask-Migrate
 sqlalchemy-utils
+sqlalchemy_json
 psycopg2

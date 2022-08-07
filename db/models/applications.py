@@ -4,6 +4,8 @@ from sqlalchemy import DateTime
 from db.models.common import Status
 from sqlalchemy_utils.types import UUIDType
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import ENUM
+from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
 def started_at():
@@ -49,7 +51,7 @@ class Applications(db.Model):
         
         status = db.Column(
             "status",
-            db.Enum(Status),
+            ENUM(Status),
             default="NOT_STARTED",
             nullable=False
         )
@@ -74,6 +76,14 @@ class Applications(db.Model):
         
 
 class ApplicationsMethods():
+
+    @staticmethod
+    def get_application_by_id(app_id):
+
+        application = db.session.get(Applications, app_id)
+
+        return application
+
     @staticmethod
     def create_application(account_id,fund_id,round_id):
 

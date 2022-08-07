@@ -1,11 +1,10 @@
 from db import db
 from db.models.applications import Applications
 from db.models.common import Status
-from sqlalchemy.types import JSON
 from sqlalchemy_utils.types import UUIDType
 import sqlalchemy.orm.exc
 import uuid
-from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy_json import NestedMutableJson
 
 
 class Forms(db.Model):
@@ -26,7 +25,7 @@ class Forms(db.Model):
 
         json = db.Column(
             "json",
-            JSON()
+            NestedMutableJson
         )
 
         status = db.Column(
@@ -73,7 +72,7 @@ class FormsMethods():
     @staticmethod
     def get_section(application_id, section_name):
 
-        sections = SectionsMethods.get_sections_by_app_id(application_id)
+        sections = FormsMethods.get_sections_by_app_id(application_id)
 
         for section in sections:
 
@@ -98,6 +97,3 @@ class FormsMethods():
         except sqlalchemy.orm.exc.NoResultFound as e:
 
             raise e
-
-    # @staticmethod
-    # def update_section_status(application_id, section_name):

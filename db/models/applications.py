@@ -85,6 +85,13 @@ class ApplicationsMethods():
         return application
 
     @staticmethod
+    def get_application_status(app_id):
+
+        application = ApplicationsMethods.get_application_by_id(app_id)
+
+        return application.status
+
+    @staticmethod
     def create_application(account_id,fund_id,round_id):
 
         new_application_row = Applications(account_id=account_id, fund_id=fund_id, round_id=round_id)

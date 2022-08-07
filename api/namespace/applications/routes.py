@@ -128,7 +128,7 @@ class Section(Resource):
 
         try:
 
-            updated_section = SectionsMethods.update_section(
+            updated_section = FormsMethods.update_section(
                 application_id, section_name, section_dict
             )
 
@@ -172,7 +172,7 @@ class ApplicationStatus(Resource):
     @applications_ns.doc("get_application_status")
     @applications_ns.marshal_with(application_status, code=200)
     def get(self, application_id):
-        status = APPLICATIONS.get_status(application_id)
+        status = ApplicationsMethods.get_application_status(application_id)
         if not status:
             abort(404)
         return status

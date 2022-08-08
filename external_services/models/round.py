@@ -10,22 +10,19 @@ class Round:
     opens: datetime
     deadline: datetime
     assessment_deadline: datetime
-    eligibility_criteria: dict
+    assessment_criteria_weighting: dict
 
     @staticmethod
     def from_json(data: dict):
-        eligibility_criteria = {}
-        if "eligibility_criteria" in data:
-            for key, value in data["eligibility_criteria"].items():
-                eligibility_criteria.update({key: value})
+        assessment_criteria_weighting = []
         return Round(
-            title=data.get("round_title"),
-            identifier=data.get("round_id"),
+            title=data.get("title"),
+            identifier=data.get("id"),
             fund_id=data.get("fund_id"),
             opens=data.get("opens"),
             deadline=data.get("deadline"),
             assessment_deadline=data.get("deadline"),
-            eligibility_criteria=eligibility_criteria,
+            assessment_criteria_weighting=assessment_criteria_weighting,
         )
 
     def add_eligibility_criteria(self, key: str, value: object):

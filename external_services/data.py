@@ -1,7 +1,9 @@
 import json
 import os
 import urllib.parse
+import shutil
 from typing import List
+from flask import current_app
 
 import requests
 from config import Config
@@ -77,6 +79,7 @@ def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
 
 def get_funds() -> List[Fund] | None:
     endpoint = Config.FUND_STORE_API_HOST + Config.FUNDS_ENDPOINT
+    current_app.logger.info(f"Making request to:'{endpoint}'")
     response = get_data(endpoint)
     if response and len(response) > 0:
         funds = []
@@ -86,11 +89,10 @@ def get_funds() -> List[Fund] | None:
 
 
 def get_fund(fund_id: str) -> Fund | None:
-    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(
-        fund_id=fund_id
-    )
+    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(fund_id=fund_id)
+    current_app.logger.info(f"Making request to:'{endpoint}'")
     response = get_data(endpoint)
-    if response and "fund_id" in response:
+    if response and "id" in response:
         fund = Fund.from_json(response)
         if "rounds" in response and len(response["rounds"]) > 0:
             for fund_round in response["rounds"]:
@@ -118,6 +120,8 @@ def get_round(fund_id: str, round_id: str) -> Round | None:
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
+    current_app.logger.info(f"FUND_STORE_API_HOST:'{Config.FUND_STORE_API_HOST}'")
+    current_app.logger.info(f"Making request to:'{round_endpoint}'")
     round_response = get_data(round_endpoint)
-    if round_response and "round_id" in round_response:
+    if round_response and "id" in round_response:
         return Round.from_json(round_response)

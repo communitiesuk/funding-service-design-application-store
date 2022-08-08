@@ -5,8 +5,7 @@ on:
   push:
     paths-ignore:
       - '**/README.md'
-env:
-  FLASK_ENV: development
+
 jobs:
   test_and_deploy:
     uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@main

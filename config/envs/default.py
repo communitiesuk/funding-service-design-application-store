@@ -49,11 +49,10 @@ class DefaultConfig:
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # COF SECTION CONFIGURATION
+    # COF FORMS BASE CONFIG
     COF_R2_FORMS = [
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "about-the-applicant",
         "questions": [
             {
@@ -83,7 +82,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "assest-information",
         "questions": [
             {
@@ -201,7 +199,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "community-benefits",
         "questions": [
             {
@@ -237,7 +234,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "community-engagement",
         "questions": [
             {
@@ -272,7 +268,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "community-representation",
         "questions": [
             {
@@ -302,7 +297,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "community-use",
         "questions": [
             {
@@ -344,7 +338,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "declarations",
         "questions": [
             {
@@ -374,7 +367,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "environmental-sustainability",
         "questions": [
             {
@@ -392,7 +384,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "feasibility",
         "questions": [
             {
@@ -416,7 +407,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "funding-required",
         "questions": [
             {
@@ -445,7 +435,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "inclusiveness-and-intergration",
         "questions": [
             {
@@ -475,7 +464,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "local-support",
         "questions": [
             {
@@ -493,7 +481,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "organisation-information",
         "questions": [
             {
@@ -624,7 +611,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "project-costs",
         "questions": [
             {
@@ -648,7 +634,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "project-information",
         "questions": [
             {
@@ -735,7 +720,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "project-qualification",
         "questions": [
             {
@@ -753,7 +737,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "risk",
         "questions": [
             {
@@ -807,7 +790,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "skills-and-resources",
         "questions": [
             {
@@ -858,7 +840,6 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "section": "unknown",
         "form": "value-to-the-community",
         "questions": [
             {
@@ -890,4 +871,4 @@ class DefaultConfig:
     "funding-service-design:spring": COF_R2_FORMS.copy(),
     "funding-service-design:summer": COF_R2_FORMS.copy(),
     "community-ownership-fund:round-2": COF_R2_FORMS.copy(),
-}
+    }

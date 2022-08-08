@@ -30,9 +30,9 @@ section_inbound = applications_ns.model(
 section = applications_ns.model(
     "section",
     {
-        "section_name": fields.String(
+        "name": fields.String(
             required=True,
-            description="The name of the section",
+            description="The name of the form",
             example="about-you",
         ),
         "status": fields.String(

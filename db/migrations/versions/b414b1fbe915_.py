@@ -1,16 +1,17 @@
 """empty message
 
-Revision ID: a8e7630827f0
+Revision ID: b414b1fbe915
 Revises: 
-Create Date: 2022-08-05 18:15:46.187331
+Create Date: 2022-08-08 14:23:57.145073
 
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 import sqlalchemy_utils
 
 # revision identifiers, used by Alembic.
-revision = 'a8e7630827f0'
+revision = 'b414b1fbe915'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,7 +26,7 @@ def upgrade():
     sa.Column('fund_id', sa.String(), nullable=False),
     sa.Column('project_name', sa.String(), nullable=True),
     sa.Column('started_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
-    sa.Column('status', sa.Enum('NOT_STARTED', 'IN_PROGRESS', 'SUBMITTED', 'COMPLETED', name='status'), nullable=False),
+    sa.Column('status', postgresql.ENUM('NOT_STARTED', 'IN_PROGRESS', 'SUBMITTED', 'COMPLETED', name='status'), nullable=False),
     sa.Column('date_submitted', sa.DateTime(), nullable=True),
     sa.Column('last_edited', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_applications'))
@@ -36,7 +37,6 @@ def upgrade():
     sa.Column('json', sa.JSON(), nullable=True),
     sa.Column('status', sa.Enum('NOT_STARTED', 'IN_PROGRESS', 'SUBMITTED', 'COMPLETED', name='status'), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('section', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['application_id'], ['applications.id'], name=op.f('fk_forms_application_id_applications')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_forms'))
     )

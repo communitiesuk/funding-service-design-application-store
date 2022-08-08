@@ -601,6 +601,13 @@ default_sections = [
 ]
 
 fund_round_sections = {
+    "fund-a:spring": default_sections.copy(),
+    "fund-b:spring": default_sections.copy(),
+    "fund-a:summer": default_sections.copy(),
+    "fund-b:summer": default_sections.copy(),
+    "funding-service-design:spring": default_sections.copy(),
+    "funding-service-design:summer": default_sections.copy(),
+    "community-ownership-fund:round-2": default_sections.copy(),
     "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4:c603d114-5364-4474-a0c4-c41cbf4d3bbd": default_sections.copy()
 }
 

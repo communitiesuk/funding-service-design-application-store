@@ -5,7 +5,8 @@ on:
   push:
     paths-ignore:
       - '**/README.md'
-
+env:
+  FLASK_ENV: development
 jobs:
   test_and_deploy:
     uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@main
@@ -15,8 +16,6 @@ jobs:
       users: 2
       spawn-rate: 2
       run-time: 11s
-    env:
-      FLASK_ENV: development
     secrets:
       CF_API: ${{secrets.CF_API}}
       CF_ORG: ${{secrets.CF_ORG}}

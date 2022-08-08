@@ -12,6 +12,7 @@ from flask_restx import Resource
 
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
+from db.models.common_functions import submit_application
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -144,7 +145,7 @@ class SubmitApplication(Resource):
     @applications_ns.doc("submit_application")
     def post(self, application_id):
         try:
-            return_dict = ApplicationsMethods.submit_application(application_id)
+            return_dict = submit_application(application_id)
             return return_dict, 201
         except KeyError:
             return "", 404

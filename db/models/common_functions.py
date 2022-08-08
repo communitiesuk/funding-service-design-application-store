@@ -1,6 +1,10 @@
+import datetime
 from db.models.applications import Applications, ApplicationsMethods
 from db import db
 from db.models.forms import FormsMethods
+from external_services.models.account import AccountMethods
+from external_services.models.notification import Notification
+from config import Config
 
 def update_application_status(application_id: str):
     """
@@ -107,3 +111,35 @@ def update_statuses(application_id):
     update_question_statuses(application_id)
     update_section_statuses(application_id)
     update_application_status(application_id)
+
+def get_application_bundle_by_id(app_id):
+
+    application = ApplicationsMethods.get_application_by_id(app_id)
+
+    forms = FormsMethods.get_sections_by_app_id(app_id)
+
+    return {**application.as_dict(), "forms" : forms}
+
+def submit_application(application_id):
+
+    application = ApplicationsMethods.get_application_by_id(application_id)
+
+    application.date_submitted = datetime.datetime.now(
+        datetime.timezone.utc
+    ).strftime("%Y-%m-%d %H:%M:%S")
+
+    db.commit()
+
+    update_statuses(application_id)
+
+    account = AccountMethods.get_account(account_id=application.get("account_id"))
+
+    # Send notification
+    Notification.send(
+        Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
+        account.email,
+        # TODO 
+        {"application": ApplicationsMethods.get_application_bundle_by_id(application_id)},
+    )
+
+    return ApplicationsMethods.get_application_bundle_by_id(application_id)

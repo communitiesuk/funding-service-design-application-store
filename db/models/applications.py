@@ -7,12 +7,6 @@ from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-from config import Config
-from db.models.forms import FormsMethods
-from db.models.status import update_statuses
-
-from external_services.models.account import AccountMethods
-from external_services.models.notification import Notification
 
 def started_at():
 
@@ -91,15 +85,6 @@ class ApplicationsMethods():
         return application
 
     @staticmethod
-    def get_application_bundle_by_id(app_id):
-
-        application = ApplicationsMethods.get_application_by_id(app_id)
-
-        forms = FormsMethods.get_sections_by_app_id(app_id)
-
-        return {**application.as_dict(), "forms" : forms}
-
-    @staticmethod
     def get_application_status(app_id):
 
         application = ApplicationsMethods.get_application_by_id(app_id)
@@ -131,28 +116,3 @@ class ApplicationsMethods():
         if as_dict:
             return [application.as_dict() for application in applications]
         return applications
-
-    @staticmethod
-    def submit_application(application_id):
-
-        application = ApplicationsMethods.get_application_by_id(application_id)
-
-        application.date_submitted = datetime.datetime.now(
-            datetime.timezone.utc
-        ).strftime("%Y-%m-%d %H:%M:%S")
-
-        db.commit()
-
-        update_statuses(application_id)
-
-        account = AccountMethods.get_account(account_id=application.get("account_id"))
-
-        # Send notification
-        Notification.send(
-            Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
-            account.email,
-            # TODO 
-            {"application": ApplicationsMethods.get_application_bundle_by_id(application_id)},
-        )
-
-        return ApplicationsMethods.get_application_bundle_by_id(application_id)

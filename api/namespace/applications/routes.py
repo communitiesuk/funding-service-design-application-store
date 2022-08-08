@@ -5,7 +5,6 @@ from api.namespace.applications.models.application import application_status
 from api.namespace.applications.models.section import section
 from api.namespace.applications.helpers.helpers import ApplicationHelpers
 
-from database.store import APPLICATIONS
 from flask import abort
 from flask import request
 from flask_restx import reqparse
@@ -14,7 +13,7 @@ from flask_restx import Resource
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 
-import sqlalchemy.orm.exc
+from sqlalchemy.orm.exc import NoResultFound
 
 
 @applications_ns.route("")
@@ -134,7 +133,7 @@ class Section(Resource):
 
             return updated_section, 201
 
-        except sqlalchemy.orm.exc.NoResultFound as e:
+        except NoResultFound as e:
 
             abort(404, f"No matching application section found : {e}")
 
@@ -145,7 +144,7 @@ class SubmitApplication(Resource):
     @applications_ns.doc("submit_application")
     def post(self, application_id):
         try:
-            return_dict = APPLICATIONS.submit_application(application_id)
+            return_dict = ApplicationsMethods.submit_application(application_id)
             return return_dict, 201
         except KeyError:
             return "", 404
@@ -157,9 +156,9 @@ class GetApplication(Resource):
     @applications_ns.marshal_with(application_full, code=201)
     def get(self, application_id):
         try:
-            return_dict = APPLICATIONS.get_application(application_id)
+            return_dict = ApplicationsMethods.get_application_bundle_by_id(application_id)
             return return_dict, 200
-        except KeyError:
+        except NoResultFound:
             return "", 404
 
 

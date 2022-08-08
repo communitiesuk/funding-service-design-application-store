@@ -36,12 +36,10 @@ class Forms(db.Model):
         )
 
         name = db.Column("name", db.String(), nullable=False)
-
-        section = db.Column("section", db.String(), nullable=False)
         
         def as_form_json(self):
 
-            return {"status" : self.status, **self.json}
+            return {"status" : self.status, "name" : self.name ,**self.json}
 
 class FormsMethods():
     @staticmethod
@@ -62,7 +60,7 @@ class FormsMethods():
 
         if as_json:
 
-            return [ section.json for section in sections ]
+            return [ section.as_form_json() for section in sections ]
 
         else:
 

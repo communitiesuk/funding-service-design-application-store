@@ -24,7 +24,8 @@ class ApplicationHelpers:
             A list of json sections to populate the form
         """
         fund = get_fund(fund_id)
-        fund_round = get_round(fund_id, round_id)
+        fund_round = get_round(fund_id, round_id)   
+        print(fund_round)
         if fund and fund_round:
             fund_round_forms = Config.FUND_ROUND_FORMS
             forms = fund_round_forms.get(":".join([fund_id, round_id]))
@@ -33,7 +34,7 @@ class ApplicationHelpers:
                     f"Could not find form sections for {fund_id} - {round_id}"
                 )
             return forms.copy()
-        raise Exception(f"Could not find fund round for {fund_id} - {round_id}")
+        raise Exception(f"Could not find fund round for {fund_id} - {round_id}  in fund store.")
 
 
     def order_applications(applications, order_by, order_rev):

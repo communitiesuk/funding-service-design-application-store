@@ -47,7 +47,7 @@ class FormsMethods():
         for form in forms:
             for question in form.get("questions"):
                 question.update({"status": "NOT_STARTED"})
-            new_form_row = Forms(application_id=application_id, json=form, name=form["form"], status=form["status"], section=form["section"])
+            new_form_row = Forms(application_id=application_id, json=form, name=form["form"], status=form["status"])
             db.session.add(new_form_row)
             db.session.commit()
 

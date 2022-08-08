@@ -15,7 +15,7 @@ def test_create_application_is_successful(flask_test_client):
 
     # Post one Fund A application and check length
     application_data_a1 = {
-        "account_id": "usera",
+        "account_id": "usera",  
         "fund_id": "fund-a",
         "round_id": "summer",
     }

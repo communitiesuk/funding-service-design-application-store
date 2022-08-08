@@ -8,6 +8,7 @@ from flask import abort
 from flask import request
 from flask_restx import reqparse
 from flask_restx import Resource
+from flask import current_app
 
 
 @applications_ns.route("")
@@ -61,7 +62,9 @@ class Applications(Resource):
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": True,
         }
-        return APPLICATIONS.search_applications(args), 200, response_headers
+        application_search_results = APPLICATIONS.search_applications(args)
+        current_app.logger.info(f"Returning application search results for search terms: {args} with results of: {application_search_results}")
+        return application_search_results, 200, response_headers
 
     create_application_parser = reqparse.RequestParser()
     create_application_parser.add_argument("account_id", location="json")

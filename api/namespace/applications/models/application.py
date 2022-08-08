@@ -54,7 +54,7 @@ application_full = applications_ns.model(
             description="When the application was last edited",
             example="2022-12-25 00:00:00",
         ),
-        "sections": fields.List(
+        "forms": fields.List(
             fields.Nested(
                 section,
                 required=True,

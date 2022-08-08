@@ -12,7 +12,7 @@ from flask_restx import Resource
 
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
-from db.models.common_functions import submit_application
+from db.models.common_functions import get_application_bundle_by_id, submit_application
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -157,7 +157,7 @@ class GetApplication(Resource):
     @applications_ns.marshal_with(application_full, code=201)
     def get(self, application_id):
         try:
-            return_dict = ApplicationsMethods.get_application_bundle_by_id(application_id)
+            return_dict = get_application_bundle_by_id(application_id)
             return return_dict, 200
         except NoResultFound:
             return "", 404

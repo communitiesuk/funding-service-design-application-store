@@ -13,7 +13,7 @@ def app():
     """
     app = create_app()
     migrate.upgrade()
-    return create_app()
+    return app
 
 @pytest.fixture(scope='session')
 def _db(app):

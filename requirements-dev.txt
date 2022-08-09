@@ -87,6 +87,7 @@ flask-sqlalchemy==2.5.1
     # via
     #   -r requirements.txt
     #   flask-migrate
+    #   pytest-flask-sqlalchemy
 funding-service-design-utils @ git+https://github.com/communitiesuk/funding-service-design-utils.git@main
     # via -r requirements.txt
 gitdb==4.0.9
@@ -157,6 +158,7 @@ packaging==21.3
     #   build
     #   connexion
     #   pytest
+    #   pytest-flask-sqlalchemy
 pathspec==0.9.0
     # via black
 pbr==5.9.0
@@ -204,10 +206,16 @@ pytest==7.1.2
     #   -r requirements-dev.in
     #   pytest-env
     #   pytest-flask
+    #   pytest-flask-sqlalchemy
+    #   pytest-mock
 pytest-env==0.6.2
     # via -r requirements-dev.in
 pytest-flask==1.2.0
     # via -r requirements-dev.in
+pytest-flask-sqlalchemy==1.1.0
+    # via -r requirements-dev.in
+pytest-mock==3.8.2
+    # via pytest-flask-sqlalchemy
 python-dateutil==2.8.2
     # via -r requirements.txt
 python-dotenv==0.20.0
@@ -269,6 +277,7 @@ sqlalchemy==1.4.39
     #   -r requirements.txt
     #   alembic
     #   flask-sqlalchemy
+    #   pytest-flask-sqlalchemy
     #   sqlalchemy-utils
 sqlalchemy-utils==0.38.3
     # via -r requirements.txt

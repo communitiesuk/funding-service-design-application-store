@@ -13,7 +13,8 @@ def app():
     :return: A flask test client.
     """
     app = create_app()
-    upgrade()
+    with app.app_context():
+        upgrade()
     return app
 
 @pytest.fixture(scope='session')

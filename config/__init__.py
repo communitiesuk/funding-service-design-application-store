@@ -10,6 +10,8 @@ match FLASK_ENV:
         from config.envs.dev import DevConfig as Config
     case "test":
         from config.envs.test import TestConfig as Config
+    case "unit_test":
+        from config.envs.unit_testing import UnitTestingConfig as Config
     case "production":
         from config.envs.production import ProductionConfig as Config
     case _:

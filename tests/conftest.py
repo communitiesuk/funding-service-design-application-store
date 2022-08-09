@@ -1,7 +1,8 @@
 from os import getenv
 import pytest
 from app import create_app
-from db import db, migrate
+from db import db
+from flask_migrate import upgrade
 
 
 @pytest.fixture(scope="session")
@@ -12,7 +13,7 @@ def app():
     :return: A flask test client.
     """
     app = create_app()
-    migrate.upgrade()
+    upgrade()
     return app
 
 @pytest.fixture(scope='session')

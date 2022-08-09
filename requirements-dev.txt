@@ -267,6 +267,7 @@ six==1.16.0
     #   flask-restx
     #   prance
     #   python-dateutil
+    #   sqlalchemy-json
     #   virtualenv
 slugify==0.0.1
     # via -r requirements.txt
@@ -278,7 +279,10 @@ sqlalchemy==1.4.39
     #   alembic
     #   flask-sqlalchemy
     #   pytest-flask-sqlalchemy
+    #   sqlalchemy-json
     #   sqlalchemy-utils
+sqlalchemy-json==0.5.0
+    # via -r requirements.txt
 sqlalchemy-utils==0.38.3
     # via -r requirements.txt
 stevedore==3.5.0

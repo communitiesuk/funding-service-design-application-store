@@ -1,5 +1,6 @@
 from api import api
 from flask import Flask
+from db import db, migrate
 from fsd_utils.logging import logging
 
 
@@ -10,8 +11,6 @@ def create_app() -> Flask:
 
     api.init_app(flask_app)
     logging.init_app(flask_app)
-
-    from db import db, migrate
 
     # Bind SQLAlchemy ORM to Flask app
     db.init_app(flask_app)

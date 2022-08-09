@@ -6,7 +6,7 @@ from tests.helpers import expected_data_within_response
 from tests.helpers import post_data
 
 
-def test_create_application_is_successful(flask_test_client):
+def test_create_application_is_successful(client):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -19,11 +19,11 @@ def test_create_application_is_successful(flask_test_client):
         "fund_id": "fund-a",
         "round_id": "summer",
     }
-    post_data(flask_test_client, "/applications", application_data_a1)
+    post_data(client, "/applications", application_data_a1)
 
     expected_length_fund_a = 1
     count_fund_applications(
-        flask_test_client, "fund-a", expected_length_fund_a
+        client, "fund-a", expected_length_fund_a
     )
 
     # Post first Fund B application and check length
@@ -32,11 +32,11 @@ def test_create_application_is_successful(flask_test_client):
         "fund_id": "fund-b",
         "round_id": "summer",
     }
-    post_data(flask_test_client, "/applications", application_data_b1)
+    post_data(client, "/applications", application_data_b1)
 
     expected_length_fund_b = 1
     count_fund_applications(
-        flask_test_client, "fund-b", expected_length_fund_b
+        client, "fund-b", expected_length_fund_b
     )
 
     # Post second Fund B application and check length
@@ -45,15 +45,15 @@ def test_create_application_is_successful(flask_test_client):
         "fund_id": "fund-b",
         "round_id": "summer",
     }
-    post_data(flask_test_client, "/applications", application_data_b2)
+    post_data(client, "/applications", application_data_b2)
 
     expected_length_fund_b = 2
     count_fund_applications(
-        flask_test_client, "fund-b", expected_length_fund_b
+        client, "fund-b", expected_length_fund_b
     )
 
 
-def test_get_all_applications(flask_test_client):
+def test_get_all_applications(client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications with no set params
@@ -113,7 +113,7 @@ def test_get_all_applications(flask_test_client):
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]
     expected_data_within_response(
-        flask_test_client,
+        client,
         "/applications",
         expected_data,
         exclude_regex_paths=exclude_regex_paths,
@@ -121,7 +121,7 @@ def test_get_all_applications(flask_test_client):
 
 
 # TODO: Add individual search filter endpoint tests below
-# def test_get_applications_by_status_completed(flask_test_client):
+# def test_get_applications_by_status_completed(client):
 #     """
 #     GIVEN We have a functioning Application Store API
 #     WHEN a request for applications with a given status
@@ -140,13 +140,13 @@ def test_get_all_applications(flask_test_client):
 #     ]
 #
 #     expected_data_within_get_response(
-#         flask_test_client,
+#         client,
 #         "/applications/search?status_only=completed",
 #         expected_data,
 #     )
 
 
-# def test_search_endpoint_get_applications_by_status(flask_test_client):
+# def test_search_endpoint_get_applications_by_status(client):
 #     """
 #     GIVEN We have a functioning Application Store API
 #     WHEN a request for applications with a given status
@@ -163,14 +163,14 @@ def test_get_all_applications(flask_test_client):
 #     ]
 #
 #     expected_data_within_get_response(
-#         flask_test_client,
+#         client,
 #         "/search"
 #         "?status_only=not%20started",
 #         expected_data,
 #     )
 
 
-# def test_get_applications_by_id_contains(flask_test_client):
+# def test_get_applications_by_id_contains(client):
 #     """
 #     GIVEN We have a functioning Application Store API
 #     WHEN a request for applications whose id's contain a given string
@@ -189,13 +189,13 @@ def test_get_all_applications(flask_test_client):
 #     ]
 #
 #     expected_data_within_get_response(
-#         flask_test_client,
+#         client,
 #         "/applications/search?id_contains=v4-2",
 #         expected_data,
 #     )
 
 
-# def test_get_fund_applications_by_time_period(flask_test_client):
+# def test_get_fund_applications_by_time_period(client):
 #     """
 #     GIVEN We have a functioning Application Store API
 #     WHEN a request for applications for a fund within a given time period
@@ -214,14 +214,14 @@ def test_get_all_applications(flask_test_client):
 #     ]
 #
 #     expected_data_within_get_response(
-#         flask_test_client,
+#         client,
 #         "/applications/search"
 #         "?fund_id=test-fund-name&datetime_start=2022-01-01&datetime_end=2022-12-28",
 #         expected_data,
 #     )
 
 
-def test_get_applications_sorted_by_rev_account_id(flask_test_client):
+def test_get_applications_sorted_by_rev_account_id(client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications reverse sorted by account_id
@@ -281,14 +281,14 @@ def test_get_applications_sorted_by_rev_account_id(flask_test_client):
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]
     expected_data_within_response(
-        flask_test_client,
+        client,
         "/applications?order_by=account_id&order_rev=1",
         expected_data,
         exclude_regex_paths=exclude_regex_paths,
     )
 
 
-def test_get_applications_of_account_id(flask_test_client):
+def test_get_applications_of_account_id(client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications of account_id
@@ -315,20 +315,20 @@ def test_get_applications_of_account_id(flask_test_client):
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]
     expected_data_within_response(
-        flask_test_client,
+        client,
         "/applications?account_id=userb",
         expected_data,
         exclude_regex_paths=exclude_regex_paths,
     )
 
 
-def test_update_section_of_application(flask_test_client):
+def test_update_section_of_application(client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications of account_id
     THEN the response should return applications of the account_id
     """
-    account_applications_response = flask_test_client.get(
+    account_applications_response = client.get(
         "/applications?account_id=userb"
     )
     account_applications = account_applications_response.get_json()
@@ -395,7 +395,7 @@ def test_update_section_of_application(flask_test_client):
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]
     expected_data_within_response(
-        flask_test_client,
+        client,
         "/applications/sections",
         expected_data,
         method="put",
@@ -405,14 +405,14 @@ def test_update_section_of_application(flask_test_client):
 
 
 def test_update_section_of_application_with_incomplete_answers(
-    flask_test_client,
+    client,
 ):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications of account_id
     THEN the response should return applications of the account_id
     """
-    account_applications_response = flask_test_client.get(
+    account_applications_response = client.get(
         "/applications?account_id=userb"
     )
     account_applications = account_applications_response.get_json()
@@ -481,7 +481,7 @@ def test_update_section_of_application_with_incomplete_answers(
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]
     expected_data_within_response(
-        flask_test_client,
+        client,
         "/applications/sections",
         expected_data,
         method="put",
@@ -490,7 +490,7 @@ def test_update_section_of_application_with_incomplete_answers(
     )
 
 
-def test_get_application_by_application_id(flask_test_client):
+def test_get_application_by_application_id(client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a GET /applications/<application_id> request is sent
@@ -516,7 +516,7 @@ def test_get_application_by_application_id(flask_test_client):
         re.compile(regex_string) for regex_string in exclude_regex_path_strings
     ]
     expected_data_within_response(
-        flask_test_client,
+        client,
         "/applications/uuidv4",
         expected_data,
         exclude_regex_paths=exclude_regex_paths,

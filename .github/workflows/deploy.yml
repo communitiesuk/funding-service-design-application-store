@@ -6,6 +6,9 @@ on:
     paths-ignore:
       - '**/README.md'
 
+env:
+  FLASK_ENV: unit_test
+
 jobs:
 
   testing-unit: 

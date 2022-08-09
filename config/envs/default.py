@@ -46,9 +46,7 @@ class DefaultConfig:
     FUND_ROUNDS_ENDPOINT = "/funds/{fund_id}/rounds"
     FUND_ROUND_ENDPOINT = "/funds/{fund_id}/rounds/{round_id}"
 
-    SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL").replace(
-        "postgres://", "postgresql://"
-    )
+    SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # COF FORMS BASE CONFIG

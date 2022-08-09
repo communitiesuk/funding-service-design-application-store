@@ -53,7 +53,7 @@ class DefaultConfig:
     COF_R2_FORMS = [
     {
         "status": "NOT_STARTED",
-        "form": "about-the-applicant",
+        "form": "applicant-information",
         "questions": [
             {
                 "question": "About your organisation",
@@ -82,7 +82,7 @@ class DefaultConfig:
     },
     {
         "status": "NOT_STARTED",
-        "form": "assest-information",
+        "form": "asset-information",
         "questions": [
             {
                 "question": "About your project",
@@ -857,6 +857,17 @@ class DefaultConfig:
                         "type": "text",
                         "answer": "",
                     },
+                ],
+            },
+        ],
+    },
+    {
+        "status": "NOT_STARTED",
+        "form": "upload-business-plan",
+        "questions": [
+            {
+                "question": "Management case",
+                "fields": [
                 ],
             },
         ],

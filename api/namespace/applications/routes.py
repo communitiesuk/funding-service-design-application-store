@@ -2,7 +2,7 @@ from api.namespace.applications.applications_ns import applications_ns
 from api.namespace.applications.models.application import application_full
 from api.namespace.applications.models.application import application_result
 from api.namespace.applications.models.application import application_status
-from api.namespace.applications.models.section import section
+from api.namespace.applications.models.form import form
 from api.namespace.applications.helpers.helpers import ApplicationHelpers
 
 from flask import abort
@@ -12,7 +12,7 @@ from flask_restx import Resource
 
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
-from db.models.common_functions import get_application_bundle_by_id, submit_application
+from db.models.common_functions import get_application_bundle_by_id, submit_application, update_form
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -93,7 +93,7 @@ class Applications(Resource):
         account_id = args["account_id"]
         round_id = args["round_id"]
         fund_id = args["fund_id"]
-        empty_forms = ApplicationHelpers.get_blank_sections(fund_id, round_id)
+        empty_forms = ApplicationHelpers.get_blank_forms(fund_id, round_id)
         application = ApplicationsMethods.create_application(
             account_id=account_id, fund_id=fund_id, round_id=round_id
         )
@@ -103,40 +103,34 @@ class Applications(Resource):
         return application, 201
 
 # j
-@applications_ns.route("/sections", methods=["PUT"])
-class Section(Resource):
+@applications_ns.route("/forms", methods=["PUT"])
+class Form(Resource):
 
-    put_section_parser = reqparse.RequestParser()
-    put_section_parser.add_argument("name", location="json")
+    put_form_parser = reqparse.RequestParser()
+    put_form_parser.add_argument("name", location="json")
 
     @applications_ns.doc(
-        "put_section", methods=["PUT"], parser=put_section_parser
+        "put_form", methods=["PUT"], parser=put_form_parser
     )
-    @applications_ns.marshal_with(section, code=201)
+    @applications_ns.marshal_with(form, code=201)
     def put(self):
         request_json = request.get_json(force=True)
-        section_name = request_json["name"]
-        section_questions = request_json["questions"]
-        section_metadata = request_json["metadata"]
-        application_id = request_json["metadata"]["application_id"]
+        
 
-        section_dict = {
-            "questions": section_questions,
-            "section_name": section_name,
-            "metadata": section_metadata,
+        form_dict = {
+            "application_id": request_json["metadata"]["application_id"],
+            "form_name": request_json["metadata"]["form_name"],
+            "question_json": request_json["questions"],
         }
 
         try:
+            updated_form = update_form(**form_dict)
 
-            updated_section = FormsMethods.update_section(
-                application_id, section_name, section_dict
-            )
-
-            return updated_section, 201
+            return updated_form, 201
 
         except NoResultFound as e:
 
-            abort(404, f"No matching application section found : {e}")
+            abort(404, f"No matching application form found : {e}")
 
 
 # j

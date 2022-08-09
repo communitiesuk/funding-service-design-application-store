@@ -1,6 +1,6 @@
 from api.namespace.applications.applications_ns import applications_ns
-from api.namespace.applications.models.section import section
-from api.namespace.applications.models.section import section_status
+from api.namespace.applications.models.form import form
+from api.namespace.applications.models.form import form_status
 from flask_restx import fields
 
 
@@ -56,9 +56,9 @@ application_full = applications_ns.model(
         ),
         "forms": fields.List(
             fields.Nested(
-                section,
+                form,
                 required=True,
-                description="Application section questions and answers.",
+                description="Application form questions and answers.",
             ),
         ),
     },
@@ -131,10 +131,10 @@ application_status = applications_ns.model(
             description="When the application was last edited",
             example="2022-12-25 00:00:00",
         ),
-        "sections": fields.List(
+        "forms": fields.List(
             fields.Nested(
-                section_status,
-                description="Sections, questions and their completion status",
+                form_status,
+                description="forms, questions and their completion status",
             ),
         ),
     },

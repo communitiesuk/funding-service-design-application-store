@@ -2,7 +2,6 @@ from db import db
 from db.models.applications import Applications
 from db.models.common import Status
 from sqlalchemy_utils.types import UUIDType
-import sqlalchemy.orm.exc
 import uuid
 from sqlalchemy_json import NestedMutableJson
 
@@ -37,7 +36,7 @@ class Forms(db.Model):
 
         name = db.Column("name", db.String(), nullable=False)
         
-        def as_form_json(self):
+        def as_json(self):
 
             return {"status" : self.status, "name" : self.name ,**self.json}
 
@@ -51,47 +50,23 @@ class FormsMethods():
             db.session.add(new_form_row)
             db.session.commit()
 
-        return {"sections" : forms} 
+        return {"forms" : forms} 
 
     @staticmethod
-    def get_sections_by_app_id(application_id, as_json=True):
+    def get_forms_by_app_id(application_id, as_json=True):
 
-        sections = db.session.query(Forms).filter(Forms.application_id == application_id).all()
+        forms = db.session.query(Forms).filter(Forms.application_id == application_id).all()
 
         if as_json:
 
-            return [ section.as_form_json() for section in sections ]
+            return [ form.as_json() for form in forms ]
 
         else:
 
-            return sections
+            return forms
 
 
     @staticmethod
-    def get_section(application_id, section_name):
+    def get_form(application_id, form_name):
 
-        sections = FormsMethods.get_sections_by_app_id(application_id)
-
-        for section in sections:
-
-            if section["section_name"] == section_name:
-
-                return section
-
-                
-    @staticmethod
-    def update_section(application_id, section_name, new_json):
-
-        try:
-
-            section_sql_row = db.session.query(Forms).filter(Forms.application_id == application_id, Forms.section == section_name).one()
-
-            section_sql_row.json = new_json
-
-            db.session.commit()
-
-            return new_json
-
-        except sqlalchemy.orm.exc.NoResultFound as e:
-
-            raise e
+        return db.session.query(Forms).filter(Forms.application_id == application_id, Forms.name == form_name).one()

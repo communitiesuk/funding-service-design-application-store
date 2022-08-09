@@ -11,9 +11,9 @@ from config import Config
 
 class ApplicationHelpers:
     @staticmethod
-    def get_blank_sections(fund_id: str, round_id: str):
+    def get_blank_forms(fund_id: str, round_id: str):
         """
-        Get the list of sections required to populate a blank
+        Get the list of forms required to populate a blank
         application for a fund round
 
         Args:
@@ -21,7 +21,7 @@ class ApplicationHelpers:
             round_id: (str) The id of the fund round
 
         Returns:
-            A list of json sections to populate the form
+            A list of json forms to populate the form
         """
         fund = get_fund(fund_id)
         fund_round = get_round(fund_id, round_id)   
@@ -31,7 +31,7 @@ class ApplicationHelpers:
             forms = fund_round_forms.get(":".join([fund_id, round_id]))
             if not forms:
                 raise Exception(
-                    f"Could not find form sections for {fund_id} - {round_id}"
+                    f"Could not find form forms for {fund_id} - {round_id}"
                 )
             return forms.copy()
         raise Exception(f"Could not find fund round for {fund_id} - {round_id}  in fund store.")

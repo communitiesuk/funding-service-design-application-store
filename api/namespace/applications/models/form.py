@@ -4,10 +4,10 @@ from api.namespace.applications.models.question import question
 from api.namespace.applications.models.question import question_status
 from flask_restx import fields
 
-section_inbound = applications_ns.model(
-    "section_inbound",
+form_inbound = applications_ns.model(
+    "form_inbound",
     {
-        "name": fields.String(
+        "form_name": fields.String(
             required=True,
             description="The name of the fund",
             example="Funding Service Design",
@@ -27,8 +27,8 @@ section_inbound = applications_ns.model(
     },
 )
 
-section = applications_ns.model(
-    "section",
+form = applications_ns.model(
+    "form",
     {
         "name": fields.String(
             required=True,
@@ -36,7 +36,7 @@ section = applications_ns.model(
             example="about-you",
         ),
         "status": fields.String(
-            description="The completion status of the section",
+            description="The completion status of the form",
             example="IN_PROGRESS",
         ),
         "questions": fields.List(
@@ -54,16 +54,16 @@ section = applications_ns.model(
     },
 )
 
-section_status = applications_ns.model(
-    "section_status",
+form_status = applications_ns.model(
+    "form_status",
     {
-        "section_name": fields.String(
+        "form_name": fields.String(
             required=True,
-            description="The name of the section",
+            description="The name of the form",
             example="about-you",
         ),
         "status": fields.String(
-            description="The completion status of the section",
+            description="The completion status of the form",
             example="IN_PROGRESS",
         ),
         "questions": fields.List(

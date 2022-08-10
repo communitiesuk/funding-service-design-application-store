@@ -1,4 +1,7 @@
 import json
+import re
+from typing import List
+import uuid
 
 from deepdiff import DeepDiff
 
@@ -70,7 +73,6 @@ def post_data(test_client, endpoint: str, data: dict):
         content_type="application/json",
         follow_redirects=True,
     )
-    print(response.data)
 
 
 def put_data(test_client, endpoint: str, data: dict):
@@ -113,3 +115,61 @@ def count_fund_applications(test_client, fund_id: str, expected_application_coun
         + str(expected_application_count)
     )
     assert len(response_data) == expected_application_count, error_message
+
+def post_test_applications(client):
+    application_data_1 = {
+        "account_id": "usera",  
+        "fund_id": "fund-a",
+        "round_id": "summer"
+    }
+    application_data_2 = {
+        "account_id": "userb",  
+        "fund_id": "fund-b",
+        "round_id": "summer"
+    }
+    application_data_3 = {
+        "account_id": "userc",  
+        "fund_id": "funding-service-design",
+        "round_id": "spring"
+    }
+    post_data(client, "/applications", application_data_1)
+    post_data(client, "/applications", application_data_2)
+    post_data(client, "/applications", application_data_3)
+
+
+application_post_data = [ 
+    {
+        "account_id": "usera",  
+        "fund_id": "fund-a",
+        "round_id": "summer"
+    },
+    {
+        "account_id": "userb",  
+        "fund_id": "fund-b",
+        "round_id": "summer"
+    },
+    {
+        "account_id": "userc",  
+        "fund_id": "funding-service-design",
+        "round_id": "spring"
+    }]
+
+application_expected_data = [
+        {
+            "status": "NOT_STARTED",
+            "project_name": None,
+            "date_submitted": None,
+            "started_at": "2022-05-20 14:47:12",
+            "last_edited": None,
+            **application_data
+        } for application_data in application_post_data ]
+
+def key_list_to_regex(exclude_keys : List[str] = ["id", "started_at", "project_name"]):
+
+    exclude_regex_path_strings = [
+        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
+    ]
+
+    return [
+        re.compile(regex_string) for regex_string in exclude_regex_path_strings
+    ]

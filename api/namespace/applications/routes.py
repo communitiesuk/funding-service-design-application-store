@@ -1,3 +1,4 @@
+import uuid
 from api.namespace.applications.applications_ns import applications_ns
 from api.namespace.applications.models.application import application_full
 from api.namespace.applications.models.application import application_result
@@ -65,21 +66,9 @@ class Applications(Resource):
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": True,
         }
-        filters = {
-            "started_at": args.get("datetime_start"),
-            "date_submitted": args.get("datetime_end"),
-            "fund_id": args.get("fund_id"),
-            "account_id": args.get("account_id"),
-            "status": args.get("status_only"),
-            "id": args.get("id_contains")
-        }
-        matched_applications = ApplicationsMethods.search_applications(filters, True) # []
+        applications = ApplicationsMethods.search_applications(args)
 
-        order_by = args.get("order_by", "id")
-        order_rev = args.get("order_rev") == "1"
-        ApplicationHelpers.order_applications(matched_applications, order_by, order_rev)
-
-        return matched_applications, 200, response_headers
+        return applications, 200, response_headers
 
     create_application_parser = reqparse.RequestParser()
     create_application_parser.add_argument("account_id", location="json")
@@ -151,7 +140,7 @@ class GetApplication(Resource):
     @applications_ns.marshal_with(application_full, code=201)
     def get(self, application_id):
         try:
-            return_dict = get_application_bundle_by_id(application_id)
+            return_dict = get_application_bundle_by_id(uuid.UUID(application_id))
             return return_dict, 200
         except NoResultFound:
             return "", 404

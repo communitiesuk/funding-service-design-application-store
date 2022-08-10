@@ -120,7 +120,7 @@ def get_application_bundle_by_id(app_id):
 
     forms = FormsMethods.get_forms_by_app_id(app_id)
 
-    return {**application.as_dict(), "forms" : forms}
+    return [{**application.as_dict(), "forms" : forms}]
 
 def submit_application(application_id):
 

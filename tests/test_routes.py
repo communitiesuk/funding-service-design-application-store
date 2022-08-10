@@ -1,7 +1,9 @@
 import json
+from operator import itemgetter
 import re
+from db.models.applications import ApplicationTestMethods
 
-from tests.helpers import count_fund_applications
+from tests.helpers import count_fund_applications, key_list_to_regex, post_test_applications, application_expected_data
 from tests.helpers import expected_data_within_response
 from tests.helpers import post_data
 
@@ -59,166 +61,15 @@ def test_get_all_applications(client):
     WHEN a request for applications with no set params
     THEN the response should return all applications
     """
-    expected_data = [
-        {
-            "id": "uuidv4",
-            "status": "NOT_STARTED",
-            "account_id": "test-user",
-            "fund_id": "funding-service-design",
-            "round_id": "summer",
-            "project_name": None,
-            "date_submitted": None,
-            "started_at": "2022-05-20 14:47:12",
-            "last_edited": None,
-        },
-        {
-            "id": "string",
-            "status": "NOT_STARTED",
-            "account_id": "usera",
-            "fund_id": "fund-a",
-            "round_id": "summer",
-            "project_name": None,
-            "date_submitted": None,
-            "started_at": "2022-12-25 00:00:00",
-            "last_edited": None,
-        },
-        {
-            "id": "string",
-            "status": "NOT_STARTED",
-            "account_id": "userb",
-            "fund_id": "fund-b",
-            "round_id": "summer",
-            "project_name": "",
-            "date_submitted": None,
-            "started_at": "2022-12-25 00:00:00",
-            "last_edited": None,
-        },
-        {
-            "id": "string",
-            "status": "NOT_STARTED",
-            "account_id": "userc",
-            "fund_id": "fund-b",
-            "round_id": "summer",
-            "project_name": "",
-            "date_submitted": None,
-            "started_at": "2022-12-25 00:00:00",
-            "last_edited": None,
-        },
-    ]
-    exclude_keys = ["id", "started_at", "project_name"]
-    exclude_regex_path_strings = [
-        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
-    ]
-    exclude_regex_paths = [
-        re.compile(regex_string) for regex_string in exclude_regex_path_strings
-    ]
+    post_test_applications(client)
+    expected_data = application_expected_data
+
     expected_data_within_response(
         client,
         "/applications",
         expected_data,
-        exclude_regex_paths=exclude_regex_paths,
+        exclude_regex_paths=key_list_to_regex(),
     )
-
-
-# TODO: Add individual search filter endpoint tests below
-# def test_get_applications_by_status_completed(client):
-#     """
-#     GIVEN We have a functioning Application Store API
-#     WHEN a request for applications with a given status
-#     THEN the response should only contain the applications that
-#     have that status
-#     """
-#     expected_data = [
-#         {
-#             "id": "uuidv4",
-#             "status": "COMPLETED",
-#             "fund_id": "test-fund-name",
-#             "round_id": "spring",
-#             "date_submitted": "2021-12-24 00:00:00",
-#             "assessment_deadline": "2022-08-28 00:00:00",
-#         }
-#     ]
-#
-#     expected_data_within_get_response(
-#         client,
-#         "/applications/search?status_only=completed",
-#         expected_data,
-#     )
-
-
-# def test_search_endpoint_get_applications_by_status(client):
-#     """
-#     GIVEN We have a functioning Application Store API
-#     WHEN a request for applications with a given status
-#     THEN the response should only contain the applications that
-#     have that status
-#     """
-#     expected_data = [
-#         {
-#             "id": "uuidv4-2",
-#             "status": "NOT_STARTED",
-#             "assessment_deadline": "2022-08-28 00:00:00",
-#             "fund_id": "slugified_test_fund_name"
-#         }
-#     ]
-#
-#     expected_data_within_get_response(
-#         client,
-#         "/search"
-#         "?status_only=not%20started",
-#         expected_data,
-#     )
-
-
-# def test_get_applications_by_id_contains(client):
-#     """
-#     GIVEN We have a functioning Application Store API
-#     WHEN a request for applications whose id's contain a given string
-#     THEN the response should only contain the applications that
-#     have ids that contain that string
-#     """
-#     expected_data = [
-#         {
-#             "id": "uuidv4-2",
-#             "status": "NOT_STARTED",
-#             "fund_id": "test-fund-name",
-#             "round_id": "spring",
-#             "date_submitted": "2022-12-25 00:00:00",
-#             "assessment_deadline": "2022-08-28 00:00:00",
-#         }
-#     ]
-#
-#     expected_data_within_get_response(
-#         client,
-#         "/applications/search?id_contains=v4-2",
-#         expected_data,
-#     )
-
-
-# def test_get_fund_applications_by_time_period(client):
-#     """
-#     GIVEN We have a functioning Application Store API
-#     WHEN a request for applications for a fund within a given time period
-#     THEN the response should only contain the applications for the fund
-#     that fall within the time period
-#     """
-#     expected_data = [
-#         {
-#             "id": "uuidv4-2",
-#             "status": "NOT_STARTED",
-#             "fund_id": "test-fund-name",
-#             "round_id": "spring",
-#             "date_submitted": "2022-12-25 00:00:00",
-#             "assessment_deadline": "2022-08-28 00:00:00",
-#         }
-#     ]
-#
-#     expected_data_within_get_response(
-#         client,
-#         "/applications/search"
-#         "?fund_id=test-fund-name&datetime_start=2022-01-01&datetime_end=2022-12-28",
-#         expected_data,
-#     )
 
 
 def test_get_applications_sorted_by_rev_account_id(client):
@@ -227,64 +78,21 @@ def test_get_applications_sorted_by_rev_account_id(client):
     WHEN a request for applications reverse sorted by account_id
     THEN the response should return applications in the requested order
     """
-    expected_data = [
-        {
-            "id": "string",
-            "status": "NOT_STARTED",
-            "account_id": "userc",
-            "fund_id": "fund-b",
-            "round_id": "summer",
-            "project_name": "",
-            "date_submitted": None,
-            "started_at": "2022-12-25 00:00:00",
-            "last_edited": None,
-        },
-        {
-            "id": "string",
-            "status": "NOT_STARTED",
-            "account_id": "userb",
-            "fund_id": "fund-b",
-            "round_id": "summer",
-            "project_name": "",
-            "date_submitted": None,
-            "started_at": "2022-12-25 00:00:00",
-            "last_edited": None,
-        },
-        {
-            "id": "string",
-            "status": "NOT_STARTED",
-            "account_id": "usera",
-            "fund_id": "fund-a",
-            "round_id": "summer",
-            "project_name": "",
-            "date_submitted": None,
-            "started_at": "2022-12-25 00:00:00",
-            "last_edited": None,
-        },
-        {
-            "id": "uuidv4",
-            "status": "NOT_STARTED",
-            "account_id": "test-user",
-            "fund_id": "funding-service-design",
-            "round_id": "summer",
-            "project_name": None,
-            "date_submitted": None,
-            "started_at": "2022-05-20 14:47:12",
-            "last_edited": None,
-        },
-    ]
-    exclude_keys = ["id", "started_at", "project_name"]
-    exclude_regex_path_strings = [
-        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
-    ]
-    exclude_regex_paths = [
-        re.compile(regex_string) for regex_string in exclude_regex_path_strings
-    ]
+    post_test_applications(client)
+    raw_expected_data = application_expected_data
+    order_by = "account_id"
+    order_rev = 1
+    sorted_matching_applications_jsons = sorted(
+                raw_expected_data,
+                key=itemgetter(order_by),
+                reverse=order_rev,
+            )
+
     expected_data_within_response(
         client,
-        "/applications?order_by=account_id&order_rev=1",
-        expected_data,
-        exclude_regex_paths=exclude_regex_paths,
+        f"/applications?order_by={order_by}&order_rev={order_rev}",
+        sorted_matching_applications_jsons,
+        exclude_regex_paths=key_list_to_regex(),
     )
 
 
@@ -294,31 +102,15 @@ def test_get_applications_of_account_id(client):
     WHEN a request for applications of account_id
     THEN the response should return applications of the account_id
     """
-    expected_data = [
-        {
-            "id": "string",
-            "status": "NOT_STARTED",
-            "account_id": "userb",
-            "fund_id": "fund-b",
-            "round_id": "summer",
-            "project_name": "",
-            "date_submitted": None,
-            "started_at": "2022-12-25 00:00:00",
-            "last_edited": None,
-        }
-    ]
-    exclude_keys = ["id", "started_at"]
-    exclude_regex_path_strings = [
-        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
-    ]
-    exclude_regex_paths = [
-        re.compile(regex_string) for regex_string in exclude_regex_path_strings
-    ]
+    post_test_applications(client)
+    account_id_to_filter = "userb"
+    expected_data = list(filter(lambda app_dict : app_dict["account_id"] == account_id_to_filter, application_expected_data))
+
     expected_data_within_response(
         client,
         "/applications?account_id=userb",
         expected_data,
-        exclude_regex_paths=exclude_regex_paths,
+        exclude_regex_paths=key_list_to_regex(["id", "started_at"]),
     )
 
 
@@ -497,27 +289,17 @@ def test_get_application_by_application_id(client):
     THEN the response should contain the application object
     """
 
-    expected_data = {
-        "id": "uuidv4",
-        "account_id": "test-user",
-        "status": "NOT_STARTED",
-        "fund_id": "funding-service-design",
-        "round_id": "summer",
-        "project_name": None,
-        "date_submitted": None,
-        "started_at": "2022-05-20 14:47:12",
-        "last_edited": None,
-        "sections": [],
-    }
+    post_test_applications(client)
 
-    exclude_keys = ["sections"]
-    exclude_regex_path_strings = [rf"root\['{key}'\]" for key in exclude_keys]
-    exclude_regex_paths = [
-        re.compile(regex_string) for regex_string in exclude_regex_path_strings
-    ]
+    random_app = ApplicationTestMethods.get_random_app()
+
+    random_id = random_app.id
+
+    expected_data = [random_app.as_dict()]
+
     expected_data_within_response(
         client,
-        "/applications/uuidv4",
+        f"/applications/{random_id}",
         expected_data,
-        exclude_regex_paths=exclude_regex_paths,
+        exclude_regex_paths=key_list_to_regex(["started_at", "project_name", "forms"]),
     )

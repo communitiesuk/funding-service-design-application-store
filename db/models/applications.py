@@ -1,4 +1,6 @@
 import datetime
+from operator import itemgetter
+import random
 from db import db
 from sqlalchemy import DateTime
 from db.models.common import Status
@@ -6,6 +8,7 @@ from sqlalchemy_utils.types import UUIDType
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm.exc import NoResultFound
 import uuid
 
 def started_at():
@@ -69,7 +72,7 @@ class Applications(db.Model):
                 "fund_id" : self.fund_id,
                 "project_name" : self.project_name,
                 "started_at" : self.started_at.strftime("%Y-%m-%d %H:%M:%S"),
-                "status" : self.status,
+                "status" : self.status.name,
                 "date_submitted" : self.date_submitted,
                 "last_edited" : self.last_edited
             }
@@ -80,7 +83,15 @@ class ApplicationsMethods():
     @staticmethod
     def get_application_by_id(app_id):
 
+        print(app_id)
+
+        print(db.session.query(Applications).all())
+
         application = db.session.get(Applications, app_id)
+
+        if application is None:
+
+            raise NoResultFound
 
         return application
 
@@ -102,17 +113,95 @@ class ApplicationsMethods():
         
         return new_application_row
 
+    # @staticmethod
+    # def search_applications(filters: dict, as_dict: bool):
+    #     if filters:
+    #         filter_list = []
+    #         # if the filter dictionary key has a value, add this filter to the db search parameters
+    #         for filter, value in filters.items():
+    #             if value:
+    #                 filter_list.append(getattr(Applications, filter).contains(value))
+    #         applications = Applications.query.filter(*filter_list).all()
+    #     else:
+    #         applications = Applications.query.all()
+    #     if as_dict:
+    #         return [application.as_dict() for application in applications]
+    #     return applications
+
     @staticmethod
-    def search_applications(filters: dict, as_dict: bool):
-        if filters:
-            filter_list = []
-            # if the filter dictionary key has a value, add this filter to the db search parameters
-            for filter, value in filters.items():
-                if value:
-                    filter_list.append(getattr(Applications, filter).contains(value))
-            applications = Applications.query.filter(*filter_list).all()
+    def get_all():
+
+        application_list = db.session.query(Applications).all()
+
+        return application_list
+
+    def search_applications(params):
+        """
+        Returns a list of applications matching required params
+        """
+        matching_applications = []
+
+        datetime_start = params.get("datetime_start")
+        datetime_end = params.get("datetime_end")
+
+        fund_id = params.get("fund_id")
+        account_id = params.get("account_id")
+        status_only = params.get("status_only")
+        id_contains = params.get("id_contains")
+
+        order_by = params.get("order_by", "id")
+        order_rev = params.get("order_rev") == "1"
+
+        filters = []
+
+        if fund_id:
+
+            filters.append(Applications.fund_id == fund_id)
+
+        if account_id:
+
+            filters.append(Applications.account_id == account_id)
+
+        if status_only:
+
+            filters.append(Applications.status.name == status_only.replace(" ", "_"))
+
+        if id_contains:
+
+            filters.append(Applications.id.contains(id_contains))
+
+        if len(filters) == 0:
+
+            matching_applications = db.session.query(Applications).all()
+
         else:
-            applications = Applications.query.all()
-        if as_dict:
-            return [application.as_dict() for application in applications]
-        return applications
+
+            matching_applications = db.session.query(Applications).filter(*filters).all()
+
+        matching_applications_jsons = [app.as_dict() for app in matching_applications]
+
+        if order_by and order_by in [
+            "id",
+            "status",
+            "account_id",
+            "assessment_deadline",
+        ]:
+            sorted_matching_applications_jsons = sorted(
+                matching_applications_jsons,
+                key=itemgetter(order_by),
+                reverse=order_rev,
+            )
+        else:
+            sorted_matching_applications_jsons = matching_applications_jsons
+
+        return sorted_matching_applications_jsons
+
+class ApplicationTestMethods():
+
+    @staticmethod
+    def get_random_app():
+
+        applications_list = ApplicationsMethods.get_all()
+        random_app = random.choice(applications_list)
+
+        return random_app

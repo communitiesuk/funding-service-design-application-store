@@ -16,165 +16,345 @@
   },
   "fund_store/funds": [
     {
-      "fund_name": "Fund A",
-      "fund_id": "fund-a",
-      "fund_description": "An example fund for testing the funding service"
+      "name": "Fund A",
+      "id": "fund-a",
+      "description": "An example fund for testing the funding service"
     },
     {
-      "fund_name": "Fund B",
-      "fund_id": "fund-b",
-      "fund_description": "An example fund for testing the funding service"
+      "name": "Fund B",
+      "id": "fund-b",
+      "description": "An example fund for testing the funding service"
     },
     {
-      "fund_name": "Funding Service Design",
-      "fund_id": "funding-service-design",
-      "fund_description": "An example fund for testing the funding service"
+      "name": "Funding Service Design",
+      "id": "funding-service-design",
+      "description": "An example fund for testing the funding service"
     },
     {
-      "fund_name": "Community Ownership Fund",
-      "fund_id": "community-ownership-fund",
-      "fund_description": "An example Community Ownership Fund for testing the funding service"
+      "name": "Community Ownership Fund",
+      "id": "community-ownership-fund",
+      "description": "An example Community Ownership Fund for testing the funding service"
     }
   ],
   "fund_store/funds/fund-a": {
-    "fund_name": "Fund A",
-    "fund_id": "fund-a",
-    "fund_description": "An example fund for testing the funding service"
+    "name": "Fund A",
+    "id": "fund-a",
+    "description": "An example fund for testing the funding service"
   },
   "fund_store/funds/fund-b": {
-    "fund_name": "Fund B",
-    "fund_id": "fund-b",
-    "fund_description": "An example fund for testing the funding service"
+    "name": "Fund B",
+    "id": "fund-b",
+    "description": "An example fund for testing the funding service"
   },
   "fund_store/funds/funding-service-design": {
-    "fund_name": "Funding Service Design",
-    "fund_id": "funding-service-design",
-    "fund_description": "An example fund for testing the funding service"
+    "name": "Funding Service Design",
+    "id": "funding-service-design",
+    "description": "An example fund for testing the funding service"
   },
   "fund_store/funds/community-ownership-fund": {
-      "fund_name": "Community Ownership Fund",
-      "fund_id": "community-ownership-fund",
-      "fund_description": "An example Community Ownership Fund for testing the funding service"
+      "name": "Community Ownership Fund",
+      "id": "community-ownership-fund",
+      "description": "An example Community Ownership Fund for testing the funding service"
   },
   "fund_store/funds/fund-a/rounds": [
     {
-      "fund_id": "funding-a",
-      "round_title": "Summer",
-      "round_id": "summer",
-      "eligibility_criteria": {
-        "maximum_project_cost": 1000000
-      },
+      "fund_id": "fund-a",
+      "title": "Summer",
+      "id": "summer",
       "opens": "2022-02-01T00:00:01",
       "deadline": "2022-06-01T00:00:00",
       "assessment_deadline": "2022-09-30T00:00:00",
-      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+      "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
     }
   ],
   "fund_store/funds/fund-b/rounds": [
     {
       "fund_id": "funding-a",
-      "round_title": "Summer",
-      "round_id": "summer",
-      "eligibility_criteria": {
-        "maximum_project_cost": 1000000
-      },
+      "title": "Summer",
+      "id": "summer",
       "opens": "2022-02-01T00:00:01",
       "deadline": "2022-06-01T00:00:00",
       "assessment_deadline": "2022-09-30T00:00:00",
-      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+      "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
     }
   ],
   "fund_store/funds/funding-service-design/rounds": [
     {
       "fund_id": "funding-service-design",
-      "round_title": "Spring",
-      "round_id": "spring",
-      "eligibility_criteria": {
-        "maximum_project_cost": 1000000
-      },
+      "title": "Spring",
+      "id": "spring",
       "opens": "2022-02-01T00:00:01",
       "deadline": "2022-06-01T00:00:00",
       "assessment_deadline": "2022-09-30T00:00:00",
-      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+      "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
     },
     {
       "fund_id": "funding-service-design",
-      "round_title": "Summer",
-      "round_id": "summer",
-      "eligibility_criteria": {
-        "maximum_project_cost": 1000000
-      },
+      "title": "Summer",
+      "id": "summer",
       "opens": "2022-06-01T00:00:01",
       "deadline": "2022-08-31T00:00:00",
       "assessment_deadline": "2022-12-30T00:00:00",
-      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+      "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
     },
     {
       "fund_id": "funding-service-design",
-      "round_title": "Autumn",
-      "round_id": "autumn",
-      "eligibility_criteria": {
-        "maximum_project_cost": 10000000
-      },
+      "title": "Autumn",
+      "id": "autumn",
       "opens": "2022-09-01T00:00:01",
       "deadline": "2022-11-30T00:00:00",
       "assessment_deadline": "2023-03-30T00:00:00",
-      "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+      "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
     }
   ],
   "fund_store/funds/fund-a/rounds/summer": {
     "fund_id": "funding-service-design",
-    "round_title": "Spring",
-    "round_id": "spring",
-    "eligibility_criteria": {
-      "maximum_project_cost": 1000000
-    },
+    "title": "Spring",
+    "id": "spring",
     "opens": "2022-02-01T00:00:01",
     "deadline": "2022-06-01T00:00:00",
-    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
   },
   "fund_store/funds/fund-b/rounds/summer": {
     "fund_id": "funding-service-design",
-    "round_title": "Spring",
-    "round_id": "spring",
-    "eligibility_criteria": {
-      "maximum_project_cost": 1000000
-    },
+    "title": "Spring",
+    "id": "spring",
     "opens": "2022-02-01T00:00:01",
     "deadline": "2022-06-01T00:00:00",
-    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
   },
   "fund_store/funds/funding-service-design/rounds/spring": {
     "fund_id": "funding-service-design",
-    "round_title": "Spring",
-    "round_id": "spring",
-    "eligibility_criteria": {
-      "maximum_project_cost": 1000000
-    },
+    "title": "Spring",
+    "id": "spring",
     "opens": "2022-02-01T00:00:01",
     "deadline": "2022-06-01T00:00:00",
-    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
   },
   "fund_store/funds/funding-service-design/rounds/summer": {
     "fund_id": "funding-service-design",
-    "round_title": "Summer",
-    "round_id": "summer",
-    "eligibility_criteria": {
-      "maximum_project_cost": 1000000
-    },
+    "title": "Summer",
+    "id": "summer",
     "opens": "2022-06-01T00:00:01",
     "deadline": "2022-08-31T00:00:00",
-    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
   },
   "fund_store/funds/funding-service-design/rounds/autumn": {
     "fund_id": "funding-service-design",
-    "round_title": "Autumn",
-    "round_id": "autumn",
-    "eligibility_criteria": {
-      "maximum_project_cost": 10000000
-    },
+    "title": "Autumn",
+    "id": "autumn",
     "opens": "2022-09-01T00:00:01",
     "deadline": "2022-11-30T00:00:00",
-    "application_url": "https://funding-service-design-form-runner.london.cloudapps.digital/funding-application"
+    "assessment_criteria_weighting": [
+            {
+                "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
+                "name": "Strategic case",
+                "value": 0.30
+            },
+            {
+                "id": "e557773a-74c9-43ee-a52c-88ccae279d08",
+                "name": "Management case",
+                "value": 0.30
+            },
+            {
+                "id": "9e282cdb-6c42-4430-9563-dc4995b59bdd",
+                "name": "Potential to delivery community benefits",
+                "value": 0.30
+            },
+            {
+                "id": "6020db6c-df67-4932-a2f3-2e9dd1934164",
+                "name": "Added value to the community",
+                "value": 0.10
+            }
+        ]
   }
 }

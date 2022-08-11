@@ -14,9 +14,9 @@ class Fund:
     @staticmethod
     def from_json(data: dict):
         return Fund(
-            name=data.get("fund_name"),
-            identifier=data.get("fund_id"),
-            description=data.get("fund_description"),
+            name=data.get("name"),
+            identifier=data.get("id"),
+            description=data.get("description"),
         )
 
     def add_round(self, fund_round: Round):

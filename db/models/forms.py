@@ -38,15 +38,13 @@ class Forms(db.Model):
         
         def as_json(self):
 
-            return {"status" : self.status, "name" : self.name ,**self.json}
+            return {"status" : self.status.name, "form_name" : self.name , "questions": self.json}
 
 class FormsMethods():
     @staticmethod
     def add_new_forms(forms, application_id):
         for form in forms:
-            for question in form.get("questions"):
-                question.update({"status": "NOT_STARTED"})
-            new_form_row = Forms(application_id=application_id, json=form, name=form["form"], status=form["status"])
+            new_form_row = Forms(application_id=application_id, json=form["questions"], name=form["form_name"], status="NOT_STARTED")
             db.session.add(new_form_row)
             db.session.commit()
 

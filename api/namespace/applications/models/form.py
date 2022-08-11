@@ -30,7 +30,7 @@ form_inbound = applications_ns.model(
 form = applications_ns.model(
     "form",
     {
-        "name": fields.String(
+        "form_name": fields.String(
             required=True,
             description="The name of the form",
             example="about-you",

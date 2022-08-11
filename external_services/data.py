@@ -7,6 +7,7 @@ import requests
 from config import Config
 from external_services.models.fund import Fund
 from external_services.models.round import Round
+from flask import current_app
 
 
 def api_call(endpoint: str, method: str = "GET", params: dict = None):
@@ -30,10 +31,12 @@ def get_data(endpoint: str, params: dict = None):
     if endpoint.startswith("http"):
         req = requests.PreparedRequest()
         req.prepare_url(endpoint, params)
+        current_app.logger.info(f"HTTP request made to {endpoint}")
         response = requests.get(req.url)
         if response.status_code == 200:
             return response.json()
     else:
+        current_app.logger.info(f"Local api call made to {endpoint}")
         return local_api_call(endpoint, params, "get")
 
 
@@ -85,17 +88,14 @@ def get_funds() -> List[Fund] | None:
         return funds
 
 
-def  get_fund(fund_id: str) -> Fund | None:
+def get_fund(fund_id: str) -> Fund | None:
     endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(
         fund_id=fund_id
     )
+    current_app.logger.info(f"Request made to {endpoint}")
     response = get_data(endpoint)
-    if response and "fund_id" in response:
-        fund = Fund.from_json(response)
-        if "rounds" in response and len(response["rounds"]) > 0:
-            for fund_round in response["rounds"]:
-                fund.add_round(Round.from_json(fund_round))
-        return fund
+    fund = Fund.from_json(response)
+    return fund
 
 
 def get_rounds(fund_id: str) -> Fund | List:

@@ -108,7 +108,7 @@ class Form(Resource):
 
         form_dict = {
             "application_id": request_json["metadata"]["application_id"],
-            "form_name": request_json["metadata"]["form_name"],
+            "form_name": request_json["form_name"],
             "question_json": request_json["questions"],
         }
 

@@ -83,10 +83,6 @@ class ApplicationsMethods():
     @staticmethod
     def get_application_by_id(app_id):
 
-        print(app_id)
-
-        print(db.session.query(Applications).all())
-
         application = db.session.get(Applications, app_id)
 
         if application is None:

@@ -13,6 +13,7 @@ def expected_data_within_response(
     method="get",
     data=None,
     exclude_regex_paths=None,
+    **kwargs
 ):
     """
     Given a endpoint and expected content,
@@ -36,7 +37,7 @@ def expected_data_within_response(
     response_data = json.loads(response.data)
 
     diff = DeepDiff(
-        expected_data, response_data, exclude_regex_paths=exclude_regex_paths
+        expected_data, response_data, exclude_regex_paths=exclude_regex_paths,**kwargs
     )
 
     error_message = "Expected data does not match response: " + str(diff)
@@ -170,6 +171,12 @@ def key_list_to_regex(exclude_keys : List[str] = ["id", "started_at", "project_n
         rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
     ]
 
+    exclude_regex_path_strings_nested = [
+        rf"root\[\d+\]\['{key}'\]\[\d+\]" for key in exclude_keys
+    ]
+
+    regex_paths = exclude_regex_path_strings + exclude_regex_path_strings_nested
+
     return [
-        re.compile(regex_string) for regex_string in exclude_regex_path_strings
+        re.compile(regex_string) for regex_string in regex_paths
     ]

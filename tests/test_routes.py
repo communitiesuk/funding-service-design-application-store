@@ -295,11 +295,16 @@ def test_get_application_by_application_id(client):
 
     random_id = random_app.id
 
-    expected_data = random_app.as_dict()
+    expected_data = {**random_app.as_dict(), 'forms' : []}
 
     expected_data_within_response(
         client,
         f"/applications/{random_id}",
         expected_data,
         exclude_regex_paths=key_list_to_regex(["started_at", "project_name", "forms"]),
+        # Lists are annoying to deal with in deepdiff
+        # especially when they contain dicts...so in this
+        # instance we ignore them rather then write some
+        # regex. (this recursively ignores 'forms')
+        exclude_types=[list]
     )

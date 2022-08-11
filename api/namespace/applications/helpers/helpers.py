@@ -24,7 +24,7 @@ class ApplicationHelpers:
             A list of json forms to populate the form
         """
         fund = get_fund(fund_id)
-        fund_round = get_round(fund_id, round_id)   
+        fund_round = get_round(fund_id, round_id)
         if fund and fund_round:
             fund_round_forms = Config.FUND_ROUND_FORMS
             forms = fund_round_forms.get(":".join([fund_id, round_id]))

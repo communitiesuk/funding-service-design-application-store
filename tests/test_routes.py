@@ -295,7 +295,7 @@ def test_get_application_by_application_id(client):
 
     random_id = random_app.id
 
-    expected_data = [random_app.as_dict()]
+    expected_data = random_app.as_dict()
 
     expected_data_within_response(
         client,

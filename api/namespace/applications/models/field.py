@@ -16,7 +16,7 @@ field = applications_ns.model(
         "type": fields.String(
             required=True, description="Field type", example="text"
         ),
-        "answer": fields.String(
+        "answer": fields.Raw(
             required=True,
             description="Field answer or value",
             example="Applicant",

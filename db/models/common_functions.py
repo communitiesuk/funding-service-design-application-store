@@ -17,7 +17,7 @@ def update_application_status(application_id: str):
     """
     application = ApplicationsMethods.get_application_by_id(application_id)
     forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
-    form_statuses = [form.json["status"] for form in forms]
+    form_statuses = [form.status.name for form in forms]
     if "IN_PROGRESS" in form_statuses:
         status = "IN_PROGRESS"
     elif "COMPLETED" and "NOT_STARTED" in form_statuses:
@@ -42,25 +42,24 @@ def update_form_statuses(application_id: str):
     forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
     application_submitted_date = db.session.get(Applications, application_id).date_submitted
     for form in forms:
-        form.status = form.get("status", "NOT_STARTED")
         if application_submitted_date:
-                form["status"] = "SUBMITTED"
+                form.status = "SUBMITTED"
                 break
-        for question in form["questions"]:
+        for question in form.json:
             if (
                 question["status"] == "COMPLETED"
-                and form["status"] != "IN_PROGRESS"
+                and form.status != "IN_PROGRESS"
             ):
-                form["status"] = "COMPLETED"
+                form.status = "COMPLETED"
                 continue
             elif (
                 question["status"] == "NOT_STARTED"
-                and form["status"] == "COMPLETED"
+                and form.status == "COMPLETED"
             ):
-                form["status"] = "IN_PROGRESS"
+                form.status = "IN_PROGRESS"
                 continue
             elif question["status"] == "IN_PROGRESS":
-                form["status"] = "IN_PROGRESS"
+                form.status = "IN_PROGRESS"
                 break
     db.session.commit()
 
@@ -75,7 +74,7 @@ def update_question_statuses(application_id: str):
     forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
     application_submitted_date = db.session.get(Applications, application_id).date_submitted
     for form in forms:
-        for question in form.json["questions"]:
+        for question in form.json:
             question["status"] = "NOT_STARTED"
             if application_submitted_date:
                     question["status"] = "SUBMITTED"
@@ -120,7 +119,7 @@ def get_application_bundle_by_id(app_id):
 
     forms = FormsMethods.get_forms_by_app_id(app_id)
 
-    return [{**application.as_dict(), "forms" : forms}]
+    return {**application.as_dict(), "forms" : forms}
 
 def submit_application(application_id):
 
@@ -146,12 +145,11 @@ def submit_application(application_id):
 
     return ApplicationsMethods.get_application_bundle_by_id(application_id)
 
-
 def update_form(application_id, form_name, question_json):
 
     try:
             form_sql_row = FormsMethods.get_form(application_id, form_name)
-            form_sql_row.json["questions"] = question_json
+            form_sql_row.json = question_json
             db.session.commit()
 
             # update statuses

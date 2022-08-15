@@ -21,5 +21,5 @@ class UnitTestingConfig(DefaultConfig):
     SQLALCHEMY_DATABASE_URI = environ.get(
         "DATABASE_URL",
         "postgresql://postgres:postgres@localhost:5432/postgres",
-    ).replace("postgres://", "postgresql://")
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False

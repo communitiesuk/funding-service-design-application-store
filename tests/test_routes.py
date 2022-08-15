@@ -127,7 +127,6 @@ def test_update_section_of_application(client):
     random_application_id = random_app.id
 
     section_put = {
-        "form_name": "declarations",
         "questions": [
             {
                 "question": "About your organisation",
@@ -161,6 +160,7 @@ def test_update_section_of_application(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
+            "form_name": "declarations"
         },
     }
 
@@ -195,7 +195,6 @@ def test_update_section_of_application_with_incomplete_answers(
     random_application_id = random_app.id
 
     section_put = {
-        "form_name": "declarations",
         "questions": [
             {
                 "question": "About your organisation",
@@ -230,14 +229,14 @@ def test_update_section_of_application_with_incomplete_answers(
         ],
         "metadata": {
             "application_id": str(random_application_id),
+            "form_name": "declarations",    
         },
     }
     expected_data = section_put.copy()
 
-    form_name = expected_data.pop("form_name")
     # The whole section has been submit here so it will have a status of
     # COMPLETE not IN_PROGRESS
-    expected_data.update({"form_name": form_name, "status": "COMPLETED"})
+    expected_data.update({"status": "IN_PROGRESS"})
 
     # exclude_question_keys = ["category", "index", "id"]
 
@@ -246,6 +245,8 @@ def test_update_section_of_application_with_incomplete_answers(
         data=json.dumps(section_put),
         follow_redirects=True,
     )
+
+    print(response.json)
 
     section_status = response.json["status"]
 

@@ -170,7 +170,6 @@ def update_form(application_id, form_name, question_json):
         form_sql_row.json = question_json
         db.session.commit()
 
-        # update statuses
         update_statuses(application_id)
 
         return form_sql_row.as_json()

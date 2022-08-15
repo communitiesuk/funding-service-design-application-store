@@ -1,3 +1,0 @@
-- [ ] Minting Data - Adam
-- [ ] Minting - Adam
-- [ ] All the other end points (PUT, POST, SEARCH)

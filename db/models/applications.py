@@ -4,7 +4,7 @@ import uuid
 from operator import itemgetter
 
 from db import db
-from db.models.common import Status
+from db.models.status import Status
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm.exc import NoResultFound

@@ -2,12 +2,14 @@ import uuid
 
 from db import db
 from db.models.applications import Applications
-from db.models.common import Status
+from db.models.status import Status
 from sqlalchemy_json import NestedMutableJson
 from sqlalchemy_utils.types import UUIDType
 
 
 class Forms(db.Model):
+
+    __table_args__ = (db.UniqueConstraint('id', 'name'),)
 
     id = db.Column(
         "id",

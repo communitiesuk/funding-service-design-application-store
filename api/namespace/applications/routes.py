@@ -92,7 +92,6 @@ class Applications(Resource):
         return application, 201
 
 
-# j
 @applications_ns.route("/forms", methods=["PUT"])
 class Form(Resource):
 

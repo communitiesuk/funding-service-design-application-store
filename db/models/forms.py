@@ -47,7 +47,7 @@ class FormsMethods:
             new_form_row = Forms(
                 application_id=application_id,
                 json=form["questions"],
-                name=form["form_name"],
+                name=form["form_minting_name"],
                 status="NOT_STARTED",
             )
             db.session.add(new_form_row)

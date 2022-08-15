@@ -52,83 +52,83 @@ class DefaultConfig:
     # COF FORMS BASE CONFIG
     COF_R2_FORMS = [
         {
-            "form_name": "applicant-information",
+            "form_minting_name": "applicant-information",
             "questions": [],
         },
         {
-            "form_name": "asset-information",
+            "form_minting_name": "asset-information",
             "questions": [],
         },
         {
-            "form_name": "community-benefits",
+            "form_minting_name": "community-benefits",
             "questions": [],
         },
         {
-            "form_name": "community-engagement",
+            "form_minting_name": "community-engagement",
             "questions": [],
         },
         {
-            "form_name": "community-representation",
+            "form_minting_name": "community-representation",
             "questions": [],
         },
         {
-            "form_name": "community-use",
+            "form_minting_name": "community-use",
             "questions": [],
         },
         {
-            "form_name": "declarations",
+            "form_minting_name": "declarations",
             "questions": [],
         },
         {
-            "form_name": "environmental-sustainability",
+            "form_minting_name": "environmental-sustainability",
             "questions": [],
         },
         {
-            "form_name": "feasibility",
+            "form_minting_name": "feasibility",
             "questions": [],
         },
         {
-            "form_name": "funding-required",
+            "form_minting_name": "funding-required",
             "questions": [],
         },
         {
-            "form_name": "inclusiveness-and-intergration",
+            "form_minting_name": "inclusiveness-and-intergration",
             "questions": [],
         },
         {
-            "form_name": "local-support",
+            "form_minting_name": "local-support",
             "questions": [],
         },
         {
-            "form_name": "organisation-information",
+            "form_minting_name": "organisation-information",
             "questions": [],
         },
         {
-            "form_name": "project-costs",
+            "form_minting_name": "project-costs",
             "questions": [],
         },
         {
-            "form_name": "project-information",
+            "form_minting_name": "project-information",
             "questions": [],
         },
         {
-            "form_name": "project-qualification",
+            "form_minting_name": "project-qualification",
             "questions": [],
         },
         {
-            "form_name": "risk",
+            "form_minting_name": "risk",
             "questions": [],
         },
         {
-            "form_name": "skills-and-resources",
+            "form_minting_name": "skills-and-resources",
             "questions": [],
         },
         {
-            "form_name": "value-to-the-community",
+            "form_minting_name": "value-to-the-community",
             "questions": [],
         },
         {
-            "form_name": "upload-business-plan",
+            "form_minting_name": "upload-business-plan",
             "questions": [],
         },
     ]

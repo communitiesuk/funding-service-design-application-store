@@ -1,11 +1,14 @@
 import datetime
-from db.models.applications import Applications, ApplicationsMethods
+
+import sqlalchemy.orm.exc
+from config import Config
 from db import db
-from db.models.forms import FormsMethods, Forms
+from db.models.applications import Applications
+from db.models.applications import ApplicationsMethods
+from db.models.forms import FormsMethods
 from external_services.models.account import AccountMethods
 from external_services.models.notification import Notification
-from config import Config
-import sqlalchemy.orm.exc
+
 
 def update_application_status(application_id: str):
     """
@@ -31,6 +34,7 @@ def update_application_status(application_id: str):
     application.status = status
     db.session.commit()
 
+
 def update_form_statuses(application_id: str):
     """
     Updates the question statuses of each question if a value is present
@@ -40,11 +44,13 @@ def update_form_statuses(application_id: str):
     """
     # THIS NEEDS FIXING
     forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
-    application_submitted_date = db.session.get(Applications, application_id).date_submitted
+    application_submitted_date = db.session.get(
+        Applications, application_id
+    ).date_submitted
     for form in forms:
         if application_submitted_date:
-                form.status = "SUBMITTED"
-                break
+            form.status = "SUBMITTED"
+            break
         for question in form.json:
             if (
                 question["status"] == "COMPLETED"
@@ -63,6 +69,7 @@ def update_form_statuses(application_id: str):
                 break
     db.session.commit()
 
+
 def update_question_statuses(application_id: str):
     """
     Updates the question statuses of each question if a value is present
@@ -72,10 +79,9 @@ def update_question_statuses(application_id: str):
     """
 
     forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
-    application_submitted_date = db.session.get(Applications, application_id).date_submitted
     for form in forms:
         for question in form.json:
-            
+
             try:
 
                 question_status = question["status"]
@@ -88,15 +94,20 @@ def update_question_statuses(application_id: str):
 
             if question_status == "SUBMITTED":
 
-                    break
+                break
 
-            answer_found_list = [field["answer"] not in [None, ""] for field in question["fields"]]
+            answer_found_list = [
+                field["answer"] not in [None, ""]
+                for field in question["fields"]
+            ]
 
             # If all answers are given
             if all(answer_found_list):
                 question["status"] = "COMPLETED"
             # If no answers are given
-            elif not all([not found_answer for found_answer in answer_found_list]):
+            elif not all(
+                [not found_answer for found_answer in answer_found_list]
+            ):
                 question["status"] = "IN_PROGRESS"
             # If some answers are given
             else:
@@ -104,11 +115,13 @@ def update_question_statuses(application_id: str):
 
     db.session.commit()
 
+
 def update_statuses(application_id):
 
     update_question_statuses(application_id)
     update_form_statuses(application_id)
     update_application_status(application_id)
+
 
 def get_application_bundle_by_id(app_id):
 
@@ -116,7 +129,8 @@ def get_application_bundle_by_id(app_id):
 
     forms = FormsMethods.get_forms_by_app_id(app_id)
 
-    return {**application.as_dict(), "forms" : forms}
+    return {**application.as_dict(), "forms": forms}
+
 
 def submit_application(application_id):
 
@@ -130,29 +144,36 @@ def submit_application(application_id):
 
     update_statuses(application_id)
 
-    account = AccountMethods.get_account(account_id=application.get("account_id"))
+    account = AccountMethods.get_account(
+        account_id=application.get("account_id")
+    )
 
     # Send notification
     Notification.send(
         Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
         account.email,
-        # TODO 
-        {"application": ApplicationsMethods.get_application_bundle_by_id(application_id)},
+        # TODO
+        {
+            "application": ApplicationsMethods.get_application_bundle_by_id(
+                application_id
+            )
+        },
     )
 
     return ApplicationsMethods.get_application_bundle_by_id(application_id)
 
+
 def update_form(application_id, form_name, question_json):
 
     try:
-            form_sql_row = FormsMethods.get_form(application_id, form_name)
-            form_sql_row.json = question_json
-            db.session.commit()
+        form_sql_row = FormsMethods.get_form(application_id, form_name)
+        form_sql_row.json = question_json
+        db.session.commit()
 
-            # update statuses
-            update_statuses(application_id)
+        # update statuses
+        update_statuses(application_id)
 
-            return form_sql_row.as_json()
+        return form_sql_row.as_json()
 
     except sqlalchemy.orm.exc.NoResultFound as e:
 

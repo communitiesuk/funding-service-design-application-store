@@ -1,4 +1,3 @@
-from os import getenv
 import pytest
 from app import create_app
 from db import db
@@ -17,13 +16,16 @@ def app():
         upgrade()
     return app
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def _db(app):
-    '''
-    Provide the transactional fixtures with access to the database via a Flask-SQLAlchemy
+    """
+    Provide the transactional fixtures with access
+    to the database via a Flask-SQLAlchemy
     database connection.
-    '''
+    """
     return db
+
 
 @pytest.fixture(autouse=True)
 def enable_transactional_tests(db_session):

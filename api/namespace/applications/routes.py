@@ -1,20 +1,20 @@
 import uuid
+
 from api.namespace.applications.applications_ns import applications_ns
+from api.namespace.applications.helpers.helpers import ApplicationHelpers
 from api.namespace.applications.models.application import application_full
 from api.namespace.applications.models.application import application_result
 from api.namespace.applications.models.application import application_status
 from api.namespace.applications.models.form import form
-from api.namespace.applications.helpers.helpers import ApplicationHelpers
-
+from db.models.applications import ApplicationsMethods
+from db.models.common_functions import get_application_bundle_by_id
+from db.models.common_functions import submit_application
+from db.models.common_functions import update_form
+from db.models.forms import FormsMethods
 from flask import abort
 from flask import request
 from flask_restx import reqparse
 from flask_restx import Resource
-
-from db.models.applications import ApplicationsMethods
-from db.models.forms import FormsMethods
-from db.models.common_functions import get_application_bundle_by_id, submit_application, update_form
-
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -86,10 +86,11 @@ class Applications(Resource):
         application = ApplicationsMethods.create_application(
             account_id=account_id, fund_id=fund_id, round_id=round_id
         )
-        forms = FormsMethods.add_new_forms(
+        FormsMethods.add_new_forms(
             forms=empty_forms, application_id=application.id
         )
         return application, 201
+
 
 # j
 @applications_ns.route("/forms", methods=["PUT"])
@@ -98,13 +99,10 @@ class Form(Resource):
     put_form_parser = reqparse.RequestParser()
     put_form_parser.add_argument("name", location="json")
 
-    @applications_ns.doc(
-        "put_form", methods=["PUT"], parser=put_form_parser
-    )
+    @applications_ns.doc("put_form", methods=["PUT"], parser=put_form_parser)
     @applications_ns.marshal_with(form, code=201)
     def put(self):
         request_json = request.get_json(force=True)
-        
 
         form_dict = {
             "application_id": request_json["metadata"]["application_id"],
@@ -140,7 +138,9 @@ class GetApplication(Resource):
     @applications_ns.marshal_with(application_full, code=201)
     def get(self, application_id):
         try:
-            return_dict = get_application_bundle_by_id(uuid.UUID(application_id))
+            return_dict = get_application_bundle_by_id(
+                uuid.UUID(application_id)
+            )
             return return_dict, 200
         except NoResultFound:
             return "", 404

@@ -51,94 +51,94 @@ class DefaultConfig:
 
     # COF FORMS BASE CONFIG
     COF_R2_FORMS = [
-    {
-        "form_name": "applicant-information",
-        "questions": [],
-    },
-    {
-        "form_name": "asset-information",
-        "questions": [],
-    },
-    {
-        "form_name": "community-benefits",
-        "questions": [],
-    },
-    {
-        "form_name": "community-engagement",
-        "questions": [],
-    },
-    {
-        "form_name": "community-representation",
-        "questions": [],
-    },
-    {
-        "form_name": "community-use",
-        "questions": [],
-    },
-    {
-        "form_name": "declarations",
-        "questions": [],
-    },
-    {
-        "form_name": "environmental-sustainability",
-        "questions": [],
-    },
-    {
-        "form_name": "feasibility",
-        "questions": [],
-    },
-    {
-        "form_name": "funding-required",
-        "questions": [],
-    },
-    {
-        "form_name": "inclusiveness-and-intergration",
-        "questions": [],
-    },
-    {
-        "form_name": "local-support",
-        "questions": [],
-    },
-    {
-        "form_name": "organisation-information",
-        "questions": [],
-    },
-    {
-        "form_name": "project-costs",
-        "questions": [],
-    },
-    {
-        "form_name": "project-information",
-        "questions": [],
-    },
-    {
-        "form_name": "project-qualification",
-        "questions": [],
-    },
-    {
-        "form_name": "risk",
-        "questions": [],
-    },
-    {
-        "form_name": "skills-and-resources",
-        "questions": [],
-    },
-    {
-        "form_name": "value-to-the-community",
-        "questions": [],
-    },
-    {
-        "form_name": "upload-business-plan",
-        "questions": [],
-    },
-]
+        {
+            "form_name": "applicant-information",
+            "questions": [],
+        },
+        {
+            "form_name": "asset-information",
+            "questions": [],
+        },
+        {
+            "form_name": "community-benefits",
+            "questions": [],
+        },
+        {
+            "form_name": "community-engagement",
+            "questions": [],
+        },
+        {
+            "form_name": "community-representation",
+            "questions": [],
+        },
+        {
+            "form_name": "community-use",
+            "questions": [],
+        },
+        {
+            "form_name": "declarations",
+            "questions": [],
+        },
+        {
+            "form_name": "environmental-sustainability",
+            "questions": [],
+        },
+        {
+            "form_name": "feasibility",
+            "questions": [],
+        },
+        {
+            "form_name": "funding-required",
+            "questions": [],
+        },
+        {
+            "form_name": "inclusiveness-and-intergration",
+            "questions": [],
+        },
+        {
+            "form_name": "local-support",
+            "questions": [],
+        },
+        {
+            "form_name": "organisation-information",
+            "questions": [],
+        },
+        {
+            "form_name": "project-costs",
+            "questions": [],
+        },
+        {
+            "form_name": "project-information",
+            "questions": [],
+        },
+        {
+            "form_name": "project-qualification",
+            "questions": [],
+        },
+        {
+            "form_name": "risk",
+            "questions": [],
+        },
+        {
+            "form_name": "skills-and-resources",
+            "questions": [],
+        },
+        {
+            "form_name": "value-to-the-community",
+            "questions": [],
+        },
+        {
+            "form_name": "upload-business-plan",
+            "questions": [],
+        },
+    ]
 
     FUND_ROUND_FORMS = {
-    "fund-a:spring": COF_R2_FORMS.copy(),
-    "fund-b:spring": COF_R2_FORMS.copy(),
-    "fund-a:summer": COF_R2_FORMS.copy(),
-    "fund-b:summer": COF_R2_FORMS.copy(),
-    "funding-service-design:spring": COF_R2_FORMS.copy(),
-    "funding-service-design:summer": COF_R2_FORMS.copy(),
-    "community-ownership-fund:round-2": COF_R2_FORMS.copy(),
+        "fund-a:spring": COF_R2_FORMS.copy(),
+        "fund-b:spring": COF_R2_FORMS.copy(),
+        "fund-a:summer": COF_R2_FORMS.copy(),
+        "fund-b:summer": COF_R2_FORMS.copy(),
+        "funding-service-design:spring": COF_R2_FORMS.copy(),
+        "funding-service-design:summer": COF_R2_FORMS.copy(),
+        "community-ownership-fund:round-2": COF_R2_FORMS.copy(),
     }

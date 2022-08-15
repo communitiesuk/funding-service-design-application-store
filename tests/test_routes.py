@@ -1,11 +1,13 @@
 import json
 from operator import itemgetter
-import re
-from db.models.applications import ApplicationTestMethods
 
-from tests.helpers import count_fund_applications, key_list_to_regex, post_test_applications, application_expected_data
+from db.models.applications import ApplicationTestMethods
+from tests.helpers import application_expected_data
+from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
+from tests.helpers import key_list_to_regex
 from tests.helpers import post_data
+from tests.helpers import post_test_applications
 
 
 def test_create_application_is_successful(client):
@@ -17,16 +19,14 @@ def test_create_application_is_successful(client):
 
     # Post one Fund A application and check length
     application_data_a1 = {
-        "account_id": "usera",  
+        "account_id": "usera",
         "fund_id": "fund-a",
         "round_id": "summer",
     }
     post_data(client, "/applications", application_data_a1)
 
     expected_length_fund_a = 1
-    count_fund_applications(
-        client, "fund-a", expected_length_fund_a
-    )
+    count_fund_applications(client, "fund-a", expected_length_fund_a)
 
     # Post first Fund B application and check length
     application_data_b1 = {
@@ -37,9 +37,7 @@ def test_create_application_is_successful(client):
     post_data(client, "/applications", application_data_b1)
 
     expected_length_fund_b = 1
-    count_fund_applications(
-        client, "fund-b", expected_length_fund_b
-    )
+    count_fund_applications(client, "fund-b", expected_length_fund_b)
 
     # Post second Fund B application and check length
     application_data_b2 = {
@@ -50,9 +48,7 @@ def test_create_application_is_successful(client):
     post_data(client, "/applications", application_data_b2)
 
     expected_length_fund_b = 2
-    count_fund_applications(
-        client, "fund-b", expected_length_fund_b
-    )
+    count_fund_applications(client, "fund-b", expected_length_fund_b)
 
 
 def test_get_all_applications(client):
@@ -83,10 +79,10 @@ def test_get_applications_sorted_by_rev_account_id(client):
     order_by = "account_id"
     order_rev = 1
     sorted_matching_applications_jsons = sorted(
-                raw_expected_data,
-                key=itemgetter(order_by),
-                reverse=order_rev,
-            )
+        raw_expected_data,
+        key=itemgetter(order_by),
+        reverse=order_rev,
+    )
 
     expected_data_within_response(
         client,
@@ -104,7 +100,12 @@ def test_get_applications_of_account_id(client):
     """
     post_test_applications(client)
     account_id_to_filter = "userb"
-    expected_data = list(filter(lambda app_dict : app_dict["account_id"] == account_id_to_filter, application_expected_data))
+    expected_data = list(
+        filter(
+            lambda app_dict: app_dict["account_id"] == account_id_to_filter,
+            application_expected_data,
+        )
+    )
 
     expected_data_within_response(
         client,
@@ -163,9 +164,16 @@ def test_update_section_of_application(client):
         },
     }
 
-    response = client.put("/applications/forms", data=json.dumps(section_put), follow_redirects=True)
+    response = client.put(
+        "/applications/forms",
+        data=json.dumps(section_put),
+        follow_redirects=True,
+    )
 
-    answer_found_list = [field["answer"] not in [None, ""] for field in response.json["questions"][0]["fields"]]
+    answer_found_list = [
+        field["answer"] not in [None, ""]
+        for field in response.json["questions"][0]["fields"]
+    ]
 
     section_status = response.json["status"]
 
@@ -208,7 +216,7 @@ def test_update_section_of_application_with_incomplete_answers(
                         "key": "applicant-telephone-number",
                         "title": "Telephone number",
                         "type": "text",
-                        #NOT GIVEN!!
+                        # NOT GIVEN!!
                         "answer": "",
                     },
                     {
@@ -231,9 +239,13 @@ def test_update_section_of_application_with_incomplete_answers(
     # COMPLETE not IN_PROGRESS
     expected_data.update({"form_name": form_name, "status": "COMPLETED"})
 
-    exclude_question_keys = ["category", "index", "id"]
+    # exclude_question_keys = ["category", "index", "id"]
 
-    response = client.put("/applications/forms", data=json.dumps(section_put), follow_redirects=True)
+    response = client.put(
+        "/applications/forms",
+        data=json.dumps(section_put),
+        follow_redirects=True,
+    )
 
     section_status = response.json["status"]
 
@@ -253,16 +265,18 @@ def test_get_application_by_application_id(client):
 
     random_id = random_app.id
 
-    expected_data = {**random_app.as_dict(), 'forms' : []}
+    expected_data = {**random_app.as_dict(), "forms": []}
 
     expected_data_within_response(
         client,
         f"/applications/{random_id}",
         expected_data,
-        exclude_regex_paths=key_list_to_regex(["started_at", "project_name", "forms"]),
+        exclude_regex_paths=key_list_to_regex(
+            ["started_at", "project_name", "forms"]
+        ),
         # Lists are annoying to deal with in deepdiff
         # especially when they contain dicts...so in this
         # instance we ignore them rather then write some
         # regex. (this recursively ignores 'forms')
-        exclude_types=[list]
+        exclude_types=[list],
     )

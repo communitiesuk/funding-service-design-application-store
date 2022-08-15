@@ -1,6 +1,7 @@
 from api import api
+from db import db
+from db import migrate
 from flask import Flask
-from db import db, migrate
 from fsd_utils.logging import logging
 
 
@@ -16,7 +17,7 @@ def create_app() -> Flask:
     db.init_app(flask_app)
     # Bind Flask-Migrate db utilities to Flask app
     migrate.init_app(
-    flask_app, db, directory="db/migrations", render_as_batch=True
+        flask_app, db, directory="db/migrations", render_as_batch=True
     )
 
     return flask_app

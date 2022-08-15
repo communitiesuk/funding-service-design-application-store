@@ -1,9 +1,11 @@
 """Flask configuration."""
 import logging
+from os import environ
+from os import path
 
 from config.envs.default import DefaultConfig
 from fsd_utils import configclass
-from os import environ, path
+
 
 @configclass
 class DevelopmentConfig(DefaultConfig):

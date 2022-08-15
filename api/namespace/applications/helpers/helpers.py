@@ -1,13 +1,9 @@
-import datetime
-import uuid
 from operator import itemgetter
-from dateutil import parser as date_parser
-from dateutil.tz import UTC
+
+from config import Config
 from external_services.data import get_fund
 from external_services.data import get_round
-from external_services.models.account import AccountMethods
-from external_services.models.notification import Notification
-from config import Config
+
 
 class ApplicationHelpers:
     @staticmethod
@@ -33,8 +29,10 @@ class ApplicationHelpers:
                     f"Could not find form forms for {fund_id} - {round_id}"
                 )
             return forms.copy()
-        raise Exception(f"Could not find fund round for {fund_id} - {round_id}  in fund store.")
-
+        raise Exception(
+            f"Could not find fund round for {fund_id} - {round_id}  in fund"
+            " store."
+        )
 
     def order_applications(applications, order_by, order_rev):
         """
@@ -46,7 +44,7 @@ class ApplicationHelpers:
             "status",
             "account_id",
             "assessment_deadline",
-            "started_at"
+            "started_at",
         ]:
             ordered_applications = sorted(
                 applications,

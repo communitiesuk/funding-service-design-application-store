@@ -35,7 +35,7 @@ def update_application_status(application_id: str):
     db.session.commit()
 
 
-def update_form_statuses(application_id: str):
+def update_form_statuses(application_id: str, form_name: str):
     """
     Updates the question statuses of each question if a value is present
 
@@ -48,29 +48,30 @@ def update_form_statuses(application_id: str):
         Applications, application_id
     ).date_submitted
     for form in forms:
-        if application_submitted_date:
-            form.status = "SUBMITTED"
-            break
-        for question in form.json:
-            if (
-                question["status"] == "COMPLETED"
-                and form.status != "IN_PROGRESS"
-            ):
-                form.status = "COMPLETED"
-                continue
-            elif (
-                question["status"] == "NOT_STARTED"
-                and form.status == "COMPLETED"
-            ):
-                form.status = "IN_PROGRESS"
-                continue
-            elif question["status"] == "IN_PROGRESS":
-                form.status = "IN_PROGRESS"
+        if form.name == form_name:
+            if application_submitted_date:
+                form.status = "SUBMITTED"
                 break
+            for question in form.json:
+                if (
+                    question["status"] == "COMPLETED"
+                    and form.status != "IN_PROGRESS"
+                ):
+                    form.status = "COMPLETED"
+                    continue
+                elif (
+                    question["status"] == "NOT_STARTED"
+                    and form.status == "COMPLETED"
+                ):
+                    form.status = "IN_PROGRESS"
+                    continue
+                elif question["status"] == "IN_PROGRESS":
+                    form.status = "IN_PROGRESS"
+                    break
     db.session.commit()
 
 
-def update_question_statuses(application_id: str):
+def update_question_statuses(application_id: str, form_name: str):
     """
     Updates the question statuses of each question if a value is present
 
@@ -80,84 +81,83 @@ def update_question_statuses(application_id: str):
 
     forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
     for form in forms:
-        question_amount = len(form.json)
-        for question in form.json:
+        if form.name == form_name:
+            question_amount = len(form.json)
+            for question in form.json:
 
-            try:
+                try:
 
-                question_status = question["status"]
+                    question_status = question["status"]
 
-            except KeyError:
+                except KeyError:
 
-                question["status"] = "NOT_STARTED"
+                    question["status"] = "NOT_STARTED"
 
-                question_status = question["status"]
+                    question_status = question["status"]
 
-            if question_status == "SUBMITTED":
+                if question_status == "SUBMITTED":
 
-                break
+                    break
 
-            if question_amount == 1:
+                if question_amount == 1:
 
-                question["status"] = "IN_PROGRESS"
+                    question["status"] = "IN_PROGRESS"
 
-                break
-
-
-            # field.get("answer", True) is used because if an answer
-            # is optional or not given then it doesnt exist.
-
-            def is_field_answered(field):
-
-                # No answer -> True (Optional pages+questions lack answer key)
-                # Answer = "" -> False
-                # Answer = None -> False
-
-                answer_or_not_required = field.get("answer", True)
-
-                is_just_whitespace = lambda answer: answer.isspace()
-
-                match answer_or_not_required:
+                    break
 
 
-                    case is_just_whitespace():
-                        return False
-                    case "":
-                        # Means question wasnt answered
-                        return False
-                    case []:
-                        return False
-                    case None:
-                        # Optional Field which hasnt been filled out.
-                        return True
-                    case _:
-                        return True
+                # field.get("answer", True) is used because if an answer
+                # is optional or not given then it doesnt exist.
+
+                def is_field_answered(field):
+
+                    # No answer -> True (Optional pages+questions lack answer key)
+                    # Answer = "" -> False
+                    # Answer = None -> False
+
+                    answer_or_not_specified = field.get("answer", False)
+
+                    is_just_whitespace = lambda answer: answer.isspace()
+
+                    match answer_or_not_specified:
 
 
-            answer_found_list = [
-                is_field_answered(field)
-                for field in question["fields"]
-            ]
+                        case "":
+                            # Means question wasnt answered
+                            return False
+                        case []:
+                            return False
+                        case None:
+                            # Optional Field which hasnt been filled out.
+                            return True
+                        case _:
+                            return True
 
-            # If all answers are given
-            if all(answer_found_list):
-                question["status"] = "COMPLETED"
-            # If no answers are given
-            elif not all(
-                [not found_answer for found_answer in answer_found_list]
-            ):
-                question["status"] = "IN_PROGRESS"
-            # If some answers are given
-            else:
-                question["status"] = "NOT_STARTED"
+
+                answer_found_list = [
+                    is_field_answered(field)
+                    for field in question["fields"]
+                ]
+
+                # If all answers are given
+                if all(answer_found_list):
+                    question["status"] = "COMPLETED"
+                # If no answers are given
+                elif not all(
+                    [not found_answer for found_answer in answer_found_list]
+                ):
+                    question["status"] = "IN_PROGRESS"
+                # If some answers are given
+                else:
+                    question["status"] = "NOT_STARTED"
 
     db.session.commit()
 
 
-def update_statuses(application_id):
+def update_statuses(application_id, form_name):
 
-    update_question_statuses(application_id)
-    update_form_statuses(application_id)
+    update_question_statuses(application_id, form_name)
+    update_form_statuses(application_id, form_name)
     update_application_status(application_id)
 
 
@@ -208,7 +208,7 @@ def update_form(application_id, form_name, question_json):
         form_sql_row.json = question_json
         db.session.commit()
 
-        update_statuses(application_id)
+        update_statuses(application_id, form_name)
 
         return form_sql_row.as_json()
 

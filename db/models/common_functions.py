@@ -42,7 +42,6 @@ def update_form_statuses(application_id: str, form_name: str):
     Args:
         application_id: The application id
     """
-    # THIS NEEDS FIXING
     forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
     application_submitted_date = db.session.get(
         Applications, application_id
@@ -50,18 +49,18 @@ def update_form_statuses(application_id: str, form_name: str):
     for form in forms:
         if form.name == form_name:
             if application_submitted_date:
-                form.status = "SUBMITTED"
+                form.status.name = "SUBMITTED"
                 break
             for question in form.json:
                 if (
                     question["status"] == "COMPLETED"
-                    and form.status != "IN_PROGRESS"
+                    and form.status.name != "IN_PROGRESS"
                 ):
                     form.status = "COMPLETED"
                     continue
                 elif (
                     question["status"] == "NOT_STARTED"
-                    and form.status == "COMPLETED"
+                    and form.status.name == "COMPLETED"
                 ):
                     form.status = "IN_PROGRESS"
                     continue
@@ -99,37 +98,21 @@ def update_question_statuses(application_id: str, form_name: str):
 
                     break
 
-                if question_amount == 1:
-
-                    question["status"] = "IN_PROGRESS"
-
-                    break
-
-
-                # field.get("answer", True) is used because if an answer
-                # is optional or not given then it doesnt exist.
-
                 def is_field_answered(field):
-
-                    # No answer -> True (Optional pages+questions lack answer key)
-                    # Answer = "" -> False
-                    # Answer = None -> False
 
                     answer_or_not_specified = field.get("answer", False)
 
-                    is_just_whitespace = lambda answer: answer.isspace()
-
                     match answer_or_not_specified:
-
-
                         case "":
+                            # Means question wasnt answered
+                            return False
+                        case False:
                             # Means question wasnt answered
                             return False
                         case []:
                             return False
                         case None:
-                            # Optional Field which hasnt been filled out.
-                            return True
+                            return False
                         case _:
                             return True
 
@@ -142,12 +125,12 @@ def update_question_statuses(application_id: str, form_name: str):
                 # If all answers are given
                 if all(answer_found_list):
                     question["status"] = "COMPLETED"
-                # If no answers are given
+                # If some answers are given
                 elif not all(
                     [not found_answer for found_answer in answer_found_list]
                 ):
                     question["status"] = "IN_PROGRESS"
-                # If some answers are given
+                # If no answers are given
                 else:
                     question["status"] = "NOT_STARTED"
 

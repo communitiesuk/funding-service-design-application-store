@@ -17,7 +17,7 @@ field = applications_ns.model(
             required=True, description="Field type", example="text"
         ),
         "answer": fields.Raw(
-            required=True,
+            required=False,
             description="Field answer or value",
             example="Applicant",
         ),

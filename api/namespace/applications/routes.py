@@ -139,7 +139,7 @@ class GetApplication(Resource):
         try:
             return_dict = get_application_bundle_by_id(
                 uuid.UUID(application_id)
-            )
+            )   
             return return_dict, 200
         except NoResultFound:
             return "", 404

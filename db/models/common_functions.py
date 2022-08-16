@@ -80,6 +80,7 @@ def update_question_statuses(application_id: str):
 
     forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
     for form in forms:
+        question_amount = len(form.json)
         for question in form.json:
 
             try:
@@ -96,8 +97,45 @@ def update_question_statuses(application_id: str):
 
                 break
 
+            if question_amount == 1:
+
+                question["status"] = "IN_PROGRESS"
+
+                break
+
+
+            # field.get("answer", True) is used because if an answer
+            # is optional or not given then it doesnt exist.
+
+            def is_field_answered(field):
+
+                # No answer -> True (Optional pages+questions lack answer key)
+                # Answer = "" -> False
+                # Answer = None -> False
+
+                answer_or_not_required = field.get("answer", True)
+
+                is_just_whitespace = lambda answer: answer.isspace()
+
+                match answer_or_not_required:
+
+
+                    case is_just_whitespace():
+                        return False
+                    case "":
+                        # Means question wasnt answered
+                        return False
+                    case []:
+                        return False
+                    case None:
+                        # Optional Field which hasnt been filled out.
+                        return True
+                    case _:
+                        return True
+
+
             answer_found_list = [
-                field["answer"] not in [None, ""]
+                is_field_answered(field)
                 for field in question["fields"]
             ]
 

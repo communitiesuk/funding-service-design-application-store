@@ -303,7 +303,9 @@ def test_update_section_of_application(flask_test_client):
     )
 
 
-def test_update_section_of_application_with_incomplete_answers(flask_test_client):
+def test_update_section_of_application_with_incomplete_answers(
+    flask_test_client,
+):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications of account_id
@@ -418,3 +420,11 @@ def test_get_application_by_application_id(flask_test_client):
         expected_data,
         exclude_regex_paths=exclude_regex_paths,
     )
+
+
+def testHealthcheckRoute(flask_test_client):
+    expected_result = {"checks": [{"check_running": "OK"}]}
+
+    result = flask_test_client.get("/healthcheck")
+    assert result.status_code == 200, "Unexpected status code"
+    assert result.json == expected_result, "Unexpected json body"

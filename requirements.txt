@@ -24,6 +24,8 @@ click==8.0.3
     #   flask
 clickclick==20.10.2
     # via connexion
+colored==1.4.3
+    # via -r requirements.in
 commonmark==0.9.1
     # via rich
 connexion==2.14.0
@@ -55,6 +57,8 @@ idna==3.3
     # via requests
 inflection==0.5.1
     # via connexion
+invoke==1.7.1
+    # via -r requirements.in
 itsdangerous==2.1.0
     # via
     #   connexion

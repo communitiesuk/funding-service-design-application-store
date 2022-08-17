@@ -54,6 +54,8 @@ clickclick==20.10.2
     # via
     #   -r requirements.txt
     #   connexion
+colored==1.4.3
+    # via -r requirements.txt
 commonmark==0.9.1
     # via
     #   -r requirements.txt
@@ -114,6 +116,8 @@ inflection==0.5.1
     #   connexion
 iniconfig==1.1.1
     # via pytest
+invoke==1.7.1
+    # via -r requirements.txt
 itsdangerous==2.1.0
     # via
     #   -r requirements.txt

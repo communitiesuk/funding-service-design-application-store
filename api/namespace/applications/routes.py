@@ -7,9 +7,9 @@ from api.namespace.applications.models.application import application_result
 from api.namespace.applications.models.application import application_status
 from api.namespace.applications.models.form import form
 from db.models.applications import ApplicationsMethods
-from db.models.common_functions import get_application_bundle_by_id
-from db.models.common_functions import submit_application
-from db.models.common_functions import update_form
+from db.models.aggregate_functions import get_application_bundle_by_id
+from db.models.aggregate_functions import submit_application
+from db.models.aggregate_functions import update_form
 from db.models.forms import FormsMethods
 from flask import abort
 from flask import request
@@ -139,7 +139,7 @@ class GetApplication(Resource):
         try:
             return_dict = get_application_bundle_by_id(
                 uuid.UUID(application_id)
-            )   
+            )
             return return_dict, 200
         except NoResultFound:
             return "", 404
@@ -154,7 +154,7 @@ class ApplicationStatus(Resource):
     @applications_ns.doc("get_application_status")
     @applications_ns.marshal_with(application_status, code=200)
     def get(self, application_id):
-        status = ApplicationsMethods.get_application_status(application_id)
-        if not status:
-            abort(404)
-        return status
+        application = ApplicationsMethods.get_application_by_id(application_id)
+        if not application:
+            abort(404)  
+        return application.as_dict()

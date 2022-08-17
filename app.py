@@ -15,6 +15,8 @@ def create_app() -> Flask:
 
     health = Healthcheck(flask_app)
     health.add_check(FlaskRunningChecker())
+    # TODO Add the following once PR 22 is merged (and we have a real DB)
+    # health.add_check(DbChecker(db))
     return flask_app
 
 

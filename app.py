@@ -1,5 +1,7 @@
 from api import api
 from flask import Flask
+from fsd_utils.healthchecks.checkers import FlaskRunningChecker
+from fsd_utils.healthchecks.healthcheck import Healthcheck
 from fsd_utils.logging import logging
 
 
@@ -10,6 +12,11 @@ def create_app() -> Flask:
 
     api.init_app(flask_app)
     logging.init_app(flask_app)
+
+    health = Healthcheck(flask_app)
+    health.add_check(FlaskRunningChecker())
+    # TODO Add the following once PR 22 is merged (and we have a real DB)
+    # health.add_check(DbChecker(db))
     return flask_app
 
 

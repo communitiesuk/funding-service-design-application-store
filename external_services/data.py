@@ -94,6 +94,8 @@ def get_fund(fund_id: str) -> Fund | None:
     )
     current_app.logger.info(f"Request made to {endpoint}")
     response = get_data(endpoint)
+    if response is None:
+        current_app.logger.info("Request to fund store returned None")
     fund = Fund.from_json(response)
     return fund
 

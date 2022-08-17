@@ -13,6 +13,7 @@ jobs:
     with:
       app_name: ${{ github.event.repository.name }}
       api: true
+      postgres_unit_testing: true
       users: 2
       spawn-rate: 2
       run-time: 11s

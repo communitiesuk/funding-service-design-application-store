@@ -134,11 +134,5 @@ class DefaultConfig:
     ]
 
     FUND_ROUND_FORMS = {
-        "fund-a:spring": COF_R2_FORMS.copy(),
-        "fund-b:spring": COF_R2_FORMS.copy(),
-        "fund-a:summer": COF_R2_FORMS.copy(),
-        "fund-b:summer": COF_R2_FORMS.copy(),
-        "funding-service-design:spring": COF_R2_FORMS.copy(),
-        "funding-service-design:summer": COF_R2_FORMS.copy(),
         "community-ownership-fund:round-2": COF_R2_FORMS.copy(),
     }

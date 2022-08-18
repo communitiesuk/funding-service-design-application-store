@@ -1,5 +1,5 @@
 from api.namespace.applications.applications_ns import applications_ns
-from api.namespace.applications.models.form import form_outbound
+from api.namespace.applications.models.form import form
 from api.namespace.applications.models.form import form_status
 from flask_restx import fields
 
@@ -56,7 +56,7 @@ application_outbound = applications_ns.model(
         ),
         "forms": fields.List(
             fields.Nested(
-                form_outbound,
+                form,
                 required=True,
                 description="Application form questions and answers.",
             ),

@@ -5,7 +5,7 @@ from api.namespace.applications.helpers.helpers import ApplicationHelpers
 from api.namespace.applications.models.application import application_outbound, create_application
 from api.namespace.applications.models.application import application_result
 from api.namespace.applications.models.application import application_status
-from api.namespace.applications.models.form import form_inbound
+from api.namespace.applications.models.form import form
 from db.models.applications import ApplicationsMethods
 from db.models.aggregate_functions import get_application_bundle_by_id
 from db.models.aggregate_functions import submit_application
@@ -99,7 +99,7 @@ class Form(Resource):
     put_form_parser.add_argument("name", location="json")
 
     @applications_ns.doc("put_form", methods=["PUT"], parser=put_form_parser)
-    @applications_ns.marshal_with(form_inbound, code=201)
+    @applications_ns.marshal_with(form, code=201)
     def put(self):
         request_json = request.get_json(force=True)
 

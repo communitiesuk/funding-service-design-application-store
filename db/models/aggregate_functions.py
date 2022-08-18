@@ -81,7 +81,6 @@ def update_question_statuses(application_id: str, form_name: str):
     forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
     for form in forms:
         if form.name == form_name:
-            question_amount = len(form.json)
             for question in form.json:
 
                 try:
@@ -104,9 +103,6 @@ def update_question_statuses(application_id: str, form_name: str):
 
                     match answer_or_not_specified:
                         case "":
-                            # Means question wasnt answered
-                            return False
-                        case False:
                             # Means question wasnt answered
                             return False
                         case []:

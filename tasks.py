@@ -11,7 +11,7 @@ ECHO_STYLE = fg("light_gray") + attr("bold")
 @task
 def virtualenv(c):
     if not os.getenv("VIRTUAL_ENV") and not Path(".venv").exists():
-        print(stylize("creating virtualenv at `venv`", ECHO_STYLE))
+        print(stylize("creating virtualenv at `.venv`", ECHO_STYLE))
         venv.create("venv", with_pip=True)
 
     c.virtual_env = Path(os.getenv("VIRTUAL_ENV", ".venv"))
@@ -33,8 +33,8 @@ def virtualenv(c):
             f"expected `which python` to return {expected_python}, instead got {which_python}" \
             f"\nPATH={os.environ['PATH']}"
 
-@task(virtualenv)
-def make_test_db(c, database_host="localhost"):
+@task
+def bootstrap_test_db(c, database_host="localhost"):
     """Create a clean database for testing"""
     c.run(f"dropdb -h {database_host} --if-exists fsd_app_store_test")
     print(stylize("fsd_app_store_test db dropped...", ECHO_STYLE))

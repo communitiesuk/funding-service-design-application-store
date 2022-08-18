@@ -8,6 +8,8 @@ alembic==1.8.0
     # via flask-migrate
 aniso8601==9.0.1
     # via flask-restx
+async-timeout==4.0.2
+    # via redis
 attrs==21.4.0
     # via jsonschema
 certifi==2021.10.8
@@ -32,14 +34,19 @@ connexion==2.14.0
     # via -r requirements.in
 cryptography==37.0.4
     # via pyjwt
+deprecated==1.2.13
+    # via redis
 flask==2.1.2
     # via
     #   connexion
     #   flask-migrate
+    #   flask-redis
     #   flask-restx
     #   flask-sqlalchemy
     #   funding-service-design-utils
 flask-migrate==3.1.0
+    # via -r requirements.in
+flask-redis==0.4.0
     # via -r requirements.in
 flask-restx==0.5.1
     # via -r requirements.in
@@ -84,7 +91,9 @@ openapi-schema-validator==0.2.3
 openapi-spec-validator==0.4.0
     # via -r requirements.in
 packaging==21.3
-    # via connexion
+    # via
+    #   connexion
+    #   redis
 prance==0.21.8.0
     # via -r requirements.in
 psycopg2==2.9.3
@@ -115,6 +124,8 @@ pyyaml==6.0
     #   connexion
     #   funding-service-design-utils
     #   openapi-spec-validator
+redis==4.3.4
+    # via flask-redis
 requests==2.27.1
     # via
     #   -r requirements.in
@@ -156,6 +167,8 @@ werkzeug==2.0.3
     #   connexion
     #   flask
     #   flask-restx
+wrapt==1.14.1
+    # via deprecated
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

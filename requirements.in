@@ -20,3 +20,4 @@ sqlalchemy-utils
 sqlalchemy_json
 psycopg2
 flask_redis
+

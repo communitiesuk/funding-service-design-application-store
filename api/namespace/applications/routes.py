@@ -2,10 +2,10 @@ import uuid
 
 from api.namespace.applications.applications_ns import applications_ns
 from api.namespace.applications.helpers.helpers import ApplicationHelpers
-from api.namespace.applications.models.application import application_full
+from api.namespace.applications.models.application import application_outbound, create_application
 from api.namespace.applications.models.application import application_result
 from api.namespace.applications.models.application import application_status
-from api.namespace.applications.models.form import form
+from api.namespace.applications.models.form import form_inbound
 from db.models.applications import ApplicationsMethods
 from db.models.aggregate_functions import get_application_bundle_by_id
 from db.models.aggregate_functions import submit_application
@@ -76,7 +76,7 @@ class Applications(Resource):
     create_application_parser.add_argument("fund_id", location="json")
 
     @applications_ns.doc("post_application", parser=create_application_parser)
-    @applications_ns.marshal_with(application_full, code=201)
+    @applications_ns.marshal_with(create_application, code=201)
     def post(self):
         args = self.create_application_parser.parse_args()
         account_id = args["account_id"]
@@ -99,7 +99,7 @@ class Form(Resource):
     put_form_parser.add_argument("name", location="json")
 
     @applications_ns.doc("put_form", methods=["PUT"], parser=put_form_parser)
-    @applications_ns.marshal_with(form, code=201)
+    @applications_ns.marshal_with(form_inbound, code=201)
     def put(self):
         request_json = request.get_json(force=True)
 
@@ -134,7 +134,7 @@ class SubmitApplication(Resource):
 @applications_ns.route("/<application_id>")
 class GetApplication(Resource):
     @applications_ns.doc("get_application")
-    @applications_ns.marshal_with(application_full, code=201)
+    @applications_ns.marshal_with(application_outbound, code=201)
     def get(self, application_id):
         try:
             return_dict = get_application_bundle_by_id(

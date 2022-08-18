@@ -7,7 +7,7 @@ from flask_restx import fields
 form_inbound = applications_ns.model(
     "form_inbound",
     {
-        "form_name": fields.String(
+        "name": fields.String(
             required=True,
             description="The name of the fund",
             example="Funding Service Design",
@@ -27,12 +27,12 @@ form_inbound = applications_ns.model(
     },
 )
 
-form = applications_ns.model(
-    "form",
+form_outbound = applications_ns.model(
+    "form_outbound",
     {
         "form_name": fields.String(
             required=True,
-            description="The name of the form",
+            description="The name of the form (the form json file name)",
             example="about-you",
         ),
         "status": fields.String(

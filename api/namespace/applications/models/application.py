@@ -1,5 +1,5 @@
 from api.namespace.applications.applications_ns import applications_ns
-from api.namespace.applications.models.form import form
+from api.namespace.applications.models.form import form_outbound
 from api.namespace.applications.models.form import form_status
 from flask_restx import fields
 
@@ -20,8 +20,8 @@ create_application = applications_ns.model(
     },
 )
 
-application_full = applications_ns.model(
-    "application_full",
+application_outbound = applications_ns.model(
+    "application_outbound",
     {
         "id": fields.String(
             description="The id of the application.",
@@ -56,7 +56,7 @@ application_full = applications_ns.model(
         ),
         "forms": fields.List(
             fields.Nested(
-                form,
+                form_outbound,
                 required=True,
                 description="Application form questions and answers.",
             ),

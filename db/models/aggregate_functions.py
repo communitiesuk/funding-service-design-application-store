@@ -8,6 +8,7 @@ from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from external_services.models.account import AccountMethods
 from external_services.models.notification import Notification
+from db.models.status import Status
 
 
 def update_application_status(application_id: str):
@@ -42,30 +43,30 @@ def update_form_statuses(application_id: str, form_name: str):
     Args:
         application_id: The application id
     """
-    forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
+    stored_forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
     application_submitted_date = db.session.get(
         Applications, application_id
     ).date_submitted
-    for form in forms:
-        if form.name == form_name:
+    for stored_form in stored_forms:
+        if stored_form.name == form_name:
             if application_submitted_date:
-                form.status.name = "SUBMITTED"
+                stored_form.status = "SUBMITTED"
                 break
-            for question in form.json:
+            for question_page in stored_form.json:
                 if (
-                    question["status"] == "COMPLETED"
-                    and form.status.name != "IN_PROGRESS"
+                    question_page["status"] == "COMPLETED"
+                    and stored_form.status.name != "IN_PROGRESS"
                 ):
-                    form.status = "COMPLETED"
+                    stored_form.status = Status.COMPLETED
                     continue
                 elif (
-                    question["status"] == "NOT_STARTED"
-                    and form.status.name == "COMPLETED"
+                    question_page["status"] == "NOT_STARTED"
+                    and stored_form.status.name == "COMPLETED"
                 ):
-                    form.status = "IN_PROGRESS"
+                    stored_form.status = Status.IN_PROGRESS
                     continue
-                elif question["status"] == "IN_PROGRESS":
-                    form.status = "IN_PROGRESS"
+                elif question_page["status"] == "IN_PROGRESS":
+                    stored_form.status = Status.IN_PROGRESS
                     break
     db.session.commit()
 
@@ -78,23 +79,12 @@ def update_question_statuses(application_id: str, form_name: str):
         application_id: The application id
     """
 
-    forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
-    for form in forms:
-        if form.name == form_name:
-            for question in form.json:
-
-                try:
-
-                    question_status = question["status"]
-
-                except KeyError:
-
-                    question["status"] = "NOT_STARTED"
-
-                    question_status = question["status"]
-
-                if question_status == "SUBMITTED":
-
+    stored_forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
+    for stored_form in stored_forms:
+        if stored_form.name == form_name:
+            for question_page in stored_form.json:
+                question_page["status"] = question_page.get("status", "NOT_STARTED")
+                if question_page["status"] == "SUBMITTED":
                     break
 
                 def is_field_answered(field):
@@ -115,20 +105,20 @@ def update_question_statuses(application_id: str, form_name: str):
 
                 answer_found_list = [
                     is_field_answered(field)
-                    for field in question["fields"]
+                    for field in question_page["fields"]
                 ]
 
                 # If all answers are given
                 if all(answer_found_list):
-                    question["status"] = "COMPLETED"
+                    question_page["status"] = "COMPLETED"
                 # If some answers are given
                 elif not all(
                     [not found_answer for found_answer in answer_found_list]
                 ):
-                    question["status"] = "IN_PROGRESS"
+                    question_page["status"] = "IN_PROGRESS"
                 # If no answers are given
                 else:
-                    question["status"] = "NOT_STARTED"
+                    question_page["status"] = "NOT_STARTED"
 
     db.session.commit()
 

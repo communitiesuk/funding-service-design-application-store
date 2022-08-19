@@ -1,9 +1,37 @@
 import json
 import re
 from typing import List
-
+import os
 from deepdiff import DeepDiff
+import urllib
+from config import Config
 
+def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
+    print("I WAS CALLED WITH", endpoint)
+    api_data_json = os.path.join(
+        Config.FLASK_ROOT,
+        "tests",
+        "api_data",
+        method.lower() + "_endpoint_data.json",
+    )
+    fp = open(api_data_json)
+    api_data = json.load(fp)
+    fp.close()
+    query_params = "_"
+    if params:
+        query_params = urllib.parse.urlencode(params)
+    if method.lower() == "post":
+        if endpoint in api_data:
+            post_dict = api_data.get(endpoint)
+            if query_params in post_dict:
+                return post_dict.get(query_params)
+            else:
+                return post_dict.get("_default")
+    else:
+        if params:
+            endpoint = f"{endpoint}?{query_params}"
+        if endpoint in api_data:
+            return api_data.get(endpoint)
 
 def expected_data_within_response(
     test_client,

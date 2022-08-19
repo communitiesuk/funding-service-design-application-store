@@ -1,3 +1,4 @@
+from tests.helpers import local_api_call
 import pytest
 from app import create_app
 from db import db
@@ -16,6 +17,29 @@ def app():
         upgrade()
     return app
 
+def mock_get_data(endpoint, params = None):
+
+    return local_api_call(endpoint, params, "get")
+
+def mock_post_data(endpoint, params = None):
+
+    return local_api_call(endpoint, params, "post")
+
+@pytest.fixture(autouse=True)
+def mock_get_data_fix(mocker):
+    # mock the function in the file it is invoked (not where it is declared)
+    mocker.patch(
+        "external_services.http_methods.get_data",
+        new=mock_get_data,
+    )
+
+@pytest.fixture(autouse=True)
+def mock_post_data_fix(mocker):
+    # mock the function in the file it is invoked (not where it is declared)
+    mocker.patch(
+        "external_services.http_methods.post_data",
+        new=mock_post_data,
+    )
 
 @pytest.fixture(scope="session")
 def _db(app):

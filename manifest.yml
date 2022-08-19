@@ -8,6 +8,8 @@ applications:
   env:
     NOTIFICATION_SERVICE_HOST: http://funding-service-design-notification-dev.apps.internal:8080
     ACCOUNT_STORE_API_HOST: https://funding-service-design-account-store-dev.london.cloudapps.digital
+  health-check-http-endpoint: /healthcheck
+  health-check-type: http
   services:
     - application-store-dev-db
 
@@ -19,5 +21,7 @@ applications:
   env:
     NOTIFICATION_SERVICE_HOST: http://funding-service-design-notification-test.apps.internal:8080
     ACCOUNT_STORE_API_HOST: https://funding-service-design-account-store-test.london.cloudapps.digital
+  health-check-http-endpoint: /healthcheck
+  health-check-type: http
   services:
     - application-store-test-db

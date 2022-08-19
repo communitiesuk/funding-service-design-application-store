@@ -132,7 +132,7 @@ dmypy.json
 .idea
 
 # VS Code
-.vscode/settings.json
+.vscode/
 
 # Mac files
 .bash_profile

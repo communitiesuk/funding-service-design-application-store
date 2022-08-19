@@ -2,6 +2,8 @@ from api import api
 from db import db
 from db import migrate
 from flask import Flask
+from fsd_utils.healthchecks.checkers import FlaskRunningChecker
+from fsd_utils.healthchecks.healthcheck import Healthcheck
 from fsd_utils.logging import logging
 
 
@@ -20,6 +22,11 @@ def create_app() -> Flask:
         flask_app, db, directory="db/migrations", render_as_batch=True
     )
 
+
+    health = Healthcheck(flask_app)
+    health.add_check(FlaskRunningChecker())
+    # TODO Add the following once PR 22 is merged (and we have a real DB)
+    # health.add_check(DbChecker(db))
     return flask_app
 
 

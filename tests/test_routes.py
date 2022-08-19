@@ -283,3 +283,11 @@ def test_get_application_by_application_id(client):
         # regex. (this recursively ignores 'forms')
         exclude_types=[list],
     )
+
+
+def testHealthcheckRoute(flask_test_client):
+    expected_result = {"checks": [{"check_running": "OK"}]}
+
+    result = flask_test_client.get("/healthcheck")
+    assert result.status_code == 200, "Unexpected status code"
+    assert result.json == expected_result, "Unexpected json body"

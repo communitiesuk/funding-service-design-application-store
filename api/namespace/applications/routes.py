@@ -16,6 +16,7 @@ from flask import request
 from flask_restx import reqparse
 from flask_restx import Resource
 from sqlalchemy.orm.exc import NoResultFound
+from flask import current_app
 
 
 @applications_ns.route("")
@@ -66,8 +67,9 @@ class Applications(Resource):
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": True,
         }
-        applications = ApplicationsMethods.search_applications(args)
 
+        applications = ApplicationsMethods.search_applications(args)
+        current_app.logger.info(f"Returning application search results for search terms: {args} with results of: {applications}")
         return applications, 200, response_headers
 
     create_application_parser = reqparse.RequestParser()
@@ -119,7 +121,6 @@ class Form(Resource):
             abort(404, f"No matching application form found : {e}")
 
 
-# j
 @applications_ns.route("/<application_id>/submit")
 class SubmitApplication(Resource):
     @applications_ns.doc("submit_application")

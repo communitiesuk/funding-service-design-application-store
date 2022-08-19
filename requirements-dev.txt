@@ -33,6 +33,10 @@ cffi==1.15.1
     # via
     #   -r requirements.txt
     #   cryptography
+cffi==1.15.1
+    # via
+    #   -r requirements.txt
+    #   cryptography
 cfgv==3.3.1
     # via pre-commit
 chardet==4.0.0
@@ -62,6 +66,10 @@ commonmark==0.9.1
     #   rich
 connexion==2.14.0
     # via -r requirements.txt
+cryptography==37.0.4
+    # via
+    #   -r requirements.txt
+    #   pyjwt
 cryptography==37.0.4
     # via
     #   -r requirements.txt
@@ -96,10 +104,6 @@ gitdb==4.0.9
     # via gitpython
 gitpython==3.1.27
     # via bandit
-greenlet==1.1.2
-    # via
-    #   -r requirements.txt
-    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt
@@ -189,10 +193,18 @@ pycparser==2.21
     # via
     #   -r requirements.txt
     #   cffi
+pycparser==2.21
+    # via
+    #   -r requirements.txt
+    #   cffi
 pygments==2.12.0
     # via
     #   -r requirements.txt
     #   rich
+pyjwt[crypto]==2.4.0
+    # via
+    #   -r requirements.txt
+    #   funding-service-design-utils
 pyjwt[crypto]==2.4.0
     # via
     #   -r requirements.txt

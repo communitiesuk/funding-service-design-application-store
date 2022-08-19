@@ -14,10 +14,6 @@ aniso8601==9.0.1
     #   flask-restx
 asserts==0.11.1
     # via -r requirements-dev.in
-async-timeout==4.0.2
-    # via
-    #   -r requirements.txt
-    #   redis
 attrs==21.4.0
     # via
     #   -r requirements.txt
@@ -72,10 +68,6 @@ cryptography==37.0.4
     #   pyjwt
 deepdiff==5.7.0
     # via -r requirements-dev.in
-deprecated==1.2.13
-    # via
-    #   -r requirements.txt
-    #   redis
 distlib==0.3.4
     # via virtualenv
 filelock==3.7.1
@@ -85,14 +77,11 @@ flask==2.1.2
     #   -r requirements.txt
     #   connexion
     #   flask-migrate
-    #   flask-redis
     #   flask-restx
     #   flask-sqlalchemy
     #   funding-service-design-utils
     #   pytest-flask
 flask-migrate==3.1.0
-    # via -r requirements.txt
-flask-redis==0.4.0
     # via -r requirements.txt
 flask-restx==0.5.1
     # via -r requirements.txt
@@ -174,7 +163,6 @@ packaging==21.3
     #   connexion
     #   pytest
     #   pytest-flask-sqlalchemy
-    #   redis
 pathspec==0.9.0
     # via black
 pbr==5.9.0
@@ -256,10 +244,6 @@ pyyaml==6.0
     #   funding-service-design-utils
     #   openapi-spec-validator
     #   pre-commit
-redis==4.3.4
-    # via
-    #   -r requirements.txt
-    #   flask-redis
 requests==2.27.1
     # via
     #   -r requirements.txt
@@ -332,10 +316,6 @@ werkzeug==2.0.3
     #   pytest-flask
 wheel==0.37.1
     # via pip-tools
-wrapt==1.14.1
-    # via
-    #   -r requirements.txt
-    #   deprecated
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

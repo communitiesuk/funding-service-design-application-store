@@ -16,9 +16,9 @@ class Fund:
     def from_json(data: dict):
         try:
             return Fund(
-                name=data.get("fund_name"),
-                identifier=data.get("fund_id"),
-                description=data.get("fund_description"),
+                name=data.get("name"),
+                identifier=data.get("id"),
+                description=data.get("description"),
             )
         except AttributeError as e:
             current_app.logger.error("Empty data passed to Fund.from_json")

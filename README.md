@@ -50,7 +50,7 @@ From the top-level directory enter the command to install pip and the dependenci
 
 ### Postgres
 
-You will need to set up a local postgres server to run and test this repo. 
+You will need to set up a local postgres server to run and test this repo.
 
 Set the environment variables "DATABASE_URL" to your postgres connection string before running `flask` or `pytest`.
 

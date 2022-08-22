@@ -1,2 +1,1 @@
 # How to run tests
-

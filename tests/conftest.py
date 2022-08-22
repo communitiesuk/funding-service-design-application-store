@@ -1,8 +1,8 @@
-from tests.helpers import local_api_call
 import pytest
 from app import create_app
 from db import db
 from flask_migrate import upgrade
+from tests.helpers import local_api_call
 
 
 @pytest.fixture(scope="session")
@@ -17,13 +17,16 @@ def app():
         upgrade()
     return app
 
-def mock_get_data(endpoint, params = None):
+
+def mock_get_data(endpoint, params=None):
 
     return local_api_call(endpoint, params, "get")
 
-def mock_post_data(endpoint, params = None):
+
+def mock_post_data(endpoint, params=None):
 
     return local_api_call(endpoint, params, "post")
+
 
 @pytest.fixture(autouse=True)
 def mock_get_data_fix(mocker):
@@ -33,6 +36,7 @@ def mock_get_data_fix(mocker):
         new=mock_get_data,
     )
 
+
 @pytest.fixture(autouse=True)
 def mock_post_data_fix(mocker):
     # mock the function in the file it is invoked (not where it is declared)
@@ -40,6 +44,7 @@ def mock_post_data_fix(mocker):
         "external_services.http_methods.post_data",
         new=mock_post_data,
     )
+
 
 @pytest.fixture(scope="session")
 def _db(app):

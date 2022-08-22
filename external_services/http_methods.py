@@ -1,5 +1,6 @@
-from flask import current_app
 import requests
+from flask import current_app
+
 
 def get_data(endpoint: str, params: dict = None):
     if params:
@@ -10,7 +11,7 @@ def get_data(endpoint: str, params: dict = None):
     response = requests.get(req.url)
     if response.status_code == 200:
         return response.json()
-        
+
 
 def post_data(endpoint: str, params: dict = None):
     if params:

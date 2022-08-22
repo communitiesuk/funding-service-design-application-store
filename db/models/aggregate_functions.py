@@ -6,9 +6,9 @@ from db import db
 from db.models.applications import Applications
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
+from db.models.status import Status
 from external_services.models.account import AccountMethods
 from external_services.models.notification import Notification
-from db.models.status import Status
 
 
 def update_application_status(application_id: str):
@@ -43,7 +43,9 @@ def update_form_statuses(application_id: str, form_name: str):
     Args:
         application_id: The application id
     """
-    stored_forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
+    stored_forms = FormsMethods.get_forms_by_app_id(
+        application_id, as_json=False
+    )
     application_submitted_date = db.session.get(
         Applications, application_id
     ).date_submitted
@@ -79,11 +81,15 @@ def update_question_statuses(application_id: str, form_name: str):
         application_id: The application id
     """
 
-    stored_forms = FormsMethods.get_forms_by_app_id(application_id, as_json=False)
+    stored_forms = FormsMethods.get_forms_by_app_id(
+        application_id, as_json=False
+    )
     for stored_form in stored_forms:
         if stored_form.name == form_name:
             for question_page in stored_form.json:
-                question_page["status"] = question_page.get("status", "NOT_STARTED")
+                question_page["status"] = question_page.get(
+                    "status", "NOT_STARTED"
+                )
                 if question_page["status"] == "SUBMITTED":
                     break
 
@@ -101,7 +107,6 @@ def update_question_statuses(application_id: str, form_name: str):
                             return False
                         case _:
                             return True
-
 
                 answer_found_list = [
                     is_field_answered(field)

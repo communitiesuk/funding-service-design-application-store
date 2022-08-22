@@ -22,7 +22,6 @@ def create_app() -> Flask:
         flask_app, db, directory="db/migrations", render_as_batch=True
     )
 
-
     health = Healthcheck(flask_app)
     health.add_check(FlaskRunningChecker())
     # TODO Add the following once PR 22 is merged (and we have a real DB)

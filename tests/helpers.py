@@ -1,10 +1,12 @@
 import json
-import re
-from typing import List
 import os
-from deepdiff import DeepDiff
+import re
 import urllib
+from typing import List
+
 from config import Config
+from deepdiff import DeepDiff
+
 
 def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
     print("I WAS CALLED WITH", endpoint)
@@ -32,6 +34,7 @@ def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
             endpoint = f"{endpoint}?{query_params}"
         if endpoint in api_data:
             return api_data.get(endpoint)
+
 
 def expected_data_within_response(
     test_client,
@@ -194,6 +197,7 @@ application_expected_data = [
     }
     for application_data in application_post_data
 ]
+
 
 def key_list_to_regex(
     exclude_keys: List[str] = ["id", "started_at", "project_name"]

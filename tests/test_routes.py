@@ -161,7 +161,7 @@ def test_update_section_of_application(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "declarations"
+            "form_name": "declarations",
         },
     }
 
@@ -186,10 +186,10 @@ def test_update_section_of_application_with_incomplete_answers(
     client,
 ):
     """
-        GIVEN We have a functioning Application Store API
-        WHEN A put is made with a completed section
-        THEN The section json should be updated to
-        match the PUT'ed json and be marked as complete.
+    GIVEN We have a functioning Application Store API
+    WHEN A put is made with a completed section
+    THEN The section json should be updated to
+    match the PUT'ed json and be marked as complete.
     """
     post_test_applications(client)
 
@@ -231,7 +231,7 @@ def test_update_section_of_application_with_incomplete_answers(
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "declarations",    
+            "form_name": "declarations",
         },
     }
     expected_data = section_put.copy()

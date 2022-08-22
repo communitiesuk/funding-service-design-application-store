@@ -1,7 +1,6 @@
 """Flask configuration."""
 import logging
 from os import environ
-from os import path
 
 from config.envs.default import DefaultConfig
 from fsd_utils import configclass
@@ -12,10 +11,8 @@ class DevelopmentConfig(DefaultConfig):
 
     FSD_LOGGING_LEVEL = logging.DEBUG
 
-    SQLALCHEMY_DATABASE_URI = environ.get(
-        "DATABASE_URL"
-    )
-    
+    SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     FUND_ROUND_FORMS = {

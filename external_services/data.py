@@ -1,11 +1,9 @@
-import json
-import os
-import urllib.parse
 from typing import List
+
 from config import Config
+from external_services import http_methods
 from external_services.models.fund import Fund
 from external_services.models.round import Round
-from external_services import http_methods
 from flask import current_app
 
 

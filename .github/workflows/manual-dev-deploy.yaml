@@ -29,4 +29,3 @@
           cf_username: ${{secrets.CF_USER}}
           cf_password: ${{secrets.CF_PASSWORD}}
           command: push ${{inputs.app_name}}-dev
-    

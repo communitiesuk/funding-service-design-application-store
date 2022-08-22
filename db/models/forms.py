@@ -9,7 +9,7 @@ from sqlalchemy_utils.types import UUIDType
 
 class Forms(db.Model):
 
-    __table_args__ = (db.UniqueConstraint('id', 'name'),)
+    __table_args__ = (db.UniqueConstraint("id", "name"),)
 
     id = db.Column(
         "id",

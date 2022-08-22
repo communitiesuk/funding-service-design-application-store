@@ -5,7 +5,6 @@ from config import Config
 from external_services import http_methods
 
 
-
 @dataclass
 class Account(object):
     id: str

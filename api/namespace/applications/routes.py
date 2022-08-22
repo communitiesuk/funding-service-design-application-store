@@ -2,21 +2,22 @@ import uuid
 
 from api.namespace.applications.applications_ns import applications_ns
 from api.namespace.applications.helpers.helpers import ApplicationHelpers
-from api.namespace.applications.models.application import application_outbound, create_application
+from api.namespace.applications.models.application import application_outbound
 from api.namespace.applications.models.application import application_result
 from api.namespace.applications.models.application import application_status
+from api.namespace.applications.models.application import create_application
 from api.namespace.applications.models.form import form
-from db.models.applications import ApplicationsMethods
 from db.models.aggregate_functions import get_application_bundle_by_id
 from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
+from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from flask import abort
+from flask import current_app
 from flask import request
 from flask_restx import reqparse
 from flask_restx import Resource
 from sqlalchemy.orm.exc import NoResultFound
-from flask import current_app
 
 
 @applications_ns.route("")
@@ -69,7 +70,10 @@ class Applications(Resource):
         }
 
         applications = ApplicationsMethods.search_applications(args)
-        current_app.logger.info(f"Returning application search results for search terms: {args} with results of: {applications}")
+        current_app.logger.info(
+            "Returning application search results for search terms:"
+            f" {args} with results of: {applications}"
+        )
         return applications, 200, response_headers
 
     create_application_parser = reqparse.RequestParser()
@@ -157,5 +161,5 @@ class ApplicationStatus(Resource):
     def get(self, application_id):
         application = ApplicationsMethods.get_application_by_id(application_id)
         if not application:
-            abort(404)  
+            abort(404)
         return application.as_dict()

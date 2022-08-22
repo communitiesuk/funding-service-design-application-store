@@ -11,7 +11,7 @@ form = applications_ns.model(
             required=True,
             description="The name of the form (the form json file name)",
             example="about-you",
-            attribute='form_name'
+            attribute="form_name",
         ),
         "status": fields.String(
             description="The completion status of the form",

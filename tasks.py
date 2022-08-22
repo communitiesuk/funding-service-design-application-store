@@ -1,12 +1,14 @@
 import os
 import venv
 from pathlib import Path
-from typing import List
 
-from colored import attr, fg, stylize
-from invoke import Collection, task
+from colored import attr
+from colored import fg
+from colored import stylize
+from invoke import task
 
 ECHO_STYLE = fg("light_gray") + attr("bold")
+
 
 @task
 def virtualenv(c):
@@ -29,9 +31,11 @@ def virtualenv(c):
         # we want to be sure that we are going to use python/pip from the venv
         which_python = Path(c.run("which python", hide=True).stdout.strip())
         expected_python = c.virtual_env / "bin" / "python"
-        assert which_python.samefile(expected_python), \
-            f"expected `which python` to return {expected_python}, instead got {which_python}" \
-            f"\nPATH={os.environ['PATH']}"
+        assert which_python.samefile(expected_python), (
+            f"expected `which python` to return {expected_python}, instead got"
+            f" {which_python}\nPATH={os.environ['PATH']}"
+        )
+
 
 @task
 def bootstrap_test_db(c, database_host="localhost"):

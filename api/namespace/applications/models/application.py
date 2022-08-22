@@ -17,6 +17,9 @@ create_application = applications_ns.model(
         "round_id": fields.String(
             description="The id of the round", example="summer"
         ),
+       "id": fields.String(
+            description="The id of the application", example="uuidv4"
+        ),
     },
 )
 

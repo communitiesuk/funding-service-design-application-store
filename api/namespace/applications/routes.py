@@ -25,7 +25,6 @@ class Applications(Resource):
     """
     GET all relevant applications with endpoint '?{params}'
     """
-
     query_params_parser = reqparse.RequestParser()
     query_params_parser.add_argument(
         "id_contains", type=str, help="Application id contains string"
@@ -68,7 +67,6 @@ class Applications(Resource):
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": True,
         }
-
         applications = ApplicationsMethods.search_applications(args)
         current_app.logger.info(
             "Returning application search results for search terms:"

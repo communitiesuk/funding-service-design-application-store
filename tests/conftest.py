@@ -19,12 +19,10 @@ def app():
 
 
 def mock_get_data(endpoint, params=None):
-
     return local_api_call(endpoint, params, "get")
 
 
 def mock_post_data(endpoint, params=None):
-
     return local_api_call(endpoint, params, "post")
 
 

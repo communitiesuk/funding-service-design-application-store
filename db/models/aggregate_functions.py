@@ -80,7 +80,6 @@ def update_question_statuses(application_id: str, form_name: str):
     Args:
         application_id: The application id
     """
-
     stored_forms = FormsMethods.get_forms_by_app_id(
         application_id, as_json=False
     )
@@ -94,9 +93,7 @@ def update_question_statuses(application_id: str, form_name: str):
                     break
 
                 def is_field_answered(field):
-
                     answer_or_not_specified = field.get("answer", False)
-
                     match answer_or_not_specified:
                         case "":
                             # Means question wasnt answered
@@ -112,7 +109,6 @@ def update_question_statuses(application_id: str, form_name: str):
                     is_field_answered(field)
                     for field in question_page["fields"]
                 ]
-
                 # If all answers are given
                 if all(answer_found_list):
                     question_page["status"] = "COMPLETED"
@@ -124,42 +120,31 @@ def update_question_statuses(application_id: str, form_name: str):
                 # If no answers are given
                 else:
                     question_page["status"] = "NOT_STARTED"
-
     db.session.commit()
 
 
 def update_statuses(application_id, form_name):
-
     update_question_statuses(application_id, form_name)
     update_form_statuses(application_id, form_name)
     update_application_status(application_id)
 
 
 def get_application_bundle_by_id(app_id):
-
     application = ApplicationsMethods.get_application_by_id(app_id)
-
     forms = FormsMethods.get_forms_by_app_id(app_id)
-
     return {**application.as_dict(), "forms": forms}
 
 
 def submit_application(application_id):
-
     application = ApplicationsMethods.get_application_by_id(application_id)
-
     application.date_submitted = datetime.datetime.now(
         datetime.timezone.utc
     ).strftime("%Y-%m-%d %H:%M:%S")
-
     db.commit()
-
     update_statuses(application_id)
-
     account = AccountMethods.get_account(
         account_id=application.get("account_id")
     )
-
     # Send notification
     Notification.send(
         Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
@@ -171,21 +156,15 @@ def submit_application(application_id):
             )
         },
     )
-
     return ApplicationsMethods.get_application_bundle_by_id(application_id)
 
 
 def update_form(application_id, form_name, question_json):
-
     try:
         form_sql_row = FormsMethods.get_form(application_id, form_name)
         form_sql_row.json = question_json
         db.session.commit()
-
         update_statuses(application_id, form_name)
-
         return form_sql_row.as_json()
-
     except sqlalchemy.orm.exc.NoResultFound as e:
-
         raise e

@@ -14,6 +14,8 @@ aniso8601==9.0.1
     #   flask-restx
 asserts==0.11.1
     # via -r requirements-dev.in
+atomicwrites==1.4.1
+    # via pytest
 attrs==21.4.0
     # via
     #   -r requirements.txt
@@ -29,10 +31,6 @@ certifi==2021.10.8
     # via
     #   -r requirements.txt
     #   requests
-cffi==1.15.1
-    # via
-    #   -r requirements.txt
-    #   cryptography
 cffi==1.15.1
     # via
     #   -r requirements.txt
@@ -58,6 +56,13 @@ clickclick==20.10.2
     # via
     #   -r requirements.txt
     #   connexion
+colorama==0.4.5
+    # via
+    #   -r requirements.txt
+    #   bandit
+    #   build
+    #   click
+    #   pytest
 colored==1.4.3
     # via -r requirements.txt
 commonmark==0.9.1
@@ -66,10 +71,6 @@ commonmark==0.9.1
     #   rich
 connexion==2.14.0
     # via -r requirements.txt
-cryptography==37.0.4
-    # via
-    #   -r requirements.txt
-    #   pyjwt
 cryptography==37.0.4
     # via
     #   -r requirements.txt
@@ -98,12 +99,16 @@ flask-sqlalchemy==2.5.1
     #   -r requirements.txt
     #   flask-migrate
     #   pytest-flask-sqlalchemy
-funding-service-design-utils @ git+https://github.com/communitiesuk/funding-service-design-utils.git@main
+funding-service-design-utils @ https://github.com/communitiesuk/funding-service-design-utils/archive/refs/tags/0.0.12.tar.gz
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython
 gitpython==3.1.27
     # via bandit
+greenlet==1.1.2
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt
@@ -193,18 +198,10 @@ pycparser==2.21
     # via
     #   -r requirements.txt
     #   cffi
-pycparser==2.21
-    # via
-    #   -r requirements.txt
-    #   cffi
 pygments==2.12.0
     # via
     #   -r requirements.txt
     #   rich
-pyjwt[crypto]==2.4.0
-    # via
-    #   -r requirements.txt
-    #   funding-service-design-utils
 pyjwt[crypto]==2.4.0
     # via
     #   -r requirements.txt

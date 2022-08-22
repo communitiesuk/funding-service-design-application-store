@@ -16,7 +16,6 @@ def test_create_application_is_successful(client):
     WHEN we try to create an application
     THEN applications are created with the correct parameters
     """
-
     # Post one Fund A application and check length
     application_data_a1 = {
         "account_id": "usera",
@@ -24,10 +23,8 @@ def test_create_application_is_successful(client):
         "round_id": "summer",
     }
     post_data(client, "/applications", application_data_a1)
-
     expected_length_fund_a = 1
     count_fund_applications(client, "fund-a", expected_length_fund_a)
-
     # Post first Fund B application and check length
     application_data_b1 = {
         "account_id": "userb",
@@ -35,10 +32,8 @@ def test_create_application_is_successful(client):
         "round_id": "summer",
     }
     post_data(client, "/applications", application_data_b1)
-
     expected_length_fund_b = 1
     count_fund_applications(client, "fund-b", expected_length_fund_b)
-
     # Post second Fund B application and check length
     application_data_b2 = {
         "account_id": "userc",
@@ -46,7 +41,6 @@ def test_create_application_is_successful(client):
         "round_id": "summer",
     }
     post_data(client, "/applications", application_data_b2)
-
     expected_length_fund_b = 2
     count_fund_applications(client, "fund-b", expected_length_fund_b)
 
@@ -59,7 +53,6 @@ def test_get_all_applications(client):
     """
     post_test_applications(client)
     expected_data = application_expected_data
-
     expected_data_within_response(
         client,
         "/applications",
@@ -83,7 +76,6 @@ def test_get_applications_sorted_by_rev_account_id(client):
         key=itemgetter(order_by),
         reverse=order_rev,
     )
-
     expected_data_within_response(
         client,
         f"/applications?order_by={order_by}&order_rev={order_rev}",
@@ -106,7 +98,6 @@ def test_get_applications_of_account_id(client):
             application_expected_data,
         )
     )
-
     expected_data_within_response(
         client,
         "/applications?account_id=userb",
@@ -123,10 +114,8 @@ def test_update_section_of_application(client):
     match the PUT'ed json and be marked as complete.
     """
     post_test_applications(client)
-
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
-
     section_put = {
         "questions": [
             {
@@ -164,20 +153,16 @@ def test_update_section_of_application(client):
             "form_name": "declarations",
         },
     }
-
     response = client.put(
         "/applications/forms",
         data=json.dumps(section_put),
         follow_redirects=True,
     )
-
     answer_found_list = [
         field["answer"] not in [None, ""]
         for field in response.json["questions"][0]["fields"]
     ]
-
     section_status = response.json["status"]
-
     assert all(answer_found_list)
     assert section_status == "COMPLETED"
 
@@ -192,10 +177,8 @@ def test_update_section_of_application_with_incomplete_answers(
     match the PUT'ed json and be marked as complete.
     """
     post_test_applications(client)
-
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
-
     section_put = {
         "questions": [
             {
@@ -235,23 +218,16 @@ def test_update_section_of_application_with_incomplete_answers(
         },
     }
     expected_data = section_put.copy()
-
     # The whole section has been submit here so it will have a status of
     # COMPLETE not IN_PROGRESS
     expected_data.update({"status": "IN_PROGRESS"})
-
     # exclude_question_keys = ["category", "index", "id"]
-
     response = client.put(
         "/applications/forms",
         data=json.dumps(section_put),
         follow_redirects=True,
     )
-
-    print(response.json)
-
     section_status = response.json["status"]
-
     assert section_status == "IN_PROGRESS"
 
 
@@ -261,15 +237,10 @@ def test_get_application_by_application_id(client):
     WHEN a GET /applications/<application_id> request is sent
     THEN the response should contain the application object
     """
-
     post_test_applications(client)
-
     random_app = ApplicationTestMethods.get_random_app()
-
     random_id = random_app.id
-
     expected_data = {**random_app.as_dict(), "forms": []}
-
     expected_data_within_response(
         client,
         f"/applications/{random_id}",
@@ -286,7 +257,7 @@ def test_get_application_by_application_id(client):
 
 
 def testHealthcheckRoute(client):
-    expected_result = {"checks": [{"check_flask_running": "OK"}]}
+    expected_result = {"checks": [{"check_running": "OK"}]}
     result = client.get("/healthcheck")
     assert result.status_code == 200, "Unexpected status code"
     assert result.json == expected_result, "Unexpected json body"

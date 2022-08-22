@@ -23,11 +23,10 @@ class ApplicationHelpers:
         fund_round = get_round(fund_id, round_id)
         if fund and fund_round:
             fund_round_forms = Config.FUND_ROUND_FORMS
-            print("DDDDDDDD", fund_round_forms)
             forms = fund_round_forms.get(":".join([fund_id, round_id]))
             if not forms:
                 raise Exception(
-                    f"Could not find form forms for {fund_id} - {round_id}"
+                    f"Could not find forms for {fund_id} - {round_id}"
                 )
             return forms.copy()
         raise Exception(

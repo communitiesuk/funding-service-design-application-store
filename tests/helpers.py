@@ -9,7 +9,6 @@ from deepdiff import DeepDiff
 
 
 def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
-    print("I WAS CALLED WITH", endpoint)
     api_data_json = os.path.join(
         Config.FLASK_ROOT,
         "tests",
@@ -65,14 +64,12 @@ def expected_data_within_response(
     else:
         response = test_client.get(endpoint, follow_redirects=True)
     response_data = json.loads(response.data)
-
     diff = DeepDiff(
         expected_data,
         response_data,
         exclude_regex_paths=exclude_regex_paths,
         **kwargs,
     )
-
     error_message = "Expected data does not match response: " + str(diff)
     assert diff == {}, error_message
 
@@ -87,20 +84,17 @@ def put_response_return_200(test_client, endpoint):
         endpoint (str): The PUT request endpoint
 
     """
-
     response = test_client.put(endpoint, follow_redirects=True)
     assert response.status_code == 200
 
 
 def post_data(test_client, endpoint: str, data: dict):
     """Given an endpoint and data, check to see if response contains expected data
-
     Args:
         test_client: A flask test client
         endpoint (str): The POST request endpoint
         data (dict): The content to post to the endpoint provided
     """
-
     test_client.post(
         endpoint,
         data=json.dumps(data),
@@ -117,7 +111,6 @@ def put_data(test_client, endpoint: str, data: dict):
         endpoint (str): The POST request endpoint
         data (dict): The content to post to the endpoint provided
     """
-
     test_client.put(
         endpoint,
         data=json.dumps(post_data),
@@ -202,7 +195,6 @@ application_expected_data = [
 def key_list_to_regex(
     exclude_keys: List[str] = ["id", "started_at", "project_name"]
 ):
-
     exclude_regex_path_strings = [
         rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
     ]
@@ -214,5 +206,4 @@ def key_list_to_regex(
     regex_paths = (
         exclude_regex_path_strings + exclude_regex_path_strings_nested
     )
-
     return [re.compile(regex_string) for regex_string in regex_paths]

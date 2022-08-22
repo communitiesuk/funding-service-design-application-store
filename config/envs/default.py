@@ -133,6 +133,8 @@ class DefaultConfig:
         },
     ]
 
+    COF_FUND_ID = "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4"
+    COF_ROUND_2_ID = "c603d114-5364-4474-a0c4-c41cbf4d3bbd"
     FUND_ROUND_FORMS = {
-        "community-ownership-fund:round-2": COF_R2_FORMS.copy(),
+        f"{COF_FUND_ID}:{COF_ROUND_2_ID}": COF_R2_FORMS.copy(),
     }

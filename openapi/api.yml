@@ -1,0 +1,137 @@
+openapi: "3.0.0"
+info:
+  description: Application store API for DLUHC Funding Service Design
+  version: "0.1.0"
+  title: Funding Service Design - Application Store
+tags:
+  - name: application-store
+    description: Application store operations
+
+paths:
+  /applications:
+    get:
+      tags:
+        - applications
+      summary: Search applications
+      description: List all applications
+      # operationId: api.AssessmentsView.search CHANGE
+      responses:
+        200:
+          description: SUCCESS - A list of applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'components.yml#/components/schemas/Application'
+    post:
+      tags:
+        - applications
+      summary: Post a new application
+      description: Registers a new application for a user
+      # operationId: api.AssessmentsView.register CHANGE
+      requestBody:
+        description: Application creation parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'components.yml#/components/schemas/PostApplication'
+            example:
+              applicationId: 'abc'
+      responses:
+        201:
+          description: SUCCESS - Application created
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/CreatedApplication'
+        401:
+          description: ERROR - Could not create application
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 401
+                status: 'error'
+                message: 'An assessment for this application already exists'
+  /applications/forms:
+    put:
+      requestBody:
+        description: Update application with new forms state 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'components.yml#/components/schemas/PutForms'         
+      tags:
+        - applications
+      summary: Get an application
+      description: Return an application
+      # operationId: api.AssessmentsView.get TO CHANGE
+      responses:
+        200:
+          description: SUCCESS - Application updated
+          content:
+              application/json:
+                schema:
+                  $ref: 'components.yml#/components/schemas/UpdatedForms'
+        404:
+          description: ERROR - Form cannot be updated
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 404
+                status: 'error'
+                message: 'Form is not updated'          
+    
+  /applications/{application_id}/submit:
+    post:
+      tags:
+        - application
+      summary: Submit an application
+      description: Changes the status of application to submitted
+      # operationId: api.SubCriteriaView.list
+      responses:
+        200:
+          description: SUCCESS - A list of sub_criterias
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  # $ref: 'components.yml#/components/schemas/SubCriteria'
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path
+
+  /applications/{application_id}:
+    get:
+      tags:
+        - applications
+      summary: Get a specific application
+      description: Get a specific application by application id
+      # operationId: api.SubCriteriaView.list
+      responses:
+        200:
+          description: SUCCESS - An applicaton by id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  # $ref: 'components.yml#/components/schemas/SubCriteria'
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path

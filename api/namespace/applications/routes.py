@@ -146,18 +146,3 @@ class GetApplication(Resource):
             return return_dict, 200
         except NoResultFound:
             return "", 404
-
-
-@applications_ns.route("/<application_id>/status")
-class ApplicationStatus(Resource):
-    """
-    Operations on application assessment status
-    """
-
-    @applications_ns.doc("get_application_status")
-    @applications_ns.marshal_with(application_status, code=200)
-    def get(self, application_id):
-        application = ApplicationsMethods.get_application_by_id(application_id)
-        if not application:
-            abort(404)
-        return application.as_dict()

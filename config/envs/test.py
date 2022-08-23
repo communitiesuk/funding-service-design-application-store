@@ -10,4 +10,7 @@ class TestConfig(DefaultConfig):
 
     # Add any test specific config here
 
-    pass
+    SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL").replace(
+        "postgres://", "postgresql://"
+    )
+    

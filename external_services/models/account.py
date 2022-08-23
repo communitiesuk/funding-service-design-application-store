@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List
 
 from config import Config
-from external_services.data import get_data
+from external_services import http_methods
 
 
 @dataclass
@@ -58,7 +58,7 @@ class AccountMethods(Account):
 
         url = Config.ACCOUNT_STORE_API_HOST + Config.ACCOUNTS_ENDPOINT
         params = {"email_address": email, "account_id": account_id}
-        response = get_data(url, params)
+        response = http_methods.get_data(url, params)
 
         if response and "account_id" in response:
             return Account.from_json(response)

@@ -55,7 +55,9 @@ default_sections = [
                     },
                     {
                         "key": "delivered-projects-like-this-before",
-                        "title": ("Have you delivered projects like this before?"),
+                        "title": (
+                            "Have you delivered projects like this before?"
+                        ),
                         "type": "list",
                         "answer": "",
                     },
@@ -85,7 +87,8 @@ default_sections = [
                     {
                         "key": "organisation-do-you-have-endorsements",
                         "title": (
-                            "Do you have endorsements to support your" " application?"
+                            "Do you have endorsements to support your"
+                            " application?"
                         ),
                         "type": "list",
                         "answer": "",
@@ -168,7 +171,8 @@ default_sections = [
                     {
                         "key": "about-your-project-policy-aims",
                         "title": (
-                            "Which policy aims will your project deliver" " against?"
+                            "Which policy aims will your project deliver"
+                            " against?"
                         ),
                         "type": "list",
                         "answer": "",
@@ -214,9 +218,12 @@ default_sections = [
                 "question": "Delivery partner",
                 "fields": [
                     {
-                        "key": ("plan-your-project-will-work-with-delivery-partner"),
+                        "key": (
+                            "plan-your-project-will-work-with-delivery-partner"
+                        ),
                         "title": (
-                            "Will you work with a delivery partner on this" " project?"
+                            "Will you work with a delivery partner on this"
+                            " project?"
                         ),
                         "type": "list",
                         "answer": "",
@@ -228,7 +235,9 @@ default_sections = [
                 "fields": [
                     {
                         "key": "plan-your-project-delivery-partner",
-                        "title": ("Who is your delivery partner on this project?"),
+                        "title": (
+                            "Who is your delivery partner on this project?"
+                        ),
                         "type": "text",
                         "answer": "",
                     },
@@ -253,7 +262,9 @@ default_sections = [
                 ],
             },
             {
-                "question": ("Plan your project (without delivery partner page)"),
+                "question": (
+                    "Plan your project (without delivery partner page)"
+                ),
                 "fields": [
                     {
                         "key": "plan-your-project-internal-resources",
@@ -265,13 +276,19 @@ default_sections = [
                         "answer": "",
                     },
                     {
-                        "key": ("plan-your-project-how-did-you-internal-resources"),
-                        "title": ("If yes to the above, how did you work that out?"),
+                        "key": (
+                            "plan-your-project-how-did-you-internal-resources"
+                        ),
+                        "title": (
+                            "If yes to the above, how did you work that out?"
+                        ),
                         "type": "text",
                         "answer": "",
                     },
                     {
-                        "key": ("plan-your-project-how-will-you-recruit-resources"),
+                        "key": (
+                            "plan-your-project-how-will-you-recruit-resources"
+                        ),
                         "title": (
                             "If no, tell us how you are going to recruit the"
                             " resources you need"
@@ -398,7 +415,9 @@ default_sections = [
                 "fields": [
                     {
                         "key": "ZJUaPq",
-                        "title": ("Describe your organisation's attitude to risk"),
+                        "title": (
+                            "Describe your organisation's attitude to risk"
+                        ),
                         "type": "list",
                         "answer": "",
                     },
@@ -608,7 +627,7 @@ fund_round_sections = {
     "funding-service-design:spring": default_sections.copy(),
     "funding-service-design:summer": default_sections.copy(),
     "community-ownership-fund:round-2": default_sections.copy(),
-    "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4:c603d114-5364-4474-a0c4-c41cbf4d3bbd": default_sections.copy()
+    "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4:c603d114-5364-4474-a0c4-c41cbf4d3bbd" : default_sections.copy(), #noqa
 }
 
 initial_application_store_state = {

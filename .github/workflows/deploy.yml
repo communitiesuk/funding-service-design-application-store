@@ -7,11 +7,15 @@ on:
       - '**/README.md'
 
 jobs:
+
   test_and_deploy:
     uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@main
     with:
       app_name: ${{ github.event.repository.name }}
       api: true
+      postgres_unit_testing: true
+      db_name: fsd_app_store_test
+      deploy_to_dev: false
       users: 2
       spawn-rate: 2
       run-time: 11s

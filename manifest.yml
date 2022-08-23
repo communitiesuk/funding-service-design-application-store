@@ -10,6 +10,8 @@ applications:
     ACCOUNT_STORE_API_HOST: https://funding-service-design-account-store-dev.london.cloudapps.digital
   health-check-http-endpoint: /healthcheck
   health-check-type: http
+  services:
+    - application-store-dev-db
 
 - name: funding-service-design-application-store-test
   memory: 256M
@@ -21,3 +23,5 @@ applications:
     ACCOUNT_STORE_API_HOST: https://funding-service-design-account-store-test.london.cloudapps.digital
   health-check-http-endpoint: /healthcheck
   health-check-type: http
+  services:
+    - application-store-test-db

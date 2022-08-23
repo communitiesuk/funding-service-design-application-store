@@ -4,39 +4,17 @@ from api.namespace.applications.models.question import question
 from api.namespace.applications.models.question import question_status
 from flask_restx import fields
 
-section_inbound = applications_ns.model(
-    "section_inbound",
+form = applications_ns.model(
+    "form",
     {
         "name": fields.String(
             required=True,
-            description="The name of the fund",
-            example="Funding Service Design",
-        ),
-        "questions": fields.List(
-            fields.Nested(
-                question,
-                required=True,
-                description=(
-                    "The payload of application questions and answers."
-                ),
-            ),
-        ),
-        "metadata": fields.Nested(
-            metadata, description="Application metadata"
-        ),
-    },
-)
-
-section = applications_ns.model(
-    "section",
-    {
-        "section_name": fields.String(
-            required=True,
-            description="The name of the section",
+            description="The name of the form (the form json file name)",
             example="about-you",
+            attribute="form_name",
         ),
         "status": fields.String(
-            description="The completion status of the section",
+            description="The completion status of the form",
             example="IN_PROGRESS",
         ),
         "questions": fields.List(
@@ -54,16 +32,16 @@ section = applications_ns.model(
     },
 )
 
-section_status = applications_ns.model(
-    "section_status",
+form_status = applications_ns.model(
+    "form_status",
     {
-        "section_name": fields.String(
+        "form_name": fields.String(
             required=True,
-            description="The name of the section",
+            description="The name of the form",
             example="about-you",
         ),
         "status": fields.String(
-            description="The completion status of the section",
+            description="The completion status of the form",
             example="IN_PROGRESS",
         ),
         "questions": fields.List(

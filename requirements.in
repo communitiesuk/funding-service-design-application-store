@@ -1,12 +1,21 @@
 connexion
-Flask-Migrate
-Flask-SQLAlchemy
 flask_restx
-https://github.com/communitiesuk/funding-service-design-utils/archive/refs/tags/0.0.12.tar.gz
+https://github.com/communitiesuk/funding-service-design-utils/archive/refs/tags/0.0.14.tar.gz
 openapi-spec-validator
 prance
 requests
-SQLAlchemy
 swagger-ui-bundle
 slugify
 python-dateutil
+invoke
+colored
+
+#-----------------------------------
+#   Database
+#-----------------------------------
+SQLAlchemy
+Flask-SQLAlchemy
+Flask-Migrate
+sqlalchemy-utils
+sqlalchemy_json
+psycopg2

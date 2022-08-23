@@ -33,6 +33,7 @@ Clone the repository
 
     .venv\Scripts\activate.bat
 
+
 ### Install dependencies
 
 requirements-dev.txt and requirements.txt are updated using [pip-tools pip-compile](https://github.com/jazzband/pip-tools)
@@ -46,6 +47,18 @@ Then run (in the following order):
 From the top-level directory enter the command to install pip and the dependencies of the project
 
     python3 -m pip install --upgrade pip && pip install -r requirements-dev.txt
+
+### Postgres
+
+You will need to set up a local postgres server to run and test this repo.
+
+Set the environment variables "DATABASE_URL" to your postgres connection string before running `flask` or `pytest`.
+
+Eg.
+
+`export DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres`
+
+
 
 ## How to use
 

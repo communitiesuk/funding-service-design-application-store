@@ -14,6 +14,7 @@ applications:
   health-check-type: http
   services:
     - application-store-dev-db
+    - logit-ssl-drain
 
 - name: funding-service-design-application-store-test
   memory: 256M
@@ -29,3 +30,4 @@ applications:
   health-check-type: http
   services:
     - application-store-test-db
+    - logit-ssl-drain

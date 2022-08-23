@@ -14,8 +14,6 @@ aniso8601==9.0.1
     #   flask-restx
 asserts==0.11.1
     # via -r requirements-dev.in
-atomicwrites==1.4.1
-    # via pytest
 attrs==21.4.0
     # via
     #   -r requirements.txt
@@ -56,13 +54,6 @@ clickclick==20.10.2
     # via
     #   -r requirements.txt
     #   connexion
-colorama==0.4.5
-    # via
-    #   -r requirements.txt
-    #   bandit
-    #   build
-    #   click
-    #   pytest
 colored==1.4.3
     # via -r requirements.txt
 commonmark==0.9.1
@@ -99,7 +90,7 @@ flask-sqlalchemy==2.5.1
     #   -r requirements.txt
     #   flask-migrate
     #   pytest-flask-sqlalchemy
-funding-service-design-utils @ https://github.com/communitiesuk/funding-service-design-utils/archive/refs/tags/0.0.12.tar.gz
+funding-service-design-utils @ https://github.com/communitiesuk/funding-service-design-utils/archive/refs/tags/0.0.14.tar.gz
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython

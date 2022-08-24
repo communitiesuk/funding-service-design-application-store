@@ -178,9 +178,9 @@ prance==0.21.8.0
 pre-commit==2.19.0
     # via -r requirements-dev.in
 psycopg2==2.9.3
-    # via -r requirements-dev.in
-psycopg2-binary==2.9.3
-    # via -r requirements.txt
+    # via
+    #   -r requirements-dev.in
+    #   -r requirements.txt
 py==1.11.0
     # via pytest
 pycparser==2.21

@@ -1,9 +1,6 @@
   name: Manual Dev Deploy
   on:
     workflow_dispatch:
-    push:
-      branches:
-        - bau-fix-depends
   jobs:
     deploy_dev:
       runs-on: ubuntu-latest

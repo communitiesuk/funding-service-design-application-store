@@ -7,7 +7,7 @@ from api.namespace.applications.models.application import application_result
 from api.namespace.applications.models.application import application_status
 from api.namespace.applications.models.application import create_application
 from api.namespace.applications.models.form import form
-from db.models.aggregate_functions import get_application_bundle_by_id
+from db.models.aggregate_functions import get_application_with_forms
 from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
 from db.models.applications import ApplicationsMethods
@@ -140,7 +140,7 @@ class GetApplication(Resource):
     @applications_ns.marshal_with(application_outbound, code=201)
     def get(self, application_id):
         try:
-            return_dict = get_application_bundle_by_id(
+            return_dict = get_application_with_forms(
                 uuid.UUID(application_id)
             )
             return return_dict, 200

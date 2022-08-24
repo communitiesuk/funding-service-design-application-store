@@ -47,11 +47,11 @@ class Applications(db.Model):
             "account_id": self.account_id,
             "round_id": self.round_id,
             "fund_id": self.fund_id,
-            "project_name": self.project_name,
+            "project_name": self.project_name or "project_name not set",
             "started_at": self.started_at.strftime("%Y-%m-%d %H:%M:%S"),
             "status": self.status.name,
-            "date_submitted": self.date_submitted,
-            "last_edited": self.last_edited,
+            "date_submitted": self.date_submitted or "null",
+            "last_edited": self.last_edited or self.started_at,
         }
 
 
@@ -82,7 +82,7 @@ class ApplicationsMethods:
         application_list = db.session.query(Applications).all()
         return application_list
 
-    def search_applications(params):
+    def search_applications(**params):
         """
         Returns a list of applications matching required params
         """
@@ -92,7 +92,8 @@ class ApplicationsMethods:
         fund_id = params.get("fund_id")
         account_id = params.get("account_id")
         status_only = params.get("status_only")
-        id_contains = params.get("id_contains")
+        application_id = params.get("application_id")
+        # Sorting params
         order_by = params.get("order_by", "id")
         order_rev = params.get("order_rev") == "1"
         filters = []
@@ -104,8 +105,8 @@ class ApplicationsMethods:
             filters.append(
                 Applications.status.name == status_only.replace(" ", "_")
             )
-        if id_contains:
-            filters.append(Applications.id.contains(id_contains))
+        if application_id:
+            filters.append(Applications.id == application_id)
         if len(filters) == 0:
             matching_applications = db.session.query(Applications).all()
         else:
@@ -115,20 +116,19 @@ class ApplicationsMethods:
         matching_applications_jsons = [
             app.as_dict() for app in matching_applications
         ]
-        if order_by and order_by in [
-            "id",
-            "status",
-            "account_id",
-            "assessment_deadline",
-        ]:
-            sorted_matching_applications_jsons = sorted(
-                matching_applications_jsons,
-                key=itemgetter(order_by),
-                reverse=order_rev,
-            )
-        else:
-            sorted_matching_applications_jsons = matching_applications_jsons
-        return sorted_matching_applications_jsons
+        # TODO - filtering function for searching applications
+        # if order_by and order_by in [
+        #     "status",
+        #     "account_id",
+        # ]:
+        #     sorted_matching_applications_jsons = sorted(
+        #         matching_applications_jsons,
+        #         key=itemgetter(order_by),
+        #         reverse=order_rev,
+        #     )
+        # else:
+        #     sorted_matching_applications_jsons = matching_applications_jsons
+        return matching_applications_jsons
 
 
 class ApplicationTestMethods:

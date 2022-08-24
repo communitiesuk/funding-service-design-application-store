@@ -129,7 +129,7 @@ def update_statuses(application_id, form_name):
     update_application_status(application_id)
 
 
-def get_application_bundle_by_id(app_id):
+def get_application_with_forms(app_id):
     application = ApplicationsMethods.get_application_by_id(app_id)
     forms = FormsMethods.get_forms_by_app_id(app_id)
     return {**application.as_dict(), "forms": forms}
@@ -151,12 +151,12 @@ def submit_application(application_id):
         account.email,
         # TODO
         {
-            "application": ApplicationsMethods.get_application_bundle_by_id(
+            "application": ApplicationsMethods.get_application_with_forms(
                 application_id
             )
         },
     )
-    return ApplicationsMethods.get_application_bundle_by_id(application_id)
+    return ApplicationsMethods.get_application_with_forms(application_id)
 
 
 def update_form(application_id, form_name, question_json):

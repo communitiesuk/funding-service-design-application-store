@@ -14,7 +14,7 @@ paths:
         - applications
       summary: Search applications
       description: List all applications
-      # operationId: api.AssessmentsView.search CHANGE
+      operationId: api.ApplicationsView.get
       responses:
         200:
           description: SUCCESS - A list of applications
@@ -24,12 +24,42 @@ paths:
                 type: array
                 items:
                   $ref: 'components.yml#/components/schemas/Application'
+      parameters:
+        - in: query
+          name: application_id
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        - in: query
+          name: account_id
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        - in: query
+          name: fund_id
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        # TODO - filtering applications
+        # - in: query
+        #   name: order_by
+        #   style: form
+        #   schema:
+        #     type: string
+        #   required: false
+        #   explode: false
     post:
       tags:
         - applications
       summary: Post a new application
       description: Registers a new application for a user
-      # operationId: api.AssessmentsView.register CHANGE
+      operationId: api.ApplicationsView.post
       requestBody:
         description: Application creation parameters
         required: true
@@ -38,7 +68,9 @@ paths:
             schema:
               $ref: 'components.yml#/components/schemas/PostApplication'
             example:
-              applicationId: 'abc'
+              account_id: 'usera'
+              fund_id: '47aef2f5-3fcb-4d45-acb5-f0152b5f03c4'
+              round_id: 'c603d114-5364-4474-a0c4-c41cbf4d3bbd'
       responses:
         201:
           description: SUCCESS - Application created
@@ -56,6 +88,31 @@ paths:
                 code: 401
                 status: 'error'
                 message: 'An assessment for this application already exists'
+  
+  /applications/{application_id}:
+    get:
+      tags:
+        - applications
+      summary: Get a specific application
+      description: Get a specific application by application id
+      operationId: api.ApplicationsView.get_by_id
+      responses:
+        200:
+          description: SUCCESS - An applicaton by id
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: 'components.yml#/components/schemas/ReturnedApplication'
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path
+
   /applications/forms:
     put:
       requestBody:
@@ -69,9 +126,9 @@ paths:
         - applications
       summary: Get an application
       description: Return an application
-      # operationId: api.AssessmentsView.get TO CHANGE
+      operationId: api.ApplicationsView.put
       responses:
-        200:
+        201:
           description: SUCCESS - Application updated
           content:
               application/json:
@@ -88,50 +145,26 @@ paths:
                 status: 'error'
                 message: 'Form is not updated'          
     
-  /applications/{application_id}/submit:
-    post:
-      tags:
-        - application
-      summary: Submit an application
-      description: Changes the status of application to submitted
-      # operationId: api.SubCriteriaView.list
-      responses:
-        200:
-          description: SUCCESS - A list of sub_criterias
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  # $ref: 'components.yml#/components/schemas/SubCriteria'
-      parameters:
-        - name: application_id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: path
-
-  /applications/{application_id}:
-    get:
-      tags:
-        - applications
-      summary: Get a specific application
-      description: Get a specific application by application id
-      # operationId: api.SubCriteriaView.list
-      responses:
-        200:
-          description: SUCCESS - An applicaton by id
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  # $ref: 'components.yml#/components/schemas/SubCriteria'
-      parameters:
-        - name: application_id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: path
+  # /applications/{application_id}/submit:
+  #   post:
+  #     tags:
+  #       - application
+  #     summary: Submit an application
+  #     description: Application is submitted and cannot be changed from frontend
+  #     # operationId: api.SubCriteriaView.list
+  #     responses:
+  #       201:
+  #         description: Application has been submitted succesfuly
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: 'components.yml#/components/schemas/SubmitedApplication'
+  #     parameters:
+  #       - name: application_id
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #           format: path

@@ -1,4 +1,3 @@
-
 components:
   schemas:
     Application:
@@ -45,10 +44,23 @@ components:
     PutForms:
       type: object
       properties:
+        name:
+          type: string
+          example: "funding round title"
         questions:
-          type: object
+          type: array
+          items:
+            oneOf:
+              - type: object
         metadata:
           type: object
+          properties:
+            form_name:
+              type: string
+              example: "declarations"
+            application_id:
+              type: string
+              example: "5a038a2e-5c4c-4fb2-afc8-609a4311226b"
     UpdatedForms:
       type: object
       properties:
@@ -58,11 +70,42 @@ components:
           type: string
         questions:
           type: array
-          properties:
-            questions:
-              type: string
+          items:
+            oneOf:
+              - type: object
         metadata: 
-          type: object     
+          type: object
+    SubmitedApplication:
+      type: object
+      properties:
+        application_id:
+          type: string
+    ReturnedApplication:
+      type: object
+      properties:
+        id: 
+          type: string
+        status: 
+          type: string
+        account_id: 
+          type: string
+        fund_id: 
+          type: string
+        round_id:
+          type: string
+        project_name: 
+          type: string
+        started_at: 
+          type: string
+        last_edited: 
+          type: string
+        date_submitted: 
+          type: string
+        forms:
+          type: array
+          items:
+            oneOf:
+              - type: object
     Error:
       type: object
       properties:

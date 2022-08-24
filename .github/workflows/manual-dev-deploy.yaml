@@ -1,4 +1,6 @@
   deploy_dev:
+    on:
+      workflow_dispatch:
     runs-on: ubuntu-latest
     environment: Dev
     steps:

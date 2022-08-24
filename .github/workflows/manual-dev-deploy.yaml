@@ -1,6 +1,8 @@
   deploy_dev:
     on:
-      workflow_dispatch:
+      push:
+        branches:
+          - bau-fix-depends
     runs-on: ubuntu-latest
     environment: Dev
     steps:

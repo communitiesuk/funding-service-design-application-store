@@ -22,9 +22,6 @@
         - name: upgrade db (if specified)
           if: ${{inputs.upgrade_db == true}}
           run: source .venv/bin/activate && python -m flask db upgrade
-        - name: build static assets (if frontend)
-          if: ${{inputs.assets_required == true}}
-          run: python build.py
         - name: download previous build
           uses: actions/download-artifact@v2
         - name: Deploy to Gov PaaS
@@ -35,4 +32,4 @@
             cf_space:    ${{secrets.CF_SPACE }}
             cf_username: ${{secrets.CF_USER}}
             cf_password: ${{secrets.CF_PASSWORD}}
-            command: push ${{inputs.app_name}}-dev
+            command: push funding-service-design-application-store-dev

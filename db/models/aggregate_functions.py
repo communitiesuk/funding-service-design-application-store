@@ -1,13 +1,14 @@
 import datetime
+from pprint import pprint
 
 import sqlalchemy.orm.exc
+from api.routes.application.helpers import get_account
 from config import Config
 from db import db
 from db.models.applications import Applications
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from db.models.status import Status
-from external_services.models.account import AccountMethods
 from external_services.models.notification import Notification
 
 
@@ -140,23 +141,22 @@ def submit_application(application_id):
     application.date_submitted = datetime.datetime.now(
         datetime.timezone.utc
     ).strftime("%Y-%m-%d %H:%M:%S")
-    db.commit()
-    update_statuses(application_id)
-    account = AccountMethods.get_account(
-        account_id=application.get("account_id")
+    application.status = "SUBMITTED"
+    db.session.commit()
+    account = get_account(
+        account_id=application.account_id
     )
-    # Send notification
+    application_with_form_json = get_application_with_forms(
+                application_id
+    )
     Notification.send(
         Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
         account.email,
-        # TODO
         {
-            "application": ApplicationsMethods.get_application_with_forms(
-                application_id
-            )
+            "application": application_with_form_json
         },
     )
-    return ApplicationsMethods.get_application_with_forms(application_id)
+    return application_with_form_json
 
 
 def update_form(application_id, form_name, question_json):

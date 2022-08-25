@@ -1,5 +1,5 @@
 import uuid
-from db.models.aggregate_functions import get_application_with_forms, update_form
+from db.models.aggregate_functions import get_application_with_forms, submit_application, update_form
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from flask.views import MethodView
@@ -38,10 +38,11 @@ class ApplicationsView(ApplicationsMethods, MethodView):
                 uuid.UUID(application_id)
             )
             return return_dict, 200
-        except NoResultFound:
-            return "", 404
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}
 
     def put(self):
+        # TODO : Whatever adams wants to to with this :shrug:
         request_json = request.get_json(force=True)
         form_dict = {
             "application_id": request_json["metadata"]["application_id"],
@@ -52,4 +53,11 @@ class ApplicationsView(ApplicationsMethods, MethodView):
             updated_form = update_form(**form_dict)
             return updated_form, 201
         except NoResultFound as e:
+            return {"code": 404, "message": str(e)}
+
+    def submit(self, application_id):
+        try:
+            return_dict = submit_application(application_id)
+            return return_dict, 201
+        except KeyError as e:
             return {"code": 404, "message": str(e)}

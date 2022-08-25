@@ -105,6 +105,16 @@ paths:
                 type: object
                 items:
                   $ref: 'components.yml#/components/schemas/ReturnedApplication'
+        404:
+          description: ERROR - Application cannot be found.
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 404
+                status: 'error'
+                message: 'Application corresponding to id not found.'
       parameters:
         - name: application_id
           in: path
@@ -145,26 +155,36 @@ paths:
                 status: 'error'
                 message: 'Form is not updated'          
     
-  # /applications/{application_id}/submit:
-  #   post:
-  #     tags:
-  #       - application
-  #     summary: Submit an application
-  #     description: Application is submitted and cannot be changed from frontend
-  #     # operationId: api.SubCriteriaView.list
-  #     responses:
-  #       201:
-  #         description: Application has been submitted succesfuly
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 $ref: 'components.yml#/components/schemas/SubmitedApplication'
-  #     parameters:
-  #       - name: application_id
-  #         in: path
-  #         required: true
-  #         schema:
-  #           type: string
-  #           format: path
+  /applications/{application_id}/submit:
+    post:
+      tags:
+        - application
+      summary: Submit an application
+      description: Application is submitted and cannot be changed from frontend
+      operationId: api.ApplicationsView.submit
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path
+      responses:
+        201:
+          description: Application has been submitted successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'components.yml#/components/schemas/Application'
+        404:
+          description: ERROR - Application cannot be submitted.
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 404
+                status: 'error'
+                message: 'Application corresponding to id not found.' 

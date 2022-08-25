@@ -76,7 +76,7 @@ components:
               - type: object
         metadata: 
           type: object
-    SubmitedApplication:
+    SubmittedApplication:
       type: object
       properties:
         application_id:

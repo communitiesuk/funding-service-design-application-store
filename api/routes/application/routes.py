@@ -50,7 +50,6 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         }
         try:
             updated_form = update_form(**form_dict)
-            print(update_form)
             return updated_form, 201
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}

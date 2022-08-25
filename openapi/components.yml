@@ -52,15 +52,16 @@ components:
           items:
             oneOf:
               - type: object
+          example: []
         metadata:
           type: object
           properties:
             form_name:
               type: string
-              example: "declarations"
+              example: "Form name within application (declarations)"
             application_id:
               type: string
-              example: "5a038a2e-5c4c-4fb2-afc8-609a4311226b"
+              example: "Active Application ID (uuidv4)"
     UpdatedForms:
       type: object
       properties:

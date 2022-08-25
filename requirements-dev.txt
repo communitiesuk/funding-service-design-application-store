@@ -96,10 +96,6 @@ gitdb==4.0.9
     # via gitpython
 gitpython==3.1.27
     # via bandit
-greenlet==1.1.2
-    # via
-    #   -r requirements.txt
-    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt
@@ -180,6 +176,8 @@ pluggy==1.0.0
 prance==0.21.8.0
     # via -r requirements.txt
 pre-commit==2.19.0
+    # via -r requirements-dev.in
+psycopg2==2.9.3
     # via -r requirements-dev.in
 psycopg2-binary==2.9.3
     # via -r requirements.txt

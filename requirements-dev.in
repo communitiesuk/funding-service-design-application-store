@@ -9,3 +9,4 @@ pytest-flask
 pip-tools
 asserts
 pytest-flask-sqlalchemy
+psycopg2

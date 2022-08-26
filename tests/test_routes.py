@@ -1,5 +1,6 @@
 import json
 from operator import itemgetter
+from pprint import pprint
 
 from db.models.applications import ApplicationTestMethods
 from tests.helpers import application_expected_data
@@ -155,7 +156,7 @@ def test_update_section_of_application(client):
     }
     response = client.put(
         "/applications/forms",
-        data=json.dumps(section_put),
+        json=section_put,
         follow_redirects=True,
     )
     answer_found_list = [
@@ -224,7 +225,7 @@ def test_update_section_of_application_with_incomplete_answers(
     # exclude_question_keys = ["category", "index", "id"]
     response = client.put(
         "/applications/forms",
-        data=json.dumps(section_put),
+        json=section_put,
         follow_redirects=True,
     )
     section_status = response.json["status"]
@@ -256,7 +257,7 @@ def test_get_application_by_application_id(client):
     )
 
 def testHealthcheckRoute(client):
-    expected_result = {"checks": [{"check_flask_running": "OK"}]}
+    expected_result = {"checks": [{"check_flask_running": "OK"},{"check_db": "OK"}]}
     result = client.get("/healthcheck")
     assert result.status_code == 200, "Unexpected status code"
     assert result.json == expected_result, "Unexpected json body"

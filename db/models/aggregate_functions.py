@@ -25,7 +25,7 @@ def update_application_status(application_id: str):
     form_statuses = [form.status.name for form in forms]
     if "IN_PROGRESS" in form_statuses:
         status = "IN_PROGRESS"
-    elif "COMPLETED" and "NOT_STARTED" in form_statuses:
+    elif "COMPLETED" in form_statuses and "NOT_STARTED" in form_statuses:
         status = "IN_PROGRESS"
     elif "COMPLETED" in form_statuses:
         status = "COMPLETED"
@@ -58,7 +58,6 @@ def update_form_statuses(application_id: str, form_name: str):
             for question_page in stored_form.json:
                 if (
                     question_page["status"] == "COMPLETED"
-                    and stored_form.status.name != "IN_PROGRESS"
                 ):
                     stored_form.status = Status.COMPLETED
                     continue
@@ -94,15 +93,18 @@ def update_question_statuses(application_id: str, form_name: str):
                     break
 
                 def is_field_answered(field):
-                    answer_or_not_specified = field.get("answer", False)
+                    answer_or_not_specified = field.get("answer", "NOA")
                     match answer_or_not_specified:
                         case "":
-                            # Means question wasnt answered
                             return False
                         case []:
                             return False
-                        case None:
+                        case "NOA":
                             return False
+                        # optional questions return None when blank
+                        case None:
+                            return True
+                        # there is an answer
                         case _:
                             return True
 

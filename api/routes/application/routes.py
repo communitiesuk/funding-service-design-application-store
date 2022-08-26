@@ -44,7 +44,6 @@ class ApplicationsView(ApplicationsMethods, MethodView):
             return {"code": 404, "message": str(e)}
 
     def put(self):
-        # TODO : Whatever adams wants to to with this :shrug:
         request_json = request.get_json(force=True)
         form_dict = {
             "application_id": request_json["metadata"]["application_id"],

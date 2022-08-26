@@ -4,8 +4,8 @@ FROM python:3.10-bullseye
 RUN apt update && apt -yq install git
 
 WORKDIR /app
-COPY requirements.txt requirements.txt
-RUN python3 -m pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements-dev.txt requirements-dev.txt
+RUN python3 -m pip install --upgrade pip && pip install -r requirements-dev.txt
 COPY . .
 
 EXPOSE 8080

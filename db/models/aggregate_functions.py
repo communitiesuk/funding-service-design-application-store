@@ -140,7 +140,7 @@ def submit_application(application_id):
     application = ApplicationsMethods.get_application_by_id(application_id)
     application.date_submitted = datetime.datetime.now(
         datetime.timezone.utc
-    ).strftime("%Y-%m-%d %H:%M:%S")
+    ).isoformat()
     application.status = "SUBMITTED"
     db.session.commit()
     account = get_account(
@@ -149,6 +149,7 @@ def submit_application(application_id):
     application_with_form_json = get_application_with_forms(
                 application_id
     )
+
     Notification.send(
         Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
         account.email,
@@ -156,7 +157,7 @@ def submit_application(application_id):
             "application": application_with_form_json
         },
     )
-    return application_with_form_json
+    return application_with_form_json["id"]
 
 
 def update_form(application_id, form_name, question_json):

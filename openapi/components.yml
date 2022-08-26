@@ -86,27 +86,6 @@ components:
       properties:
         id: 
           type: string
-        status: 
-          type: string
-        account_id: 
-          type: string
-        fund_id: 
-          type: string
-        round_id:
-          type: string
-        project_name: 
-          type: string
-        started_at: 
-          type: string
-        last_edited: 
-          type: string
-        date_submitted: 
-          type: string
-        forms:
-          type: array
-          items:
-            oneOf:
-              - type: object
     Error:
       type: object
       properties:

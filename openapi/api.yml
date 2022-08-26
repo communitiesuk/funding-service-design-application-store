@@ -46,14 +46,21 @@ paths:
             type: string
           required: false
           explode: false
-        # TODO - filtering applications
-        # - in: query
-        #   name: order_by
-        #   style: form
-        #   schema:
-        #     type: string
-        #   required: false
-        #   explode: false
+        # - filtering applications
+        - in: query
+          name: order_by
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        - in: query
+          name: order_rev
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
     post:
       tags:
         - applications
@@ -158,7 +165,7 @@ paths:
   /applications/{application_id}/submit:
     post:
       tags:
-        - application
+        - applications
       summary: Submit an application
       description: Application is submitted and cannot be changed from frontend
       operationId: api.ApplicationsView.submit
@@ -175,9 +182,9 @@ paths:
           content:
             application/json:
               schema:
-                type: array
+                type: object
                 items:
-                  $ref: 'components.yml#/components/schemas/Application'
+                  $ref: 'components.yml#/components/schemas/ReturnedApplication'
         404:
           description: ERROR - Application cannot be submitted.
           content:

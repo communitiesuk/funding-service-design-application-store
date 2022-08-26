@@ -50,7 +50,6 @@ class ApplicationHelpers:
         """
         Returns a list of ordered applications
         """
-        ordered_applications = []
         if order_by and order_by in [
             "id",
             "status",
@@ -58,13 +57,13 @@ class ApplicationHelpers:
             "assessment_deadline",
             "started_at",
         ]:
-            ordered_applications = sorted(
+            applications = sorted(
                 applications,
                 key=itemgetter(order_by),
-                reverse=order_rev,
+                reverse=int(order_rev),
             )
 
-        return ordered_applications
+        return applications
 
 
 def get_data(endpoint: str, params : dict = None):
@@ -79,10 +78,11 @@ def get_data(endpoint: str, params : dict = None):
         data (json): data response in json format
     """
 
-    current_app.logger.info(f"Fetching data from '{endpoint}'.")
     if Config.USE_LOCAL_DATA:
+        current_app.logger.info(f"Fetching local data from '{endpoint}'.")
         data = get_local_data(endpoint, params)
     else:
+        current_app.logger.info(f"Fetching data from '{endpoint}'.")
         data = get_remote_data(endpoint, params)
     if data is None:
         current_app.logger.error(
@@ -116,8 +116,7 @@ def get_local_data(endpoint: str, params : dict = None):
     if params:
         params = {k: v for k, v in params.items() if v is not None}
         query_string = urlencode(params)
-
-    endpoint = endpoint + "?" + query_string
+        endpoint = endpoint + "?" + query_string
 
     api_data_json = os.path.join(
         Config.FLASK_ROOT, "tests", "api_data", "get_endpoint_data.json"

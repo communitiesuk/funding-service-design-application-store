@@ -4,19 +4,21 @@ from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from flask.views import MethodView
 from flask import request
-from api.routes.application.helpers import ApplicationHelpers
+from api.routes.application.helpers import ApplicationHelpers 
 from sqlalchemy.orm.exc import NoResultFound
 
 class ApplicationsView(ApplicationsMethods, MethodView):
 
     def get(self, **kwargs):
-        print(kwargs)
         response_headers = {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": True,
         }
-        applications = ApplicationsMethods.search_applications(**kwargs)
-        return applications, 200, response_headers
+        matching_applications = ApplicationsMethods.search_applications(**kwargs)
+        order_by = kwargs.get('order_by', None)
+        order_rev = kwargs.get('order_rev', None)
+        sorted_applications = ApplicationHelpers.order_applications(matching_applications, order_by, order_rev)
+        return sorted_applications, 200, response_headers
 
     def post(self):
         args = request.get_json()
@@ -57,7 +59,7 @@ class ApplicationsView(ApplicationsMethods, MethodView):
 
     def submit(self, application_id):
         try:
-            return_dict = submit_application(application_id)
-            return return_dict, 201
+            application_id = submit_application(application_id)
+            return {"id": application_id}, 201
         except KeyError as e:
             return {"code": 404, "message": str(e)}

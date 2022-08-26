@@ -48,10 +48,10 @@ class Applications(db.Model):
             "round_id": self.round_id,
             "fund_id": self.fund_id,
             "project_name": self.project_name or "project_name not set",
-            "started_at": self.started_at.strftime("%Y-%m-%d %H:%M:%S"),
+            "started_at": self.started_at.isoformat(),
             "status": self.status.name,
+            "last_edited": (self.last_edited or self.started_at).isoformat(),
             "date_submitted": self.date_submitted or "null",
-            "last_edited": self.last_edited or self.started_at,
         }
 
 
@@ -116,18 +116,6 @@ class ApplicationsMethods:
         matching_applications_jsons = [
             app.as_dict() for app in matching_applications
         ]
-        # TODO - filtering function for searching applications
-        # if order_by and order_by in [
-        #     "status",
-        #     "account_id",
-        # ]:
-        #     sorted_matching_applications_jsons = sorted(
-        #         matching_applications_jsons,
-        #         key=itemgetter(order_by),
-        #         reverse=order_rev,
-        #     )
-        # else:
-        #     sorted_matching_applications_jsons = matching_applications_jsons
         return matching_applications_jsons
 
 

@@ -19,12 +19,12 @@ def test_create_application_is_successful(client):
     # Post one Fund A application and check length
     application_data_a1 = {
         "account_id": "usera",
-        "fund_id": "fund-a",
-        "round_id": "summer",
+        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
     }
     post_data(client, "/applications", application_data_a1)
     expected_length_fund_a = 1
-    count_fund_applications(client, "fund-a", expected_length_fund_a)
+    count_fund_applications(client, "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4", expected_length_fund_a)
     # Post first Fund B application and check length
     application_data_b1 = {
         "account_id": "userb",
@@ -102,7 +102,7 @@ def test_get_applications_of_account_id(client):
         client,
         "/applications?account_id=userb",
         expected_data,
-        exclude_regex_paths=key_list_to_regex(["id", "started_at"]),
+        exclude_regex_paths=key_list_to_regex(["id", "started_at", "project_name", "last_edited", "date_submitted"]),
     )
 
 
@@ -254,7 +254,6 @@ def test_get_application_by_application_id(client):
         # regex. (this recursively ignores 'forms')
         exclude_types=[list],
     )
-
 
 def testHealthcheckRoute(client):
     expected_result = {"checks": [{"check_flask_running": "OK"}]}

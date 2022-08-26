@@ -1,0 +1,197 @@
+openapi: "3.0.0"
+info:
+  description: Application store API for DLUHC Funding Service Design
+  version: "0.1.0"
+  title: Funding Service Design - Application Store
+tags:
+  - name: application-store
+    description: Application store operations
+
+paths:
+  /applications:
+    get:
+      tags:
+        - applications
+      summary: Search applications
+      description: List all applications
+      operationId: api.ApplicationsView.get
+      responses:
+        200:
+          description: SUCCESS - A list of applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'components.yml#/components/schemas/Application'
+      parameters:
+        - in: query
+          name: application_id
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        - in: query
+          name: account_id
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        - in: query
+          name: fund_id
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        # - filtering applications
+        - in: query
+          name: order_by
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        - in: query
+          name: order_rev
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+    post:
+      tags:
+        - applications
+      summary: Post a new application
+      description: Registers a new application for a user
+      operationId: api.ApplicationsView.post
+      requestBody:
+        description: Application creation parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'components.yml#/components/schemas/PostApplication'
+            example:
+              account_id: 'usera'
+              fund_id: '47aef2f5-3fcb-4d45-acb5-f0152b5f03c4'
+              round_id: 'c603d114-5364-4474-a0c4-c41cbf4d3bbd'
+      responses:
+        201:
+          description: SUCCESS - Application created
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/CreatedApplication'
+        401:
+          description: ERROR - Could not create application
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 401
+                status: 'error'
+                message: 'An assessment for this application already exists'
+
+  /applications/{application_id}:
+    get:
+      tags:
+        - applications
+      summary: Get a specific application
+      description: Get a specific application by application id
+      operationId: api.ApplicationsView.get_by_id
+      responses:
+        200:
+          description: SUCCESS - An applicaton by id
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: 'components.yml#/components/schemas/ReturnedApplication'
+        404:
+          description: ERROR - Application cannot be found.
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 404
+                status: 'error'
+                message: 'Application corresponding to id not found.'
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path
+
+  /applications/forms:
+    put:
+      requestBody:
+        description: Update application with new forms state
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'components.yml#/components/schemas/PutForms'
+      tags:
+        - applications
+      summary: Get an application
+      description: Return an application
+      operationId: api.ApplicationsView.put
+      responses:
+        201:
+          description: SUCCESS - Application updated
+          content:
+              application/json:
+                schema:
+                  $ref: 'components.yml#/components/schemas/UpdatedForms'
+        404:
+          description: ERROR - Form cannot be updated
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 404
+                status: 'error'
+                message: 'Form is not updated'
+
+  /applications/{application_id}/submit:
+    post:
+      tags:
+        - applications
+      summary: Submit an application
+      description: Application is submitted and cannot be changed from frontend
+      operationId: api.ApplicationsView.submit
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path
+      responses:
+        201:
+          description: Application has been submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: 'components.yml#/components/schemas/ReturnedApplication'
+        404:
+          description: ERROR - Application cannot be submitted.
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 404
+                status: 'error'
+                message: 'Application corresponding to id not found.'

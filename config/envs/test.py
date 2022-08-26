@@ -13,4 +13,3 @@ class TestConfig(DefaultConfig):
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL").replace(
         "postgres://", "postgresql://"
     )
-    

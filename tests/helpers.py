@@ -151,8 +151,8 @@ def count_fund_applications(
 def post_test_applications(client):
     application_data_1 = {
         "account_id": "usera",
-        "fund_id": "fund-a",
-        "round_id": "summer",
+        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
     }
     application_data_2 = {
         "account_id": "userb",
@@ -170,7 +170,11 @@ def post_test_applications(client):
 
 
 application_post_data = [
-    {"account_id": "usera", "fund_id": "fund-a", "round_id": "summer"},
+    {
+        "account_id": "usera",
+        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+    },
     {"account_id": "userb", "fund_id": "fund-b", "round_id": "summer"},
     {
         "account_id": "userc",
@@ -182,7 +186,7 @@ application_post_data = [
 application_expected_data = [
     {
         "status": "NOT_STARTED",
-        "project_name": None,
+        "project_name": "project_name not set",
         "date_submitted": None,
         "started_at": "2022-05-20 14:47:12",
         "last_edited": None,
@@ -193,7 +197,13 @@ application_expected_data = [
 
 
 def key_list_to_regex(
-    exclude_keys: List[str] = ["id", "started_at", "project_name"]
+    exclude_keys: List[str] = [
+        "id",
+        "started_at",
+        "project_name",
+        "last_edited",
+        "date_submitted",
+    ]
 ):
     exclude_regex_path_strings = [
         rf"root\[\d+\]\['{key}'\]" for key in exclude_keys

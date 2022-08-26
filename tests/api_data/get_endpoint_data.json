@@ -16,8 +16,8 @@
   },
   "fund_store/funds": [
     {
-      "name": "Fund A",
-      "id": "fund-a",
+      "name": "COF",
+      "id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
       "description": "An example fund for testing the funding service"
     },
     {
@@ -36,9 +36,9 @@
       "description": "An example Community Ownership Fund for testing the funding service"
     }
   ],
-  "fund_store/funds/fund-a": {
-    "name": "Fund A",
-    "id": "fund-a",
+  "fund_store/funds/47aef2f5-3fcb-4d45-acb5-f0152b5f03c4": {
+    "name": "COF",
+    "id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
     "description": "An example fund for testing the funding service"
   },
   "fund_store/funds/fund-b": {
@@ -56,11 +56,11 @@
       "id": "community-ownership-fund",
       "description": "An example Community Ownership Fund for testing the funding service"
   },
-  "fund_store/funds/fund-a/rounds": [
+  "fund_store/funds/47aef2f5-3fcb-4d45-acb5-f0152b5f03c4/rounds": [
     {
-      "fund_id": "fund-a",
+      "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
       "title": "Summer",
-      "id": "summer",
+      "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
       "opens": "2022-02-01T00:00:01",
       "deadline": "2022-06-01T00:00:00",
       "assessment_deadline": "2022-09-30T00:00:00",
@@ -92,7 +92,7 @@
     {
       "fund_id": "funding-a",
       "title": "Summer",
-      "id": "summer",
+      "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
       "opens": "2022-02-01T00:00:01",
       "deadline": "2022-06-01T00:00:00",
       "assessment_deadline": "2022-09-30T00:00:00",
@@ -154,7 +154,7 @@
     {
       "fund_id": "funding-service-design",
       "title": "Summer",
-      "id": "summer",
+      "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
       "opens": "2022-06-01T00:00:01",
       "deadline": "2022-08-31T00:00:00",
       "assessment_deadline": "2022-12-30T00:00:00",
@@ -212,10 +212,10 @@
         ]
     }
   ],
-  "fund_store/funds/fund-a/rounds/summer": {
+  "fund_store/funds/47aef2f5-3fcb-4d45-acb5-f0152b5f03c4/rounds/c603d114-5364-4474-a0c4-c41cbf4d3bbd": {
     "fund_id": "funding-service-design",
-    "title": "Spring",
-    "id": "spring",
+    "title": "Summer",
+    "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
     "opens": "2022-02-01T00:00:01",
     "deadline": "2022-06-01T00:00:00",
     "assessment_criteria_weighting": [
@@ -299,10 +299,10 @@
             }
         ]
   },
-  "fund_store/funds/funding-service-design/rounds/summer": {
+  "fund_store/funds/funding-service-design/rounds/c603d114-5364-4474-a0c4-c41cbf4d3bbd": {
     "fund_id": "funding-service-design",
     "title": "Summer",
-    "id": "summer",
+    "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
     "opens": "2022-06-01T00:00:01",
     "deadline": "2022-08-31T00:00:00",
     "assessment_criteria_weighting": [

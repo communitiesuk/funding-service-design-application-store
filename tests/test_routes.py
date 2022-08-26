@@ -1,6 +1,3 @@
-import json
-from operator import itemgetter
-
 from db.models.applications import ApplicationTestMethods
 from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
@@ -19,12 +16,14 @@ def test_create_application_is_successful(client):
     # Post one Fund A application and check length
     application_data_a1 = {
         "account_id": "usera",
-        "fund_id": "fund-a",
-        "round_id": "summer",
+        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
     }
     post_data(client, "/applications", application_data_a1)
     expected_length_fund_a = 1
-    count_fund_applications(client, "fund-a", expected_length_fund_a)
+    count_fund_applications(
+        client, "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4", expected_length_fund_a
+    )
     # Post first Fund B application and check length
     application_data_b1 = {
         "account_id": "userb",
@@ -61,29 +60,6 @@ def test_get_all_applications(client):
     )
 
 
-def test_get_applications_sorted_by_rev_account_id(client):
-    """
-    GIVEN We have a functioning Application Store API
-    WHEN a request for applications reverse sorted by account_id
-    THEN the response should return applications in the requested order
-    """
-    post_test_applications(client)
-    raw_expected_data = application_expected_data
-    order_by = "account_id"
-    order_rev = 1
-    sorted_matching_applications_jsons = sorted(
-        raw_expected_data,
-        key=itemgetter(order_by),
-        reverse=order_rev,
-    )
-    expected_data_within_response(
-        client,
-        f"/applications?order_by={order_by}&order_rev={order_rev}",
-        sorted_matching_applications_jsons,
-        exclude_regex_paths=key_list_to_regex(),
-    )
-
-
 def test_get_applications_of_account_id(client):
     """
     GIVEN We have a functioning Application Store API
@@ -102,7 +78,15 @@ def test_get_applications_of_account_id(client):
         client,
         "/applications?account_id=userb",
         expected_data,
-        exclude_regex_paths=key_list_to_regex(["id", "started_at"]),
+        exclude_regex_paths=key_list_to_regex(
+            [
+                "id",
+                "started_at",
+                "project_name",
+                "last_edited",
+                "date_submitted",
+            ]
+        ),
     )
 
 
@@ -155,7 +139,7 @@ def test_update_section_of_application(client):
     }
     response = client.put(
         "/applications/forms",
-        data=json.dumps(section_put),
+        json=section_put,
         follow_redirects=True,
     )
     answer_found_list = [
@@ -224,7 +208,7 @@ def test_update_section_of_application_with_incomplete_answers(
     # exclude_question_keys = ["category", "index", "id"]
     response = client.put(
         "/applications/forms",
-        data=json.dumps(section_put),
+        json=section_put,
         follow_redirects=True,
     )
     section_status = response.json["status"]
@@ -257,7 +241,9 @@ def test_get_application_by_application_id(client):
 
 
 def testHealthcheckRoute(client):
-    expected_result = {"checks": [{"check_flask_running": "OK"}]}
+    expected_result = {
+        "checks": [{"check_flask_running": "OK"}, {"check_db": "OK"}]
+    }
     result = client.get("/healthcheck")
     assert result.status_code == 200, "Unexpected status code"
     assert result.json == expected_result, "Unexpected json body"

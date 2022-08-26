@@ -27,8 +27,10 @@ class UnitTestingConfig(DefaultConfig):
     FUND_ROUND_FORMS = {
         "fund-a:spring": DefaultConfig.COF_R2_FORMS.copy(),
         "fund-b:spring": DefaultConfig.COF_R2_FORMS.copy(),
-        "fund-a:summer": DefaultConfig.COF_R2_FORMS.copy(),
+        "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4:c603d114-5364-4474-a0c4-c41cbf4d3bbd": DefaultConfig.COF_R2_FORMS.copy(),  # noqa
         "fund-b:summer": DefaultConfig.COF_R2_FORMS.copy(),
         "funding-service-design:spring": DefaultConfig.COF_R2_FORMS.copy(),
         "funding-service-design:summer": DefaultConfig.COF_R2_FORMS.copy(),
     }
+
+    USE_LOCAL_DATA = True

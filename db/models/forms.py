@@ -28,7 +28,7 @@ class Forms(db.Model):
     def as_json(self):
         return {
             "status": self.status.name,
-            "form_name": self.name,
+            "name": self.name,
             "questions": self.json,
         }
 

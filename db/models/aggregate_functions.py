@@ -1,13 +1,13 @@
 import datetime
 
 import sqlalchemy.orm.exc
+from api.routes.application.helpers import get_account
 from config import Config
 from db import db
 from db.models.applications import Applications
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from db.models.status import Status
-from external_services.models.account import AccountMethods
 from external_services.models.notification import Notification
 
 
@@ -98,7 +98,7 @@ def update_question_statuses(application_id: str, form_name: str):
                         case "":
                             # Means question wasnt answered
                             return False
-                        case []:
+                        case []:  # noqa
                             return False
                         case None:
                             return False
@@ -129,7 +129,7 @@ def update_statuses(application_id, form_name):
     update_application_status(application_id)
 
 
-def get_application_bundle_by_id(app_id):
+def get_application_with_forms(app_id):
     application = ApplicationsMethods.get_application_by_id(app_id)
     forms = FormsMethods.get_forms_by_app_id(app_id)
     return {**application.as_dict(), "forms": forms}
@@ -139,24 +139,18 @@ def submit_application(application_id):
     application = ApplicationsMethods.get_application_by_id(application_id)
     application.date_submitted = datetime.datetime.now(
         datetime.timezone.utc
-    ).strftime("%Y-%m-%d %H:%M:%S")
-    db.commit()
-    update_statuses(application_id)
-    account = AccountMethods.get_account(
-        account_id=application.get("account_id")
-    )
-    # Send notification
+    ).isoformat()
+    application.status = "SUBMITTED"
+    db.session.commit()
+    account = get_account(account_id=application.account_id)
+    application_with_form_json = get_application_with_forms(application_id)
+
     Notification.send(
         Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
         account.email,
-        # TODO
-        {
-            "application": ApplicationsMethods.get_application_bundle_by_id(
-                application_id
-            )
-        },
+        {"application": application_with_form_json},
     )
-    return ApplicationsMethods.get_application_bundle_by_id(application_id)
+    return application_with_form_json["id"]
 
 
 def update_form(application_id, form_name, question_json):

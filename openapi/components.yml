@@ -1,0 +1,98 @@
+components:
+  schemas:
+    Application:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        account_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+        project_name:
+          type: string
+        started_at:
+          type: string
+        last_edited:
+          type: string
+        date_submitted:
+          type: string
+    PostApplication:
+      type: object
+      properties:
+        account_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+    CreatedApplication:
+      type: object
+      properties:
+        id:
+          type: string
+        account_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+    PutForms:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "funding round title"
+        questions:
+          type: array
+          items:
+            oneOf:
+              - type: object
+          example: []
+        metadata:
+          type: object
+          properties:
+            form_name:
+              type: string
+              example: "Form name within application (declarations)"
+            application_id:
+              type: string
+              example: "Active Application ID (uuidv4)"
+    UpdatedForms:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+        questions:
+          type: array
+          items:
+            oneOf:
+              - type: object
+        metadata:
+          type: object
+    SubmittedApplication:
+      type: object
+      properties:
+        application_id:
+          type: string
+    ReturnedApplication:
+      type: object
+      properties:
+        id:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message

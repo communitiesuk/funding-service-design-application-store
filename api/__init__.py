@@ -1,3 +1,1 @@
-
-
-from api.routes.application.routes import ApplicationsView
+from api.routes.application.routes import ApplicationsView  # noqa

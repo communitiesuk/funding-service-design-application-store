@@ -1,7 +1,6 @@
 import datetime
 import random
 import uuid
-from operator import itemgetter
 
 from db import db
 from db.models.status import Status
@@ -39,7 +38,6 @@ class Applications(db.Model):
     )
     date_submitted = db.Column("date_submitted", DateTime())
     last_edited = db.Column("last_edited", DateTime())
-
 
     def as_dict(self):
         return {
@@ -93,9 +91,7 @@ class ApplicationsMethods:
         account_id = params.get("account_id")
         status_only = params.get("status_only")
         application_id = params.get("application_id")
-        # Sorting params
-        order_by = params.get("order_by", "id")
-        order_rev = params.get("order_rev") == "1"
+
         filters = []
         if fund_id:
             filters.append(Applications.fund_id == fund_id)

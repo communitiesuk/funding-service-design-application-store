@@ -1,23 +1,30 @@
 import uuid
-from db.models.aggregate_functions import get_application_with_forms, submit_application, update_form
+
+from api.routes.application.helpers import ApplicationHelpers
+from db.models.aggregate_functions import get_application_with_forms
+from db.models.aggregate_functions import submit_application
+from db.models.aggregate_functions import update_form
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
-from flask.views import MethodView
 from flask import request
-from api.routes.application.helpers import ApplicationHelpers 
+from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound
 
-class ApplicationsView(ApplicationsMethods, MethodView):
 
+class ApplicationsView(ApplicationsMethods, MethodView):
     def get(self, **kwargs):
         response_headers = {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": True,
         }
-        matching_applications = ApplicationsMethods.search_applications(**kwargs)
-        order_by = kwargs.get('order_by', None)
-        order_rev = kwargs.get('order_rev', None)
-        sorted_applications = ApplicationHelpers.order_applications(matching_applications, order_by, order_rev)
+        matching_applications = ApplicationsMethods.search_applications(
+            **kwargs
+        )
+        order_by = kwargs.get("order_by", None)
+        order_rev = kwargs.get("order_rev", None)
+        sorted_applications = ApplicationHelpers.order_applications(
+            matching_applications, order_by, order_rev
+        )
         return sorted_applications, 200, response_headers
 
     def post(self):
@@ -33,18 +40,15 @@ class ApplicationsView(ApplicationsMethods, MethodView):
             forms=empty_forms, application_id=application.id
         )
         return application.as_dict(), 201
-    
+
     def get_by_id(self, application_id):
         try:
-            return_dict = get_application_with_forms(
-                uuid.UUID(application_id)
-            )
+            return_dict = get_application_with_forms(uuid.UUID(application_id))
             return return_dict, 200
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 
     def put(self):
-        # TODO : Whatever adams wants to to with this :shrug:
         request_json = request.get_json(force=True)
         form_dict = {
             "application_id": request_json["metadata"]["application_id"],

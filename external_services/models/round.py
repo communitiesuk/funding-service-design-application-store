@@ -22,5 +22,7 @@ class Round:
             opens=data.get("opens"),
             deadline=data.get("deadline"),
             assessment_deadline=data.get("assessment_deadline"),
-            assessment_criteria_weighting=data.get("assessment_criteria_weighting"),
+            assessment_criteria_weighting=data.get(
+                "assessment_criteria_weighting"
+            ),
         )

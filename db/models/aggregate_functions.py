@@ -1,5 +1,4 @@
 import datetime
-from pprint import pprint
 
 import sqlalchemy.orm.exc
 from api.routes.application.helpers import get_account
@@ -99,7 +98,7 @@ def update_question_statuses(application_id: str, form_name: str):
                         case "":
                             # Means question wasnt answered
                             return False
-                        case []:
+                        case []:  # noqa
                             return False
                         case None:
                             return False
@@ -143,19 +142,13 @@ def submit_application(application_id):
     ).isoformat()
     application.status = "SUBMITTED"
     db.session.commit()
-    account = get_account(
-        account_id=application.account_id
-    )
-    application_with_form_json = get_application_with_forms(
-                application_id
-    )
+    account = get_account(account_id=application.account_id)
+    application_with_form_json = get_application_with_forms(application_id)
 
     Notification.send(
         Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
         account.email,
-        {
-            "application": application_with_form_json
-        },
+        {"application": application_with_form_json},
     )
     return application_with_form_json["id"]
 

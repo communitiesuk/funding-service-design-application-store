@@ -3,23 +3,23 @@ components:
     Application:
       type: object
       properties:
-        id: 
+        id:
           type: string
-        status: 
+        status:
           type: string
-        account_id: 
+        account_id:
           type: string
-        fund_id: 
+        fund_id:
           type: string
         round_id:
           type: string
-        project_name: 
+        project_name:
           type: string
-        started_at: 
+        started_at:
           type: string
-        last_edited: 
+        last_edited:
           type: string
-        date_submitted: 
+        date_submitted:
           type: string
     PostApplication:
       type: object
@@ -67,14 +67,14 @@ components:
       properties:
         name:
           type: string
-        status:  
+        status:
           type: string
         questions:
           type: array
           items:
             oneOf:
               - type: object
-        metadata: 
+        metadata:
           type: object
     SubmittedApplication:
       type: object
@@ -84,7 +84,7 @@ components:
     ReturnedApplication:
       type: object
       properties:
-        id: 
+        id:
           type: string
     Error:
       type: object

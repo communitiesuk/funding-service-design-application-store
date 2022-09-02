@@ -28,11 +28,11 @@ class Notification(object):
             f" params: '{params}'."
         )
         response = post_data(url, params)
-        current_app.logger.info(
-            "application sent to notification service with response:"
-            f" '{response}'."
-        )
         if response:
+            current_app.logger.info(
+                "application sent to notification service with response:"
+                f" '{response}'."
+            )
             return True
         raise NotificationError(
             message=(

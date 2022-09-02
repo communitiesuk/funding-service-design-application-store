@@ -32,3 +32,5 @@ class UnitTestingConfig(DefaultConfig):
         "funding-service-design:spring": DefaultConfig.COF_R2_FORMS.copy(),
         "funding-service-design:summer": DefaultConfig.COF_R2_FORMS.copy(),
     }
+
+    USE_LOCAL_DATA = True

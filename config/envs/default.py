@@ -3,6 +3,7 @@ import logging
 from os import environ
 from pathlib import Path
 
+from distutils.util import strtobool
 from fsd_utils import configclass
 
 
@@ -21,7 +22,7 @@ class DefaultConfig:
     TEST_FUND_STORE_API_HOST = "fund_store"
     TEST_ACCOUNT_STORE_API_HOST = "account_store"
     TEST_NOTIFICATION_SERVICE_HOST = "notification_service"
-    USE_LOCAL_DATA = False
+    USE_LOCAL_DATA = strtobool(environ.get("USE_LOCAL_DATA", "False"))
 
     FUND_STORE_API_HOST = environ.get(
         "FUND_STORE_API_HOST", TEST_FUND_STORE_API_HOST
@@ -54,82 +55,6 @@ class DefaultConfig:
     COF_R2_FORMS = [
         {
             "form_minting_name": "applicant-information",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "asset-information",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "community-benefits",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "community-engagement",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "community-representation",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "community-use",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "declarations",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "environmental-sustainability",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "feasibility",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "funding-required",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "inclusiveness-and-intergration",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "local-support",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "organisation-information",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "project-costs",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "project-information",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "project-qualification",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "risk",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "skills-and-resources",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "value-to-the-community",
-            "questions": [],
-        },
-        {
-            "form_minting_name": "upload-business-plan",
             "questions": [],
         },
     ]

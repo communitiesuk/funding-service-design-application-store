@@ -1,11 +1,14 @@
 import uuid
 
 from api.routes.application.helpers import ApplicationHelpers
+from api.routes.application.helpers import get_account
+from config import Config
 from db.models.aggregate_functions import get_application_with_forms
 from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
+from external_services.models.notification import Notification
 from flask import request
 from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound
@@ -63,7 +66,17 @@ class ApplicationsView(ApplicationsMethods, MethodView):
 
     def submit(self, application_id):
         try:
-            application_id = submit_application(application_id)
-            return {"id": application_id}, 201
+            application = submit_application(application_id)
+            account = get_account(account_id=application.account_id)
+            application_with_form_json = get_application_with_forms(
+                application_id
+            )
+
+            Notification.send(
+                Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
+                account.email,
+                {"application": application_with_form_json},
+            )
+            return {"id": application_with_form_json["id"]}, 201
         except KeyError as e:
             return {"code": 404, "message": str(e)}

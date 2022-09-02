@@ -57,6 +57,82 @@ class DefaultConfig:
             "form_minting_name": "applicant-information",
             "questions": [],
         },
+        {
+            "form_minting_name": "asset-information",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "community-benefits",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "community-engagement",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "community-representation",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "community-use",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "declarations",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "environmental-sustainability",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "feasibility",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "funding-required",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "inclusiveness-and-intergration",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "local-support",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "organisation-information",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "project-costs",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "project-information",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "project-qualification",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "risk",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "skills-and-resources",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "value-to-the-community",
+            "questions": [],
+        },
+        {
+            "form_minting_name": "upload-business-plan",
+            "questions": [],
+        },
     ]
 
     COF_FUND_ID = "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4"

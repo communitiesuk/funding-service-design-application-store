@@ -34,3 +34,4 @@ class UnitTestingConfig(DefaultConfig):
     }
 
     USE_LOCAL_DATA = True
+    

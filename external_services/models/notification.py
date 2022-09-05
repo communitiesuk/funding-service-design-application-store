@@ -1,5 +1,6 @@
 from config import Config
 from external_services.http_methods import post_data
+from flask import current_app
 
 
 class Notification(object):
@@ -22,11 +23,22 @@ class Notification(object):
         """
         url = Config.NOTIFICATION_SERVICE_HOST + Config.SEND_ENDPOINT
         params = {"type": template_type, "to": to_email, "content": content}
+        current_app.logger.info(
+            f"Sending application to notification service. endpoint: '{url}',"
+            f" params: '{params}'."
+        )
         response = post_data(url, params)
         if response:
+            current_app.logger.info(
+                "application sent to notification service with response:"
+                f" '{response}'."
+            )
             return True
         raise NotificationError(
-            message="Sorry, the notification could not be sent"
+            message=(
+                "Sorry, the notification could not be sent for endpoint:"
+                f" '{url}', params: '{params}'."
+            )
         )
 
 

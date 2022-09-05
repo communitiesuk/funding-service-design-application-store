@@ -3,6 +3,7 @@ import logging
 from os import environ
 from pathlib import Path
 
+from distutils.util import strtobool
 from fsd_utils import configclass
 
 
@@ -21,7 +22,7 @@ class DefaultConfig:
     TEST_FUND_STORE_API_HOST = "fund_store"
     TEST_ACCOUNT_STORE_API_HOST = "account_store"
     TEST_NOTIFICATION_SERVICE_HOST = "notification_service"
-    USE_LOCAL_DATA = False
+    USE_LOCAL_DATA = strtobool(environ.get("USE_LOCAL_DATA", "False"))
 
     FUND_STORE_API_HOST = environ.get(
         "FUND_STORE_API_HOST", TEST_FUND_STORE_API_HOST

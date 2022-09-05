@@ -40,6 +40,9 @@ class Applications(db.Model):
     last_edited = db.Column("last_edited", DateTime())
 
     def as_dict(self):
+        date_submitted = (
+            self.date_submitted.isoformat() if self.date_submitted else "null"
+        )
         return {
             "id": str(self.id),
             "account_id": self.account_id,
@@ -49,7 +52,7 @@ class Applications(db.Model):
             "started_at": self.started_at.isoformat(),
             "status": self.status.name,
             "last_edited": (self.last_edited or self.started_at).isoformat(),
-            "date_submitted": self.date_submitted or "null",
+            "date_submitted": date_submitted,
         }
 
 

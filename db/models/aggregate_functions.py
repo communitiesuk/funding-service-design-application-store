@@ -1,14 +1,12 @@
 import datetime
 
 import sqlalchemy.orm.exc
-from api.routes.application.helpers import get_account
-from config import Config
 from db import db
 from db.models.applications import Applications
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from db.models.status import Status
-from external_services.models.notification import Notification
+from flask import current_app
 
 
 def update_application_status(application_id: str):
@@ -55,9 +53,7 @@ def update_form_statuses(application_id: str, form_name: str):
                 stored_form.status = "SUBMITTED"
                 break
             for question_page in stored_form.json:
-                if (
-                    question_page["status"] == "COMPLETED"
-                ):
+                if question_page["status"] == "COMPLETED":
                     stored_form.status = Status.COMPLETED
                     continue
                 elif (
@@ -92,18 +88,21 @@ def update_question_statuses(application_id: str, form_name: str):
                     break
 
                 def is_field_answered(field):
-                    answer_or_not_specified = field.get("answer", "answer_not_specified")
-                    match answer_or_not_specified:
+                    answer_or_not_specified = field.get(
+                        "answer", "answer_not_specified"
+                    )
+                    match answer_or_not_specified:  # noqa
                         case "":
                             return False
-                        case []:  # noqa
+                        case []:  # noqa (E211)
                             return False
                         case "answer_not_specified":
                             return False
-                        # optional questions return None when blank
+                        # optional questions return None (not string)
+                        # when submitted with no answer
                         case None:
                             return True
-                        # there is an answer
+                        # default case when there is an answer
                         case _:
                             return True
 
@@ -138,21 +137,17 @@ def get_application_with_forms(app_id):
 
 
 def submit_application(application_id):
+    current_app.logger.info(
+        "Processing database submission for application_id:"
+        f" '{application_id}."
+    )
     application = ApplicationsMethods.get_application_by_id(application_id)
     application.date_submitted = datetime.datetime.now(
         datetime.timezone.utc
     ).isoformat()
     application.status = "SUBMITTED"
     db.session.commit()
-    account = get_account(account_id=application.account_id)
-    application_with_form_json = get_application_with_forms(application_id)
-
-    Notification.send(
-        Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
-        account.email,
-        {"application": application_with_form_json},
-    )
-    return application_with_form_json["id"]
+    return application
 
 
 def update_form(application_id, form_name, question_json):

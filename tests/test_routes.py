@@ -202,7 +202,7 @@ def test_update_section_of_application_with_incomplete_answers(
         },
     }
     expected_data = section_put.copy()
-    # The whole section has been submit here so it will have a status of
+    # The whole section has been COMPLETED here so it will have a status of
     # COMPLETE not IN_PROGRESS
     expected_data.update({"status": "IN_PROGRESS"})
     # exclude_question_keys = ["category", "index", "id"]

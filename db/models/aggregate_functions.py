@@ -156,6 +156,11 @@ def update_form(application_id, form_name, question_json):
         form_sql_row.json = question_json
         db.session.commit()
         update_statuses(application_id, form_name)
+        if form_sql_row != question_json:
+            current_app.logger.info(
+                "Application updated for application_id:"
+                f" '{application_id}.")
+            ApplicationsMethods.application_edited(application_id)
         return form_sql_row.as_json()
     except sqlalchemy.orm.exc.NoResultFound as e:
         raise e

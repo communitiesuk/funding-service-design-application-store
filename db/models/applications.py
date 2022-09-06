@@ -10,13 +10,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 from sqlalchemy_utils.types import UUIDType
 
-
-def started_at():
-    raw_date = datetime.datetime.now(datetime.timezone.utc)
-    formatted_date = raw_date.strftime("%Y-%m-%d %H:%M:%S")
-    return formatted_date
-
-
 class Applications(db.Model):
     id = db.Column(
         "id",
@@ -82,6 +75,16 @@ class ApplicationsMethods:
     def get_all():
         application_list = db.session.query(Applications).all()
         return application_list
+
+    @staticmethod
+    def application_edited(app_id):
+        application = ApplicationsMethods.get_application_by_id(app_id)
+
+        application.last_edited = func.now()
+
+        db.session.commit()
+
+        
 
     def search_applications(**params):
         """

@@ -164,3 +164,8 @@ def update_form(application_id, form_name, question_json):
         return form_sql_row.as_json()
     except sqlalchemy.orm.exc.NoResultFound as e:
         raise e
+    except IndexError:
+        return {
+            "code": 404,
+            "message": "Something went wrong when updating this form",
+        }

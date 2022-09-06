@@ -153,14 +153,14 @@ def submit_application(application_id):
 def update_form(application_id, form_name, question_json):
     try:
         form_sql_row = FormsMethods.get_form(application_id, form_name)
-        form_sql_row.json = question_json
-        db.session.commit()
-        update_statuses(application_id, form_name)
-        if form_sql_row != question_json:
+        if form_sql_row.json[0]["fields"] != question_json[0]["fields"]:
             current_app.logger.info(
                 f"Application updated for application_id: '{application_id}."
             )
             ApplicationsMethods.application_edited(application_id)
+        form_sql_row.json = question_json
+        update_statuses(application_id, form_name)
+        db.session.commit()
         return form_sql_row.as_json()
     except sqlalchemy.orm.exc.NoResultFound as e:
         raise e

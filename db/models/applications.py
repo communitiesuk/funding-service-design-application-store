@@ -41,7 +41,8 @@ class Applications(db.Model):
             "account_id": self.account_id,
             "round_id": self.round_id,
             "fund_id": self.fund_id,
-            "project_name": self.project_name or "project_name not set",
+            "project_name": self.project_name
+            or "Project details not filled in",
             "started_at": self.started_at.isoformat(),
             "status": self.status.name,
             "last_edited": (self.last_edited or self.started_at).isoformat(),
@@ -79,9 +80,7 @@ class ApplicationsMethods:
     @staticmethod
     def application_edited(app_id):
         application = ApplicationsMethods.get_application_by_id(app_id)
-
         application.last_edited = func.now()
-
         db.session.commit()
 
     def search_applications(**params):

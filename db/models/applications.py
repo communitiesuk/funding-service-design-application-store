@@ -1,4 +1,3 @@
-import datetime
 import random
 import uuid
 
@@ -9,6 +8,7 @@ from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 from sqlalchemy_utils.types import UUIDType
+
 
 class Applications(db.Model):
     id = db.Column(
@@ -83,8 +83,6 @@ class ApplicationsMethods:
         application.last_edited = func.now()
 
         db.session.commit()
-
-        
 
     def search_applications(**params):
         """

@@ -153,19 +153,31 @@ def submit_application(application_id):
 def update_form(application_id, form_name, question_json):
     try:
         form_sql_row = FormsMethods.get_form(application_id, form_name)
-        if form_sql_row.json[0]["fields"] != question_json[0]["fields"]:
+        # Running update form for the first time
+        if question_json and not form_sql_row.json:
             ApplicationsMethods.application_edited(application_id)
             current_app.logger.info(
                 f"Application updated for application_id: '{application_id}."
             )
+        # Removing all data in the form
+        elif form_sql_row.json and not question_json:
+            ApplicationsMethods.application_edited(application_id)
+            current_app.logger.info(
+                f"Application updated for application_id: '{application_id}."
+            )
+        # Updating form subsequent times
+        elif (
+            form_sql_row.json
+            and form_sql_row.json[0]["fields"] != question_json[0]["fields"]
+        ):
+            ApplicationsMethods.application_edited(application_id)
+            current_app.logger.info(
+                f"Application updated for application_id: '{application_id}."
+            )
+    except sqlalchemy.orm.exc.NoResultFound as e:
+        raise e
+    finally:
         form_sql_row.json = question_json
         update_statuses(application_id, form_name)
         db.session.commit()
         return form_sql_row.as_json()
-    except sqlalchemy.orm.exc.NoResultFound as e:
-        raise e
-    except IndexError:
-        return {
-            "code": 404,
-            "message": "Something went wrong when updating this form",
-        }

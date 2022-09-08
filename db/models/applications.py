@@ -77,12 +77,6 @@ class ApplicationsMethods:
         application_list = db.session.query(Applications).all()
         return application_list
 
-    @staticmethod
-    def application_edited(app_id):
-        application = ApplicationsMethods.get_application_by_id(app_id)
-        application.last_edited = func.now()
-        db.session.commit()
-
     def search_applications(**params):
         """
         Returns a list of applications matching required params

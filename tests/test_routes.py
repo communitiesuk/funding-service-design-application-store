@@ -247,3 +247,87 @@ def testHealthcheckRoute(client):
     result = client.get("/healthcheck")
     assert result.status_code == 200, "Unexpected status code"
     assert result.json == expected_result, "Unexpected json body"
+
+
+def test_update_section_of_application_changes_last_edited_field(client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN A put is made with a completed section
+    THEN the section json.last_edited should be updated.
+    """
+    post_test_applications(client)
+    random_app = ApplicationTestMethods.get_random_app()
+    random_application_id = random_app.id
+    old_last_edited = random_app.last_edited
+    section_put = {
+        "questions": [
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "application-name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Coolio",
+                    },
+                    {
+                        "key": "applicant-email",
+                        "title": "Email",
+                        "type": "text",
+                        "answer": "a@example.com",
+                    },
+                    {
+                        "key": "applicant-telephone-number",
+                        "title": "Telephone number",
+                        "type": "text",
+                        "answer": "Wow",
+                    },
+                    {
+                        "key": "applicant-website",
+                        "title": "Website",
+                        "type": "text",
+                        "answer": "www.example.com",
+                    },
+                ],
+            }
+        ],
+        "metadata": {
+            "application_id": str(random_application_id),
+            "form_name": "declarations",
+        },
+    }
+    client.put(
+        "/applications/forms",
+        json=section_put,
+        follow_redirects=True,
+    )
+    new_last_edited = random_app.last_edited
+    assert new_last_edited != old_last_edited
+
+
+def test_update_section_of_application_does_not_change_last_edited_field(
+    client,
+):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN A put is made with a completed section
+    THEN The section json.last_edited should not be updated.
+    """
+    post_test_applications(client)
+    random_app = ApplicationTestMethods.get_random_app()
+    random_application_id = random_app.id
+    old_last_edited = random_app.last_edited
+    section_put = {
+        "questions": [],
+        "metadata": {
+            "application_id": str(random_application_id),
+            "form_name": "declarations",
+        },
+    }
+    client.put(
+        "/applications/forms",
+        json=section_put,
+        follow_redirects=True,
+    )
+    new_last_edited = random_app.last_edited
+    assert new_last_edited == old_last_edited

@@ -349,7 +349,7 @@ def test_update_project_name_of_application(client):
                 "question": "About your organisation",
                 "fields": [
                     {
-                        "key": "application-name",
+                        "key": "project-name",
                         "title": "Applicant name",
                         "type": "text",
                         "answer": "Coolio",
@@ -377,7 +377,7 @@ def test_update_project_name_of_application(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "here",
+            "form_name": "project-information",
         },
     }
     client.put(

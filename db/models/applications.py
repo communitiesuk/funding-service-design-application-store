@@ -1,4 +1,3 @@
-import datetime
 import random
 import uuid
 
@@ -9,12 +8,6 @@ from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 from sqlalchemy_utils.types import UUIDType
-
-
-def started_at():
-    raw_date = datetime.datetime.now(datetime.timezone.utc)
-    formatted_date = raw_date.strftime("%Y-%m-%d %H:%M:%S")
-    return formatted_date
 
 
 class Applications(db.Model):
@@ -48,7 +41,8 @@ class Applications(db.Model):
             "account_id": self.account_id,
             "round_id": self.round_id,
             "fund_id": self.fund_id,
-            "project_name": self.project_name or "project_name not set",
+            "project_name": self.project_name
+            or "Project details not filled in",
             "started_at": self.started_at.isoformat(),
             "status": self.status.name,
             "last_edited": (self.last_edited or self.started_at).isoformat(),

@@ -7,6 +7,7 @@ from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from db.models.status import Status
 from flask import current_app
+from sqlalchemy.sql import func
 
 
 def update_application_status(application_id: str):
@@ -153,9 +154,41 @@ def submit_application(application_id):
 def update_form(application_id, form_name, question_json):
     try:
         form_sql_row = FormsMethods.get_form(application_id, form_name)
-        form_sql_row.json = question_json
-        db.session.commit()
-        update_statuses(application_id, form_name)
-        return form_sql_row.as_json()
+        # Running update form for the first time
+        if question_json and not form_sql_row.json:
+            update_application_and_related_form(
+                application_id, question_json, form_name
+            )
+        # Removing all data in the form (should not be allowed)
+        elif form_sql_row.json and not question_json:
+            current_app.logger.error(
+                "Application update aborted for application_id:"
+                f" '{application_id}. Invalid data supplied"
+            )
+            raise Exception("ABORTING UPDATE, INVALID DATA GIVEN")
+        # Updating form subsequent times
+        elif (
+            form_sql_row.json
+            and form_sql_row.json[0]["fields"] != question_json[0]["fields"]
+        ):
+            update_application_and_related_form(
+                application_id, question_json, form_name
+            )
     except sqlalchemy.orm.exc.NoResultFound as e:
         raise e
+    db.session.commit()
+    return form_sql_row.as_json()
+
+
+def update_application_and_related_form(
+    application_id, question_json, form_name
+):
+    application = ApplicationsMethods.get_application_by_id(application_id)
+    application.last_edited = func.now()
+    form_sql_row = FormsMethods.get_form(application_id, form_name)
+    form_sql_row.json = question_json
+    update_statuses(application_id, form_name)
+    db.session.commit()
+    current_app.logger.info(
+        f"Application updated for application_id: '{application_id}."
+    )

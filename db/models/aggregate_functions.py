@@ -156,7 +156,7 @@ def update_form(application_id, form_name, question_json):
         form_sql_row = FormsMethods.get_form(application_id, form_name)
         # Running update form for the first time
         if question_json and not form_sql_row.json:
-            application_edited(application_id, question_json, form_name)
+            update_application_data(application_id, question_json, form_name)
         # Removing all data in the form (should not be allowed)
         elif form_sql_row.json and not question_json:
             current_app.logger.error(
@@ -169,14 +169,14 @@ def update_form(application_id, form_name, question_json):
             form_sql_row.json
             and form_sql_row.json[0]["fields"] != question_json[0]["fields"]
         ):
-            application_edited(application_id, question_json, form_name)
+            update_application_data(application_id, question_json, form_name)
     except sqlalchemy.orm.exc.NoResultFound as e:
         raise e
     db.session.commit()
     return form_sql_row.as_json()
 
 
-def application_edited(application_id, question_json, form_name):
+def update_application_data(application_id, question_json, form_name):
     application = ApplicationsMethods.get_application_by_id(application_id)
     application.last_edited = func.now()
     form_sql_row = FormsMethods.get_form(application_id, form_name)

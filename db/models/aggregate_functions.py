@@ -186,8 +186,8 @@ def update_application_and_related_form(
     application = ApplicationsMethods.get_application_by_id(application_id)
     application.last_edited = func.now()
     form_sql_row = FormsMethods.get_form(application_id, form_name)
-    if form_sql_row.name == "project-information":
-        fields_array = form_sql_row.json[0]["fields"]
+    if form_name == "project-information":
+        fields_array = question_json[0]["fields"]
         for key in fields_array:
             if key["key"] == "project-name":
                 application.project_name = key["answer"]

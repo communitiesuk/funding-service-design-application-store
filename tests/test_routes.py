@@ -349,7 +349,18 @@ def test_update_project_name_of_application(client):
                 "question": "About your organisation",
                 "fields": [
                     {
-                        "key": "project-name",
+                        "key": "data",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "KAgrBz",
                         "title": "Applicant name",
                         "type": "text",
                         "answer": "Coolio",
@@ -373,7 +384,7 @@ def test_update_project_name_of_application(client):
                         "answer": "www.example.com",
                     },
                 ],
-            }
+            },
         ],
         "metadata": {
             "application_id": str(random_application_id),

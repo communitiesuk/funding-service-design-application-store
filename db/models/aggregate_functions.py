@@ -167,10 +167,7 @@ def update_form(application_id, form_name, question_json):
             )
             raise Exception("ABORTING UPDATE, INVALID DATA GIVEN")
         # Updating form subsequent times
-        elif (
-            form_sql_row.json
-            and form_sql_row.json[0]["fields"] != question_json[0]["fields"]
-        ):
+        elif form_sql_row.json and form_sql_row.json != question_json:
             update_application_and_related_form(
                 application_id, question_json, form_name
             )
@@ -186,11 +183,16 @@ def update_application_and_related_form(
     application = ApplicationsMethods.get_application_by_id(application_id)
     application.last_edited = func.now()
     form_sql_row = FormsMethods.get_form(application_id, form_name)
+
     if form_name == "project-information":
-        fields_array = question_json[0]["fields"]
+        fields_array = question_json[1]["fields"]
         for key in fields_array:
-            if key["key"] == "project-name":
-                application.project_name = key["answer"]
+            if key["key"] == "KAgrBz":
+                try:
+                    application.project_name = key["answer"]
+                except KeyError:
+                    current_app.logger.error()
+
     form_sql_row.json = question_json
     update_statuses(application_id, form_name)
     db.session.commit()

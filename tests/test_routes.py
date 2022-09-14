@@ -331,3 +331,70 @@ def test_update_section_of_application_does_not_change_last_edited_field(
     )
     new_last_edited = random_app.last_edited
     assert new_last_edited == old_last_edited
+
+
+def test_update_project_name_of_application(client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN A put is made with a completed section
+    THEN the section json.last_edited should be updated.
+    """
+    post_test_applications(client)
+    random_app = ApplicationTestMethods.get_random_app()
+    random_application_id = random_app.id
+    old_project_name = random_app.project_name
+    section_put = {
+        "questions": [
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "data",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "KAgrBz",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Coolio",
+                    },
+                    {
+                        "key": "applicant-email",
+                        "title": "Email",
+                        "type": "text",
+                        "answer": "a@example.com",
+                    },
+                    {
+                        "key": "applicant-telephone-number",
+                        "title": "Telephone number",
+                        "type": "text",
+                        "answer": "Wow",
+                    },
+                    {
+                        "key": "applicant-website",
+                        "title": "Website",
+                        "type": "text",
+                        "answer": "www.example.com",
+                    },
+                ],
+            },
+        ],
+        "metadata": {
+            "application_id": str(random_application_id),
+            "form_name": "project-information",
+        },
+    }
+    client.put(
+        "/applications/forms",
+        json=section_put,
+        follow_redirects=True,
+    )
+    new_project_name = random_app.project_name
+    assert new_project_name != old_project_name

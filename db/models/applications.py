@@ -42,7 +42,7 @@ class Applications(db.Model):
             "round_id": self.round_id,
             "fund_id": self.fund_id,
             "project_name": self.project_name
-            or "Project details not filled in",
+            or "Untitled project",
             "started_at": self.started_at.isoformat(),
             "status": self.status.name,
             "last_edited": (self.last_edited or self.started_at).isoformat(),

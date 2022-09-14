@@ -385,6 +385,17 @@ def test_update_project_name_of_application(client):
                     },
                 ],
             },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "data",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
         ],
         "metadata": {
             "application_id": str(random_application_id),

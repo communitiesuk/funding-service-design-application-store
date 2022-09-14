@@ -185,7 +185,11 @@ def update_application_and_related_form(
     form_sql_row = FormsMethods.get_form(application_id, form_name)
 
     if form_name == "project-information":
-        fields_array = question_json[1]["fields"]
+        current_app.logger.error(question_json)
+        if len(question_json) == 3:
+            fields_array = question_json[1]["fields"]
+        else:
+            fields_array = question_json[2]["fields"]
         for key in fields_array:
             if (key["key"] == "KAgrBz") or (key["title"] == "Project name"):
                 try:

@@ -187,7 +187,7 @@ def update_application_and_related_form(
     if form_name == "project-information":
         fields_array = question_json[1]["fields"]
         for key in fields_array:
-            if key["key"] == "KAgrBz":
+            if (key["key"] == "KAgrBz") or (key["title"] == "Project name"):
                 try:
                     application.project_name = key["answer"]
                 except KeyError:

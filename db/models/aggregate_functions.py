@@ -5,7 +5,6 @@ from db import db
 from db.models.applications import Applications
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
-from db.models.status import Status
 from flask import current_app
 from sqlalchemy.sql import func
 
@@ -35,7 +34,11 @@ def update_application_status(application_id: str):
     db.session.commit()
 
 
-def update_form_statuses(application_id: str, form_name: str):
+def update_form_statuses(
+    application_id: str,
+    form_name: str,
+    is_summary_page_submitted: bool = False,
+):
     """
     Updates the question statuses of each question if a value is present
 
@@ -48,24 +51,24 @@ def update_form_statuses(application_id: str, form_name: str):
     application_submitted_date = db.session.get(
         Applications, application_id
     ).date_submitted
-    for stored_form in stored_forms:
-        if stored_form.name == form_name:
-            if application_submitted_date:
-                stored_form.status = "SUBMITTED"
-                break
-            for question_page in stored_form.json:
-                if question_page["status"] == "COMPLETED":
-                    stored_form.status = Status.COMPLETED
-                    continue
-                elif (
-                    question_page["status"] == "NOT_STARTED"
-                    and stored_form.status.name == "COMPLETED"
-                ):
-                    stored_form.status = Status.IN_PROGRESS
-                    continue
-                elif question_page["status"] == "IN_PROGRESS":
-                    stored_form.status = Status.IN_PROGRESS
-                    break
+
+    current_form = [
+        stored_form
+        for stored_form in stored_forms
+        if stored_form.name == form_name
+    ][0]
+    status_list = [question["status"] for question in current_form.json]
+
+    if application_submitted_date:
+        current_form.status = "SUBMITTED"
+    else:
+        if "COMPLETED" not in status_list:
+            current_form.status = "NOT_STARTED"
+        elif "NOT_STARTED" not in status_list and is_summary_page_submitted:
+            current_form.status = "COMPLETED"
+        else:
+            current_form.status = "IN_PROGRESS"
+
     db.session.commit()
 
 
@@ -125,9 +128,11 @@ def update_question_statuses(application_id: str, form_name: str):
     db.session.commit()
 
 
-def update_statuses(application_id, form_name):
+def update_statuses(
+    application_id, form_name, is_summary_page_submitted=False
+):
     update_question_statuses(application_id, form_name)
-    update_form_statuses(application_id, form_name)
+    update_form_statuses(application_id, form_name, is_summary_page_submitted)
     update_application_status(application_id)
 
 
@@ -151,13 +156,18 @@ def submit_application(application_id):
     return application
 
 
-def update_form(application_id, form_name, question_json):
+def update_form(
+    application_id, form_name, question_json, is_summary_page_submit
+):
     try:
         form_sql_row = FormsMethods.get_form(application_id, form_name)
         # Running update form for the first time
         if question_json and not form_sql_row.json:
             update_application_and_related_form(
-                application_id, question_json, form_name
+                application_id,
+                question_json,
+                form_name,
+                is_summary_page_submit,
             )
         # Removing all data in the form (should not be allowed)
         elif form_sql_row.json and not question_json:
@@ -178,14 +188,13 @@ def update_form(application_id, form_name, question_json):
 
 
 def update_application_and_related_form(
-    application_id, question_json, form_name
+    application_id, question_json, form_name, is_summary_page_submit
 ):
     application = ApplicationsMethods.get_application_by_id(application_id)
     application.last_edited = func.now()
     form_sql_row = FormsMethods.get_form(application_id, form_name)
-
+    # updating project name:
     if form_name == "project-information":
-        current_app.logger.error(question_json)
         if len(question_json) == 3:
             fields_array = question_json[1]["fields"]
         else:
@@ -197,9 +206,8 @@ def update_application_and_related_form(
                 except KeyError:
                     current_app.logger.error("Project name was not edited")
                     continue
-
     form_sql_row.json = question_json
-    update_statuses(application_id, form_name)
+    update_statuses(application_id, form_name, is_summary_page_submit)
     db.session.commit()
     current_app.logger.info(
         f"Application updated for application_id: '{application_id}."

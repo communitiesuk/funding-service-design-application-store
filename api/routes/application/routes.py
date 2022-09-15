@@ -57,6 +57,9 @@ class ApplicationsView(ApplicationsMethods, MethodView):
             "application_id": request_json["metadata"]["application_id"],
             "form_name": request_json["metadata"].get("form_name"),
             "question_json": request_json["questions"],
+            "is_summary_page_submit": request_json["metedata"].get(
+                "is_summary_page_submit", False
+            ),
         }
         try:
             updated_form = update_form(**form_dict)

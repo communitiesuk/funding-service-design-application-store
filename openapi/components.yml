@@ -5,6 +5,8 @@ components:
       properties:
         id:
           type: string
+        readable_id:
+          type: string
         status:
           type: string
         account_id:

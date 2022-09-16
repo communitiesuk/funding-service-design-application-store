@@ -1,10 +1,15 @@
 import random
+import string
 import uuid
 
+from api.routes.application.helpers import get_fund
+from api.routes.application.helpers import get_round
 from db import db
 from db.models.status import Status
+from flask import current_app
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import ENUM
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 from sqlalchemy_utils.types import UUIDType
@@ -19,8 +24,10 @@ class Applications(db.Model):
         nullable=False,
     )
     account_id = db.Column("account_id", db.String(), nullable=False)
-    round_id = db.Column("round_id", db.String(), nullable=False)
     fund_id = db.Column("fund_id", db.String(), nullable=False)
+    round_id = db.Column("round_id", db.String(), nullable=False)
+    app_id = db.Column("app_id", db.String(), nullable=False)
+    readable_id = db.Column("readable_id", db.String(), nullable=False)
     project_name = db.Column(
         "project_name",
         db.String(),
@@ -32,6 +39,12 @@ class Applications(db.Model):
     date_submitted = db.Column("date_submitted", DateTime())
     last_edited = db.Column("last_edited", DateTime())
 
+    __table_args__ = (
+        db.UniqueConstraint(
+            "fund_id", "round_id", "app_id", name="_short_app_id"
+        ),
+    )
+
     def as_dict(self):
         date_submitted = (
             self.date_submitted.isoformat() if self.date_submitted else "null"
@@ -41,6 +54,7 @@ class Applications(db.Model):
             "account_id": self.account_id,
             "round_id": self.round_id,
             "fund_id": self.fund_id,
+            "readable_id": self.readable_id,
             "project_name": self.project_name
             or "Project details not filled in",
             "started_at": self.started_at.isoformat(),
@@ -64,13 +78,62 @@ class ApplicationsMethods:
         return application.status
 
     @staticmethod
-    def create_application(account_id, fund_id, round_id):
-        new_application_row = Applications(
-            account_id=account_id, fund_id=fund_id, round_id=round_id
+    def random_short_code_generator(length: int = 4):
+        code = "".join(
+            random.choices(string.ascii_uppercase + string.digits, k=length)
         )
-        db.session.add(new_application_row)
-        db.session.commit()
-        return new_application_row
+        while True:
+            yield code
+
+    @staticmethod
+    def _create_application_try(
+        account_id, fund_id, round_id, app_id, readable_id
+    ):
+        try:
+            new_application_row = Applications(
+                account_id=account_id,
+                fund_id=fund_id,
+                round_id=round_id,
+                app_id=app_id,
+                readable_id=readable_id,
+            )
+            db.session.add(new_application_row)
+            db.session.commit()
+            return new_application_row
+        except IntegrityError:
+            pass
+
+    def create_application(self, account_id, fund_id, round_id):
+        fund = get_fund(fund_id)
+        fund_round = get_round(fund_id, round_id)
+        if fund and fund_round and fund.short_code and fund_round.short_code:
+            new_application = None
+            max_tries = 5
+            attempt = 0
+            short_code_gen = self.random_short_code_generator()
+            while attempt < max_tries and new_application is None:
+                code = next(short_code_gen)
+                new_application = self._create_application_try(
+                    account_id=account_id,
+                    fund_id=fund_id,
+                    round_id=round_id,
+                    app_id=code,
+                    readable_id="-".join(
+                        [fund.short_code, fund_round.short_code, "APP", code]
+                    ),
+                )
+            if not new_application:
+                current_app.logger.error(
+                    "Max tries exceeded for create application with short"
+                    f" code, for fund.short_code {fund.short_code} and"
+                    f" round_short_code {fund_round.short_code}"
+                )
+            return new_application
+        else:
+            current_app.logger.error(
+                f"Failed to create application. Fund round {round_id} for fund"
+                f" {fund_id} not found"
+            )
 
     @staticmethod
     def get_all():

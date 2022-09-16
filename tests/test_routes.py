@@ -81,6 +81,7 @@ def test_get_applications_of_account_id(client):
         exclude_regex_paths=key_list_to_regex(
             [
                 "id",
+                "readable_id",
                 "started_at",
                 "project_name",
                 "last_edited",
@@ -230,7 +231,7 @@ def test_get_application_by_application_id(client):
         f"/applications/{random_id}",
         expected_data,
         exclude_regex_paths=key_list_to_regex(
-            ["started_at", "project_name", "forms"]
+            ["readable_id", "started_at", "project_name", "forms"]
         ),
         # Lists are annoying to deal with in deepdiff
         # especially when they contain dicts...so in this

@@ -9,7 +9,7 @@ from flask import current_app
 class Fund:
     name: str
     identifier: str
-    short_code: str
+    short_name: str
     description: str
     rounds: List[Round] = None
 
@@ -19,7 +19,7 @@ class Fund:
             return Fund(
                 name=data.get("name"),
                 identifier=data.get("id"),
-                short_code=data.get("short_code"),
+                short_name=data.get("short_name"),
                 description=data.get("description"),
             )
         except AttributeError as e:

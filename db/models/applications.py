@@ -27,7 +27,9 @@ class Applications(db.Model):
     fund_id = db.Column("fund_id", db.String(), nullable=False)
     round_id = db.Column("round_id", db.String(), nullable=False)
     key = db.Column("key", db.String(), nullable=False)
-    reference = db.Column("reference", db.String(), nullable=False)
+    reference = db.Column(
+        "reference", db.String(), nullable=False, unique=True
+    )
     project_name = db.Column(
         "project_name",
         db.String(),

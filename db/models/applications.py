@@ -26,8 +26,8 @@ class Applications(db.Model):
     account_id = db.Column("account_id", db.String(), nullable=False)
     fund_id = db.Column("fund_id", db.String(), nullable=False)
     round_id = db.Column("round_id", db.String(), nullable=False)
-    app_id = db.Column("app_id", db.String(), nullable=False)
-    readable_id = db.Column("readable_id", db.String(), nullable=False)
+    key = db.Column("key", db.String(), nullable=False)
+    reference = db.Column("reference", db.String(), nullable=False)
     project_name = db.Column(
         "project_name",
         db.String(),
@@ -40,9 +40,7 @@ class Applications(db.Model):
     last_edited = db.Column("last_edited", DateTime())
 
     __table_args__ = (
-        db.UniqueConstraint(
-            "fund_id", "round_id", "app_id", name="_short_app_id"
-        ),
+        db.UniqueConstraint("fund_id", "round_id", "key", name="_reference"),
     )
 
     def as_dict(self):
@@ -54,7 +52,7 @@ class Applications(db.Model):
             "account_id": self.account_id,
             "round_id": self.round_id,
             "fund_id": self.fund_id,
-            "readable_id": self.readable_id,
+            "reference": self.reference,
             "project_name": self.project_name
             or "Untitled project",
             "started_at": self.started_at.isoformat(),
@@ -78,59 +76,67 @@ class ApplicationsMethods:
         return application.status
 
     @staticmethod
-    def random_app_id_generator(length: int = 4):
-        code = "".join(
-            random.choices(string.ascii_uppercase + string.digits, k=length)
-        )
+    def random_key_generator(length: int = 6):
+        key = "".join(random.choices(string.ascii_uppercase, k=length))
         while True:
-            yield code
+            yield key
 
     @staticmethod
     def _create_application_try(
-        account_id, fund_id, round_id, app_id, readable_id
+        account_id, fund_id, round_id, key, reference, attempt
     ):
         try:
             new_application_row = Applications(
                 account_id=account_id,
                 fund_id=fund_id,
                 round_id=round_id,
-                app_id=app_id,
-                readable_id=readable_id,
+                key=key,
+                reference=reference,
             )
             db.session.add(new_application_row)
             db.session.commit()
             return new_application_row
         except IntegrityError:
-            pass
+            db.session.remove()
+            current_app.logger.error(
+                f"Failed {attempt} attempt(s) to create application with"
+                f" application reference {reference}, for fund_id"
+                f" {fund_id} and round_id {round_id}"
+            )
 
     def create_application(self, account_id, fund_id, round_id):
         fund = get_fund(fund_id)
         fund_round = get_round(fund_id, round_id)
         if fund and fund_round and fund.short_name and fund_round.short_name:
             new_application = None
-            max_tries = 5
+            max_tries = 10
             attempt = 0
-            app_id_gen = self.random_app_id_generator()
+            key = None
+            app_key_gen = self.random_key_generator()
             while attempt < max_tries and new_application is None:
-                code = next(app_id_gen)
+                key = next(app_key_gen)
                 new_application = self._create_application_try(
                     account_id=account_id,
                     fund_id=fund_id,
                     round_id=round_id,
-                    app_id=code,
-                    readable_id="-".join(
-                        [fund.short_name, fund_round.short_name, "APP", code]
+                    key=key,
+                    reference="-".join(
+                        [fund.short_name, fund_round.short_name, key]
                     ),
+                    attempt=attempt,
                 )
+                attempt += 1
+
             if not new_application:
-                current_app.logger.error(
-                    "Max tries exceeded for create application with short"
-                    f" code, for fund.short_name {fund.short_name} and"
-                    f" round_short_name {fund_round.short_name}"
+                raise ApplicationError(
+                    f"Max ({max_tries}) tries exceeded for create application"
+                    f" with application key {key}, for fund.short_name"
+                    f" {fund.short_name} and round.short_name"
+                    f" {fund_round.short_name}"
                 )
             return new_application
         else:
-            current_app.logger.error(
+            raise ApplicationError(
                 f"Failed to create application. Fund round {round_id} for fund"
                 f" {fund_id} not found"
             )
@@ -181,3 +187,15 @@ class ApplicationTestMethods:
         applications_list = ApplicationsMethods.get_all()
         random_app = random.choice(applications_list)
         return random_app
+
+
+class ApplicationError(Exception):
+    """Exception raised for errors in Application management
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message="Sorry, there was a problem, please try later"):
+        self.message = message
+        super().__init__(self.message)

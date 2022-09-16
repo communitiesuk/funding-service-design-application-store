@@ -5,7 +5,7 @@ components:
       properties:
         id:
           type: string
-        readable_id:
+        reference:
           type: string
         status:
           type: string

@@ -26,6 +26,12 @@ def mock_post_data(endpoint, params=None):
     return local_api_call(endpoint, params, "post")
 
 
+def mock_get_random_choices(
+    population, weights=None, *, cum_weights=None, k=1
+):
+    return "ABCDEF"
+
+
 @pytest.fixture(autouse=True)
 def mock_get_data_fix(mocker):
     # mock the function in the file it is invoked (not where it is declared)
@@ -33,6 +39,12 @@ def mock_get_data_fix(mocker):
         "api.routes.application.helpers",
         new=mock_get_data,
     )
+
+
+@pytest.fixture()
+def mock_random_choices(mocker):
+    # mock the function in the file it is invoked (not where it is declared)
+    mocker.patch("random.choices", new=mock_get_random_choices)
 
 
 @pytest.fixture(autouse=True)

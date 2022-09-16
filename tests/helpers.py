@@ -199,6 +199,7 @@ application_expected_data = [
 def key_list_to_regex(
     exclude_keys: List[str] = [
         "id",
+        "readable_id",
         "started_at",
         "project_name",
         "last_edited",

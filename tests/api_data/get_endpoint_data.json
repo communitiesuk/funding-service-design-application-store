@@ -17,57 +17,57 @@
   "fund_store/funds": [
     {
       "name": "COF",
-      "short_code": "COF",
+      "short_name": "COF",
       "id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
       "description": "An example fund for testing the funding service"
     },
     {
       "name": "Fund B",
-      "short_code": "FUB",
+      "short_name": "FUB",
       "id": "fund-b",
       "description": "An example fund for testing the funding service"
     },
     {
       "name": "Funding Service Design",
-      "short_code": "FSD",
+      "short_name": "FSD",
       "id": "funding-service-design",
       "description": "An example fund for testing the funding service"
     },
     {
       "name": "Community Ownership Fund",
-      "short_code": "CON",
+      "short_name": "CON",
       "id": "community-ownership-fund",
       "description": "An example Community Ownership Fund for testing the funding service"
     }
   ],
   "fund_store/funds/47aef2f5-3fcb-4d45-acb5-f0152b5f03c4": {
     "name": "COF",
-    "short_code": "COF",
+    "short_name": "COF",
     "id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
     "description": "An example fund for testing the funding service"
   },
   "fund_store/funds/fund-b": {
     "name": "Fund B",
-    "short_code": "FUB",
+    "short_name": "FUB",
     "id": "fund-b",
     "description": "An example fund for testing the funding service"
   },
   "fund_store/funds/funding-service-design": {
     "name": "Funding Service Design",
-    "short_code": "FSD",
+    "short_name": "FSD",
     "id": "funding-service-design",
     "description": "An example fund for testing the funding service"
   },
   "fund_store/funds/community-ownership-fund": {
     "name": "COF",
-    "short_code": "CON",
+    "short_name": "CON",
     "id": "community-ownership-fund",
     "description": "An example Community Ownership Fund for testing the funding service"
   },
   "fund_store/funds/47aef2f5-3fcb-4d45-acb5-f0152b5f03c4/rounds": [
     {
       "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
-      "short_code": "SUM",
+      "short_name": "SUM",
       "title": "Summer",
       "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
       "opens": "2022-02-01T00:00:01",
@@ -100,7 +100,7 @@
   "fund_store/funds/fund-b/rounds": [
     {
       "fund_id": "funding-a",
-      "short_code": "SUM",
+      "short_name": "SUM",
       "title": "Summer",
       "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
       "opens": "2022-02-01T00:00:01",
@@ -134,7 +134,7 @@
     {
       "fund_id": "funding-service-design",
       "title": "Spring",
-      "short_code": "SPR",
+      "short_name": "SPR",
       "id": "spring",
       "opens": "2022-02-01T00:00:01",
       "deadline": "2022-06-01T00:00:00",
@@ -165,7 +165,7 @@
     {
       "fund_id": "funding-service-design",
       "title": "Summer",
-      "short_code": "SUM",
+      "short_name": "SUM",
       "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
       "opens": "2022-06-01T00:00:01",
       "deadline": "2022-08-31T00:00:00",
@@ -196,7 +196,7 @@
     {
       "fund_id": "funding-service-design",
       "title": "Autumn",
-      "short_code": "AUT",
+      "short_name": "AUT",
       "id": "autumn",
       "opens": "2022-09-01T00:00:01",
       "deadline": "2022-11-30T00:00:00",
@@ -228,7 +228,7 @@
   "fund_store/funds/47aef2f5-3fcb-4d45-acb5-f0152b5f03c4/rounds/c603d114-5364-4474-a0c4-c41cbf4d3bbd": {
     "fund_id": "funding-service-design",
     "title": "Summer",
-    "short_code": "SUM",
+    "short_name": "SUM",
     "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
     "opens": "2022-02-01T00:00:01",
     "deadline": "2022-06-01T00:00:00",
@@ -257,7 +257,7 @@
   },
   "fund_store/funds/fund-b/rounds/summer": {
     "fund_id": "funding-service-design",
-    "short_code": "SUM",
+    "short_name": "SUM",
     "title": "Spring",
     "id": "spring",
     "opens": "2022-02-01T00:00:01",
@@ -287,7 +287,7 @@
   },
   "fund_store/funds/funding-service-design/rounds/spring": {
     "fund_id": "funding-service-design",
-    "short_code": "SPR",
+    "short_name": "SPR",
     "title": "Spring",
     "id": "spring",
     "opens": "2022-02-01T00:00:01",
@@ -317,7 +317,7 @@
   },
   "fund_store/funds/funding-service-design/rounds/c603d114-5364-4474-a0c4-c41cbf4d3bbd": {
     "fund_id": "funding-service-design",
-    "short_code": "SUM",
+    "short_name": "SUM",
     "title": "Summer",
     "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
     "opens": "2022-06-01T00:00:01",
@@ -348,7 +348,7 @@
   "fund_store/funds/funding-service-design/rounds/autumn": {
     "fund_id": "funding-service-design",
     "title": "Autumn",
-    "short_code": "AUT",
+    "short_name": "AUT",
     "id": "autumn",
     "opens": "2022-09-01T00:00:01",
     "deadline": "2022-11-30T00:00:00",

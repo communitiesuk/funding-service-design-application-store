@@ -78,7 +78,7 @@ class ApplicationsMethods:
         return application.status
 
     @staticmethod
-    def random_short_code_generator(length: int = 4):
+    def random_app_id_generator(length: int = 4):
         code = "".join(
             random.choices(string.ascii_uppercase + string.digits, k=length)
         )
@@ -106,27 +106,27 @@ class ApplicationsMethods:
     def create_application(self, account_id, fund_id, round_id):
         fund = get_fund(fund_id)
         fund_round = get_round(fund_id, round_id)
-        if fund and fund_round and fund.short_code and fund_round.short_code:
+        if fund and fund_round and fund.short_name and fund_round.short_name:
             new_application = None
             max_tries = 5
             attempt = 0
-            short_code_gen = self.random_short_code_generator()
+            app_id_gen = self.random_app_id_generator()
             while attempt < max_tries and new_application is None:
-                code = next(short_code_gen)
+                code = next(app_id_gen)
                 new_application = self._create_application_try(
                     account_id=account_id,
                     fund_id=fund_id,
                     round_id=round_id,
                     app_id=code,
                     readable_id="-".join(
-                        [fund.short_code, fund_round.short_code, "APP", code]
+                        [fund.short_name, fund_round.short_name, "APP", code]
                     ),
                 )
             if not new_application:
                 current_app.logger.error(
                     "Max tries exceeded for create application with short"
-                    f" code, for fund.short_code {fund.short_code} and"
-                    f" round_short_code {fund_round.short_code}"
+                    f" code, for fund.short_name {fund.short_name} and"
+                    f" round_short_name {fund_round.short_name}"
                 )
             return new_application
         else:

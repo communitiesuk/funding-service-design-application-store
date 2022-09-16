@@ -8,7 +8,7 @@ class Round:
     title: str
     identifier: str
     fund_id: str
-    short_code: str
+    short_name: str
     opens: datetime
     deadline: datetime
     assessment_deadline: datetime
@@ -20,7 +20,7 @@ class Round:
             title=data.get("title"),
             identifier=data.get("id"),
             fund_id=data.get("fund_id"),
-            short_code=data.get("short_code"),
+            short_name=data.get("short_name"),
             opens=data.get("opens"),
             deadline=data.get("deadline"),
             assessment_deadline=data.get("assessment_deadline"),

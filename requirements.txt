@@ -10,6 +10,8 @@ aniso8601==9.0.1
     # via flask-restx
 attrs==21.4.0
     # via jsonschema
+babel==2.10.3
+    # via flask-babel
 certifi==2021.10.8
     # via requests
 cffi==1.15.1
@@ -35,10 +37,13 @@ cryptography==37.0.4
 flask==2.1.2
     # via
     #   connexion
+    #   flask-babel
     #   flask-migrate
     #   flask-restx
     #   flask-sqlalchemy
     #   funding-service-design-utils
+flask-babel==2.0.0
+    # via funding-service-design-utils
 flask-migrate==3.1.0
     # via -r requirements.in
 flask-restx==0.5.1
@@ -47,7 +52,7 @@ flask-sqlalchemy==2.5.1
     # via
     #   -r requirements.in
     #   flask-migrate
-funding-service-design-utils @ https://github.com/communitiesuk/funding-service-design-utils/archive/refs/tags/0.0.14.tar.gz
+funding-service-design-utils==1.0.0
     # via -r requirements.in
 gunicorn==20.1.0
     # via funding-service-design-utils
@@ -64,6 +69,7 @@ itsdangerous==2.1.0
 jinja2==3.0.3
     # via
     #   flask
+    #   flask-babel
     #   swagger-ui-bundle
 jsonschema==4.4.0
     # via
@@ -105,6 +111,8 @@ python-json-logger==2.0.2
     # via funding-service-design-utils
 pytz==2022.1
     # via
+    #   babel
+    #   flask-babel
     #   flask-restx
     #   funding-service-design-utils
 pyyaml==6.0

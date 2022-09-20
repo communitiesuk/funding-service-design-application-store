@@ -179,7 +179,10 @@ def update_form(
         # Updating form subsequent times
         elif form_sql_row.json and form_sql_row.json != question_json:
             update_application_and_related_form(
-                application_id, question_json, form_name
+                application_id,
+                question_json,
+                form_name,
+                is_summary_page_submit,
             )
     except sqlalchemy.orm.exc.NoResultFound as e:
         raise e

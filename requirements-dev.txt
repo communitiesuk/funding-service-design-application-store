@@ -19,6 +19,10 @@ attrs==21.4.0
     #   -r requirements.txt
     #   jsonschema
     #   pytest
+babel==2.10.3
+    # via
+    #   -r requirements.txt
+    #   flask-babel
 bandit==1.7.4
     # via -r requirements-dev.in
 black==22.6.0
@@ -76,11 +80,16 @@ flask==2.1.2
     # via
     #   -r requirements.txt
     #   connexion
+    #   flask-babel
     #   flask-migrate
     #   flask-restx
     #   flask-sqlalchemy
     #   funding-service-design-utils
     #   pytest-flask
+flask-babel==2.0.0
+    # via
+    #   -r requirements.txt
+    #   funding-service-design-utils
 flask-migrate==3.1.0
     # via -r requirements.txt
 flask-restx==0.5.1
@@ -90,7 +99,7 @@ flask-sqlalchemy==2.5.1
     #   -r requirements.txt
     #   flask-migrate
     #   pytest-flask-sqlalchemy
-funding-service-design-utils @ https://github.com/communitiesuk/funding-service-design-utils/archive/refs/tags/0.0.14.tar.gz
+funding-service-design-utils==1.0.0
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython
@@ -123,6 +132,7 @@ jinja2==3.0.3
     # via
     #   -r requirements.txt
     #   flask
+    #   flask-babel
     #   swagger-ui-bundle
 jsonschema==4.4.0
     # via
@@ -231,6 +241,8 @@ python-json-logger==2.0.2
 pytz==2022.1
     # via
     #   -r requirements.txt
+    #   babel
+    #   flask-babel
     #   flask-restx
     #   funding-service-design-utils
 pyyaml==6.0

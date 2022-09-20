@@ -3,6 +3,7 @@ import uuid
 from api.routes.application.helpers import ApplicationHelpers
 from api.routes.application.helpers import get_account
 from config import Config
+from api.routes.application.helpers import ApplicationHelpers, post_account
 from db.models.aggregate_functions import get_application_with_forms
 from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
@@ -31,10 +32,12 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         return sorted_applications, 200, response_headers
 
     def post(self):
+        
         args = request.get_json()
         account_id = args["account_id"]
         round_id = args["round_id"]
         fund_id = args["fund_id"]
+
         empty_forms = ApplicationHelpers.get_blank_forms(fund_id, round_id)
         application = ApplicationsMethods.create_application(
             account_id=account_id, fund_id=fund_id, round_id=round_id
@@ -42,6 +45,10 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         FormsMethods.add_new_forms(
             forms=empty_forms, application_id=application.id
         )
+
+        app_id = str(application.id)
+        post_account(account_id=account_id, app_id = app_id)
+
         return application.as_dict(), 201
 
     def get_by_id(self, application_id):

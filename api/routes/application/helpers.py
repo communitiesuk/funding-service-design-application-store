@@ -3,9 +3,11 @@ import os
 from operator import itemgetter
 from typing import List
 from urllib.parse import urlencode
+from uuid import UUID
 
 import requests
 from config import Config
+from external_services.http_methods import post_data
 from external_services.models.account import Account
 from external_services.models.fund import Fund
 from external_services.models.round import Round
@@ -198,6 +200,20 @@ def get_account(email: str = None, account_id: str = None) -> Account | None:
     url = Config.ACCOUNT_STORE_API_HOST + Config.ACCOUNTS_ENDPOINT
     params = {"email_address": email, "account_id": account_id}
     response = get_data(url, params)
+
+    if response and "account_id" in response:
+        return Account.from_json(response)
+
+def post_account(app_id : str, account_id: str = None, email : str = None):
+
+    if email is account_id is None:
+        raise TypeError("Requires an email address or account_id")
+
+    url = Config.ACCOUNT_STORE_API_HOST + Config.ACCOUNTS_REG_APP_ENDPOINT
+    params = {"email_address": email, "account_id": account_id, "application_id" : app_id
+    }
+    
+    response = post_data(url, params)
 
     if response and "account_id" in response:
         return Account.from_json(response)

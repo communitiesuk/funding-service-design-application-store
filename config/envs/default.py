@@ -41,6 +41,7 @@ class DefaultConfig:
 
     # Account Store Endpoints
     ACCOUNTS_ENDPOINT = "/accounts"
+    ACCOUNTS_REG_APP_ENDPOINT = "/accounts/register-application"
 
     # Fund Store Endpoints
     FUNDS_ENDPOINT = "/funds"

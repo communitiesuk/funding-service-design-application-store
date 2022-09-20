@@ -13,6 +13,7 @@ class UnitTestingConfig(DefaultConfig):
     SESSION_COOKIE_NAME = CommonConfig.SESSION_COOKIE_NAME
     FLASK_ENV = "unit_test"
     FUND_STORE_API_HOST = DefaultConfig.TEST_FUND_STORE_API_HOST
+    ACCOUNT_STORE_API_HOST = DefaultConfig.TEST_ACCOUNT_STORE_API_HOST
 
     # Security
     FORCE_HTTPS = False

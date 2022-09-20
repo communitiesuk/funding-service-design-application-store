@@ -30,7 +30,7 @@ def mock_post_data(endpoint, params=None):
 def mock_get_data_fix(mocker):
     # mock the function in the file it is invoked (not where it is declared)
     mocker.patch(
-        "external_services.http_methods.get_data",
+        "api.routes.application.helpers",
         new=mock_get_data,
     )
 

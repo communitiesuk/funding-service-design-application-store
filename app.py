@@ -1,37 +1,3 @@
-# from api import api
-# from db import db
-# from db import migrate
-# from flask import Flask
-# from fsd_utils.healthchecks.checkers import FlaskRunningChecker
-# from fsd_utils.healthchecks.healthcheck import Healthcheck
-# from fsd_utils.logging import logging
-
-
-# def create_app() -> Flask:
-#     flask_app = Flask(__name__)
-
-#     flask_app.config.from_object("config.Config")
-
-#     api.init_app(flask_app)
-#     logging.init_app(flask_app)
-
-#     # Bind SQLAlchemy ORM to Flask app
-#     db.init_app(flask_app)
-#     # Bind Flask-Migrate db utilities to Flask app
-#     migrate.init_app(
-#         flask_app, db, directory="db/migrations", render_as_batch=True
-#     )
-
-#     health = Healthcheck(flask_app)
-#     health.add_check(FlaskRunningChecker())
-#     # TODO Add the following once PR 22 is merged (and we have a real DB)
-#     # health.add_check(DbChecker(db))
-#     return flask_app
-
-
-# app = create_app()
-
-
 import connexion
 from connexion.resolver import MethodViewResolver
 from flask import Flask

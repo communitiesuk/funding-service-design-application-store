@@ -1,7 +1,5 @@
-import datetime
 import random
 import uuid
-from operator import itemgetter
 
 from db import db
 from db.models.status import Status
@@ -10,12 +8,6 @@ from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import func
 from sqlalchemy_utils.types import UUIDType
-
-
-def started_at():
-    raw_date = datetime.datetime.now(datetime.timezone.utc)
-    formatted_date = raw_date.strftime("%Y-%m-%d %H:%M:%S")
-    return formatted_date
 
 
 class Applications(db.Model):
@@ -40,18 +32,21 @@ class Applications(db.Model):
     date_submitted = db.Column("date_submitted", DateTime())
     last_edited = db.Column("last_edited", DateTime())
 
-
     def as_dict(self):
+        date_submitted = (
+            self.date_submitted.isoformat() if self.date_submitted else "null"
+        )
         return {
             "id": str(self.id),
             "account_id": self.account_id,
             "round_id": self.round_id,
             "fund_id": self.fund_id,
-            "project_name": self.project_name or "project_name not set",
+            "project_name": self.project_name
+            or "Untitled project",
             "started_at": self.started_at.isoformat(),
             "status": self.status.name,
             "last_edited": (self.last_edited or self.started_at).isoformat(),
-            "date_submitted": self.date_submitted or "null",
+            "date_submitted": date_submitted,
         }
 
 
@@ -93,9 +88,7 @@ class ApplicationsMethods:
         account_id = params.get("account_id")
         status_only = params.get("status_only")
         application_id = params.get("application_id")
-        # Sorting params
-        order_by = params.get("order_by", "id")
-        order_rev = params.get("order_rev") == "1"
+
         filters = []
         if fund_id:
             filters.append(Applications.fund_id == fund_id)

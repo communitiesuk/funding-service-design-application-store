@@ -95,7 +95,7 @@ paths:
                 code: 401
                 status: 'error'
                 message: 'An assessment for this application already exists'
-  
+
   /applications/{application_id}:
     get:
       tags:
@@ -133,12 +133,12 @@ paths:
   /applications/forms:
     put:
       requestBody:
-        description: Update application with new forms state 
+        description: Update application with new forms state
         required: true
         content:
           application/json:
             schema:
-              $ref: 'components.yml#/components/schemas/PutForms'         
+              $ref: 'components.yml#/components/schemas/PutForms'
       tags:
         - applications
       summary: Get an application
@@ -160,8 +160,8 @@ paths:
               example:
                 code: 404
                 status: 'error'
-                message: 'Form is not updated'          
-    
+                message: 'Form is not updated'
+
   /applications/{application_id}/submit:
     post:
       tags:
@@ -194,4 +194,4 @@ paths:
               example:
                 code: 404
                 status: 'error'
-                message: 'Application corresponding to id not found.' 
+                message: 'Application corresponding to id not found.'

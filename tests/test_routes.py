@@ -95,7 +95,7 @@ def test_update_section_of_application(client):
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
     THEN The section json should be updated to
-    match the PUT'ed json and be marked as complete.
+    match the PUT'ed json and be marked as in-progress.
     """
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
@@ -130,11 +130,34 @@ def test_update_section_of_application(client):
                         "answer": "www.example.com",
                     },
                 ],
-            }
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "data",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "data",
+                        "title": "Applicant job",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
         ],
         "metadata": {
             "application_id": str(random_application_id),
             "form_name": "declarations",
+            "is_summary_page_submit": False,
         },
     }
     response = client.put(
@@ -148,7 +171,7 @@ def test_update_section_of_application(client):
     ]
     section_status = response.json["status"]
     assert all(answer_found_list)
-    assert section_status == "COMPLETED"
+    assert section_status == "IN_PROGRESS"
 
 
 def test_update_section_of_application_with_incomplete_answers(
@@ -194,7 +217,18 @@ def test_update_section_of_application_with_incomplete_answers(
                         "answer": "www.example.com",
                     },
                 ],
-            }
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "data",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
         ],
         "metadata": {
             "application_id": str(random_application_id),
@@ -409,3 +443,82 @@ def test_update_project_name_of_application(client):
     )
     new_project_name = random_app.project_name
     assert new_project_name != old_project_name
+
+
+def test_complete_form(client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN A put is made with a completed section
+    THEN The section json should be updated to
+    match the PUT'ed json and be marked as in-progress.
+    """
+    post_test_applications(client)
+    random_app = ApplicationTestMethods.get_random_app()
+    random_application_id = random_app.id
+    section_put = {
+        "questions": [
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "application-name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Coolio",
+                    },
+                    {
+                        "key": "applicant-email",
+                        "title": "Email",
+                        "type": "text",
+                        "answer": "a@example.com",
+                    },
+                    {
+                        "key": "applicant-telephone-number",
+                        "title": "Telephone number",
+                        "type": "text",
+                        "answer": "Wow",
+                    },
+                    {
+                        "key": "applicant-website",
+                        "title": "Website",
+                        "type": "text",
+                        "answer": "www.example.com",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "data",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "data",
+                        "title": "Applicant job",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
+        ],
+        "metadata": {
+            "application_id": str(random_application_id),
+            "form_name": "declarations",
+            "isSummaryPageSubmit": True,
+        },
+    }
+    response = client.put(
+        "/applications/forms",
+        json=section_put,
+        follow_redirects=True,
+    )
+    section_status = response.json["status"]
+    assert section_status == "COMPLETED"

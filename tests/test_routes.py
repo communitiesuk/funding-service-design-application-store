@@ -1,3 +1,4 @@
+from unittest.mock import ANY
 from db.models.applications import ApplicationTestMethods
 from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
@@ -5,6 +6,8 @@ from tests.helpers import expected_data_within_response
 from tests.helpers import key_list_to_regex
 from tests.helpers import post_data
 from tests.helpers import post_test_applications
+import external_services.http_methods
+from config import Config
 
 
 def test_create_application_is_successful(client):
@@ -24,6 +27,7 @@ def test_create_application_is_successful(client):
     count_fund_applications(
         client, "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4", expected_length_fund_a
     )
+
     # Post first Fund B application and check length
     application_data_b1 = {
         "account_id": "userb",
@@ -33,6 +37,7 @@ def test_create_application_is_successful(client):
     post_data(client, "/applications", application_data_b1)
     expected_length_fund_b = 1
     count_fund_applications(client, "fund-b", expected_length_fund_b)
+
     # Post second Fund B application and check length
     application_data_b2 = {
         "account_id": "userc",
@@ -43,6 +48,17 @@ def test_create_application_is_successful(client):
     expected_length_fund_b = 2
     count_fund_applications(client, "fund-b", expected_length_fund_b)
 
+def test_post_was_made_to_account_store_on_post(client):
+
+    application_data = {
+        "account_id": "userb",
+        "fund_id": "fund-b",
+        "round_id": "summer",
+    }
+
+    post_data(client, "/applications", application_data)
+
+    external_services.http_methods.post_data.assert_called_with(Config.ACCOUNT_STORE_API_HOST + Config.ACCOUNTS_REG_APP_ENDPOINT, ANY)
 
 def test_get_all_applications(client):
     """

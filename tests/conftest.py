@@ -40,7 +40,6 @@ def mock_post_data_fix(mocker):
     # mock the function in the file it is invoked (not where it is declared)
     mocker.patch(
         "external_services.http_methods.post_data",
-        new=mock_post_data,
     )
 
 

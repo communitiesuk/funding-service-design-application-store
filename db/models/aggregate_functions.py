@@ -64,11 +64,13 @@ def update_form_statuses(
     else:
         if "COMPLETED" not in status_list:
             current_form.status = "NOT_STARTED"
+        elif "NOT_STARTED" not in status_list and current_form.has_completed:
+            current_form.status = "COMPLETED"
         elif "NOT_STARTED" not in status_list and is_summary_page_submitted:
             current_form.status = "COMPLETED"
+            current_form.has_completed = True
         else:
             current_form.status = "IN_PROGRESS"
-
     db.session.commit()
 
 

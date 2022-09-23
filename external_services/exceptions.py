@@ -1,4 +1,4 @@
-class CustomError(Exception):
+class NotificationError(Exception):
     """Exception raises an an error
 
     Attributes:

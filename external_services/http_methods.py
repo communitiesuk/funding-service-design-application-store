@@ -1,5 +1,5 @@
 import requests
-from external_services.exceptions import CustomError
+from external_services.exceptions import NotificationError
 from flask import current_app
 
 
@@ -19,7 +19,7 @@ def post_data(endpoint: str, params: dict = None):
 
         return response.json()
 
-    raise CustomError(
+    raise NotificationError(
         message=(
             "Sorry, the notification could not be sent for endpoint:"
             f" '{endpoint}', params: '{params}'."

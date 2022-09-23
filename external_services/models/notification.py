@@ -28,18 +28,18 @@ class Notification(object):
             f" params: '{params}'."
         )
         response = post_data(url, params)
-        if response:
-            current_app.logger.info(
-                "application sent to notification service with response:"
-                f" '{response}'."
-            )
-            return True
-        raise NotificationError(
-            message=(
-                "Sorry, the notification could not be sent for endpoint:"
-                f" '{url}', params: '{params}'."
-            )
+        # if response:
+        current_app.logger.info(
+            "application sent to notification service with response:"
+            f" '{response}'."
         )
+        return response
+        # raise NotificationError(
+        #     message=(
+        #         "Sorry, the notification could not be sent for endpoint:"
+        #         f" '{url}', params: '{params}'."
+        #     )
+        # )
 
 
 class NotificationError(Exception):

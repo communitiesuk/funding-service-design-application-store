@@ -106,7 +106,8 @@ class ApplicationsMethods:
                 f" {fund_id} and round_id {round_id}"
             )
 
-    def create_application(self, account_id, fund_id, round_id):
+    @staticmethod
+    def create_application(account_id, fund_id, round_id):
         fund = get_fund(fund_id)
         fund_round = get_round(fund_id, round_id)
         if fund and fund_round and fund.short_name and fund_round.short_name:
@@ -114,10 +115,10 @@ class ApplicationsMethods:
             max_tries = 10
             attempt = 0
             key = None
-            app_key_gen = self.random_key_generator()
+            app_key_gen = ApplicationsMethods.random_key_generator()
             while attempt < max_tries and new_application is None:
                 key = next(app_key_gen)
-                new_application = self._create_application_try(
+                new_application = ApplicationsMethods._create_application_try(
                     account_id=account_id,
                     fund_id=fund_id,
                     round_id=round_id,
@@ -148,6 +149,7 @@ class ApplicationsMethods:
         application_list = db.session.query(Applications).all()
         return application_list
 
+    @staticmethod
     def search_applications(**params):
         """
         Returns a list of applications matching required params

@@ -52,6 +52,7 @@ class ApplicationHelpers:
             "account_id",
             "assessment_deadline",
             "started_at",
+            "last_edited"
         ]:
             applications = sorted(
                 applications,

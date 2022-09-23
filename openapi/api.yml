@@ -184,7 +184,7 @@ paths:
               schema:
                 type: object
                 items:
-                  $ref: 'components.yml#/components/schemas/ReturnedApplication'
+                  $ref: 'components.yml#/components/schemas/SubmittedApplication'
         404:
           description: ERROR - Application cannot be submitted.
           content:

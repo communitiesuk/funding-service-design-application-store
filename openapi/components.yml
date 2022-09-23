@@ -81,7 +81,9 @@ components:
     SubmittedApplication:
       type: object
       properties:
-        application_id:
+        id:
+          type: string
+        reference:
           type: string
     ReturnedApplication:
       type: object

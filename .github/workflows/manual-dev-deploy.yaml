@@ -17,7 +17,6 @@
         - name: install dependencies
           run: source .venv/bin/activate && python -m pip install --upgrade pip && pip install -r requirements.txt
         - name: upgrade db (if specified)
-          if: ${{inputs.upgrade_db == true}}
           run: source .venv/bin/activate && python -m flask db upgrade
         - name: download previous build
           uses: actions/download-artifact@v2

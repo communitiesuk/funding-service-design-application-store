@@ -1,6 +1,6 @@
 import datetime
 
-import requests
+import api.routes.application.helpers
 import sqlalchemy.orm.exc
 from config import Config
 from db import db
@@ -141,13 +141,12 @@ def update_statuses(
 
 
 def get_round_name(fund_id, round_id):
-    response = requests.get(
+    response = api.routes.application.helpers.get_data(
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
-    if response.status_code == 200:
-        json_data = response.json()
-        return json_data.get("title")
+    if response:
+        return response.get("title")
 
 
 def get_application_with_forms(app_id):

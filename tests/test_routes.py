@@ -66,7 +66,7 @@ def test_create_application_creates_formatted_reference(client):
         follow_redirects=True,
     )
     application = response.json
-    assert application["reference"][:8] == "COF-SUM-"
+    assert application["reference"].startswith("COF-SUM-")
     assert application["reference"][-6:].isupper()
     assert application["reference"][-6:].isalpha()
 

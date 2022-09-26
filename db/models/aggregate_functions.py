@@ -1,6 +1,8 @@
 import datetime
 
+import api.routes.application.helpers
 import sqlalchemy.orm.exc
+from config import Config
 from db import db
 from db.models.applications import Applications
 from db.models.applications import ApplicationsMethods
@@ -138,10 +140,22 @@ def update_statuses(
     update_application_status(application_id)
 
 
+def get_round_name(fund_id, round_id):
+    response = api.routes.application.helpers.get_data(
+        Config.FUND_STORE_API_HOST
+        + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
+    )
+    if response:
+        return response.get("title")
+
+
 def get_application_with_forms(app_id):
     application = ApplicationsMethods.get_application_by_id(app_id)
     forms = FormsMethods.get_forms_by_app_id(app_id)
-    return {**application.as_dict(), "forms": forms}
+    fund_id = application.as_dict().get("fund_id")
+    round_id = application.as_dict().get("round_id")
+    round_name = get_round_name(fund_id, round_id)
+    return {**application.as_dict(), "round_name": round_name, "forms": forms}
 
 
 def submit_application(application_id):

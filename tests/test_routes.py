@@ -2,6 +2,7 @@ import json
 
 import pytest
 from db.models.applications import ApplicationError
+from db.models.aggregate_functions import get_round_name
 from db.models.applications import ApplicationTestMethods
 from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
@@ -321,7 +322,12 @@ def test_get_application_by_application_id(client):
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_id = random_app.id
-    expected_data = {**random_app.as_dict(), "forms": []}
+    round_name = get_round_name(random_app.fund_id, random_app.round_id)
+    expected_data = {
+        **random_app.as_dict(),
+        "round_name": round_name,
+        "forms": [],
+    }
     expected_data_within_response(
         client,
         f"/applications/{random_id}",

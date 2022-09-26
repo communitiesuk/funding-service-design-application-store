@@ -36,7 +36,7 @@ def mock_get_random_choices(
 def mock_get_data_fix(mocker):
     # mock the function in the file it is invoked (not where it is declared)
     mocker.patch(
-        "api.routes.application.helpers",
+        "api.routes.application.helpers.get_data",
         new=mock_get_data,
     )
 

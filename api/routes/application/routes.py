@@ -81,8 +81,9 @@ class ApplicationsView(ApplicationsMethods, MethodView):
                 {"application": application_with_form_json},
             )
             return {
-                       "id": application_with_form_json["id"],
-                       "reference": application_with_form_json["reference"]
-                   }, 201
+                "id": application_with_form_json["id"],
+                "reference": application_with_form_json["reference"],
+                "email": account.email,
+            }, 201
         except KeyError as e:
             return {"code": 404, "message": str(e)}

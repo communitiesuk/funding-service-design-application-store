@@ -85,6 +85,8 @@ components:
           type: string
         reference:
           type: string
+        email:
+          type: string
     ReturnedApplication:
       type: object
       properties:

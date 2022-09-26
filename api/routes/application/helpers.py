@@ -110,22 +110,22 @@ def get_remote_data(endpoint, params: dict = None):
 
 
 def get_local_data(endpoint: str, params: dict = None):
-
     query_string = ""
     if params:
         params = {k: v for k, v in params.items() if v is not None}
         query_string = urlencode(params)
         endpoint = endpoint + "?" + query_string
-
     api_data_json = os.path.join(
         Config.FLASK_ROOT, "tests", "api_data", "get_endpoint_data.json"
     )
-
-    fp = open(api_data_json)
-    api_data = json.load(fp)
-    fp.close()
+    with open(api_data_json) as json_file:
+        api_data = json.load(json_file)
     if endpoint in api_data:
-        return api_data.get(endpoint)
+        mocked_response = requests.models.Response()
+        mocked_response.status_code = 200
+        content_str = json.dumps(api_data[endpoint])
+        mocked_response._content = bytes(content_str, "utf-8")
+        return mocked_response
     return None
 
 

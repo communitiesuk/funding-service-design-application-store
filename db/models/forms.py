@@ -24,6 +24,7 @@ class Forms(db.Model):
         "status", db.Enum(Status), default="NOT_STARTED", nullable=False
     )
     name = db.Column("name", db.String(), nullable=False)
+    has_completed = db.Column("has_completed", db.Boolean(), default=False)
 
     def as_json(self):
         return {

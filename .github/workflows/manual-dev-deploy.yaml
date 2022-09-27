@@ -5,6 +5,8 @@
     deploy_dev:
       runs-on: ubuntu-latest
       environment: Dev
+      env:
+        FLASK_ENV: dev
       steps:
         - name: checkout code
           uses: actions/checkout@v2

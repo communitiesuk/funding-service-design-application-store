@@ -10,4 +10,3 @@ class DevelopmentConfig(DefaultConfig):
 
     FSD_LOGGING_LEVEL = logging.DEBUG
     SQLALCHEMY_TRACK_MODIFICATIONS = False
- 

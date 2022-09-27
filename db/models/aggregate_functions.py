@@ -231,3 +231,30 @@ def update_application_and_related_form(
     current_app.logger.info(
         f"Application updated for application_id: '{application_id}."
     )
+
+
+def gen_report(application_id):
+    return_json = {}
+    # application_id
+    application = ApplicationsMethods.get_application_by_id(application_id)
+    return_json["application_id"] = application.as_dict().get("id")
+
+    stored_forms = FormsMethods.get_forms_by_app_id(application_id)
+
+    for form in stored_forms:
+        if form.get("name") == "organisation-information":
+            for question in form["questions"]:
+                for field in question["fields"]:
+                    if (
+                        field.get("key") == "lajFtB"
+                        or field.get("title") == "Type of Organisation"
+                    ):
+                        return_json["organisation_type"] = field.get("answer")
+
+    return_json["bidding_amount"] = "bid"
+    return_json["asset_type"] = "ast"
+    return_json["geography"] = "geo"
+    return_json["capital"] = "cap"
+    return_json["revenue"] = "rev"
+
+    return return_json

@@ -86,6 +86,23 @@ components:
       properties:
         id:
           type: string
+    Report:
+      type: object
+      properties:
+        application_id:
+          type: string
+        bid_ammount:
+          type: integer
+        organisation_type:
+          type: string
+        asset_type:
+          type: string
+        geography:
+          type: string
+        capital:
+          type: integer
+        revenue:
+          type: integer
     Error:
       type: object
       properties:

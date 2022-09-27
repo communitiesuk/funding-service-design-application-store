@@ -3,6 +3,7 @@ import uuid
 from api.routes.application.helpers import ApplicationHelpers
 from api.routes.application.helpers import get_account
 from config import Config
+from db.models.aggregate_functions import gen_report
 from db.models.aggregate_functions import get_application_with_forms
 from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
@@ -47,6 +48,13 @@ class ApplicationsView(ApplicationsMethods, MethodView):
     def get_by_id(self, application_id):
         try:
             return_dict = get_application_with_forms(uuid.UUID(application_id))
+            return return_dict, 200
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}
+
+    def get_report(self, application_id):
+        try:
+            return_dict = gen_report(uuid.UUID(application_id))
             return return_dict, 200
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}

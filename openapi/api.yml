@@ -195,3 +195,32 @@ paths:
                 code: 404
                 status: 'error'
                 message: 'Application corresponding to id not found.'
+  /applications/{application_id}/reporting:
+    get:
+      tags:
+        - reporting
+      summary: Get a report
+      description: Get a report
+      operationId: api.ApplicationsView.get_report
+      responses:
+        200:
+          description: SUCCESS - Here is the requested report for application
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: 'components.yml#/components/schemas/Report'
+        404:
+          description: ERROR - Could not get report for application
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path

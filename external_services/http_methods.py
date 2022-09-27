@@ -13,7 +13,7 @@ def post_data(endpoint: str, params: dict = None):
     response = requests.post(endpoint, json=params)
     if response.status_code in [200, 201]:
         current_app.logger.info(
-            "Post successfully sent to {endpoint} with response code:"
+            f"Post successfully sent to {endpoint} with response code:"
             f" '{response.status_code}'."
         )
 

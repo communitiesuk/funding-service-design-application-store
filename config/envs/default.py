@@ -94,7 +94,7 @@ class DefaultConfig:
             "questions": [],
         },
         {
-            "form_minting_name": "inclusiveness-and-intergration",
+            "form_minting_name": "inclusiveness-and-integration",
             "questions": [],
         },
         {

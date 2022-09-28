@@ -241,6 +241,27 @@ def gen_report(application_id):
 
     stored_forms = FormsMethods.get_forms_by_app_id(application_id)
 
+    # dataRequested = {
+    #     "organisation-type": {
+    #         "form": "organisation-information",
+    #         "key": "lajFtB",
+    #         "title": "Type of Organisation",
+    #         "return": "organisation_type"
+    #     },
+    #     "asset-type": {
+    #         "form": "asset-information",
+    #         "key": "lajFtB",
+    #         "title": "Asset Type",
+    #         "return": "asset_type"
+    #     },
+    #     "organisation-type": {
+    #         "form": "organisation-information",
+    #         "key": "lajFtB",
+    #         "title": "Type of Organisation",
+    #         "return": "organisation_type"
+    #     }, 
+    # }
+
     for form in stored_forms:
         if form.get("name") == "organisation-information":
             for question in form["questions"]:
@@ -250,10 +271,27 @@ def gen_report(application_id):
                         or field.get("title") == "Type of Organisation"
                     ):
                         return_json["organisation_type"] = field.get("answer")
+        
+        elif form.get("name") == "asset-information":
+            for question in form["questions"]:
+                for field in question["fields"]:
+                    if (
+                        field.get("key") == "yaQoxU"
+                        or field.get("title") == "Asset Type"
+                    ):
+                        return_json["asset_type"] = field.get("answer")
+        
+        elif form.get("name") == "project-information":
+            for question in form["questions"]:
+                for field in question["fields"]:
+                    if (
+                        field.get("key") == "yEmHpp"
+                        or field.get("title") == "Address of the community asset"
+                    ):
+                        return_json["asset_type"] = field.get("answer")
+                        
 
     return_json["bidding_amount"] = "bid"
-    return_json["asset_type"] = "ast"
-    return_json["geography"] = "geo"
     return_json["capital"] = "cap"
     return_json["revenue"] = "rev"
 

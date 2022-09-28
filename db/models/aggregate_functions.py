@@ -234,65 +234,69 @@ def update_application_and_related_form(
 
 
 def gen_report(application_id):
-    return_json = {}
+    return_json = {
+        "application_id": None,
+        "asset_type": None,
+        "capital": None,
+        "geography": None,
+        "organisation_type": None,
+        "revenue": None,
+    }
     # application_id
     application = ApplicationsMethods.get_application_by_id(application_id)
     return_json["application_id"] = application.as_dict().get("id")
 
     stored_forms = FormsMethods.get_forms_by_app_id(application_id)
 
-    # dataRequested = {
-    #     "organisation-type": {
-    #         "form": "organisation-information",
-    #         "key": "lajFtB",
-    #         "title": "Type of Organisation",
-    #         "return": "organisation_type"
-    #     },
-    #     "asset-type": {
-    #         "form": "asset-information",
-    #         "key": "lajFtB",
-    #         "title": "Asset Type",
-    #         "return": "asset_type"
-    #     },
-    #     "organisation-type": {
-    #         "form": "organisation-information",
-    #         "key": "lajFtB",
-    #         "title": "Type of Organisation",
-    #         "return": "organisation_type"
-    #     }, 
-    # }
+    list_of_forms = [
+        {
+            "form_name": "organisation-information",
+            "key": "lajFtB",
+            "title": "Type of Organisation",
+            "return_field": "organisation_type",
+        },
+        {
+            "form_name": "asset-information",
+            "key": "yaQoxU",
+            "title": "Asset Type",
+            "return_field": "asset_type",
+        },
+        {
+            "form_name": "project-information",
+            "key": "yEmHpp",
+            "title": "Address of the community asset",
+            "return_field": "geography",
+        },
+        {
+            "form_name": "funding-required",
+            "key": "MultiInputField",
+            "title": "Capital costs",
+            "return_field": "capital",
+        },
+        {
+            "form_name": "funding-required",
+            "key": "MultiInputField-2",
+            "title": "Revenue costs",
+            "return_field": "revenue",
+        },
+    ]
 
     for form in stored_forms:
-        if form.get("name") == "organisation-information":
+        if form.get("name") in [
+            form.get("form_name") for form in list_of_forms
+        ]:
             for question in form["questions"]:
                 for field in question["fields"]:
-                    if (
-                        field.get("key") == "lajFtB"
-                        or field.get("title") == "Type of Organisation"
-                    ):
-                        return_json["organisation_type"] = field.get("answer")
-        
-        elif form.get("name") == "asset-information":
-            for question in form["questions"]:
-                for field in question["fields"]:
-                    if (
-                        field.get("key") == "yaQoxU"
-                        or field.get("title") == "Asset Type"
-                    ):
-                        return_json["asset_type"] = field.get("answer")
-        
-        elif form.get("name") == "project-information":
-            for question in form["questions"]:
-                for field in question["fields"]:
-                    if (
-                        field.get("key") == "yEmHpp"
-                        or field.get("title") == "Address of the community asset"
-                    ):
-                        return_json["asset_type"] = field.get("answer")
-                        
+                    if field.get("key") in [
+                        form.get("key") for form in list_of_forms
+                    ]:
+                        return_field = [
+                            form.get("return_field")
+                            for form in list_of_forms
+                            if form.get("key") == field.get("key")
+                        ][0]
+                        return_json[return_field] = field.get("answer")
 
-    return_json["bidding_amount"] = "bid"
-    return_json["capital"] = "cap"
-    return_json["revenue"] = "rev"
+    # return_json["geography"] == regexify(return_json["geography"])
 
     return return_json

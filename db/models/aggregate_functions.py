@@ -1,4 +1,7 @@
+import csv
 import datetime
+import os
+import re
 
 import api.routes.application.helpers
 import sqlalchemy.orm.exc
@@ -233,6 +236,18 @@ def update_application_and_related_form(
     )
 
 
+def export_json_to_csv(return_json, application_id):
+    file_path = f"db\models\csv_reports\{application_id}_data.csv"  # noqa
+    with open(file_path, "w", newline="") as f:
+        w = csv.DictWriter(f, return_json.keys())
+        w.writeheader()
+        w.writerow(return_json)
+    with open(file_path, "r", newline="") as f:
+        csvFile = csv.reader(f)
+        return csvFile
+    os.remove(file_path)
+
+
 def gen_report(application_id):
     return_json = {
         "application_id": None,
@@ -242,12 +257,9 @@ def gen_report(application_id):
         "organisation_type": None,
         "revenue": None,
     }
-    # application_id
     application = ApplicationsMethods.get_application_by_id(application_id)
     return_json["application_id"] = application.as_dict().get("id")
-
     stored_forms = FormsMethods.get_forms_by_app_id(application_id)
-
     list_of_forms = [
         {
             "form_name": "organisation-information",
@@ -280,7 +292,6 @@ def gen_report(application_id):
             "return_field": "revenue",
         },
     ]
-
     for form in stored_forms:
         if form.get("name") in [
             form.get("form_name") for form in list_of_forms
@@ -295,8 +306,14 @@ def gen_report(application_id):
                             for form in list_of_forms
                             if form.get("key") == field.get("key")
                         ][0]
-                        return_json[return_field] = field.get("answer")
-
-    # return_json["geography"] == regexify(return_json["geography"])
-
+                        if field.get("key") == "yEmHpp":
+                            postcode = re.search(
+                                "([Gg][Ii][Rr]"
+                                " 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})",  # noqa
+                                field.get("answer"),
+                            )
+                            return_json[return_field] = postcode.group()
+                        else:
+                            return_json[return_field] = field.get("answer")
+    export_json_to_csv(return_json, application_id)
     return return_json

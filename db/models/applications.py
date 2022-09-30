@@ -33,6 +33,7 @@ class Applications(db.Model):
     project_name = db.Column(
         "project_name",
         db.String(),
+        nullable=True,
     )
     started_at = db.Column("started_at", DateTime(), server_default=func.now())
     status = db.Column(
@@ -55,8 +56,7 @@ class Applications(db.Model):
             "round_id": self.round_id,
             "fund_id": self.fund_id,
             "reference": self.reference,
-            "project_name": self.project_name
-            or "Untitled project",
+            "project_name": self.project_name or None,
             "started_at": self.started_at.isoformat(),
             "status": self.status.name,
             "last_edited": (self.last_edited or self.started_at).isoformat(),

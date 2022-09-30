@@ -17,6 +17,7 @@ components:
           type: string
         project_name:
           type: string
+          nullable: true
         started_at:
           type: string
         last_edited:

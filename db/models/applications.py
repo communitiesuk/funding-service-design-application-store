@@ -41,8 +41,7 @@ class Applications(db.Model):
             "account_id": self.account_id,
             "round_id": self.round_id,
             "fund_id": self.fund_id,
-            "project_name": self.project_name
-            or "Untitled project",
+            "project_name": self.project_name or "Untitled project",
             "started_at": self.started_at.isoformat(),
             "status": self.status.name,
             "last_edited": (self.last_edited or self.started_at).isoformat(),
@@ -95,9 +94,9 @@ class ApplicationsMethods:
         if account_id:
             filters.append(Applications.account_id == account_id)
         if status_only:
-            filters.append(
-                Applications.status.name == status_only.replace(" ", "_")
-            )
+            if " " in status_only:
+                status_only = status_only.replace(" ", "_")
+            filters.append(Applications.status == status_only)
         if application_id:
             filters.append(Applications.id == application_id)
         if len(filters) == 0:

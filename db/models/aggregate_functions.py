@@ -1,6 +1,5 @@
 import csv
 import datetime
-import os
 import re
 
 import api.routes.application.helpers
@@ -242,13 +241,9 @@ def export_json_to_csv(return_json, application_id):
         w = csv.DictWriter(f, return_json.keys())
         w.writeheader()
         w.writerow(return_json)
-    with open(file_path, "r", newline="") as f:
-        csvFile = csv.reader(f)
-        return csvFile
-    os.remove(file_path)
 
 
-def gen_report(application_id):
+def get_report_for_application(application_id):
     return_json = {
         "application_id": None,
         "asset_type": None,
@@ -316,4 +311,21 @@ def gen_report(application_id):
                         else:
                             return_json[return_field] = field.get("answer")
     export_json_to_csv(return_json, application_id)
+    get_general_applications_report()
+    return return_json
+
+
+def get_general_applications_report():
+    return_json = {
+        "applications_started": None,
+        "applications_submitted": None,
+    }
+    status = {"status_only": "IN_PROGRESS"}
+    started_applications = ApplicationsMethods.search_applications(**status)
+    return_json["applications_started"] = len(started_applications)
+
+    status["status_only"] = "SUBMITTED"
+    started_applications = ApplicationsMethods.search_applications(**status)
+    return_json["applications_submitted"] = len(started_applications)
+
     return return_json

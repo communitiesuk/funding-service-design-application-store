@@ -86,13 +86,18 @@ components:
       properties:
         id:
           type: string
+    GeneralReport:
+      type: object
+      properties:
+        applications_started:
+          type: integer
+        applications_submitted:
+          type: integer
     Report:
       type: object
       properties:
         application_id:
           type: string
-        bid_ammount:
-          type: integer
         organisation_type:
           type: string
         asset_type:

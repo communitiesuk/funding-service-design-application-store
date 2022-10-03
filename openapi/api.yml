@@ -196,13 +196,13 @@ paths:
                 status: 'error'
                 message: 'Application corresponding to id not found.'
 
-  /applications/reporting:
+  /applications/reporting/applications_statuses_data:
     get:
       tags:
         - reporting
-      summary: Get general report on applications
-      description: Get general report on applications
-      operationId: api.ApplicationsView.get_general_report
+      summary: Get report on started and submitted applications
+      description: Get report on started and submitted applications
+      operationId: api.ApplicationsView.get_applications_statuses_report
       responses:
         200:
           description: SUCCESS - Here is the report on applications
@@ -211,7 +211,7 @@ paths:
               schema:
                 type: object
                 items:
-                  $ref: 'components.yml#/components/schemas/GeneralReport'
+                  $ref: 'components.yml#/components/schemas/ApplicationsStatuses'
         404:
           description: ERROR - Could not get report for application
           content:
@@ -219,13 +219,36 @@ paths:
               schema:
                 $ref: 'components.yml#/components/schemas/Error'
 
-  /applications/{application_id}/reporting:
+  /applications/reporting/key_application_metrics:
     get:
       tags:
         - reporting
-      summary: Get a report on an application
-      description: Get a report on an application
-      operationId: api.ApplicationsView.get_report
+      summary: Get the key data report on applications
+      description: Get the key data report on applications
+      operationId: api.ApplicationsView.get_key_applications_data_report
+      responses:
+        200:
+          description: SUCCESS - Here is the report on applications
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: 'components.yml#/components/schemas/KeyDataReports'
+        404:
+          description: ERROR - Could not get report for application
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+
+  /applications/reporting/key_application_metrics/{application_id}/:
+    get:
+      tags:
+        - reporting
+      summary: Get the key data report on an application
+      description: Get the key data report on an application
+      operationId: api.ApplicationsView.get_key_application_data_report
       responses:
         200:
           description: SUCCESS - Here is the requested report for application
@@ -234,7 +257,7 @@ paths:
               schema:
                 type: object
                 items:
-                  $ref: 'components.yml#/components/schemas/Report'
+                  $ref: 'components.yml#/components/schemas/KeyDataReport'
         404:
           description: ERROR - Could not get report for application
           content:

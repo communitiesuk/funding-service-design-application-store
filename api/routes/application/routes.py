@@ -4,7 +4,10 @@ from api.routes.application.helpers import ApplicationHelpers
 from api.routes.application.helpers import get_account
 from config import Config
 from db.models.aggregate_functions import get_application_with_forms
-from db.models.aggregate_functions import get_general_applications_report
+from db.models.aggregate_functions import (
+    get_general_status_applications_report,
+)
+from db.models.aggregate_functions import get_report_for_all_applications
 from db.models.aggregate_functions import get_report_for_application
 from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
@@ -53,16 +56,23 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 
-    def get_report(self, application_id):
+    def get_key_application_data_report(self, application_id):
         try:
             return_dict = get_report_for_application(uuid.UUID(application_id))
             return return_dict, 200
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 
-    def get_general_report(self):
+    def get_applications_statuses_report(self):
         try:
-            return_dict = get_general_applications_report()
+            return_dict = get_general_status_applications_report()
+            return return_dict, 200
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}
+
+    def get_key_applications_data_report(self):
+        try:
+            return_dict = get_report_for_all_applications()
             return return_dict, 200
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}

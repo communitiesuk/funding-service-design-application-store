@@ -235,12 +235,22 @@ def update_application_and_related_form(
     )
 
 
-def export_json_to_csv(return_json, application_id):
+def export_json_to_csv_with_id(return_json, application_id):
     file_path = f"db\models\csv_reports\{application_id}_data.csv"  # noqa
     with open(file_path, "w", newline="") as f:
         w = csv.DictWriter(f, return_json.keys())
         w.writeheader()
         w.writerow(return_json)
+
+
+def export_json_to_csv(return_json_list):
+    file_path = r"db\models\csv_reports\required_data.csv"  # noqa
+    with open(file_path, "w", newline="") as f:
+        headers = return_json_list[0]
+        w = csv.DictWriter(f, headers.keys())
+        w.writeheader()
+        for return_json in return_json_list:
+            w.writerow(return_json)
 
 
 def get_report_for_application(application_id):
@@ -310,12 +320,11 @@ def get_report_for_application(application_id):
                             return_json[return_field] = postcode.group()
                         else:
                             return_json[return_field] = field.get("answer")
-    export_json_to_csv(return_json, application_id)
-    get_general_applications_report()
+    export_json_to_csv_with_id(return_json, application_id)
     return return_json
 
 
-def get_general_applications_report():
+def get_general_status_applications_report():
     return_json = {
         "applications_started": None,
         "applications_submitted": None,
@@ -329,3 +338,78 @@ def get_general_applications_report():
     return_json["applications_submitted"] = len(started_applications)
 
     return return_json
+
+
+def get_report_for_all_applications():
+    return_json_list = []
+    for application in ApplicationsMethods.get_all():
+        return_json = {
+            "application_id": None,
+            "asset_type": None,
+            "capital": None,
+            "geography": None,
+            "organisation_type": None,
+            "revenue": None,
+        }
+        application = ApplicationsMethods.get_application_by_id(application.id)
+        return_json["application_id"] = application.as_dict().get("id")
+        stored_forms = FormsMethods.get_forms_by_app_id(application.id)
+        list_of_forms = [
+            {
+                "form_name": "organisation-information",
+                "key": "lajFtB",
+                "title": "Type of Organisation",
+                "return_field": "organisation_type",
+            },
+            {
+                "form_name": "asset-information",
+                "key": "yaQoxU",
+                "title": "Asset Type",
+                "return_field": "asset_type",
+            },
+            {
+                "form_name": "project-information",
+                "key": "yEmHpp",
+                "title": "Address of the community asset",
+                "return_field": "geography",
+            },
+            {
+                "form_name": "funding-required",
+                "key": "MultiInputField",
+                "title": "Capital costs",
+                "return_field": "capital",
+            },
+            {
+                "form_name": "funding-required",
+                "key": "MultiInputField-2",
+                "title": "Revenue costs",
+                "return_field": "revenue",
+            },
+        ]
+        for form in stored_forms:
+            if form.get("name") in [
+                form.get("form_name") for form in list_of_forms
+            ]:
+                for question in form["questions"]:
+                    for field in question["fields"]:
+                        if field.get("key") in [
+                            form.get("key") for form in list_of_forms
+                        ]:
+                            return_field = [
+                                form.get("return_field")
+                                for form in list_of_forms
+                                if form.get("key") == field.get("key")
+                            ][0]
+                            if field.get("key") == "yEmHpp":
+                                postcode = re.search(
+                                    "([Gg][Ii][Rr]"
+                                    " 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})",  # noqa
+                                    field.get("answer"),
+                                )
+                                return_json[return_field] = postcode.group()
+                            else:
+                                return_json[return_field] = field.get("answer")
+        return_json_list.append(return_json)
+
+    export_json_to_csv(return_json_list)
+    return {"data": return_json_list}

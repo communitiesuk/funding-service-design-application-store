@@ -86,14 +86,14 @@ components:
       properties:
         id:
           type: string
-    GeneralReport:
+    ApplicationsStatuses:
       type: object
       properties:
         applications_started:
           type: integer
         applications_submitted:
           type: integer
-    Report:
+    KeyDataReport:
       type: object
       properties:
         application_id:
@@ -108,6 +108,14 @@ components:
           type: integer
         revenue:
           type: integer
+    KeyDataReports:
+      type: object
+      properties:
+        Report:
+          type: array
+          items:
+            oneOf:
+              - type: object
     Error:
       type: object
       properties:

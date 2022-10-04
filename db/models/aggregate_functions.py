@@ -242,8 +242,7 @@ def export_json_to_csv(return_data):
         headers = return_data[0]
         w = csv.DictWriter(output, headers.keys())
         w.writeheader()
-        for return_json in return_data:
-            w.writerow(return_json)
+        w.writerows(return_data)
     else:
         w = csv.DictWriter(output, return_data.keys())
         w.writeheader()

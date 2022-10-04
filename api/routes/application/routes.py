@@ -60,15 +60,23 @@ class ApplicationsView(ApplicationsMethods, MethodView):
 
     def get_key_application_data_report(self, application_id):
         try:
-            return_dict = get_report_for_application(uuid.UUID(application_id))
-            return return_dict, 200
+            return send_file(
+                export_json_to_csv(get_report_for_application(application_id)),
+                "text/csv",
+                as_attachment=True,
+                download_name="required_data.csv",
+            )
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 
     def get_applications_statuses_report(self):
         try:
-            return_dict = get_general_status_applications_report()
-            return return_dict, 200
+            return send_file(
+                export_json_to_csv(get_general_status_applications_report()),
+                "text/csv",
+                as_attachment=True,
+                download_name="required_data.csv",
+            )
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 

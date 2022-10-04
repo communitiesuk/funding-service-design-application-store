@@ -236,22 +236,21 @@ def update_application_and_related_form(
     )
 
 
-def export_json_to_csv_with_id(return_json, application_id):
-    file_path = f"db\models\csv_reports\{application_id}_data.csv"  # noqa
-    with open(file_path, "w", newline="") as f:
-        w = csv.DictWriter(f, return_json.keys())
+def export_json_to_csv(return_data):
+    output = io.StringIO()
+    if type(return_data) == list:
+        headers = return_data[0]
+        w = csv.DictWriter(output, headers.keys())
         w.writeheader()
-        w.writerow(return_json)
-
-
-def export_json_to_csv(return_json_list):
-    f = io.StringIO()
-    headers = return_json_list[0]
-    w = csv.DictWriter(f, headers.keys())
-    w.writeheader()
-    for return_json in return_json_list:
-        w.writerow(return_json)
-    return f.getvalue().encode("utf-8")
+        for return_json in return_data:
+            w.writerow(return_json)
+    else:
+        w = csv.DictWriter(output, return_data.keys())
+        w.writeheader()
+        w.writerow(return_data)
+    bytes_object = bytes(output.getvalue(), encoding="utf-8")
+    bytes_output = io.BytesIO(bytes_object)
+    return bytes_output
 
 
 def get_report_for_application(application_id):
@@ -321,7 +320,6 @@ def get_report_for_application(application_id):
                             return_json[return_field] = postcode.group()
                         else:
                             return_json[return_field] = field.get("answer")
-    export_json_to_csv_with_id(return_json, application_id)
     return return_json
 
 

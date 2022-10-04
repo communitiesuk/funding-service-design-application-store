@@ -205,13 +205,9 @@ paths:
       operationId: api.ApplicationsView.get_applications_statuses_report
       responses:
         200:
-          description: SUCCESS - Here is the report on applications
+          description: SUCCESS - Here is the status report on applications
           content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: 'components.yml#/components/schemas/ApplicationsStatuses'
+            text/csv: {}
         404:
           description: ERROR - Could not get report
           content:
@@ -247,13 +243,9 @@ paths:
       operationId: api.ApplicationsView.get_key_application_data_report
       responses:
         200:
-          description: SUCCESS - Here is the requested report for application
+          description: SUCCESS - Here is the report on requested application
           content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: 'components.yml#/components/schemas/KeyDataReport'
+            text/csv: {}
         404:
           description: ERROR - Could not get report
           content:

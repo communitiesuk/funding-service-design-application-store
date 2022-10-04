@@ -1,5 +1,6 @@
 import csv
 import datetime
+import io
 import re
 
 import api.routes.application.helpers
@@ -244,13 +245,13 @@ def export_json_to_csv_with_id(return_json, application_id):
 
 
 def export_json_to_csv(return_json_list):
-    file_path = r"db\models\csv_reports\required_data.csv"  # noqa
-    with open(file_path, "w", newline="") as f:
-        headers = return_json_list[0]
-        w = csv.DictWriter(f, headers.keys())
-        w.writeheader()
-        for return_json in return_json_list:
-            w.writerow(return_json)
+    f = io.StringIO()
+    headers = return_json_list[0]
+    w = csv.DictWriter(f, headers.keys())
+    w.writeheader()
+    for return_json in return_json_list:
+        w.writerow(return_json)
+    return f.getvalue().encode("utf-8")
 
 
 def get_report_for_application(application_id):
@@ -410,6 +411,4 @@ def get_report_for_all_applications():
                             else:
                                 return_json[return_field] = field.get("answer")
         return_json_list.append(return_json)
-
-    export_json_to_csv(return_json_list)
-    return {"data": return_json_list}
+    return return_json_list

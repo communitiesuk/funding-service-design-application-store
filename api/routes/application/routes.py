@@ -3,6 +3,7 @@ import uuid
 from api.routes.application.helpers import ApplicationHelpers
 from api.routes.application.helpers import get_account
 from config import Config
+from db.models.aggregate_functions import export_json_to_csv
 from db.models.aggregate_functions import get_application_with_forms
 from db.models.aggregate_functions import (
     get_general_status_applications_report,
@@ -15,6 +16,7 @@ from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from external_services.models.notification import Notification
 from flask import request
+from flask import send_file
 from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -72,8 +74,12 @@ class ApplicationsView(ApplicationsMethods, MethodView):
 
     def get_key_applications_data_report(self):
         try:
-            return_dict = get_report_for_all_applications()
-            return return_dict, 200
+            return send_file(
+                export_json_to_csv(get_report_for_all_applications()),
+                "text/csv",
+                as_attachment=True,
+                download_name="required_data.csv",
+            )
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 

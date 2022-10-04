@@ -213,7 +213,7 @@ paths:
                 items:
                   $ref: 'components.yml#/components/schemas/ApplicationsStatuses'
         404:
-          description: ERROR - Could not get report for application
+          description: ERROR - Could not get report
           content:
             application/json:
               schema:
@@ -230,13 +230,9 @@ paths:
         200:
           description: SUCCESS - Here is the report on applications
           content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: 'components.yml#/components/schemas/KeyDataReports'
+            text/csv: {}
         404:
-          description: ERROR - Could not get report for application
+          description: ERROR - Could not get report
           content:
             application/json:
               schema:
@@ -259,7 +255,7 @@ paths:
                 items:
                   $ref: 'components.yml#/components/schemas/KeyDataReport'
         404:
-          description: ERROR - Could not get report for application
+          description: ERROR - Could not get report
           content:
             application/json:
               schema:

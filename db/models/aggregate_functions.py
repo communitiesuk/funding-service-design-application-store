@@ -442,8 +442,7 @@ def send_email_on_deadline_task(fund_id, round_id):
             all_applications.append({"application":application})
     else:
         current_app.logger.error("Current fund round is active")
-        
-    current_app.logger.error(f"APPLICATIONS:::{all_applications}")    
+  
     return fund_round_deadline
 
 

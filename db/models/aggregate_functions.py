@@ -440,12 +440,10 @@ def send_email_on_deadline_task(fund_id, round_id):
             all_applications.append({"application":application})
     else:
         current_app.logger.error("FUND_DEADLINE IS BIGGER")
-        
-    current_app.logger.error(f"NOTIFICATION::::{all_applications}")    
+           
     return fund_round_deadline
 
 
     # retrieve email for each application from Magic link 
     # Call notification func to add required keys ("type": "APPLICATION_RECORD_OF_SUBMISSION", "to": email_address, "content": application)
     # Post contents to Notification
-    

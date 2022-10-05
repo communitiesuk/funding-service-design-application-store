@@ -1,3 +1,5 @@
+
+
 import csv
 import datetime
 import io
@@ -420,21 +422,30 @@ def send_email_on_deadline_task(fund_id, round_id):
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
     fund_round_deadline = response.get("deadline")
-    if current_date_time < fund_round_deadline:
-        current_app.logger.error("CURRENT_DATE_TIME IS BIGGER")
+    if current_date_time < fund_round_deadline: # Change < to >
+        
+        current_app.logger.error("Current fund round has past the deadline")
         status = {"status_only": "IN_PROGRESS"}
         in_progress_applications = ApplicationsMethods.search_applications(
             **status
         )
+        all_applications= []
         for application in in_progress_applications:
-            application_forms = FormsMethods.get_forms_by_app_id(
-                application.id
-            )
-            current_app.logger.error(application)
-            current_app.logger.error(application_forms)
+            forms = FormsMethods.get_forms_by_app_id(application.get("id"))
+            application['forms'] = forms
+            
+            # Add round_name to application
+            # Update submission date temporarily to test out Notification response
+            
+            all_applications.append({"application":application})
     else:
         current_app.logger.error("FUND_DEADLINE IS BIGGER")
+        
+    current_app.logger.error(f"NOTIFICATION::::{all_applications}")    
     return fund_round_deadline
 
-    # retrieve email for each application
-    # ram will explain the rest
+
+    # retrieve email for each application from Magic link 
+    # Call notification func to add required keys ("type": "APPLICATION_RECORD_OF_SUBMISSION", "to": email_address, "content": application)
+    # Post contents to Notification
+    

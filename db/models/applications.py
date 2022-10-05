@@ -168,9 +168,9 @@ class ApplicationsMethods:
         if account_id:
             filters.append(Applications.account_id == account_id)
         if status_only:
-            filters.append(
-                Applications.status.name == status_only.replace(" ", "_")
-            )
+            if " " in status_only:
+                status_only = status_only.replace(" ", "_")
+            filters.append(Applications.status == status_only)
         if application_id:
             filters.append(Applications.id == application_id)
         if len(filters) == 0:

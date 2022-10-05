@@ -52,7 +52,7 @@ class ApplicationHelpers:
             "account_id",
             "assessment_deadline",
             "started_at",
-            "last_edited"
+            "last_edited",
         ]:
             applications = sorted(
                 applications,
@@ -125,7 +125,7 @@ def get_local_data(endpoint: str, params: dict = None):
         mocked_response.status_code = 200
         content_str = json.dumps(api_data[endpoint])
         mocked_response._content = bytes(content_str, "utf-8")
-        return mocked_response
+        return json.loads(mocked_response.text)
     return None
 
 
@@ -145,6 +145,7 @@ def get_fund(fund_id: str) -> Fund | None:
     )
     current_app.logger.info(f"Request made to {endpoint}")
     response = get_data(endpoint)
+    print(response)
     if response is None:
         current_app.logger.info("Request to fund store returned None")
     fund = Fund.from_json(response)

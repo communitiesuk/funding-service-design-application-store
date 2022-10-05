@@ -145,6 +145,7 @@ def get_round_name(fund_id, round_id):
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
+    send_email_on_deadline_task(fund_id, round_id)
     if response:
         return response.get("title")
 
@@ -231,3 +232,21 @@ def update_application_and_related_form(
     current_app.logger.info(
         f"Application updated for application_id: '{application_id}."
     )
+
+
+def send_email_on_deadline_task(fund_id, round_id):
+    current_date_time = datetime.datetime.now().replace(microsecond=0)
+    current_date_time = current_date_time.strftime("%Y-%m-%d %H:%M:%S")
+    response = api.routes.application.helpers.get_data(
+        Config.FUND_STORE_API_HOST
+        + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
+    )
+    fund_round_deadline = response.get("deadline")
+    if current_date_time > fund_round_deadline:
+        current_app.logger.error("CURRENT_DATE_TIME IS BIGGER")
+    else:
+        current_app.logger.error("FUND_DEADLINE IS BIGGER")
+    return fund_round_deadline
+    # get all "IN PROGRESS" application - array (query db)
+    # retrieve email for each application
+    # ram will explain the rest

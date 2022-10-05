@@ -184,7 +184,7 @@ paths:
               schema:
                 type: object
                 items:
-                  $ref: 'components.yml#/components/schemas/ReturnedApplication'
+                  $ref: 'components.yml#/components/schemas/SubmittedApplication'
         404:
           description: ERROR - Application cannot be submitted.
           content:
@@ -195,3 +195,67 @@ paths:
                 code: 404
                 status: 'error'
                 message: 'Application corresponding to id not found.'
+
+  /applications/reporting/applications_statuses_data:
+    get:
+      tags:
+        - reporting
+      summary: Get report on started and submitted applications
+      description: Get report on started and submitted applications
+      operationId: api.ApplicationsView.get_applications_statuses_report
+      responses:
+        200:
+          description: SUCCESS - Here is the status report on applications
+          content:
+            text/csv: {}
+        404:
+          description: ERROR - Could not get report
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+
+  /applications/reporting/key_application_metrics:
+    get:
+      tags:
+        - reporting
+      summary: Get the key data report on applications
+      description: Get the key data report on applications
+      operationId: api.ApplicationsView.get_key_applications_data_report
+      responses:
+        200:
+          description: SUCCESS - Here is the report on applications
+          content:
+            text/csv: {}
+        404:
+          description: ERROR - Could not get report
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+
+  /applications/reporting/key_application_metrics/{application_id}/:
+    get:
+      tags:
+        - reporting
+      summary: Get the key data report on an application
+      description: Get the key data report on an application
+      operationId: api.ApplicationsView.get_key_application_data_report
+      responses:
+        200:
+          description: SUCCESS - Here is the report on requested application
+          content:
+            text/csv: {}
+        404:
+          description: ERROR - Could not get report
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path

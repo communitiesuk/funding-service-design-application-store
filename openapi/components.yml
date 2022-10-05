@@ -5,6 +5,8 @@ components:
       properties:
         id:
           type: string
+        reference:
+          type: string
         status:
           type: string
         account_id:
@@ -15,6 +17,7 @@ components:
           type: string
         project_name:
           type: string
+          nullable: true
         started_at:
           type: string
         last_edited:
@@ -79,13 +82,47 @@ components:
     SubmittedApplication:
       type: object
       properties:
-        application_id:
+        id:
+          type: string
+        reference:
+          type: string
+        email:
           type: string
     ReturnedApplication:
       type: object
       properties:
         id:
           type: string
+    ApplicationsStatuses:
+      type: object
+      properties:
+        applications_started:
+          type: integer
+        applications_submitted:
+          type: integer
+    KeyDataReport:
+      type: object
+      properties:
+        application_id:
+          type: string
+        organisation_type:
+          type: string
+        asset_type:
+          type: string
+        geography:
+          type: string
+        capital:
+          type: integer
+        revenue:
+          type: integer
+    KeyDataReports:
+      type: object
+      properties:
+        Report:
+          type: array
+          items:
+            oneOf:
+              - type: object
     Error:
       type: object
       properties:

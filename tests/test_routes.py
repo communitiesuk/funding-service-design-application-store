@@ -1,3 +1,7 @@
+import json
+
+import pytest
+from db.models.applications import ApplicationError
 from db.models.aggregate_functions import get_round_name
 from db.models.applications import ApplicationTestMethods
 from tests.helpers import application_expected_data
@@ -45,6 +49,64 @@ def test_create_application_is_successful(client):
     count_fund_applications(client, "fund-b", expected_length_fund_b)
 
 
+def test_create_application_creates_formatted_reference(client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN we try to create an application
+    THEN a correctly formatted reference is created for the application
+    """
+    create_application_json = {
+        "account_id": "usera",
+        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+    }
+    response = client.post(
+        "/applications",
+        data=json.dumps(create_application_json),
+        content_type="application/json",
+        follow_redirects=True,
+    )
+    application = response.json
+    assert application["reference"].startswith("COF-SUM-")
+    assert application["reference"][-6:].isupper()
+    assert application["reference"][-6:].isalpha()
+
+
+def test_create_application_creates_unique_reference(
+    client, mock_random_choices
+):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN we try to create an application
+    THEN a unique application_reference is created for the application
+    """
+    create_application_json = {
+        "account_id": "usera",
+        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+    }
+    response = client.post(
+        "/applications",
+        data=json.dumps(create_application_json),
+        content_type="application/json",
+        follow_redirects=True,
+    )
+    application = response.json
+    assert application["reference"] == "COF-SUM-ABCDEF"
+
+    with pytest.raises(ApplicationError) as ex_info:
+        client.post(
+            "/applications",
+            data=json.dumps(create_application_json),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+    assert str(ex_info.value).startswith(
+        "Max (10) tries exceeded for create application with application key"
+        " ABCDEF"
+    )
+
+
 def test_get_all_applications(client):
     """
     GIVEN We have a functioning Application Store API
@@ -82,6 +144,7 @@ def test_get_applications_of_account_id(client):
         exclude_regex_paths=key_list_to_regex(
             [
                 "id",
+                "reference",
                 "started_at",
                 "project_name",
                 "last_edited",
@@ -270,7 +333,7 @@ def test_get_application_by_application_id(client):
         f"/applications/{random_id}",
         expected_data,
         exclude_regex_paths=key_list_to_regex(
-            ["started_at", "project_name", "forms"]
+            ["reference", "started_at", "project_name", "forms"]
         ),
         # Lists are annoying to deal with in deepdiff
         # especially when they contain dicts...so in this

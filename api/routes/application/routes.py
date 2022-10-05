@@ -3,13 +3,20 @@ import uuid
 from api.routes.application.helpers import ApplicationHelpers
 from api.routes.application.helpers import get_account
 from config import Config
+from db.models.aggregate_functions import export_json_to_csv
 from db.models.aggregate_functions import get_application_with_forms
+from db.models.aggregate_functions import (
+    get_general_status_applications_report,
+)
+from db.models.aggregate_functions import get_report_for_all_applications
+from db.models.aggregate_functions import get_report_for_application
 from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from external_services.models.notification import Notification
 from flask import request
+from flask import send_file
 from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -51,6 +58,39 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 
+    def get_key_application_data_report(self, application_id):
+        try:
+            return send_file(
+                export_json_to_csv(get_report_for_application(application_id)),
+                "text/csv",
+                as_attachment=True,
+                download_name="required_data.csv",
+            )
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}
+
+    def get_applications_statuses_report(self):
+        try:
+            return send_file(
+                export_json_to_csv(get_general_status_applications_report()),
+                "text/csv",
+                as_attachment=True,
+                download_name="required_data.csv",
+            )
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}
+
+    def get_key_applications_data_report(self):
+        try:
+            return send_file(
+                export_json_to_csv(get_report_for_all_applications()),
+                "text/csv",
+                as_attachment=True,
+                download_name="required_data.csv",
+            )
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}
+
     def put(self):
         request_json = request.get_json(force=True)
         form_dict = {
@@ -80,6 +120,10 @@ class ApplicationsView(ApplicationsMethods, MethodView):
                 account.email,
                 {"application": application_with_form_json},
             )
-            return {"id": application_with_form_json["id"]}, 201
+            return {
+                "id": application_with_form_json["id"],
+                "reference": application_with_form_json["reference"],
+                "email": account.email,
+            }, 201
         except KeyError as e:
             return {"code": 404, "message": str(e)}

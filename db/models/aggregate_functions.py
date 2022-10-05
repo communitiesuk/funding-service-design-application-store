@@ -1,4 +1,7 @@
+import csv
 import datetime
+import io
+import re
 
 import api.routes.application.helpers
 import sqlalchemy.orm.exc
@@ -224,7 +227,7 @@ def update_application_and_related_form(
                 try:
                     application.project_name = key["answer"]
                 except KeyError:
-                    current_app.logger.error("Project name was not edited")
+                    current_app.logger.info("Project name was not edited")
                     continue
     form_sql_row.json = question_json
     update_statuses(application_id, form_name, is_summary_page_submit)
@@ -232,6 +235,181 @@ def update_application_and_related_form(
     current_app.logger.info(
         f"Application updated for application_id: '{application_id}."
     )
+
+
+def export_json_to_csv(return_data):
+    output = io.StringIO()
+    if type(return_data) == list:
+        headers = return_data[0]
+        w = csv.DictWriter(output, headers.keys())
+        w.writeheader()
+        w.writerows(return_data)
+    else:
+        w = csv.DictWriter(output, return_data.keys())
+        w.writeheader()
+        w.writerow(return_data)
+    bytes_object = bytes(output.getvalue(), encoding="utf-8")
+    bytes_output = io.BytesIO(bytes_object)
+    return bytes_output
+
+
+def get_report_for_application(application_id):
+    return_json = {
+        "application_id": None,
+        "asset_type": None,
+        "capital": None,
+        "geography": None,
+        "organisation_type": None,
+        "revenue": None,
+    }
+    application = ApplicationsMethods.get_application_by_id(application_id)
+    return_json["application_id"] = application.as_dict().get("id")
+    stored_forms = FormsMethods.get_forms_by_app_id(application_id)
+    list_of_forms = [
+        {
+            "form_name": "organisation-information",
+            "key": "lajFtB",
+            "title": "Type of Organisation",
+            "return_field": "organisation_type",
+        },
+        {
+            "form_name": "asset-information",
+            "key": "yaQoxU",
+            "title": "Asset Type",
+            "return_field": "asset_type",
+        },
+        {
+            "form_name": "project-information",
+            "key": "yEmHpp",
+            "title": "Address of the community asset",
+            "return_field": "geography",
+        },
+        {
+            "form_name": "funding-required",
+            "key": "MultiInputField",
+            "title": "Capital costs",
+            "return_field": "capital",
+        },
+        {
+            "form_name": "funding-required",
+            "key": "MultiInputField-2",
+            "title": "Revenue costs",
+            "return_field": "revenue",
+        },
+    ]
+    for form in stored_forms:
+        if form.get("name") in [
+            form.get("form_name") for form in list_of_forms
+        ]:
+            for question in form["questions"]:
+                for field in question["fields"]:
+                    if field.get("key") in [
+                        form.get("key") for form in list_of_forms
+                    ]:
+                        return_field = [
+                            form.get("return_field")
+                            for form in list_of_forms
+                            if form.get("key") == field.get("key")
+                        ][0]
+                        if field.get("key") == "yEmHpp":
+                            postcode = re.search(
+                                "([Gg][Ii][Rr]"
+                                " 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})",  # noqa
+                                field.get("answer"),
+                            )
+                            return_json[return_field] = postcode.group()
+                        else:
+                            return_json[return_field] = field.get("answer")
+    return return_json
+
+
+def get_general_status_applications_report():
+    return_json = {
+        "applications_started": None,
+        "applications_submitted": None,
+    }
+    status = {"status_only": "IN_PROGRESS"}
+    started_applications = ApplicationsMethods.search_applications(**status)
+    return_json["applications_started"] = len(started_applications)
+
+    status["status_only"] = "SUBMITTED"
+    started_applications = ApplicationsMethods.search_applications(**status)
+    return_json["applications_submitted"] = len(started_applications)
+
+    return return_json
+
+
+def get_report_for_all_applications():
+    return_json_list = []
+    for application in ApplicationsMethods.get_all():
+        return_json = {
+            "application_id": None,
+            "asset_type": None,
+            "capital": None,
+            "geography": None,
+            "organisation_type": None,
+            "revenue": None,
+        }
+        application = ApplicationsMethods.get_application_by_id(application.id)
+        return_json["application_id"] = application.as_dict().get("id")
+        stored_forms = FormsMethods.get_forms_by_app_id(application.id)
+        list_of_forms = [
+            {
+                "form_name": "organisation-information",
+                "key": "lajFtB",
+                "title": "Type of Organisation",
+                "return_field": "organisation_type",
+            },
+            {
+                "form_name": "asset-information",
+                "key": "yaQoxU",
+                "title": "Asset Type",
+                "return_field": "asset_type",
+            },
+            {
+                "form_name": "project-information",
+                "key": "yEmHpp",
+                "title": "Address of the community asset",
+                "return_field": "geography",
+            },
+            {
+                "form_name": "funding-required",
+                "key": "MultiInputField",
+                "title": "Capital costs",
+                "return_field": "capital",
+            },
+            {
+                "form_name": "funding-required",
+                "key": "MultiInputField-2",
+                "title": "Revenue costs",
+                "return_field": "revenue",
+            },
+        ]
+        for form in stored_forms:
+            if form.get("name") in [
+                form.get("form_name") for form in list_of_forms
+            ]:
+                for question in form["questions"]:
+                    for field in question["fields"]:
+                        if field.get("key") in [
+                            form.get("key") for form in list_of_forms
+                        ]:
+                            return_field = [
+                                form.get("return_field")
+                                for form in list_of_forms
+                                if form.get("key") == field.get("key")
+                            ][0]
+                            if field.get("key") == "yEmHpp":
+                                postcode = re.search(
+                                    "([Gg][Ii][Rr]"
+                                    " 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})",  # noqa
+                                    field.get("answer"),
+                                )
+                                return_json[return_field] = postcode.group()
+                            else:
+                                return_json[return_field] = field.get("answer")
+        return_json_list.append(return_json)
+    return return_json_list
 
 
 def send_email_on_deadline_task(fund_id, round_id):

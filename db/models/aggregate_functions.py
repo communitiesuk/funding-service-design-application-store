@@ -426,7 +426,10 @@ def send_email_on_deadline_task(fund_id, round_id):
         in_progress_applications = ApplicationsMethods.search_applications(
             **status
         )
-        current_app.logger.error(in_progress_applications)
+        for application in in_progress_applications:
+            application_form = FormsMethods.get_forms_by_app_id(application.id)
+            current_app.logger.error(application)
+            current_app.logger.error(application_form)
     else:
         current_app.logger.error("FUND_DEADLINE IS BIGGER")
     return fund_round_deadline

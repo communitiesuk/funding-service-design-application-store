@@ -5,6 +5,8 @@ components:
       properties:
         id:
           type: string
+        reference:
+          type: string
         status:
           type: string
         account_id:
@@ -15,6 +17,7 @@ components:
           type: string
         project_name:
           type: string
+          nullable: true
         started_at:
           type: string
         last_edited:
@@ -79,7 +82,11 @@ components:
     SubmittedApplication:
       type: object
       properties:
-        application_id:
+        id:
+          type: string
+        reference:
+          type: string
+        email:
           type: string
     ReturnedApplication:
       type: object

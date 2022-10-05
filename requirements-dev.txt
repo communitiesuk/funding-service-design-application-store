@@ -27,12 +27,17 @@ bandit==1.7.4
     # via -r requirements-dev.in
 black==22.6.0
     # via -r requirements-dev.in
+blinker==1.5
+    # via
+    #   -r requirements.txt
+    #   sentry-sdk
 build==0.8.0
     # via pip-tools
 certifi==2021.10.8
     # via
     #   -r requirements.txt
     #   requests
+    #   sentry-sdk
 cffi==1.15.1
     # via
     #   -r requirements.txt
@@ -86,6 +91,7 @@ flask==2.1.2
     #   flask-sqlalchemy
     #   funding-service-design-utils
     #   pytest-flask
+    #   sentry-sdk
 flask-babel==2.0.0
     # via
     #   -r requirements.txt
@@ -99,7 +105,7 @@ flask-sqlalchemy==2.5.1
     #   -r requirements.txt
     #   flask-migrate
     #   pytest-flask-sqlalchemy
-funding-service-design-utils==1.0.0
+funding-service-design-utils==1.0.1
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython
@@ -275,6 +281,10 @@ semver==2.13.0
     # via
     #   -r requirements.txt
     #   prance
+sentry-sdk[flask]==1.9.9
+    # via
+    #   -r requirements.txt
+    #   funding-service-design-utils
 six==1.16.0
     # via
     #   -r requirements.txt
@@ -311,10 +321,11 @@ tomli==2.0.1
     #   build
     #   pep517
     #   pytest
-urllib3==1.26.9
+urllib3==1.26.12
     # via
     #   -r requirements.txt
     #   requests
+    #   sentry-sdk
 virtualenv==20.15.1
     # via pre-commit
 werkzeug==2.0.3

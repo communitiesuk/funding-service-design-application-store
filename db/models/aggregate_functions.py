@@ -226,7 +226,7 @@ def update_application_and_related_form(
                 try:
                     application.project_name = key["answer"]
                 except KeyError:
-                    current_app.logger.error("Project name was not edited")
+                    current_app.logger.info("Project name was not edited")
                     continue
     form_sql_row.json = question_json
     update_statuses(application_id, form_name, is_summary_page_submit)

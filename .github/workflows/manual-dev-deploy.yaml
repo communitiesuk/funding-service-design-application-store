@@ -5,6 +5,8 @@
     deploy_dev:
       runs-on: ubuntu-latest
       environment: Dev
+      env:
+        FLASK_ENV: dev
       steps:
         - name: checkout code
           uses: actions/checkout@v2
@@ -16,9 +18,6 @@
           run: python -m venv .venv
         - name: install dependencies
           run: source .venv/bin/activate && python -m pip install --upgrade pip && pip install -r requirements.txt
-        - name: upgrade db (if specified)
-          if: ${{inputs.upgrade_db == true}}
-          run: source .venv/bin/activate && python -m flask db upgrade
         - name: download previous build
           uses: actions/download-artifact@v2
         - name: Deploy to Gov PaaS
@@ -30,3 +29,12 @@
             cf_username: ${{secrets.CF_USER}}
             cf_password: ${{secrets.CF_PASSWORD}}
             command: push funding-service-design-application-store-dev
+        - name: Apply network policy for notification service
+          uses: citizen-of-planet-earth/cf-cli-action@v2
+          with:
+            cf_api:      ${{secrets.CF_API}}
+            cf_org:      ${{secrets.CF_ORG}}
+            cf_space:    ${{secrets.CF_SPACE }}
+            cf_username: ${{secrets.CF_USER}}
+            cf_password: ${{secrets.CF_PASSWORD}}
+            command: add-network-policy funding-service-design-application-store-dev funding-service-design-notification-dev --protocol tcp --port 8080  

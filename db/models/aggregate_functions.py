@@ -422,6 +422,7 @@ def send_email_on_deadline_task(fund_id, round_id):
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
     fund_round_deadline = response.get("deadline")
+    fund_round_name = response.get("title")
     if current_date_time < fund_round_deadline: # Change < to >
         
         current_app.logger.error("Current fund round has past the deadline")
@@ -433,17 +434,20 @@ def send_email_on_deadline_task(fund_id, round_id):
         for application in in_progress_applications:
             forms = FormsMethods.get_forms_by_app_id(application.get("id"))
             application['forms'] = forms
+            application['round_name'] = fund_round_name
             
-            # Add round_name to application
-            # Update submission date temporarily to test out Notification response
+            # Update submission date temporarily to test out Notification response - DELETE after testing
+            application.update({"date_submitted":"2022-09-21T13:37:31.032064"})
             
             all_applications.append({"application":application})
     else:
-        current_app.logger.error("FUND_DEADLINE IS BIGGER")
-           
+        current_app.logger.error("Current fund round is active")
+        
+    current_app.logger.error(f"APPLICATIONS:::{all_applications}")    
     return fund_round_deadline
 
 
     # retrieve email for each application from Magic link 
     # Call notification func to add required keys ("type": "APPLICATION_RECORD_OF_SUBMISSION", "to": email_address, "content": application)
     # Post contents to Notification
+    

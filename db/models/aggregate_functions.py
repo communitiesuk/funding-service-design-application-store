@@ -242,11 +242,16 @@ def send_email_on_deadline_task(fund_id, round_id):
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
     fund_round_deadline = response.get("deadline")
-    if current_date_time > fund_round_deadline:
+    if current_date_time < fund_round_deadline:
         current_app.logger.error("CURRENT_DATE_TIME IS BIGGER")
+        status = {"status_only": "IN_PROGRESS"}
+        in_progress_applications = ApplicationsMethods.search_applications(
+            **status
+        )
+        current_app.logger.error(in_progress_applications)
     else:
         current_app.logger.error("FUND_DEADLINE IS BIGGER")
     return fund_round_deadline
-    # get all "IN PROGRESS" application - array (query db)
+
     # retrieve email for each application
     # ram will explain the rest

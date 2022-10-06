@@ -1,5 +1,6 @@
 import random
 import string
+from typing import ParamSpec
 import uuid
 
 from api.routes.application.helpers import get_fund
@@ -158,6 +159,7 @@ class ApplicationsMethods:
         # datetime_start = params.get("datetime_start")
         # datetime_end = params.get("datetime_end")
         fund_id = params.get("fund_id")
+        round_id = params.get("round_id")
         account_id = params.get("account_id")
         status_only = params.get("status_only")
         application_id = params.get("application_id")
@@ -165,6 +167,8 @@ class ApplicationsMethods:
         filters = []
         if fund_id:
             filters.append(Applications.fund_id == fund_id)
+        if round_id:
+            filters.append(Applications.round_id == round_id)    
         if account_id:
             filters.append(Applications.account_id == account_id)
         if status_only:

@@ -9,6 +9,7 @@ slugify
 python-dateutil
 invoke
 colored
+click
 
 #-----------------------------------
 #   Database

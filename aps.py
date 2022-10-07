@@ -7,7 +7,7 @@ from config import Config
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from external_services.models.notification import Notification
-
+from app import app
 
 @click.command()
 @click.option(
@@ -83,5 +83,5 @@ def hello():
 
 
 if __name__ == "__main__":
-    send_email_on_deadline_task()
+    app.run(debug=True)
     # hello()

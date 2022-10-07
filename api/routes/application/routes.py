@@ -128,4 +128,4 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         except KeyError as e:
             return {"code": 404, "message": str(e)}
 
-# TEST COMMIT
+# TEST

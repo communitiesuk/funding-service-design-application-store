@@ -20,11 +20,11 @@ jobs:
       spawn-rate: 2
       run-time: 11s
     secrets:
-      CF_API: ${{ secrets.CF_API if github.actor != 'dependabot[bot]' else '' }}
-      CF_ORG: ${{ secrets.CF_ORG if github.actor != 'dependabot[bot]' else '' }}
-      CF_SPACE: ${{ secrets.CF_SPACE if github.actor != 'dependabot[bot]' else '' }}
-      CF_USER: ${{ secrets.CF_USER if github.actor != 'dependabot[bot]' else '' }}
-      CF_PASSWORD: ${{ secrets.CF_PASSWORD if github.actor != 'dependabot[bot]' else '' }}
+      CF_API: ${{ secrets.CF_API if github.actor != 'dependabot[bot]' else 'Dependabot' }}
+      CF_ORG: ${{ secrets.CF_ORG if github.actor != 'dependabot[bot]' else 'Dependabot' }}
+      CF_SPACE: ${{ secrets.CF_SPACE if github.actor != 'dependabot[bot]' else 'Dependabot' }}
+      CF_USER: ${{ secrets.CF_USER if github.actor != 'dependabot[bot]' else 'Dependabot' }}
+      CF_PASSWORD: ${{ secrets.CF_PASSWORD if github.actor != 'dependabot[bot]' else 'Dependabot' }}
   apply_network_policy_dev:
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest

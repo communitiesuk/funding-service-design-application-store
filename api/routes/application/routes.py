@@ -127,5 +127,3 @@ class ApplicationsView(ApplicationsMethods, MethodView):
             }, 201
         except KeyError as e:
             return {"code": 404, "message": str(e)}
-
-# TEST

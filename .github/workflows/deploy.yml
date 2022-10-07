@@ -19,6 +19,7 @@ jobs:
       users: 2
       spawn-rate: 2
       run-time: 11s
+    if: ${{ github.actor != 'dependabot[bot]' }}
     secrets:
       CF_API: ${{secrets.CF_API}}
       CF_ORG: ${{secrets.CF_ORG}}
@@ -26,6 +27,7 @@ jobs:
       CF_USER: ${{secrets.CF_USER}}
       CF_PASSWORD: ${{secrets.CF_PASSWORD}}
   apply_network_policy_dev:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     environment: Dev
     steps:      
@@ -39,6 +41,7 @@ jobs:
           cf_password: ${{secrets.CF_PASSWORD}}
           command: add-network-policy funding-service-design-application-store-dev funding-service-design-notification-dev --protocol tcp --port 8080  
   apply_network_policy_test:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     environment: Test
     steps:      

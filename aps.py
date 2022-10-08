@@ -23,7 +23,7 @@ def send_email_on_deadline_task(fund_id, round_id):
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
 
-    if current_date_time < fund_rounds.get("deadline"):  # Change < to >
+    if current_date_time > fund_rounds.get("deadline"):
         status = {
             "status_only": "IN_PROGRESS",
             "fund_id": fund_id,
@@ -39,13 +39,6 @@ def send_email_on_deadline_task(fund_id, round_id):
                 application.get("id")
             )
             application["round_name"] = fund_rounds.get("title")
-
-            # ----------------------------------------------------------------------
-            # Update submission date temporarily to test out Notification response - DELETE after testing # noqa
-            application.update(
-                {"date_submitted": "2022-09-21T13:37:31.032064"}
-            )
-            # ----------------------------------------------------------------------
 
             account_store_response = get_account(
                 account_id=application.get("account_id")

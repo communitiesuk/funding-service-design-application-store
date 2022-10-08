@@ -148,8 +148,6 @@ def get_round_name(fund_id, round_id):
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
-    current_app.logger.error(f"fund_id: {fund_id}")
-    current_app.logger.error(f"round_id: {round_id}")
     if response:
         return response.get("title")
 

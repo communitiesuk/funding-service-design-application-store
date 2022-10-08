@@ -1,25 +1,18 @@
+import argparse
 from datetime import datetime
 
 import api.routes.application.helpers
-import click
 from api.routes.application.helpers import get_account
 from config import Config
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from external_services.models.notification import Notification
 from flask import current_app
+from flask import Flask
 
-# @click.command()
-# @click.option(
-#     "--fund_id",
-#     prompt="Enter fund_id: ",
-#     help="Provide fund_id from the fund.",
-# )
-# @click.option(
-#     "--round_id",
-#     prompt="Enter round_id: ",
-#     help="Provide fund_id from the fund.",
-# )
+app = Flask(__name__)
+
+
 def send_email_on_deadline_task(fund_id, round_id):
 
     current_date_time = (
@@ -42,37 +35,65 @@ def send_email_on_deadline_task(fund_id, round_id):
 
         all_applications = []
         for application in in_progress_applications:
-            application["forms"] = FormsMethods.get_forms_by_app_id(application.get("id"))
+            application["forms"] = FormsMethods.get_forms_by_app_id(
+                application.get("id")
+            )
             application["round_name"] = fund_rounds.get("title")
-            
-            #----------------------------------------------------------------------
+
+            # ----------------------------------------------------------------------
             # Update submission date temporarily to test out Notification response - DELETE after testing # noqa
             application.update(
                 {"date_submitted": "2022-09-21T13:37:31.032064"}
             )
+            # ----------------------------------------------------------------------
 
-            #----------------------------------------------------------------------
-            
-            account_store_response = get_account(account_id=application.get("account_id"))
-            application['account_email'] = account_store_response.email
+            account_store_response = get_account(
+                account_id=application.get("account_id")
+            )
+            application["account_email"] = account_store_response.email
             all_applications.append({"application": application})
-            
+        count = 1
         if len(all_applications) > 0:
             for application in all_applications:
-                email = {'email':application.get("account_email") for application in application.values()}
+                email = {
+                    "email": application.get("account_email")
+                    for application in application.values()
+                }
+                current_app.logger.error(
+                    f"Sending application {count} of"
+                    f" {len(all_applications)} to {email.get('email')}"
+                )
+
                 Notification.send(
                     template_type=Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
-                    to_email=email.get('email'),
+                    to_email=email.get("email"),
                     content=application,
                 )
+                count += 1
+
         else:
             return "There are no applications to be sent."
     else:
         return "Current round is active"
 
 
+def init_argparse() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--fund_id", help="Provide fund id of a fund", required=True
+    )
+    parser.add_argument(
+        "--round_id", help="Provide round id of a fund", required=True
+    )
+    return parser
 
-# if __name__ == "__main__":
-#     send_email_on_deadline_task()
-#     # app.run(debug=True)
-#     # hello()
+
+def main() -> None:
+    parser = init_argparse()
+    args = parser.parse_args()
+    send_email_on_deadline_task(fund_id=args.fund_id, round_id=args.round_id)
+
+
+if __name__ == "__main__":
+    with app.app_context():
+        main()

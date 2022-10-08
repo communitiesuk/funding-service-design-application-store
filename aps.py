@@ -39,7 +39,6 @@ def send_email_on_deadline_task(fund_id, round_id):
                 application.get("id")
             )
             application["round_name"] = fund_rounds.get("title")
-
             account_store_response = get_account(
                 account_id=application.get("account_id")
             )
@@ -56,7 +55,7 @@ def send_email_on_deadline_task(fund_id, round_id):
                     f"Sending application {count} of"
                     f" {len(all_applications)} to {email.get('email')}"
                 )
-
+                # Add new template in Govuk-notify & in Notification service
                 Notification.send(
                     template_type=Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
                     to_email=email.get("email"),

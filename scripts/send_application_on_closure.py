@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-
 import argparse
+import sys
 from datetime import datetime
 
-import api.routes.application.helpers
+sys.path.insert(1, ".")
+
+import api.routes.application.helpers as helpers
+from app import app
 from config import Config
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from external_services.models.notification import Notification
 from flask import current_app
-from app import app
-
 
 
 def send_email_on_deadline_task(fund_id, round_id):
@@ -19,11 +20,11 @@ def send_email_on_deadline_task(fund_id, round_id):
         datetime.now().replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
     )
 
-    fund_rounds = api.routes.application.helpers.get_data(
-        Config.FUND_STORE_API_HOST 
+    fund_rounds = helpers.get_data(
+        Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
-    if current_date_time < fund_rounds.get("deadline"):  # Change < to >
+    if current_date_time > fund_rounds.get("deadline"):
         status = {
             "status_only": "IN_PROGRESS",
             "fund_id": fund_id,
@@ -43,7 +44,7 @@ def send_email_on_deadline_task(fund_id, round_id):
             application.update(
                 {"date_submitted": "2022-09-21T13:37:31.032064"}
             )
-            account_id = api.routes.application.helpers.get_account(
+            account_id = helpers.get_account(
                 account_id=application.get("account_id")
             )
             application["account_email"] = account_id.email
@@ -59,9 +60,10 @@ def send_email_on_deadline_task(fund_id, round_id):
                     f"Sending application {count} of"
                     f" {len(all_applications)} to {email.get('email')}"
                 )
+
                 # Add new template in Govuk-notify & in Notification service
                 Notification.send(
-                    template_type=Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION, 
+                    template_type=Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
                     to_email=email.get("email"),
                     content=application,
                 )

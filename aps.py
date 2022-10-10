@@ -17,15 +17,9 @@ def send_email_on_deadline_task(fund_id, round_id):
     current_date_time = (
         datetime.now().replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
     )
-    http_endpoint = "https://funding-service-design-fund-store-dev.london.cloudapps.digital/"
-    
     fund_rounds = api.routes.application.helpers.get_data(
-        http_endpoint
+        Config.FUND_STORE_API_HOST 
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
-    )
-
-    current_app.logger.error( 
-       f" FUND STORE RESPONSE:::: {fund_rounds}"
     )
     if current_date_time < fund_rounds.get("deadline"):  # Change < to >
         status = {
@@ -36,9 +30,6 @@ def send_email_on_deadline_task(fund_id, round_id):
         in_progress_applications = ApplicationsMethods.search_applications(
             **status
         )
-        
-        current_app.logger.error("I AM HERE")
-
         all_applications = []
         for application in in_progress_applications:
             application["forms"] = FormsMethods.get_forms_by_app_id(
@@ -46,13 +37,10 @@ def send_email_on_deadline_task(fund_id, round_id):
             )
             application["round_name"] = fund_rounds.get("title")
 
-            # ----------------------------------------------------------------------
             # Update submission date temporarily to test out Notification response - DELETE after testing # noqa
             application.update(
                 {"date_submitted": "2022-09-21T13:37:31.032064"}
             )
-            # ----------------------------------------------------------------------
-
             account_id = get_account(
                 account_id=application.get("account_id")
             )

@@ -56,7 +56,7 @@ def send_email_on_deadline_task(fund_id, round_id):
                     "email": application.get("account_email")
                     for application in application.values()
                 }
-                current_app.logger.error(
+                current_app.logger.info(
                     f"Sending application {count} of"
                     f" {len(all_applications)} to {email.get('email')}"
                 )

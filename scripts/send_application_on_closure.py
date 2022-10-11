@@ -24,7 +24,7 @@ def send_incomplete_applications_after_deadline(fund_id, round_id):
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
-    if current_date_time > fund_rounds.get("deadline"):
+    if current_date_time < fund_rounds.get("deadline"):
         status = {
             "status_only": "IN_PROGRESS",
             "fund_id": fund_id,
@@ -39,11 +39,6 @@ def send_incomplete_applications_after_deadline(fund_id, round_id):
                 application.get("id")
             )
             application["round_name"] = fund_rounds.get("title")
-
-            # Update submission date temporarily to test out Notification response - DELETE after testing # noqa
-            application.update(
-                {"date_submitted": "2022-09-21T13:37:31.032064"}
-            )
             account_id = helpers.get_account(
                 account_id=application.get("account_id")
             )
@@ -60,10 +55,8 @@ def send_incomplete_applications_after_deadline(fund_id, round_id):
                     f"Sending application {count} of"
                     f" {len(all_applications)} to {email.get('email')}"
                 )
-
-                # TODO: Add new template in Govuk-notify & in Notification service
                 Notification.send(
-                    template_type=Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
+                    template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,
                     to_email=email.get("email"),
                     content=application,
                 )

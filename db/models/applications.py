@@ -1,6 +1,5 @@
 import random
 import string
-from typing import ParamSpec
 import uuid
 
 from api.routes.application.helpers import get_fund
@@ -168,7 +167,7 @@ class ApplicationsMethods:
         if fund_id:
             filters.append(Applications.fund_id == fund_id)
         if round_id:
-            filters.append(Applications.round_id == round_id)    
+            filters.append(Applications.round_id == round_id)
         if account_id:
             filters.append(Applications.account_id == account_id)
         if status_only:

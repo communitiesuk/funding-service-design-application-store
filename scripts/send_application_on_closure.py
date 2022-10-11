@@ -14,7 +14,7 @@ from external_services.models.notification import Notification
 from flask import current_app
 
 
-def send_email_on_deadline_task(fund_id, round_id):
+def send_incomplete_applications_after_deadline(fund_id, round_id):
 
     current_date_time = (
         datetime.now().replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
@@ -89,7 +89,9 @@ def init_argparse() -> argparse.ArgumentParser:
 def main() -> None:
     parser = init_argparse()
     args = parser.parse_args()
-    send_email_on_deadline_task(fund_id=args.fund_id, round_id=args.round_id)
+    send_incomplete_applications_after_deadline(
+        fund_id=args.fund_id, round_id=args.round_id
+    )
 
 
 if __name__ == "__main__":

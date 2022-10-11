@@ -14,6 +14,8 @@ aniso8601==9.0.1
     #   flask-restx
 asserts==0.11.1
     # via -r requirements-dev.in
+atomicwrites==1.4.1
+    # via pytest
 attrs==21.4.0
     # via
     #   -r requirements.txt
@@ -63,6 +65,13 @@ clickclick==20.10.2
     # via
     #   -r requirements.txt
     #   connexion
+colorama==0.4.5
+    # via
+    #   -r requirements.txt
+    #   bandit
+    #   build
+    #   click
+    #   pytest
 colored==1.4.3
     # via -r requirements.txt
 commonmark==0.9.1

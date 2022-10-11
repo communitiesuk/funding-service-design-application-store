@@ -24,7 +24,7 @@ def send_incomplete_applications_after_deadline(fund_id, round_id):
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
-    if current_date_time < fund_rounds.get("deadline"):
+    if current_date_time > fund_rounds.get("deadline"):
         status = {
             "status_only": "IN_PROGRESS",
             "fund_id": fund_id,

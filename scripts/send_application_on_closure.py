@@ -70,9 +70,9 @@ def send_email_on_deadline_task(fund_id, round_id):
                 count += 1
 
         else:
-            return "There are no applications to be sent."
+            current_app.logger.info("There are no applications to be sent.")
     else:
-        return "Current round is active"
+        current_app.logger.info("Current round is active")
 
 
 def init_argparse() -> argparse.ArgumentParser:

@@ -30,8 +30,6 @@ click==8.0.3
     #   flask
 clickclick==20.10.2
     # via connexion
-colorama==0.4.5
-    # via click
 colored==1.4.3
     # via -r requirements.in
 commonmark==0.9.1

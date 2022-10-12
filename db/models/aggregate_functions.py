@@ -1,7 +1,7 @@
 import csv
-import datetime
 import io
 import re
+from datetime import datetime
 
 import api.routes.application.helpers
 import sqlalchemy.orm.exc
@@ -167,7 +167,7 @@ def submit_application(application_id):
         f" '{application_id}."
     )
     application = ApplicationsMethods.get_application_by_id(application_id)
-    application.date_submitted = datetime.datetime.now(
+    application.date_submitted = datetime.now(
         datetime.timezone.utc
     ).isoformat()
     application.status = "SUBMITTED"

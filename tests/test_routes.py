@@ -1,9 +1,10 @@
 import json
 
 import pytest
-from db.models.applications import ApplicationError
 from db.models.aggregate_functions import get_round_name
-from db.models.applications import ApplicationTestMethods, Applications
+from db.models.applications import ApplicationError
+from db.models.applications import Applications
+from db.models.applications import ApplicationTestMethods
 from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
@@ -513,6 +514,7 @@ def test_update_project_name_of_application(client):
     new_project_name = random_app.project_name
     assert new_project_name != old_project_name
 
+
 def test_put_returns_400_on_submitted_application(client, db_session):
 
     post_test_applications(client)
@@ -522,6 +524,7 @@ def test_put_returns_400_on_submitted_application(client, db_session):
     THEN any PUTs to the application data should return a 400 response
     """
     import random
+
     application_list = db_session.query(Applications).all()
     random_app = random.choice(application_list)
     random_application_id = random_app.id
@@ -531,9 +534,9 @@ def test_put_returns_400_on_submitted_application(client, db_session):
     section_put = {
         "metadata": {
             "application_id": random_application_id,
-            "form_name": "declarations"
+            "form_name": "declarations",
         },
-        "questions": [{"TEST":"TEST"}]
+        "questions": [{"TEST": "TEST"}],
     }
 
     response = client.put(

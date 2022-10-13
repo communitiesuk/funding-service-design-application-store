@@ -514,6 +514,83 @@ def test_update_project_name_of_application(client):
     new_project_name = random_app.project_name
     assert new_project_name != old_project_name
 
+def test_complete_form(client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN A put is made with a completed section
+    THEN The section json should be updated to
+    match the PUT'ed json and be marked as in-progress.
+    """
+    post_test_applications(client)
+    random_app = ApplicationTestMethods.get_random_app()
+    random_application_id = random_app.id
+    section_put = {
+        "questions": [
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "application-name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Coolio",
+                    },
+                    {
+                        "key": "applicant-email",
+                        "title": "Email",
+                        "type": "text",
+                        "answer": "a@example.com",
+                    },
+                    {
+                        "key": "applicant-telephone-number",
+                        "title": "Telephone number",
+                        "type": "text",
+                        "answer": "Wow",
+                    },
+                    {
+                        "key": "applicant-website",
+                        "title": "Website",
+                        "type": "text",
+                        "answer": "www.example.com",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "data",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
+            {
+                "question": "About your organisation",
+                "fields": [
+                    {
+                        "key": "data",
+                        "title": "Applicant job",
+                        "type": "text",
+                        "answer": "cool",
+                    },
+                ],
+            },
+        ],
+        "metadata": {
+            "application_id": str(random_application_id),
+            "form_name": "declarations",
+            "isSummaryPageSubmit": True,
+        },
+    }
+    response = client.put(
+        "/applications/forms",
+        json=section_put,
+        follow_redirects=True,
+    )
+    section_status = response.json["status"]
+    assert section_status == "COMPLETED"
 
 def test_put_returns_400_on_submitted_application(client, db_session):
 

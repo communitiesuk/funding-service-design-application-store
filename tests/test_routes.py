@@ -3,7 +3,7 @@ import json
 import pytest
 from db.models.applications import ApplicationError
 from db.models.aggregate_functions import get_round_name
-from db.models.applications import ApplicationTestMethods
+from db.models.applications import ApplicationTestMethods, Applications
 from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
@@ -513,81 +513,34 @@ def test_update_project_name_of_application(client):
     new_project_name = random_app.project_name
     assert new_project_name != old_project_name
 
+def test_put_returns_400_on_submitted_application(client, db_session):
 
-def test_complete_form(client):
+    post_test_applications(client)
     """
     GIVEN We have a functioning Application Store API
-    WHEN A put is made with a completed section
-    THEN The section json should be updated to
-    match the PUT'ed json and be marked as in-progress.
+    WHEN A there is an application with a status of SUBMITTED
+    THEN any PUTs to the application data should return a 400 response
     """
-    post_test_applications(client)
-    random_app = ApplicationTestMethods.get_random_app()
+    import random
+    application_list = db_session.query(Applications).all()
+    random_app = random.choice(application_list)
     random_application_id = random_app.id
+    random_app.status = "SUBMITTED"
+    db_session.add(random_app)
+    db_session.commit()
     section_put = {
-        "questions": [
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "application-name",
-                        "title": "Applicant name",
-                        "type": "text",
-                        "answer": "Coolio",
-                    },
-                    {
-                        "key": "applicant-email",
-                        "title": "Email",
-                        "type": "text",
-                        "answer": "a@example.com",
-                    },
-                    {
-                        "key": "applicant-telephone-number",
-                        "title": "Telephone number",
-                        "type": "text",
-                        "answer": "Wow",
-                    },
-                    {
-                        "key": "applicant-website",
-                        "title": "Website",
-                        "type": "text",
-                        "answer": "www.example.com",
-                    },
-                ],
-            },
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "data",
-                        "title": "Applicant name",
-                        "type": "text",
-                        "answer": "cool",
-                    },
-                ],
-            },
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "data",
-                        "title": "Applicant job",
-                        "type": "text",
-                        "answer": "cool",
-                    },
-                ],
-            },
-        ],
         "metadata": {
-            "application_id": str(random_application_id),
-            "form_name": "declarations",
-            "isSummaryPageSubmit": True,
+            "application_id": random_application_id,
+            "form_name": "declarations"
         },
+        "questions": [{"TEST":"TEST"}]
     }
+
     response = client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
     )
-    section_status = response.json["status"]
-    assert section_status == "COMPLETED"
+
+    assert response.status_code == 400
+    assert b"Not allowed to edit a submitted application." in response.data

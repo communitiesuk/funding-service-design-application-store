@@ -10,9 +10,9 @@ from db import db
 from db.models.applications import Applications
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
-from flask import current_app
+from flask import current_app, abort
 from sqlalchemy.sql import func
-
+from db.models.status import Status
 
 def update_application_status(application_id: str):
     """
@@ -63,19 +63,15 @@ def update_form_statuses(
         if stored_form.name == form_name
     ][0]
     status_list = [question["status"] for question in current_form.json]
-
-    if application_submitted_date:
-        current_form.status = "SUBMITTED"
+    if "COMPLETED" not in status_list:
+        current_form.status = "NOT_STARTED"
+    elif "NOT_STARTED" not in status_list and current_form.has_completed:
+        current_form.status = "COMPLETED"
+    elif "NOT_STARTED" not in status_list and is_summary_page_submitted:
+        current_form.status = "COMPLETED"
+        current_form.has_completed = True
     else:
-        if "COMPLETED" not in status_list:
-            current_form.status = "NOT_STARTED"
-        elif "NOT_STARTED" not in status_list and current_form.has_completed:
-            current_form.status = "COMPLETED"
-        elif "NOT_STARTED" not in status_list and is_summary_page_submitted:
-            current_form.status = "COMPLETED"
-            current_form.has_completed = True
-        else:
-            current_form.status = "IN_PROGRESS"
+        current_form.status = "IN_PROGRESS"
     db.session.commit()
 
 
@@ -213,9 +209,13 @@ def update_application_and_related_form(
     application_id, question_json, form_name, is_summary_page_submit
 ):
     application = ApplicationsMethods.get_application_by_id(application_id)
+    if application.status == Status.SUBMITTED:
+        current_app.logger.error(f'Not allowed. Attempted to PUT data into a SUBMITTED application with an application_id: {application_id}.')
+        abort(400, 'Not allowed to edit a submitted application.')
+        
     application.last_edited = func.now()
     form_sql_row = FormsMethods.get_form(application_id, form_name)
-    # updating project name:
+    # updating project name
     if form_name == "project-information":
         if len(question_json) == 3:
             fields_array = question_json[1]["fields"]

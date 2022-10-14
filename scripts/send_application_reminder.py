@@ -1,0 +1,102 @@
+#!/usr/bin/env python3
+import argparse
+import sys
+from datetime import datetime, timedelta
+
+sys.path.insert(1, ".")
+
+import api.routes.application.helpers as helpers
+from app import app
+from config import Config
+from db.models.applications import ApplicationsMethods
+from db.models.forms import FormsMethods
+from external_services.models.notification import Notification
+from flask import current_app
+
+
+
+def application_deadline_reminder(fund_id, round_id):
+
+    current_date_time = datetime.strptime(
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"
+    )
+
+    fund_rounds = helpers.get_data(
+        Config.FUND_STORE_API_HOST
+        + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
+    )
+
+    fund_rounds_deadline = datetime.fromisoformat(fund_rounds.get("deadline"))
+    reminder_date = fund_rounds_deadline - timedelta(days=14)
+
+    if (current_date_time < reminder_date) and (current_date_time < fund_rounds_deadline):  # change < to > after testing.
+
+        status = {
+            "status_only": "IN_PROGRESS",
+            "fund_id": fund_id,
+            "round_id": round_id,
+        }
+
+        in_progress_applications = ApplicationsMethods.search_applications(
+            **status
+        )
+
+        all_applications = []
+        for meta_data in in_progress_applications:
+
+            # ---- Do we need to send the form along with the reminder?
+            # application["forms"] = FormsMethods.get_forms_by_app_id(
+            #     application.get("id")
+            # )
+            meta_data["round_name"] = fund_rounds.get("title")
+            account_id = helpers.get_account(
+                account_id=meta_data.get("account_id")
+            )
+            meta_data["account_email"] = account_id.email
+            all_applications.append({"application": meta_data})
+
+        for count, meta_data in enumerate(all_applications):
+            email = {
+                "email": application.get("account_email")
+                for application in meta_data.values()
+            }
+            current_app.logger.info(
+                f"Sending application {count+1} of"
+                f" {len(all_applications)} to {email.get('email')}"
+            )
+
+            # TODO add new template to Notification service
+            # Notification.send(
+            #     template_type=Config.NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
+            #     to_email=email.get("email"),
+            #     content=application,
+            # )
+    else:
+        current_app.logger.info(
+            "Please send reminder two weeks prior to the deadline on or after"
+            f" {reminder_date}"
+        )
+
+
+def init_argparse() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--fund_id", help="Provide fund id of a fund", required=True
+    )
+    parser.add_argument(
+        "--round_id", help="Provide round id of a fund", required=True
+    )
+    return parser
+
+
+def main() -> None:
+    parser = init_argparse()
+    args = parser.parse_args()
+    application_deadline_reminder(
+        fund_id=args.fund_id, round_id=args.round_id
+    )
+
+
+if __name__ == "__main__":
+    with app.app_context():
+        main()

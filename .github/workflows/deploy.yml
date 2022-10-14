@@ -30,7 +30,7 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     environment: Dev
-    steps:      
+    steps:
     - name: Apply network policy for notification service for dev
       uses: citizen-of-planet-earth/cf-cli-action@v2
       with:
@@ -39,12 +39,12 @@ jobs:
           cf_space:    ${{secrets.CF_SPACE }}
           cf_username: ${{secrets.CF_USER}}
           cf_password: ${{secrets.CF_PASSWORD}}
-          command: add-network-policy funding-service-design-application-store-dev funding-service-design-notification-dev --protocol tcp --port 8080  
+          command: add-network-policy funding-service-design-application-store-dev funding-service-design-notification-dev --protocol tcp --port 8080
   apply_network_policy_test:
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     environment: Test
-    steps:      
+    steps:
     - name: Apply network policy for notification service for test
       uses: citizen-of-planet-earth/cf-cli-action@v2
       with:
@@ -53,6 +53,4 @@ jobs:
           cf_space:    ${{secrets.CF_SPACE }}
           cf_username: ${{secrets.CF_USER}}
           cf_password: ${{secrets.CF_PASSWORD}}
-          command: add-network-policy funding-service-design-application-store-test funding-service-design-notification-test --protocol tcp --port 8080            
-
-
+          command: add-network-policy funding-service-design-application-store-test funding-service-design-notification-test --protocol tcp --port 8080

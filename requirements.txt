@@ -151,7 +151,7 @@ six==1.16.0
     #   sqlalchemy-json
 slugify==0.0.1
     # via -r requirements.in
-sqlalchemy==1.4.39
+sqlalchemy==1.4.41
     # via
     #   -r requirements.in
     #   alembic

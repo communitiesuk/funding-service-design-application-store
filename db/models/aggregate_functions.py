@@ -1,7 +1,7 @@
 import csv
 import io
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import api.routes.application.helpers
 import sqlalchemy.orm.exc
@@ -323,6 +323,7 @@ def get_report_for_application(application_id):
 
 
 def get_general_status_applications_report():
+
     return_json = {
         "applications_started": None,
         "applications_submitted": None,
@@ -339,6 +340,7 @@ def get_general_status_applications_report():
 
 
 def get_report_for_all_applications():
+
     return_json_list = []
     for application in ApplicationsMethods.get_all():
         return_json = {
@@ -409,3 +411,82 @@ def get_report_for_all_applications():
                                 return_json[return_field] = field.get("answer")
         return_json_list.append(return_json)
     return return_json_list
+
+
+def application_deadline_reminder(fund_id="47aef2f5-3fcb-4d45-acb5-f0152b5f03c4", round_id="c603d114-5364-4474-a0c4-c41cbf4d3bbd"):
+    
+    current_date_time = (datetime.strptime(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"))
+
+    fund_rounds = api.routes.application.helpers.get_data(
+        Config.FUND_STORE_API_HOST
+        + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
+    )
+
+    fund_rounds_deadline = datetime.fromisoformat(fund_rounds.get("deadline"))
+    new_deadline = fund_rounds_deadline - timedelta(days=14)
+
+    if current_date_time > new_deadline:
+
+        status = {
+            "status_only": "IN_PROGRESS",
+            "fund_id": fund_id,
+            "round_id": round_id,
+        }
+
+        in_progress_applications = ApplicationsMethods.search_applications(
+            **status
+        )
+
+        print(">>>>>>>>>>>>IN PROGRESS APPS🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️", in_progress_applications)
+
+        all_applications = []
+        for application in in_progress_applications:
+            application["forms"] = FormsMethods.get_forms_by_app_id(
+                application.get("id")
+            )
+            application["round_name"] = fund_rounds.get("title")
+            print("> ACCOUNT ID:", application.get("account_id"))
+            account_id = api.routes.application.helpers.get_account(
+                account_id=application.get("account_id")
+            )
+            application["account_email"] = account_id.email
+            all_applications.append({"application": application})
+
+        print(">ALL APPLICATIONS🙌🤷‍♀️🤷‍♀️🙌", all_applications)
+
+        for count, application in enumerate(all_applications):
+            email = {
+                "email": application.get("account_email")
+                for application in application.values()
+            }
+            current_app.logger.info(
+                f"Sending application {count+1} of"
+                f" {len(all_applications)} to {email.get('email')}"
+            )
+            # Notification.send(
+            #     template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,
+            #     to_email=email.get("email"),
+            #     content=application,
+            # )
+            
+            print(">Emails😎😎😎😎", email)
+
+
+        else:
+            current_app.logger.info("There are no applications to be sent.")
+    else:
+        current_app.logger.info("Current round is active")
+
+
+            # Get deadline date of funding round
+            # Format deadline date minus 2 weeks (use time delta)
+            # Compare deadline and formatted deadline minus 2 weeks
+            # Get all IN_PROGRESS ([TBC] and NOT_STARTED?) applications with args fundID and roundID from database
+# Get email address of the application account holder from account store with given accountID
+# [TBC] --- Structure all applications contents before posting to notification service
+# Check if any applications exist in the list and send to notification service
+
+    # print(">>>>>>>>>>> CURRENT DATE😉", current_date_time)
+    # print(">>>>>>>>>>> CURRENT DATE😉", type(current_date_time))
+    # print(">>>>>>>>>>> Deadline😃",  fund_rounds_deadline)
+    # print(">>>>>>>>>>> DeadlineCHAANGED😃",  fund_rounds_deadline - timedelta(days=14))

@@ -14,7 +14,6 @@ from external_services.models.notification import Notification
 from flask import current_app
 
 
-
 def application_deadline_reminder(fund_id, round_id):
 
     current_date_time = datetime.strptime(
@@ -25,11 +24,11 @@ def application_deadline_reminder(fund_id, round_id):
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
+    fund_rounds_deadline = fund_rounds.get("deadline")
+    formatted_fund_deadline = datetime.fromisoformat(fund_rounds_deadline)
+    reminder_date = formatted_fund_deadline - timedelta(days=14)
 
-    fund_rounds_deadline = datetime.fromisoformat(fund_rounds.get("deadline"))
-    reminder_date = fund_rounds_deadline - timedelta(days=14)
-
-    if (current_date_time < reminder_date) and (current_date_time < fund_rounds_deadline):  # change < to > after testing.
+    if (current_date_time < reminder_date) and (current_date_time < formatted_fund_deadline):  # change < to > after testing.
 
         status = {
             "status_only": "IN_PROGRESS",
@@ -42,35 +41,34 @@ def application_deadline_reminder(fund_id, round_id):
         )
 
         all_applications = []
-        for meta_data in in_progress_applications:
+        for application in in_progress_applications:
 
             # ---- Do we need to send the form along with the reminder?
             # application["forms"] = FormsMethods.get_forms_by_app_id(
             #     application.get("id")
             # )
-            meta_data["round_name"] = fund_rounds.get("title")
+            application["round_name"] = fund_rounds.get("title")
             account_id = helpers.get_account(
-                account_id=meta_data.get("account_id")
+                account_id=application.get("account_id")
             )
-            meta_data["account_email"] = account_id.email
-            all_applications.append({"application": meta_data})
+            application["account_email"] = account_id.email
+            application['deadline_date'] = fund_rounds_deadline
+            all_applications.append({"application": application})
 
-        for count, meta_data in enumerate(all_applications):
+        for count, application in enumerate(all_applications):
             email = {
                 "email": application.get("account_email")
-                for application in meta_data.values()
+                for application in application.values()
             }
             current_app.logger.info(
                 f"Sending application {count+1} of"
                 f" {len(all_applications)} to {email.get('email')}"
             )
-
-            # TODO add new template to Notification service
-            # Notification.send(
-            #     template_type=Config.NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
-            #     to_email=email.get("email"),
-            #     content=application,
-            # )
+            Notification.send(
+                template_type=Config.NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
+                to_email=email.get("email"),
+                content=application,
+            )
     else:
         current_app.logger.info(
             "Please send reminder two weeks prior to the deadline on or after"

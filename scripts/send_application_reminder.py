@@ -42,11 +42,7 @@ def application_deadline_reminder(fund_id, round_id):
 
         all_applications = []
         for application in in_progress_applications:
-
-            # ---- Do we need to send the form along with the reminder?
-            # application["forms"] = FormsMethods.get_forms_by_app_id(
-            #     application.get("id")
-            # )
+            
             application["round_name"] = fund_rounds.get("title")
             account_id = helpers.get_account(
                 account_id=application.get("account_id")

@@ -29,7 +29,7 @@ def application_deadline_reminder(fund_id: str, round_id: str):
     fund_deadline = datetime.fromisoformat(fund_deadline_string)
     reminder_date = fund_deadline - timedelta(days=14)
 
-    if reminder_date > current_date_time < fund_deadline:
+    if reminder_date < current_date_time < fund_deadline:
 
         status = {
             "status_only": "IN_PROGRESS",
@@ -54,10 +54,7 @@ def application_deadline_reminder(fund_id: str, round_id: str):
 
         if len(all_applications) > 0:
             for count, application in enumerate(all_applications):
-                
-                # TO DO: SHOULD only have one account email so why we looping?
-                print(">>", application.keys())
-                
+                                
                 email = {
                     "email": applicant.get("account_email")
                     for applicant in application.values()

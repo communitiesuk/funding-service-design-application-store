@@ -6,6 +6,7 @@ from datetime import timedelta
 
 sys.path.insert(1, ".")
 
+from external_services.exceptions import NotificationError
 import api.routes.application.helpers as helpers
 from app import app
 from config import Config
@@ -15,23 +16,20 @@ from external_services.models.notification import Notification
 from flask import current_app
 
 
-def application_deadline_reminder(fund_id, round_id):
+def application_deadline_reminder(fund_id: str, round_id: str):
 
-    current_date_time = datetime.strptime(
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"
-    )
+    current_date_time = datetime.now()
 
     fund_rounds = helpers.get_data(
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
-    get_fund_deadline = fund_rounds.get("deadline")
-    fund_deadline = datetime.fromisoformat(get_fund_deadline)
+    
+    fund_deadline_string = fund_rounds.get("deadline")
+    fund_deadline = datetime.fromisoformat(fund_deadline_string)
     reminder_date = fund_deadline - timedelta(days=14)
 
-    if (current_date_time > reminder_date) and (
-        current_date_time < fund_deadline
-    ):
+    if reminder_date > current_date_time < fund_deadline:
 
         status = {
             "status_only": "IN_PROGRESS",
@@ -51,31 +49,42 @@ def application_deadline_reminder(fund_id, round_id):
                 account_id=application.get("account_id")
             )
             application["account_email"] = account_id.email
-            application["deadline_date"] = get_fund_deadline
+            application["deadline_date"] = fund_deadline_string
             all_applications.append({"application": application})
 
         if len(all_applications) > 0:
             for count, application in enumerate(all_applications):
+                
+                # TO DO: SHOULD only have one account email so why we looping?
+                print(">>", application.keys())
+                
                 email = {
-                    "email": application.get("account_email")
-                    for application in application.values()
+                    "email": applicant.get("account_email")
+                    for applicant in application.values()
                 }
+                
                 current_app.logger.info(
                     f"Sending application {count+1} of"
                     f" {len(all_applications)} to {email.get('email')}"
                 )
-                Notification.send(
-                    template_type=Config.NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
-                    to_email=email.get("email"),
-                    content=application,
-                )
+                
+                try:
+                    Notification.send(
+                        template_type=Config.NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
+                        to_email=email.get("email"),
+                        content=application,
+                    )
+                except NotificationError as e:
+                    current_app.logger.error(e.message)
+
+                
         else:
             current_app.logger.info(
                 "Currently, there are no incomplete applications"
             )
     else:
         current_app.logger.info(
-            "Please send reminder two weeks before the deadline date:"
+            "The reminders can only be sent two weeks (14 days) before the deadline date. The deadline date is:"
             f" {fund_deadline.strftime('%Y-%m-%d')}"
         )
 

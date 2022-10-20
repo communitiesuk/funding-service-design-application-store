@@ -11,6 +11,10 @@
     "account_id": "test-user",
     "emailAddress": "test@example.com"
   },
+  "account_store/accounts?account_id=usera": {
+    "account_id": "usera",
+    "emailAddress": "a@example.com"
+  },
   "fund_store/funds": [
     {
       "name": "COF",

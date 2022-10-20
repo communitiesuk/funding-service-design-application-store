@@ -327,6 +327,7 @@ def get_report_for_application(application_id):
 
 
 def get_general_status_applications_report():
+
     return_json = {
         "applications_started": None,
         "applications_submitted": None,
@@ -343,6 +344,7 @@ def get_general_status_applications_report():
 
 
 def get_report_for_all_applications():
+
     return_json_list = []
     for application in ApplicationsMethods.get_all():
         return_json = {

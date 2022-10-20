@@ -22,6 +22,6 @@ def post_data(endpoint: str, params: dict = None):
     raise NotificationError(
         message=(
             "Sorry, the notification could not be sent for endpoint:"
-            f" '{endpoint}', params: '{params}'."
+            f" '{endpoint}', params: '{params}', response: '{response.json()}'"
         )
     )

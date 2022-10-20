@@ -134,12 +134,10 @@ class ApplicationsView(ApplicationsMethods, MethodView):
                 "Notification error on sending SUBMIT notification for"
                 f" application {application_id}"
             )
-            # return {"code": 500, "message": str(e)}
             return str(e), 500, {"x-error": "notification error"}
         except Exception as e:
             current_app.logger.exception(
                 "Error on sending SUBMIT notification for application"
                 f" {application_id}"
             )
-            # return {"code": 500, "message": str(e)}
             return str(e), 500, {"x-error": "Error"}

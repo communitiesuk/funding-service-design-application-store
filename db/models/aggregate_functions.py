@@ -221,7 +221,7 @@ def update_application_and_related_form(
     form_sql_row = FormsMethods.get_form(application_id, form_name)
     # updating project name
     if form_name == "project-information":
-        if len(question_json) == 2:
+        if len(question_json) == 3:
             fields_array = question_json[0]["fields"]
         else:
             fields_array = question_json[1]["fields"]

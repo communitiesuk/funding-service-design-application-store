@@ -222,7 +222,7 @@ def update_application_and_related_form(
     # updating project name
     if form_name == "project-information":
         if len(question_json) == 3:
-            fields_array = question_json[0]["fields"]
+            fields_array = question_json[2]["fields"]
         else:
             fields_array = question_json[1]["fields"]
         for key in fields_array:

@@ -219,19 +219,18 @@ def update_application_and_related_form(
 
     application.last_edited = func.now()
     form_sql_row = FormsMethods.get_form(application_id, form_name)
+    
     # updating project name
     if form_name == "project-information":
-        if len(question_json) == 3:
-            fields_array = question_json[2]["fields"]
-        else:
-            fields_array = question_json[1]["fields"]
-        for key in fields_array:
-            if (key["key"] == "KAgrBz") or (key["title"] == "Project name"):
-                try:
-                    application.project_name = key["answer"]
-                except KeyError:
-                    current_app.logger.info("Project name was not edited")
-                    continue
+        for question in question_json:
+            for field in question["fields"]:
+                if (field["key"] == "KAgrBz") or (field["title"] == "Project name"):
+                    try:
+                        application.project_name = field["answer"]
+                    except KeyError:
+                        current_app.logger.info("Project name was not edited")
+                        continue
+
     form_sql_row.json = question_json
     update_statuses(application_id, form_name, is_summary_page_submit)
     db.session.commit()

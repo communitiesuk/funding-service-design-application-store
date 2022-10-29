@@ -450,46 +450,75 @@ def test_update_project_name_of_application(client):
     section_put = {
         "questions": [
             {
-                "question": "About your organisation",
+                "question": "About your project",
                 "fields": [
                     {
-                        "key": "data",
-                        "title": "Applicant name",
+                        "key": "gScdbf",
+                        "title": (
+                            "Have you been given funding through the Community"
+                            " Ownership Fund before?"
+                        ),
+                        "type": "list",
+                        "answer": True,
+                    }
+                ],
+            },
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "IrIYcA",
+                        "title": "Describe your previous project",
                         "type": "text",
-                        "answer": "cool",
+                        "answer": "fcbcfbxf",
+                    },
+                    {
+                        "key": "TFdnGq",
+                        "title": "Amount of funding received",
+                        "type": "text",
+                        "answer": "4255",
                     },
                 ],
             },
             {
-                "question": "About your organisation",
+                "question": "About your project",
                 "fields": [
                     {
                         "key": "KAgrBz",
-                        "title": "Applicant name",
+                        "title": "Project name",
                         "type": "text",
-                        "answer": "Coolio",
+                        "answer": "YESS ONEEEE",
                     },
                     {
-                        "key": "applicant-email",
-                        "title": "Email",
+                        "key": "wudRxx",
+                        "title": (
+                            "Tell us how the asset is currently being used, or"
+                            " how it has been used before, and why it's"
+                            " important to the community"
+                        ),
                         "type": "text",
-                        "answer": "a@example.com",
+                        "answer": "dcfcdc",
                     },
                     {
-                        "key": "applicant-telephone-number",
-                        "title": "Telephone number",
+                        "key": "TlGjXb",
+                        "title": (
+                            "Explain why the asset is at risk of being lost to"
+                            " the community, or why it has already been lost"
+                        ),
                         "type": "text",
-                        "answer": "Wow",
+                        "answer": "czcxzc",
                     },
                     {
-                        "key": "applicant-website",
-                        "title": "Website",
+                        "key": "GCjCse",
+                        "title": (
+                            "Give a brief summary of your project, including"
+                            " what you hope to achieve"
+                        ),
                         "type": "text",
-                        "answer": "www.example.com",
+                        "answer": "xzczcxzxcz",
                     },
                 ],
             },
-            
         ],
         "metadata": {
             "application_id": str(random_application_id),
@@ -503,6 +532,7 @@ def test_update_project_name_of_application(client):
     )
     new_project_name = random_app.project_name
     assert new_project_name != old_project_name
+
 
 def test_complete_form(client):
     """
@@ -581,6 +611,7 @@ def test_complete_form(client):
     )
     section_status = response.json["status"]
     assert section_status == "COMPLETED"
+
 
 def test_put_returns_400_on_submitted_application(client, db_session):
 

@@ -219,7 +219,6 @@ def update_application_and_related_form(
 
     application.last_edited = func.now()
     form_sql_row = FormsMethods.get_form(application_id, form_name)
-    
     # updating project name
     if form_name == "project-information":
         for question in question_json:
@@ -230,7 +229,6 @@ def update_application_and_related_form(
                     except KeyError:
                         current_app.logger.info("Project name was not edited")
                         continue
-
     form_sql_row.json = question_json
     update_statuses(application_id, form_name, is_summary_page_submit)
     db.session.commit()

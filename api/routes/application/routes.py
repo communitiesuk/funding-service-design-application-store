@@ -44,13 +44,18 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         account_id = args["account_id"]
         round_id = args["round_id"]
         fund_id = args["fund_id"]
+        language = args["language"]
         empty_forms = ApplicationHelpers.get_blank_forms(fund_id, round_id)
         application = ApplicationsMethods.create_application(
-            account_id=account_id, fund_id=fund_id, round_id=round_id
+            account_id=account_id,
+            fund_id=fund_id,
+            round_id=round_id,
+            language=language,
         )
         FormsMethods.add_new_forms(
             forms=empty_forms, application_id=application.id
         )
+        current_app.logger.error(application.as_dict())
         return application.as_dict(), 201
 
     def get_by_id(self, application_id):

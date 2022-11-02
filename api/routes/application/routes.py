@@ -55,7 +55,6 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         FormsMethods.add_new_forms(
             forms=empty_forms, application_id=application.id
         )
-        current_app.logger.error(application.as_dict())
         return application.as_dict(), 201
 
     def get_by_id(self, application_id):

@@ -59,6 +59,8 @@ flask-sqlalchemy==2.5.1
     #   flask-migrate
 funding-service-design-utils==1.0.8
     # via -r requirements.in
+greenlet==2.0.0
+    # via sqlalchemy
 gunicorn==20.1.0
     # via funding-service-design-utils
 idna==3.3
@@ -149,7 +151,7 @@ six==1.16.0
     #   sqlalchemy-json
 slugify==0.0.1
     # via -r requirements.in
-sqlalchemy==1.4.39
+sqlalchemy==1.4.42
     # via
     #   -r requirements.in
     #   alembic

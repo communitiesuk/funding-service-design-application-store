@@ -111,6 +111,10 @@ gitdb==4.0.9
     # via gitpython
 gitpython==3.1.27
     # via bandit
+greenlet==2.0.0
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt
@@ -297,7 +301,7 @@ slugify==0.0.1
     # via -r requirements.txt
 smmap==5.0.0
     # via gitdb
-sqlalchemy==1.4.39
+sqlalchemy==1.4.42
     # via
     #   -r requirements.txt
     #   alembic

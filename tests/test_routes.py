@@ -24,6 +24,7 @@ def test_create_application_is_successful(client):
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "language": "en",
     }
     post_data(client, "/applications", application_data_a1)
     expected_length_fund_a = 1
@@ -35,6 +36,7 @@ def test_create_application_is_successful(client):
         "account_id": "userb",
         "fund_id": "fund-b",
         "round_id": "summer",
+        "language": "en",
     }
     post_data(client, "/applications", application_data_b1)
     expected_length_fund_b = 1
@@ -44,6 +46,7 @@ def test_create_application_is_successful(client):
         "account_id": "userc",
         "fund_id": "fund-b",
         "round_id": "summer",
+        "language": "en",
     }
     post_data(client, "/applications", application_data_b2)
     expected_length_fund_b = 2
@@ -60,6 +63,7 @@ def test_create_application_creates_formatted_reference(client):
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "language": "en",
     }
     response = client.post(
         "/applications",
@@ -85,6 +89,7 @@ def test_create_application_creates_unique_reference(
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "language": "en",
     }
     response = client.post(
         "/applications",

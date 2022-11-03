@@ -36,7 +36,7 @@ def test_create_application_is_successful(client):
         "account_id": "userb",
         "fund_id": "fund-b",
         "round_id": "summer",
-        "language": "null",
+        "language": None,
     }
     post_data(client, "/applications", application_data_b1)
     expected_length_fund_b = 1

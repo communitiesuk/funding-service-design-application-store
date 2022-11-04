@@ -183,7 +183,7 @@ application_post_data = [
         "account_id": "userb",
         "fund_id": "fund-b",
         "round_id": "summer",
-        "language": None,
+        "language": "en",
     },
     {
         "account_id": "userc",

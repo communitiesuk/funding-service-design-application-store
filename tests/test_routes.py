@@ -296,7 +296,7 @@ def test_update_section_of_application_with_incomplete_answers(
             },
         ],
         "metadata": {
-            "application_id": str(random_application_id),
+            "application_id": random_application_id,
             "form_name": "declarations",
         },
     }

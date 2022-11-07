@@ -1,10 +1,12 @@
 import json
+from math import ceil
 import os
 import re
 import urllib
 from typing import List
 
 from config import Config
+from db.models.applications import ApplicationTestMethods
 from deepdiff import DeepDiff
 
 
@@ -68,6 +70,7 @@ def expected_data_within_response(
         expected_data,
         response_data,
         exclude_regex_paths=exclude_regex_paths,
+        ignore_order=True,
         **kwargs,
     )
     error_message = "Expected data does not match response: " + str(diff)
@@ -148,7 +151,7 @@ def count_fund_applications(
     assert len(response_data) == expected_application_count, error_message
 
 
-def post_test_applications(client):
+def post_3_test_applications(client):
     application_data_1 = {
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
@@ -167,6 +170,52 @@ def post_test_applications(client):
     post_data(client, "/applications", application_data_1)
     post_data(client, "/applications", application_data_2)
     post_data(client, "/applications", application_data_3)
+
+def create_completed_apps(client, amount_to_complete):
+
+    # Make sure that there is enough applications in the app store.
+    for _ in range(ceil(amount_to_complete/3)):
+        
+        post_3_test_applications(client)
+
+    app_ids_to_complete = []
+
+    forms_to_complete = [form_data["form_minting_name"]  for form_data in Config.COF_R2_FORMS]
+
+    while len(app_ids_to_complete) < amount_to_complete:
+        app = ApplicationTestMethods.get_random_app()
+        
+        if str(app.id) not in app_ids_to_complete:
+            app_ids_to_complete.append(str(app.id))
+
+    for app_id in app_ids_to_complete:
+        for form_name in forms_to_complete:
+            completed_form = {
+                "questions": [
+                    {
+                        "question": "test question",
+                        "fields": [
+                            {
+                                "key": "applicant-website",
+                                "title": "Website",
+                                "type": "text",
+                                "answer": "www.example.com",
+                            },
+                        ],
+                    },
+                ],
+                "metadata": {
+                    "application_id": app_id,
+                    "form_name": form_name,
+                    "isSummaryPageSubmit": True,
+                },
+            }
+        response = client.put(
+        "/applications/forms",
+        data=json.dumps(completed_form),
+        follow_redirects=True,
+        )
+    return app_ids_to_complete
 
 
 application_post_data = [

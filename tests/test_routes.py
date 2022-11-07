@@ -5,12 +5,13 @@ from db.models.aggregate_functions import get_round_name
 from db.models.applications import ApplicationError
 from db.models.applications import Applications
 from db.models.applications import ApplicationTestMethods
-from tests.helpers import application_expected_data
+from tests.helpers import application_expected_data, create_completed_apps
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
 from tests.helpers import key_list_to_regex
 from tests.helpers import post_data
-from tests.helpers import post_test_applications
+from random import randint
+from tests.helpers import post_3_test_applications
 
 
 def test_create_application_is_successful(client):
@@ -114,7 +115,7 @@ def test_get_all_applications(client):
     WHEN a request for applications with no set params
     THEN the response should return all applications
     """
-    post_test_applications(client)
+    post_3_test_applications(client)
     expected_data = application_expected_data
     expected_data_within_response(
         client,
@@ -130,7 +131,7 @@ def test_get_applications_of_account_id(client):
     WHEN a request for applications of account_id
     THEN the response should return applications of the account_id
     """
-    post_test_applications(client)
+    post_3_test_applications(client)
     account_id_to_filter = "userb"
     expected_data = list(
         filter(
@@ -154,6 +155,31 @@ def test_get_applications_of_account_id(client):
         ),
     )
 
+def test_get_submitted(client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a request for submitted
+    THEN the response should return the correct submitted applications.
+    """
+
+    number_to_submit = randint(5,15)
+    completed_app_ids = create_completed_apps(client, number_to_submit)
+
+    for app_id in completed_app_ids:
+
+        client.post(f"/applications/{app_id}/submit", follow_redirects=True)
+
+    response = client.get(
+        "/applications?status_only=SUBMITTED", follow_redirects=True
+    )
+
+    for app_data_dict in response.json:
+
+        app_id = app_data_dict["id"]
+        assert app_id in completed_app_ids
+
+        completed_app_ids.remove(app_id)
+
 
 def test_update_section_of_application(client):
     """
@@ -162,7 +188,7 @@ def test_update_section_of_application(client):
     THEN The section json should be updated to
     match the PUT'ed json and be marked as in-progress.
     """
-    post_test_applications(client)
+    post_3_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     section_put = {
@@ -248,7 +274,7 @@ def test_update_section_of_application_with_incomplete_answers(
     THEN The section json should be updated to
     match the PUT'ed json and be marked as complete.
     """
-    post_test_applications(client)
+    post_3_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     section_put = {
@@ -320,7 +346,7 @@ def test_get_application_by_application_id(client):
     WHEN a GET /applications/<application_id> request is sent
     THEN the response should contain the application object
     """
-    post_test_applications(client)
+    post_3_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_id = random_app.id
     round_name = get_round_name(random_app.fund_id, random_app.round_id)
@@ -359,7 +385,7 @@ def test_update_section_of_application_changes_last_edited_field(client):
     WHEN A put is made with a completed section
     THEN the section json.last_edited should be updated.
     """
-    post_test_applications(client)
+    post_3_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     old_last_edited = random_app.last_edited
@@ -417,7 +443,7 @@ def test_update_section_of_application_does_not_change_last_edited_field(
     WHEN A put is made with a completed section
     THEN The section json.last_edited should not be updated.
     """
-    post_test_applications(client)
+    post_3_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     old_last_edited = random_app.last_edited
@@ -443,7 +469,7 @@ def test_update_project_name_of_application(client):
     WHEN A put is made with a completed section
     THEN the section json.last_edited should be updated.
     """
-    post_test_applications(client)
+    post_3_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     old_project_name = random_app.project_name
@@ -541,7 +567,7 @@ def test_complete_form(client):
     THEN The section json should be updated to
     match the PUT'ed json and be marked as in-progress.
     """
-    post_test_applications(client)
+    post_3_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     section_put = {
@@ -615,7 +641,7 @@ def test_complete_form(client):
 
 def test_put_returns_400_on_submitted_application(client, db_session):
 
-    post_test_applications(client)
+    post_3_test_applications(client)
     """
     GIVEN We have a functioning Application Store API
     WHEN A there is an application with a status of SUBMITTED

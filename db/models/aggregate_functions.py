@@ -405,7 +405,17 @@ def get_report_for_all_applications():
                                     " 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})",  # noqa
                                     field.get("answer"),
                                 )
-                                return_json[return_field] = postcode.group()
+                                try:
+                                    return_json[
+                                        return_field
+                                    ] = postcode.group()
+                                except AttributeError as e:
+                                    current_app.logger.exception(
+                                        "FIELD VALUE IS "
+                                        + str(field.get("answer"))
+                                        + " "
+                                        + e
+                                    )
                             else:
                                 return_json[return_field] = field.get("answer")
         return_json_list.append(return_json)

@@ -409,12 +409,10 @@ def get_report_for_all_applications():
                                     return_json[
                                         return_field
                                     ] = postcode.group()
-                                except AttributeError as e:
+                                except AttributeError:
                                     current_app.logger.exception(
                                         "FIELD VALUE IS "
                                         + str(field.get("answer"))
-                                        + " "
-                                        + e
                                     )
                             else:
                                 return_json[return_field] = field.get("answer")

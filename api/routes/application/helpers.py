@@ -13,9 +13,17 @@ from flask import abort
 from flask import current_app
 
 
+def get_forms_from_form_config(form_config, fund_id, round_id, language):
+    mint_form_list = set()
+    forms_config = form_config.get(":".join([fund_id, round_id]))
+    for form_config in forms_config:
+        for form in form_config['ordered_form_names_within_section']:
+            mint_form_list.add(form[language])
+    return mint_form_list
+
 class ApplicationHelpers:
     @staticmethod
-    def get_blank_forms(fund_id: str, round_id: str):
+    def get_blank_forms(fund_id: str, round_id: str, language: str):
         """
         Get the list of forms required to populate a blank
         application for a fund round
@@ -30,8 +38,8 @@ class ApplicationHelpers:
         fund = get_fund(fund_id)
         fund_round = get_round(fund_id, round_id)
         if fund and fund_round:
-            fund_round_forms = Config.FUND_ROUND_FORMS
-            forms = fund_round_forms.get(":".join([fund_id, round_id]))
+            form_config = Config.FORMS_CONFIG_FOR_FUND_ROUND
+            forms = get_forms_from_form_config(form_config, fund_id, round_id, language)
             if not forms:
                 raise Exception(
                     f"Could not find forms for {fund_id} - {round_id}"

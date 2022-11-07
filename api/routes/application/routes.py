@@ -45,7 +45,7 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         round_id = args["round_id"]
         fund_id = args["fund_id"]
         language = args["language"]
-        empty_forms = ApplicationHelpers.get_blank_forms(fund_id, round_id)
+        empty_forms = ApplicationHelpers.get_blank_forms(fund_id, round_id, language)
         application = ApplicationsMethods.create_application(
             account_id=account_id,
             fund_id=fund_id,

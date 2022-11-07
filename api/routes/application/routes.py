@@ -1,3 +1,5 @@
+import uuid
+
 from api.routes.application.helpers import ApplicationHelpers
 from api.routes.application.helpers import get_account
 from config import Config
@@ -53,7 +55,7 @@ class ApplicationsView(ApplicationsMethods, MethodView):
 
     def get_by_id(self, application_id):
         try:
-            return_dict = get_application_with_forms("application_id")
+            return_dict = get_application_with_forms(uuid.UUID(application_id))
             return return_dict, 200
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}

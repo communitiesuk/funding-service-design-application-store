@@ -8,7 +8,6 @@ import api.routes.application.helpers
 import sqlalchemy.orm.exc
 from config import Config
 from db import db
-from db.models.applications import Applications
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from db.models.status import Status
@@ -56,10 +55,6 @@ def update_form_statuses(
     stored_forms = FormsMethods.get_forms_by_app_id(
         application_id, as_json=False
     )
-    application_submitted_date = db.session.get(
-        Applications, application_id
-    ).date_submitted
-
     current_form = [
         stored_form
         for stored_form in stored_forms
@@ -223,7 +218,9 @@ def update_application_and_related_form(
     if form_name == "project-information":
         for question in question_json:
             for field in question["fields"]:
-                if (field["key"] == "KAgrBz") or (field["title"] == "Project name"):
+                if (field["key"] == "KAgrBz") or (
+                    field["title"] == "Project name"
+                ):
                     try:
                         application.project_name = field["answer"]
                     except KeyError:
@@ -401,10 +398,13 @@ def get_report_for_all_applications():
                                 for form in list_of_forms
                                 if form.get("key") == field.get("key")
                             ][0]
-                            if field.get("key") == "yEmHpp":
+                            if field.get("key") == "yEmHpp" and field.get(
+                                "answer"
+                            ):
                                 postcode = re.search(
-                                    "([Gg][Ii][Rr]"
-                                    " 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})",  # noqa
+                                    "([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]?"
+                                    " ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr]"
+                                    " ?0[Aa]{2})",  # noqa
                                     field.get("answer"),
                                 )
                                 return_json[return_field] = postcode.group()

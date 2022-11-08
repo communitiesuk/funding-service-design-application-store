@@ -105,12 +105,16 @@ flask-sqlalchemy==2.5.1
     #   -r requirements.txt
     #   flask-migrate
     #   pytest-flask-sqlalchemy
-funding-service-design-utils==1.0.7
+funding-service-design-utils==1.0.10
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython
 gitpython==3.1.27
     # via bandit
+greenlet==2.0.0
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt

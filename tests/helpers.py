@@ -159,7 +159,7 @@ def post_test_applications(client):
         "account_id": "userb",
         "fund_id": "fund-b",
         "round_id": "summer",
-        "language": None,
+        "language": "en",
     }
     application_data_3 = {
         "account_id": "userc",

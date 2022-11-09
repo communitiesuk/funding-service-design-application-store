@@ -1,6 +1,6 @@
 connexion
 flask_restx
-funding-service-design-utils==1.0.10
+funding-service-design-utils==1.0.10,<1.1.0
 openapi-spec-validator
 prance
 requests

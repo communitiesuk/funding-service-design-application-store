@@ -220,10 +220,11 @@ def update_application_and_related_form(
     application.last_edited = func.now()
     form_sql_row = FormsMethods.get_form(application_id, form_name)
     # updating project name
-    if form_name == "project-information":
+    if form_name == "project-information" or "gwybodaeth-am-y-prosiect":
         for question in question_json:
             for field in question["fields"]:
-                if (field["key"] == "KAgrBz") or (field["title"] == "Project name"):
+                # field id for project name in json
+                if (field["key"] == "KAgrBz"):
                     try:
                         application.project_name = field["answer"]
                     except KeyError:

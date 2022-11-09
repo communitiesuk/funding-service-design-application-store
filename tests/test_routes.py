@@ -448,14 +448,15 @@ def test_update_section_of_application_does_not_change_last_edited_field(
 def test_update_project_name_of_application(client):
     """
     GIVEN We have a functioning Application Store API
-    WHEN A put is made with a completed section
-    THEN the section json.last_edited should be updated.
+    WHEN a put is made into the 'project information' section
+     containing a project name field
+    THEN the project name should be updated on the application.
     """
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     old_project_name = random_app.project_name
-    form_name = "declarations" if random_app.language == "en" else "datganiadau"
+    form_name = "project-information" if random_app.language == "en" else "gwybodaeth-am-y-prosiect"
     section_put = {
         "questions": [
             {
@@ -531,7 +532,7 @@ def test_update_project_name_of_application(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": form_name,
+            "form_name": form_name
         },
     }
     client.put(

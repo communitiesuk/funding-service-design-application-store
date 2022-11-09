@@ -57,6 +57,11 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         try:
             return_dict = get_application_with_forms(uuid.UUID(application_id))
             return return_dict, 200
+        except ValueError as e:
+            current_app.logger.error(
+                "Value error getting application ID: {application_id}"
+            )
+            raise e
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 

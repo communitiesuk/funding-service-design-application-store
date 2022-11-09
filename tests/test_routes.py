@@ -227,7 +227,7 @@ def test_update_section_of_application(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": f"{form_name}",
+            "form_name": form_name,
             "is_summary_page_submit": False,
         },
     }
@@ -304,7 +304,7 @@ def test_update_section_of_application_with_incomplete_answers(
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": f"{form_name}",
+            "form_name": form_name,
         },
     }
     expected_data = section_put.copy()
@@ -405,7 +405,7 @@ def test_update_section_of_application_changes_last_edited_field(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": f"{form_name}",
+            "form_name": form_name,
         },
     }
     client.put(
@@ -455,6 +455,7 @@ def test_update_project_name_of_application(client):
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     old_project_name = random_app.project_name
+    form_name = "declarations" if random_app.language == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -530,7 +531,7 @@ def test_update_project_name_of_application(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "project-information",
+            "form_name": form_name,
         },
     }
     client.put(
@@ -552,6 +553,7 @@ def test_complete_form(client):
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
+    form_name = "declarations" if random_app.language == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -608,7 +610,7 @@ def test_complete_form(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "declarations",
+            "form_name": form_name,
             "isSummaryPageSubmit": True,
         },
     }
@@ -641,7 +643,7 @@ def test_put_returns_400_on_submitted_application(client, db_session):
     section_put = {
         "metadata": {
             "application_id": random_application_id,
-            "form_name": f"{form_name}",
+            "form_name": form_name,
         },
         "questions": [{"TEST": "TEST"}],
     }

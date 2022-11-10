@@ -6,6 +6,7 @@ from api.routes.application.helpers import get_fund
 from api.routes.application.helpers import get_round
 from db import db
 from db.models.status import Status
+from db.models.language import Language
 from flask import current_app
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import ENUM
@@ -27,7 +28,9 @@ class Applications(db.Model):
     fund_id = db.Column("fund_id", db.String(), nullable=False)
     round_id = db.Column("round_id", db.String(), nullable=False)
     key = db.Column("key", db.String(), nullable=False)
-    language = db.Column("language", db.String(), nullable=True)
+    language = db.Column(
+        "language", ENUM(Language), nullable=True
+    )
     reference = db.Column(
         "reference", db.String(), nullable=False, unique=True
     )
@@ -56,7 +59,7 @@ class Applications(db.Model):
             "account_id": self.account_id,
             "round_id": self.round_id,
             "fund_id": self.fund_id,
-            "language": self.language or "en",
+            "language": self.language.name or "en",
             "reference": self.reference,
             "project_name": self.project_name or None,
             "started_at": self.started_at.isoformat(),

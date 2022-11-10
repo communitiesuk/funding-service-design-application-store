@@ -1,7 +1,6 @@
 import random
 import string
 import uuid
-from collections import ChainMap
 
 from api.routes.application.helpers import get_fund
 from api.routes.application.helpers import get_round
@@ -152,6 +151,7 @@ class ApplicationsMethods:
 
     @staticmethod
     def get_count_by_status():
+        statuses = {s.name: 0 for s in Status}
         status_query = (
             db.session.query(
                 Applications.status, func.count(Applications.status)
@@ -159,10 +159,10 @@ class ApplicationsMethods:
             .group_by(Applications.status)
             .all()
         )
-        list_of_dicts = [
-            {status[0].name: status[1]} for status in status_query
-        ]
-        return dict(ChainMap(*list_of_dicts))
+        statuses_with_counts = {
+            status[0].name: status[1] for status in status_query
+        }
+        return statuses | statuses_with_counts
 
     @staticmethod
     def search_applications(**params):

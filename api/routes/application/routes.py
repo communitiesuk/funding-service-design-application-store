@@ -72,7 +72,6 @@ class ApplicationsView(ApplicationsMethods, MethodView):
             return {"code": 404, "message": str(e)}
 
     def get_applications_statuses_report(self):
-        get_general_status_applications_report()
         try:
             return send_file(
                 export_json_to_csv(get_general_status_applications_report()),

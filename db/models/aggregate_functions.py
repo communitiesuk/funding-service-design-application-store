@@ -251,6 +251,8 @@ def export_json_to_csv(return_data):
 
 
 def get_report_for_application(application_id):
+    ApplicationsMethods.get_applications_with_forms(application_id)
+    breakpoint()
     return_json = {
         "application_id": None,
         "asset_type": None,
@@ -259,6 +261,7 @@ def get_report_for_application(application_id):
         "organisation_type": None,
         "revenue": None,
     }
+
     application = ApplicationsMethods.get_application_by_id(application_id)
     return_json["application_id"] = application.as_dict().get("id")
     stored_forms = FormsMethods.get_forms_by_app_id(application_id)
@@ -325,6 +328,7 @@ def get_general_status_applications_report():
 
 
 def get_report_for_all_applications():
+    ApplicationsMethods.get_applications_with_forms()
 
     return_json_list = []
     for application in ApplicationsMethods.get_all():

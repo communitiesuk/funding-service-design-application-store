@@ -151,11 +151,16 @@ class ApplicationsMethods:
         return application_list
 
     @staticmethod
-    def get_applications_with_forms():
-        application_list = db.session.query(Applications.id, Forms.json).join(
-            Forms, Forms.application_id == Applications.id
-        )
-        return application_list
+    def get_applications_with_forms(application_id=None):
+        application_list = db.session.query(
+            Applications.id, Forms.name, Forms.json
+        ).join(Forms, Forms.application_id == Applications.id)
+        if application_id:
+            return application_list.filter(
+                Applications.id == application_id
+            ).all()
+        else:
+            return application_list.all()
 
     @staticmethod
     def get_count_by_status():

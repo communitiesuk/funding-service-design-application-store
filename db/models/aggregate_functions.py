@@ -201,6 +201,19 @@ def update_form(
     return form_sql_row.as_json()
 
 
+def update_project_name(form_name, question_json, application):
+    if form_name == "project-information" or "gwybodaeth-am-y-prosiect":
+        for question in question_json:
+            for field in question["fields"]:
+                # field id for project name in json
+                if field["key"] == "KAgrBz":
+                    try:
+                        application.project_name = field["answer"]
+                    except KeyError:
+                        current_app.logger.info("Project name was not edited")
+                        continue
+
+
 def update_application_and_related_form(
     application_id, question_json, form_name, is_summary_page_submit
 ):
@@ -214,18 +227,7 @@ def update_application_and_related_form(
 
     application.last_edited = func.now()
     form_sql_row = FormsMethods.get_form(application_id, form_name)
-    # updating project name
-    if form_name == "project-information":
-        for question in question_json:
-            for field in question["fields"]:
-                if (field["key"] == "KAgrBz") or (
-                    field["title"] == "Project name"
-                ):
-                    try:
-                        application.project_name = field["answer"]
-                    except KeyError:
-                        current_app.logger.info("Project name was not edited")
-                        continue
+    update_project_name(form_name, question_json, application)
     form_sql_row.json = question_json
     update_statuses(application_id, form_name, is_summary_page_submit)
     db.session.commit()

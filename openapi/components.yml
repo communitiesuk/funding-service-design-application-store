@@ -33,6 +33,8 @@ components:
           type: string
         round_id:
           type: string
+        language:
+          type: string
     CreatedApplication:
       type: object
       properties:

@@ -24,6 +24,7 @@ def test_create_application_is_successful(client):
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "language": "en",
     }
     post_data(client, "/applications", application_data_a1)
     expected_length_fund_a = 1
@@ -35,6 +36,7 @@ def test_create_application_is_successful(client):
         "account_id": "userb",
         "fund_id": "fund-b",
         "round_id": "summer",
+        "language": "en",
     }
     post_data(client, "/applications", application_data_b1)
     expected_length_fund_b = 1
@@ -44,6 +46,7 @@ def test_create_application_is_successful(client):
         "account_id": "userc",
         "fund_id": "fund-b",
         "round_id": "summer",
+        "language": "cy",
     }
     post_data(client, "/applications", application_data_b2)
     expected_length_fund_b = 2
@@ -60,6 +63,7 @@ def test_create_application_creates_formatted_reference(client):
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "language": "en",
     }
     response = client.post(
         "/applications",
@@ -85,6 +89,7 @@ def test_create_application_creates_unique_reference(
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "language": "en",
     }
     response = client.post(
         "/applications",
@@ -165,6 +170,7 @@ def test_update_section_of_application(client):
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -221,7 +227,7 @@ def test_update_section_of_application(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "declarations",
+            "form_name": form_name,
             "is_summary_page_submit": False,
         },
     }
@@ -251,6 +257,7 @@ def test_update_section_of_application_with_incomplete_answers(
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -297,7 +304,7 @@ def test_update_section_of_application_with_incomplete_answers(
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "declarations",
+            "form_name": form_name,
         },
     }
     expected_data = section_put.copy()
@@ -363,6 +370,7 @@ def test_update_section_of_application_changes_last_edited_field(client):
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     old_last_edited = random_app.last_edited
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -397,7 +405,7 @@ def test_update_section_of_application_changes_last_edited_field(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "declarations",
+            "form_name": form_name,
         },
     }
     client.put(
@@ -440,13 +448,15 @@ def test_update_section_of_application_does_not_change_last_edited_field(
 def test_update_project_name_of_application(client):
     """
     GIVEN We have a functioning Application Store API
-    WHEN A put is made with a completed section
-    THEN the section json.last_edited should be updated.
+    WHEN a put is made into the 'project information' section
+     containing a project name field
+    THEN the project name should be updated on the application.
     """
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     old_project_name = random_app.project_name
+    form_name = "project-information" if random_app.language.name == "en" else "gwybodaeth-am-y-prosiect"
     section_put = {
         "questions": [
             {
@@ -522,7 +532,7 @@ def test_update_project_name_of_application(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "project-information",
+            "form_name": form_name
         },
     }
     client.put(
@@ -544,6 +554,7 @@ def test_complete_form(client):
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -600,7 +611,7 @@ def test_complete_form(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": "declarations",
+            "form_name": form_name,
             "isSummaryPageSubmit": True,
         },
     }
@@ -627,12 +638,13 @@ def test_put_returns_400_on_submitted_application(client, db_session):
     random_app = random.choice(application_list)
     random_application_id = random_app.id
     random_app.status = "SUBMITTED"
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     db_session.add(random_app)
     db_session.commit()
     section_put = {
         "metadata": {
             "application_id": random_application_id,
-            "form_name": "declarations",
+            "form_name": form_name,
         },
         "questions": [{"TEST": "TEST"}],
     }

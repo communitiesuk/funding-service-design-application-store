@@ -153,16 +153,19 @@ def post_test_applications(client):
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "language": "en",
     }
     application_data_2 = {
         "account_id": "userb",
         "fund_id": "fund-b",
         "round_id": "summer",
+        "language": "en",
     }
     application_data_3 = {
         "account_id": "userc",
         "fund_id": "funding-service-design",
         "round_id": "spring",
+        "language": "cy",
     }
     post_data(client, "/applications", application_data_1)
     post_data(client, "/applications", application_data_2)
@@ -174,12 +177,19 @@ application_post_data = [
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "language": "en",
     },
-    {"account_id": "userb", "fund_id": "fund-b", "round_id": "summer"},
+    {
+        "account_id": "userb",
+        "fund_id": "fund-b",
+        "round_id": "summer",
+        "language": "en",
+    },
     {
         "account_id": "userc",
         "fund_id": "funding-service-design",
         "round_id": "spring",
+        "language": "cy",
     },
 ]
 

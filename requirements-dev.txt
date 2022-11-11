@@ -71,7 +71,7 @@ commonmark==0.9.1
     #   rich
 connexion==2.14.0
     # via -r requirements.txt
-cryptography==37.0.4
+cryptography==38.0.3
     # via
     #   -r requirements.txt
     #   pyjwt
@@ -277,10 +277,6 @@ ruamel-yaml==0.17.21
     # via
     #   -r requirements.txt
     #   prance
-ruamel-yaml-clib==0.2.6
-    # via
-    #   -r requirements.txt
-    #   ruamel-yaml
 semver==2.13.0
     # via
     #   -r requirements.txt
@@ -321,8 +317,6 @@ toml==0.10.2
     # via pre-commit
 tomli==2.0.1
     # via
-    #   black
-    #   build
     #   pep517
     #   pytest
 urllib3==1.26.12

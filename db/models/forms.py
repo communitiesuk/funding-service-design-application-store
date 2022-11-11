@@ -1,7 +1,6 @@
 import uuid
 
 from db import db
-from db.models.applications import Applications
 from db.models.status import Status
 from sqlalchemy_json import NestedMutableJson
 from sqlalchemy_utils.types import UUIDType
@@ -17,7 +16,7 @@ class Forms(db.Model):
         nullable=False,
     )
     application_id = db.Column(
-        "application_id", db.ForeignKey(Applications.id), nullable=False
+        "application_id", db.ForeignKey("Applications.id"), nullable=False
     )
     json = db.Column("json", NestedMutableJson)
     status = db.Column(

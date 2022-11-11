@@ -5,6 +5,7 @@ import uuid
 from api.routes.application.helpers import get_fund
 from api.routes.application.helpers import get_round
 from db import db
+from db.models.forms import Forms
 from db.models.status import Status
 from flask import current_app
 from sqlalchemy import DateTime
@@ -147,6 +148,13 @@ class ApplicationsMethods:
     @staticmethod
     def get_all():
         application_list = db.session.query(Applications).all()
+        return application_list
+
+    @staticmethod
+    def get_applications_with_forms():
+        application_list = db.session.query(Applications.id, Forms.json).join(
+            Forms, Forms.application_id == Applications.id
+        )
         return application_list
 
     @staticmethod

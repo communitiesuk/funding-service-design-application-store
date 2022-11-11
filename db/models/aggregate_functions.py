@@ -201,6 +201,19 @@ def update_form(
     return form_sql_row.as_json()
 
 
+def update_project_name(form_name, question_json, application):
+    if form_name == "project-information" or "gwybodaeth-am-y-prosiect":
+        for question in question_json:
+            for field in question["fields"]:
+                # field id for project name in json
+                if field["key"] == "KAgrBz":
+                    try:
+                        application.project_name = field["answer"]
+                    except KeyError:
+                        current_app.logger.info("Project name was not edited")
+                        continue
+
+
 def update_application_and_related_form(
     application_id, question_json, form_name, is_summary_page_submit
 ):
@@ -221,19 +234,6 @@ def update_application_and_related_form(
     current_app.logger.info(
         f"Application updated for application_id: '{application_id}."
     )
-
-
-def update_project_name(form_name, question_json, application):
-    if form_name == "project-information" or "gwybodaeth-am-y-prosiect":
-        for question in question_json:
-            for field in question["fields"]:
-                # field id for project name in json
-                if field["key"] == "KAgrBz":
-                    try:
-                        application.project_name = field["answer"]
-                    except KeyError:
-                        current_app.logger.info("Project name was not edited")
-                        continue
 
 
 def export_json_to_csv(return_data):

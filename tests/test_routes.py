@@ -170,7 +170,7 @@ def test_update_section_of_application(client):
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
-    form_name = "declarations" if random_app.language == "en" else "datganiadau"
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -257,7 +257,7 @@ def test_update_section_of_application_with_incomplete_answers(
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
-    form_name = "declarations" if random_app.language == "en" else "datganiadau"
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -370,7 +370,7 @@ def test_update_section_of_application_changes_last_edited_field(client):
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     old_last_edited = random_app.last_edited
-    form_name = "declarations" if random_app.language == "en" else "datganiadau"
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -456,7 +456,7 @@ def test_update_project_name_of_application(client):
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
     old_project_name = random_app.project_name
-    form_name = "project-information" if random_app.language == "en" else "gwybodaeth-am-y-prosiect"
+    form_name = "project-information" if random_app.language.name == "en" else "gwybodaeth-am-y-prosiect"
     section_put = {
         "questions": [
             {
@@ -554,7 +554,7 @@ def test_complete_form(client):
     post_test_applications(client)
     random_app = ApplicationTestMethods.get_random_app()
     random_application_id = random_app.id
-    form_name = "declarations" if random_app.language == "en" else "datganiadau"
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     section_put = {
         "questions": [
             {
@@ -638,7 +638,7 @@ def test_put_returns_400_on_submitted_application(client, db_session):
     random_app = random.choice(application_list)
     random_application_id = random_app.id
     random_app.status = "SUBMITTED"
-    form_name = "declarations" if random_app.language == "en" else "datganiadau"
+    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
     db_session.add(random_app)
     db_session.commit()
     section_put = {

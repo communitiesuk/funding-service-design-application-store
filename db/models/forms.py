@@ -16,7 +16,7 @@ class Forms(db.Model):
         nullable=False,
     )
     application_id = db.Column(
-        "application_id", db.ForeignKey("Applications.id"), nullable=False
+        "application_id", db.ForeignKey("applications.id"), nullable=False
     )
     json = db.Column("json", NestedMutableJson)
     status = db.Column(

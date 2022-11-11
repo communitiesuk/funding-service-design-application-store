@@ -151,7 +151,7 @@ jsonschema==4.4.0
     #   flask-restx
     #   openapi-schema-validator
     #   openapi-spec-validator
-mako==1.2.1
+mako==1.2.2
     # via
     #   -r requirements.txt
     #   alembic
@@ -277,10 +277,6 @@ ruamel-yaml==0.17.21
     # via
     #   -r requirements.txt
     #   prance
-ruamel-yaml-clib==0.2.6
-    # via
-    #   -r requirements.txt
-    #   ruamel-yaml
 semver==2.13.0
     # via
     #   -r requirements.txt
@@ -321,8 +317,6 @@ toml==0.10.2
     # via pre-commit
 tomli==2.0.1
     # via
-    #   black
-    #   build
     #   pep517
     #   pytest
 urllib3==1.26.12

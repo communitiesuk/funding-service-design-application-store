@@ -84,7 +84,7 @@ jsonschema==4.4.0
     #   flask-restx
     #   openapi-schema-validator
     #   openapi-spec-validator
-mako==1.2.1
+mako==1.2.2
     # via alembic
 markupsafe==2.1.0
     # via
@@ -137,8 +137,6 @@ rich==12.4.4
     # via funding-service-design-utils
 ruamel-yaml==0.17.21
     # via prance
-ruamel-yaml-clib==0.2.6
-    # via ruamel-yaml
 semver==2.13.0
     # via prance
 sentry-sdk[flask]==1.9.9

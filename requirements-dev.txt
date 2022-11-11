@@ -201,8 +201,6 @@ psycopg2==2.9.3
     # via -r requirements-dev.in
 psycopg2-binary==2.9.3
     # via -r requirements.txt
-py==1.11.0
-    # via pytest
 pycparser==2.21
     # via
     #   -r requirements.txt
@@ -223,7 +221,7 @@ pyrsistent==0.18.1
     # via
     #   -r requirements.txt
     #   jsonschema
-pytest==7.1.2
+pytest==7.2.0
     # via
     #   -r requirements-dev.in
     #   pytest-env
@@ -278,9 +276,7 @@ ruamel-yaml==0.17.21
     #   -r requirements.txt
     #   prance
 ruamel-yaml-clib==0.2.6
-    # via
-    #   -r requirements.txt
-    #   ruamel-yaml
+    # via -r requirements.txt
 semver==2.13.0
     # via
     #   -r requirements.txt
@@ -320,11 +316,7 @@ swagger-ui-bundle==0.0.9
 toml==0.10.2
     # via pre-commit
 tomli==2.0.1
-    # via
-    #   black
-    #   build
-    #   pep517
-    #   pytest
+    # via pep517
 urllib3==1.26.12
     # via
     #   -r requirements.txt

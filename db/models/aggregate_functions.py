@@ -321,20 +321,7 @@ def get_report_for_application(application_id):
 
 
 def get_general_status_applications_report():
-
-    return_json = {
-        "applications_started": None,
-        "applications_submitted": None,
-    }
-    status = {"status_only": "IN_PROGRESS"}
-    started_applications = ApplicationsMethods.search_applications(**status)
-    return_json["applications_started"] = len(started_applications)
-
-    status["status_only"] = "SUBMITTED"
-    started_applications = ApplicationsMethods.search_applications(**status)
-    return_json["applications_submitted"] = len(started_applications)
-
-    return return_json
+    return ApplicationsMethods.get_count_by_status()
 
 
 def get_report_for_all_applications():

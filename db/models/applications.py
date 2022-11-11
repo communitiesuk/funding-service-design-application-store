@@ -150,6 +150,21 @@ class ApplicationsMethods:
         return application_list
 
     @staticmethod
+    def get_count_by_status():
+        statuses = {s.name: 0 for s in Status}
+        status_query = (
+            db.session.query(
+                Applications.status, func.count(Applications.status)
+            )
+            .group_by(Applications.status)
+            .all()
+        )
+        statuses_with_counts = {
+            status[0].name: status[1] for status in status_query
+        }
+        return statuses | statuses_with_counts
+
+    @staticmethod
     def search_applications(**params):
         """
         Returns a list of applications matching required params

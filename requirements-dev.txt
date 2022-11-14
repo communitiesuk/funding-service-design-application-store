@@ -277,10 +277,6 @@ ruamel-yaml==0.17.21
     # via
     #   -r requirements.txt
     #   prance
-ruamel-yaml-clib==0.2.6
-    # via
-    #   -r requirements.txt
-    #   ruamel-yaml
 semver==2.13.0
     # via
     #   -r requirements.txt
@@ -301,7 +297,7 @@ slugify==0.0.1
     # via -r requirements.txt
 smmap==5.0.0
     # via gitdb
-sqlalchemy==1.4.39
+sqlalchemy==1.4.44
     # via
     #   -r requirements.txt
     #   alembic
@@ -321,8 +317,6 @@ toml==0.10.2
     # via pre-commit
 tomli==2.0.1
     # via
-    #   black
-    #   build
     #   pep517
     #   pytest
 urllib3==1.26.12

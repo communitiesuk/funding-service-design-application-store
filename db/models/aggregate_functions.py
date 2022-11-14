@@ -253,93 +253,37 @@ def export_json_to_csv(return_data):
 
 
 def get_report_for_application(application_id):
-    return_json = {
-        "application_id": None,
-        "asset_type": None,
-        "capital": None,
-        "geography": None,
-        "organisation_type": None,
-        "revenue": None,
-    }
-    application = ApplicationsMethods.get_application_by_id(application_id)
-    return_json["application_id"] = application.as_dict().get("id")
-    stored_forms = FormsMethods.get_forms_by_app_id(application_id)
-    list_of_forms = [
-        {
-            "form_name": "organisation-information",
-            "key": "lajFtB",
-            "title": "Type of Organisation",
-            "return_field": "organisation_type",
-        },
-        {
-            "form_name": "asset-information",
-            "key": "yaQoxU",
-            "title": "Asset Type",
-            "return_field": "asset_type",
-        },
-        {
-            "form_name": "project-information",
-            "key": "yEmHpp",
-            "title": "Address of the community asset",
-            "return_field": "geography",
-        },
-        {
-            "form_name": "funding-required",
-            "key": "MultiInputField",
-            "title": "Capital costs",
-            "return_field": "capital",
-        },
-        {
-            "form_name": "funding-required",
-            "key": "MultiInputField-2",
-            "title": "Revenue costs",
-            "return_field": "revenue",
-        },
-    ]
-    for form in stored_forms:
-        if form.get("name") in [
-            form.get("form_name") for form in list_of_forms
-        ]:
-            for question in form["questions"]:
-                for field in question["fields"]:
-                    if field.get("key") in [
-                        form.get("key") for form in list_of_forms
-                    ]:
-                        return_field = [
-                            form.get("return_field")
-                            for form in list_of_forms
-                            if form.get("key") == field.get("key")
-                        ][0]
-                        if field.get("key") == "yEmHpp":
-                            postcode = re.search(
-                                "([Gg][Ii][Rr]"
-                                " 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})",  # noqa
-                                field.get("answer"),
-                            )
-                            return_json[return_field] = postcode.group()
-                        else:
-                            return_json[return_field] = field.get("answer")
-    return return_json
+    return get_report_for_all_applications(application_id)
 
 
 def get_general_status_applications_report():
     return ApplicationsMethods.get_count_by_status()
 
 
-def get_report_for_all_applications():
+def get_report_for_all_applications(application_id=None):
+    """
+
+    :param application_id: generate report for only this application ID
+    (if not specified all applications are queried)
+    :return: list of dict
+    """
+    if application_id:
+        applications = [
+            ApplicationsMethods.get_application_by_id(application_id)
+        ]
+    else:
+        applications = ApplicationsMethods.get_all()
 
     return_json_list = []
-    for application in ApplicationsMethods.get_all():
+    for application in applications:
         return_json = {
-            "application_id": None,
+            "application_id": application.as_dict().get("id"),
             "asset_type": None,
             "capital": None,
             "geography": None,
             "organisation_type": None,
             "revenue": None,
         }
-        application = ApplicationsMethods.get_application_by_id(application.id)
-        return_json["application_id"] = application.as_dict().get("id")
         stored_forms = FormsMethods.get_forms_by_app_id(application.id)
         list_of_forms = [
             {

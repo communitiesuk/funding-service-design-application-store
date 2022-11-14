@@ -284,7 +284,7 @@ def get_report_for_all_applications(application_id=None):
             "organisation_type": None,
             "revenue": None,
         }
-        stored_forms = FormsMethods.get_forms_by_app_id(application.id)
+        stored_forms = [form.as_json() for form in application.forms]
         list_of_forms = [
             {
                 "form_name": "organisation-information",

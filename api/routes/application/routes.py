@@ -100,7 +100,7 @@ class ApplicationsView(ApplicationsMethods, MethodView):
                     get_report_for_all_applications(),
                     [
                         "eoi_reference",
-                        "organisation_type",
+                        "organisation_name",
                         "asset_type",
                         "geography",
                         "organisation_type",

@@ -236,11 +236,12 @@ def update_application_and_related_form(
     )
 
 
-def export_json_to_csv(return_data):
+def export_json_to_csv(return_data, headers=None):
     output = io.StringIO()
     if type(return_data) == list:
-        headers = return_data[0]
-        w = csv.DictWriter(output, headers.keys())
+        if not headers:
+            headers = return_data[0].keys()
+        w = csv.DictWriter(output, headers)
         w.writeheader()
         w.writerows(return_data)
     else:
@@ -260,7 +261,9 @@ def get_general_status_applications_report():
     return ApplicationsMethods.get_count_by_status()
 
 
-def get_report_for_all_applications(application_id=None):
+def get_report_for_all_applications(
+    application_id=None,
+):
     """
 
     :param application_id: generate report for only this application ID
@@ -272,7 +275,7 @@ def get_report_for_all_applications(application_id=None):
             ApplicationsMethods.get_application_by_id(application_id)
         ]
     else:
-        applications = ApplicationsMethods.get_all()
+        applications = ApplicationsMethods.get_all(status=Status.SUBMITTED)
 
     return_json_list = []
     for application in applications:

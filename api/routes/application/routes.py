@@ -45,7 +45,9 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         round_id = args["round_id"]
         fund_id = args["fund_id"]
         language = args["language"]
-        empty_forms = ApplicationHelpers.get_blank_forms(fund_id, round_id, language)
+        empty_forms = ApplicationHelpers.get_blank_forms(
+            fund_id, round_id, language
+        )
         application = ApplicationsMethods.create_application(
             account_id=account_id,
             fund_id=fund_id,
@@ -94,7 +96,17 @@ class ApplicationsView(ApplicationsMethods, MethodView):
     def get_key_applications_data_report(self):
         try:
             return send_file(
-                export_json_to_csv(get_report_for_all_applications()),
+                export_json_to_csv(
+                    get_report_for_all_applications(),
+                    [
+                        "application_id",
+                        "asset_type",
+                        "capital",
+                        "geography",
+                        "organisation_type",
+                        "revenue",
+                    ],
+                ),
                 "text/csv",
                 as_attachment=True,
                 download_name="required_data.csv",

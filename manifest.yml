@@ -12,7 +12,6 @@ applications:
     FUND_STORE_API_HOST: https://funding-service-design-fund-store-dev.london.cloudapps.digital
     # Sentry DSN is OK to be public see: https://docs.sentry.io/product/sentry-basics/dsn-explainer/#dsn-utilization
     SENTRY_DSN: https://03a44153f57249e9b49f0e27ea4b2c00@o1432034.ingest.sentry.io/4503918840971264
-    GITHUB_SHA: ((GITHUB_SHA))
   health-check-http-endpoint: /healthcheck
   health-check-type: http
   services:
@@ -30,7 +29,6 @@ applications:
     FUND_STORE_API_HOST: https://funding-service-design-fund-store-test.london.cloudapps.digital
     # Sentry DSN is OK to be public see: https://docs.sentry.io/product/sentry-basics/dsn-explainer/#dsn-utilization
     SENTRY_DSN: https://03a44153f57249e9b49f0e27ea4b2c00@o1432034.ingest.sentry.io/4503918840971264
-    GITHUB_SHA: ((GITHUB_SHA))
   health-check-http-endpoint: /healthcheck
   health-check-type: http
   services:

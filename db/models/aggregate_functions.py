@@ -280,58 +280,64 @@ def get_report_for_all_applications(
     return_json_list = []
     for application in applications:
         return_json = {
-            "application_id": application.as_dict().get("id"),
-            "asset_type": None,
-            "capital": None,
-            "geography": None,
+            "eoi_reference": None,
+            "organisation_name": None,
             "organisation_type": None,
+            "asset_type": None,
+            "geography": None,
+            "capital": None,
             "revenue": None,
         }
         stored_forms = [form.as_json() for form in application.forms]
-        list_of_forms = [
+        report_fields = [
+            {
+                "form_name": "organisation-information",
+                "key": "WWWWxy",
+                "return_field": "eoi_reference",
+            },
+            {
+                "form_name": "organisation-information",
+                "key": "YdtlQZ",
+                "return_field": "organisation_name",
+            },
             {
                 "form_name": "organisation-information",
                 "key": "lajFtB",
-                "title": "Type of Organisation",
                 "return_field": "organisation_type",
             },
             {
                 "form_name": "asset-information",
                 "key": "yaQoxU",
-                "title": "Asset Type",
                 "return_field": "asset_type",
             },
             {
                 "form_name": "project-information",
                 "key": "yEmHpp",
-                "title": "Address of the community asset",
                 "return_field": "geography",
             },
             {
                 "form_name": "funding-required",
-                "key": "MultiInputField",
-                "title": "Capital costs",
+                "key": "JzWvhj",
                 "return_field": "capital",
             },
             {
                 "form_name": "funding-required",
-                "key": "MultiInputField-2",
-                "title": "Revenue costs",
+                "key": "jLIgoi",
                 "return_field": "revenue",
             },
         ]
         for form in stored_forms:
             if form.get("name") in [
-                form.get("form_name") for form in list_of_forms
+                form.get("form_name") for form in report_fields
             ]:
                 for question in form["questions"]:
                     for field in question["fields"]:
                         if field.get("key") in [
-                            form.get("key") for form in list_of_forms
+                            form.get("key") for form in report_fields
                         ]:
                             return_field = [
                                 form.get("return_field")
-                                for form in list_of_forms
+                                for form in report_fields
                                 if form.get("key") == field.get("key")
                             ][0]
                             if field.get("key") == "yEmHpp" and field.get(

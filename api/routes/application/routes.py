@@ -99,11 +99,12 @@ class ApplicationsView(ApplicationsMethods, MethodView):
                 export_json_to_csv(
                     get_report_for_all_applications(),
                     [
-                        "application_id",
+                        "eoi_reference",
+                        "organisation_type",
                         "asset_type",
-                        "capital",
                         "geography",
                         "organisation_type",
+                        "capital",
                         "revenue",
                     ],
                 ),

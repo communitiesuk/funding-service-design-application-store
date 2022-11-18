@@ -202,7 +202,7 @@ def update_form(
 
 
 def update_project_name(form_name, question_json, application):
-    if form_name == ("project-information" or "gwybodaeth-am-y-prosiect"):
+    if form_name in ("project-information", "gwybodaeth-am-y-prosiect"):
         for question in question_json:
             for field in question["fields"]:
                 # field id for project name in json

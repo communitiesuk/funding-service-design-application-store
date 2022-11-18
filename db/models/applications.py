@@ -59,7 +59,7 @@ class Applications(db.Model):
             "account_id": self.account_id,
             "round_id": self.round_id,
             "fund_id": self.fund_id,
-            "language": self.language.name or "en",
+            "language": self.language.name if self.language else "en",
             "reference": self.reference,
             "project_name": self.project_name or None,
             "started_at": self.started_at.isoformat(),

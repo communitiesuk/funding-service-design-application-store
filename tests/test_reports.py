@@ -1,6 +1,5 @@
 from db.models.applications import ApplicationTestMethods
-from db.models.forms import Forms
-from db.models.forms import FormsMethods
+from db.models.status import Status
 from tests.helpers import post_test_applications
 
 
@@ -32,57 +31,17 @@ def test_get_applications_report(client):
     post_test_applications(client)
 
     application = ApplicationTestMethods.get_random_app()
-    application.status = "SUBMITTED"
+    application.status = Status.SUBMITTED
     section_put = {
         "questions": [
             {
                 "question": "About your organisation",
                 "fields": [
                     {
-                        "name": "YdtlQZ",
-                        "title": "Applicant name",
+                        "key": "YdtlQZ",
+                        "title": "Organisation Name",
                         "type": "text",
-                        "answer": "Coolio",
-                    },
-                    {
-                        "key": "applicant-email",
-                        "title": "Email",
-                        "type": "text",
-                        "answer": "a@example.com",
-                    },
-                    {
-                        "key": "applicant-telephone-number",
-                        "title": "Telephone number",
-                        "type": "text",
-                        "answer": "Wow",
-                    },
-                    {
-                        "key": "applicant-website",
-                        "title": "Website",
-                        "type": "text",
-                        "answer": "www.example.com",
-                    },
-                ],
-            },
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "data",
-                        "title": "Applicant name",
-                        "type": "text",
-                        "answer": "cool",
-                    },
-                ],
-            },
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "data",
-                        "title": "Applicant job",
-                        "type": "text",
-                        "answer": "cool",
+                        "answer": "Test Organisation Name",
                     },
                 ],
             },
@@ -104,7 +63,4 @@ def test_get_applications_report(client):
         follow_redirects=True,
     )
 
-    assert (
-        response.data
-        == b"eoi_reference,organisation_name,asset_type,geography,organisation_type,capital,revenue\r\n"
-    )
+    assert "Test Organisation Name" in response.data.decode("utf-8")

@@ -276,7 +276,6 @@ def get_report_for_all_applications(
         ]
     else:
         applications = ApplicationsMethods.get_all(status=Status.SUBMITTED)
-
     return_json_list = []
     for application in applications:
         return_json = {

@@ -39,38 +39,61 @@ def test_get_applications_report(client):
     post_data(client, "/applications", application_data_1)
 
     application = ApplicationTestMethods.get_random_app()
-    section_put_en = {
-        "questions": [
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "YdtlQZ",
-                        "title": "Organisation Name",
-                        "type": "text",
-                        "answer": "Test Organisation Name",
-                    },
-                    {
-                        "key": "WWWWxy",
-                        "title": "EOI Reference",
-                        "type": "text",
-                        "answer": "Test Reference Number",
-                    },
-                ],
+    sections_put_en = [
+        {
+            "questions": [
+                {
+                    "question": "About your organisation",
+                    "fields": [
+                        {
+                            "key": "YdtlQZ",
+                            "title": "Organisation Name",
+                            "type": "text",
+                            "answer": "Test Organisation Name",
+                        },
+                        {
+                            "key": "WWWWxy",
+                            "title": "EOI Reference",
+                            "type": "text",
+                            "answer": "Test Reference Number",
+                        },
+                    ],
+                },
+            ],
+            "metadata": {
+                "application_id": application.id,
+                "form_name": "organisation-information",
+                "is_summary_page_submit": False,
             },
-        ],
-        "metadata": {
-            "application_id": application.id,
-            "form_name": "organisation-information",
-            "is_summary_page_submit": False,
         },
-    }
+        {
+            "questions": [
+                {
+                    "question": "Address",
+                    "fields": [
+                        {
+                            "key": "yEmHpp",
+                            "title": "Address",
+                            "type": "text",
+                            "answer": "BBC, W1A 1AA",
+                        },
+                    ],
+                },
+            ],
+            "metadata": {
+                "application_id": application.id,
+                "form_name": "project-information",
+                "is_summary_page_submit": False,
+            },
+        },
+    ]
 
-    client.put(
-        "/applications/forms",
-        json=section_put_en,
-        follow_redirects=True,
-    )
+    for section in sections_put_en:
+        client.put(
+            "/applications/forms",
+            json=section,
+            follow_redirects=True,
+        )
     application.status = Status.SUBMITTED
 
     response = client.get(
@@ -80,3 +103,4 @@ def test_get_applications_report(client):
 
     assert "Test Organisation Name" in response.data.decode("utf-8")
     assert "Test Reference Number" in response.data.decode("utf-8")
+    assert "W1A 1AA" in response.data.decode("utf-8")

@@ -39,6 +39,7 @@ def test_get_applications_report(client):
     post_data(client, "/applications", application_data_1)
 
     application = ApplicationTestMethods.get_random_app()
+    application.status = Status.SUBMITTED
     section_put_en = {
         "questions": [
             {
@@ -49,6 +50,12 @@ def test_get_applications_report(client):
                         "title": "Organisation Name",
                         "type": "text",
                         "answer": "Test Organisation Name",
+                    },
+                    {
+                        "key": "WWWWxy",
+                        "title": "EOI Reference",
+                        "type": "text",
+                        "answer": "Test Reference Number",
                     },
                 ],
             },
@@ -65,7 +72,6 @@ def test_get_applications_report(client):
         json=section_put_en,
         follow_redirects=True,
     )
-    application.status = Status.SUBMITTED
 
     response = client.get(
         "/applications/reporting/key_application_metrics",
@@ -73,3 +79,4 @@ def test_get_applications_report(client):
     )
 
     assert "Test Organisation Name" in response.data.decode("utf-8")
+    assert "Test Reference Number" in response.data.decode("utf-8")

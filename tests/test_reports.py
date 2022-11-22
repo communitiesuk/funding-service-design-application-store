@@ -1,6 +1,7 @@
 from db.models.applications import ApplicationTestMethods
 from db.models.status import Status
 from tests.helpers import post_test_applications
+from tests.helpers import post_test_applications_for_report
 
 
 def test_get_application_statuses(client):
@@ -28,11 +29,10 @@ def test_get_application_statuses(client):
 
 
 def test_get_applications_report(client):
-    post_test_applications(client)
-
+    post_test_applications_for_report(client)
     application = ApplicationTestMethods.get_random_app()
-    application.status = Status.SUBMITTED
-    section_put = {
+    application.status = Status.IN_PROGRESS
+    section_put_en = {
         "questions": [
             {
                 "question": "About your organisation",
@@ -52,12 +52,16 @@ def test_get_applications_report(client):
             "is_summary_page_submit": False,
         },
     }
+
     client.put(
         "/applications/forms",
-        json=section_put,
+        json=section_put_en,
         follow_redirects=True,
     )
-
+    client.post(
+        f'/applications/{application.id}/submit',
+        follow_redirects=True,
+    )
     response = client.get(
         "/applications/reporting/key_application_metrics",
         follow_redirects=True,

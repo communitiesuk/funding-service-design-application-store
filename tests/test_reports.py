@@ -39,7 +39,6 @@ def test_get_applications_report(client):
     post_data(client, "/applications", application_data_1)
 
     application = ApplicationTestMethods.get_random_app()
-    application.status = Status.SUBMITTED
     section_put_en = {
         "questions": [
             {
@@ -72,6 +71,7 @@ def test_get_applications_report(client):
         json=section_put_en,
         follow_redirects=True,
     )
+    application.status = Status.SUBMITTED
 
     response = client.get(
         "/applications/reporting/key_application_metrics",

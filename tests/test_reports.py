@@ -1,7 +1,7 @@
 from db.models.applications import ApplicationTestMethods
 from db.models.status import Status
+from tests.helpers import post_data
 from tests.helpers import post_test_applications
-from tests.helpers import post_test_applications_for_report
 
 
 def test_get_application_statuses(client):
@@ -29,9 +29,16 @@ def test_get_application_statuses(client):
 
 
 def test_get_applications_report(client):
-    post_test_applications_for_report(client)
+    application_data_1 = {
+        "account_id": "usera",
+        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "language": "en",
+    }
+
+    post_data(client, "/applications", application_data_1)
+
     application = ApplicationTestMethods.get_random_app()
-    application.status = Status.IN_PROGRESS
     section_put_en = {
         "questions": [
             {
@@ -59,7 +66,7 @@ def test_get_applications_report(client):
         follow_redirects=True,
     )
     application.status = Status.SUBMITTED
-    
+
     response = client.get(
         "/applications/reporting/key_application_metrics",
         follow_redirects=True,

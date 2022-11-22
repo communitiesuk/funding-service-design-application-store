@@ -10,6 +10,7 @@ from db.models.aggregate_functions import (
 )
 from db.models.aggregate_functions import get_report_for_all_applications
 from db.models.aggregate_functions import get_report_for_application
+from db.models.aggregate_functions import KEY_REPORT_FIELDS
 from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
 from db.models.applications import ApplicationsMethods
@@ -97,16 +98,7 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         try:
             return send_file(
                 export_json_to_csv(
-                    get_report_for_all_applications(),
-                    [
-                        "eoi_reference",
-                        "organisation_name",
-                        "asset_type",
-                        "geography",
-                        "organisation_type",
-                        "capital",
-                        "revenue",
-                    ],
+                    get_report_for_all_applications(), KEY_REPORT_FIELDS
                 ),
                 "text/csv",
                 as_attachment=True,

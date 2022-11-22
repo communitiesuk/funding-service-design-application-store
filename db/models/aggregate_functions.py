@@ -261,6 +261,17 @@ def get_general_status_applications_report():
     return ApplicationsMethods.get_count_by_status()
 
 
+KEY_REPORT_FIELDS = [
+    "eoi_reference",
+    "organisation_name",
+    "organisation_type",
+    "asset_type",
+    "geography",
+    "capital",
+    "revenue",
+]
+
+
 def get_report_for_all_applications(
     application_id=None,
 ):
@@ -278,15 +289,7 @@ def get_report_for_all_applications(
         applications = ApplicationsMethods.get_all(status=Status.SUBMITTED)
     return_json_list = []
     for application in applications:
-        return_json = {
-            "eoi_reference": None,
-            "organisation_name": None,
-            "organisation_type": None,
-            "asset_type": None,
-            "geography": None,
-            "capital": None,
-            "revenue": None,
-        }
+        return_json = {field: None for field in KEY_REPORT_FIELDS}
         stored_forms = [form.as_json() for form in application.forms]
         report_fields = [
             {

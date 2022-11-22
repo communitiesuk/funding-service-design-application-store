@@ -58,10 +58,8 @@ def test_get_applications_report(client):
         json=section_put_en,
         follow_redirects=True,
     )
-    client.post(
-        f'/applications/{application.id}/submit',
-        follow_redirects=True,
-    )
+    application.status = Status.SUBMITTED
+    
     response = client.get(
         "/applications/reporting/key_application_metrics",
         follow_redirects=True,

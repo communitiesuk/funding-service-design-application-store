@@ -61,6 +61,13 @@ paths:
             type: string
           required: false
           explode: false
+        - in: query
+          name: include_forms
+          style: form
+          schema:
+            type: boolean
+          required: false
+          explode: false
     post:
       tags:
         - applications

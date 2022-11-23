@@ -8,5 +8,5 @@ def get_application(app_id, include_forms=False):
 
     joined_rows = db.session.query(Applications).options(joinedLoad(Applications.forms._and(Forms.id == app_id))).filter(Applications.id == app_id).all()
 
-    return [row._as_dict() for row in joined_rows]
+    return [row._as_dict().keys() for row in joined_rows]
 

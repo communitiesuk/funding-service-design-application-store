@@ -1,8 +1,8 @@
 import uuid
 
 from db import db
-from db.models.applications import Applications
-from db.models.status import Status
+from db.models.application.applications import Applications
+from .enums import Status
 from sqlalchemy_json import NestedMutableJson
 from sqlalchemy_utils.types import UUIDType
 
@@ -20,9 +20,7 @@ class Forms(db.Model):
         "application_id", db.ForeignKey(Applications.id), nullable=False
     )
     json = db.Column("json", NestedMutableJson)
-    status = db.Column(
-        "status", db.Enum(Status), default="NOT_STARTED", nullable=False
-    )
+    status = db.Column("status", db.Enum(Status), default="NOT_STARTED", nullable=False)
     name = db.Column("name", db.String(), nullable=False)
     has_completed = db.Column("has_completed", db.Boolean(), default=False)
 
@@ -51,9 +49,7 @@ class FormsMethods:
     @staticmethod
     def get_forms_by_app_id(application_id, as_json=True):
         forms = (
-            db.session.query(Forms)
-            .filter(Forms.application_id == application_id)
-            .all()
+            db.session.query(Forms).filter(Forms.application_id == application_id).all()
         )
         if as_json:
             return [form.as_json() for form in forms]
@@ -64,8 +60,6 @@ class FormsMethods:
     def get_form(application_id, form_name):
         return (
             db.session.query(Forms)
-            .filter(
-                Forms.application_id == application_id, Forms.name == form_name
-            )
+            .filter(Forms.application_id == application_id, Forms.name == form_name)
             .one()
         )

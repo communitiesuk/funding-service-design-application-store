@@ -1,19 +1,17 @@
-import uuid
-
-from api.routes.application.helpers import ApplicationHelpers
-from api.routes.application.helpers import get_account
+from _helpers import get_blank_forms
+from _helpers import order_applications
 from config import Config
-from db.models.aggregate_functions import export_json_to_csv
-from db.models.aggregate_functions import get_application_with_forms
-from db.models.aggregate_functions import (
-    get_general_status_applications_report,
-)
-from db.models.aggregate_functions import get_report_for_all_applications
-from db.models.aggregate_functions import get_report_for_application
-from db.models.aggregate_functions import submit_application
-from db.models.aggregate_functions import update_form
-from db.models.applications import ApplicationsMethods
-from db.models.forms import FormsMethods
+from db.queries import add_new_forms
+from db.queries import create_application
+from db.queries import export_json_to_csv
+from db.queries import get_application
+from db.queries import get_general_status_applications_report
+from db.queries import get_report_for_all_applications
+from db.queries import get_report_for_application
+from db.queries import search_applications
+from db.queries import submit_application
+from db.queries import update_form
+from external_services import get_account
 from external_services.exceptions import NotificationError
 from external_services.models.notification import Notification
 from flask import current_app
@@ -23,18 +21,16 @@ from flask.views import MethodView
 from sqlalchemy.orm.exc import NoResultFound
 
 
-class ApplicationsView(ApplicationsMethods, MethodView):
+class ApplicationsView(MethodView):
     def get(self, **kwargs):
         response_headers = {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": True,
         }
-        matching_applications = ApplicationsMethods.search_applications(
-            **kwargs
-        )
+        matching_applications = search_applications(**kwargs)
         order_by = kwargs.get("order_by", None)
         order_rev = kwargs.get("order_rev", None)
-        sorted_applications = ApplicationHelpers.order_applications(
+        sorted_applications = order_applications(
             matching_applications, order_by, order_rev
         )
         return sorted_applications, 200, response_headers
@@ -45,21 +41,21 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         round_id = args["round_id"]
         fund_id = args["fund_id"]
         language = args["language"]
-        empty_forms = ApplicationHelpers.get_blank_forms(fund_id, round_id, language)
-        application = ApplicationsMethods.create_application(
+        empty_forms = get_blank_forms(fund_id, round_id, language)
+        application = create_application(
             account_id=account_id,
             fund_id=fund_id,
             round_id=round_id,
             language=language,
         )
-        FormsMethods.add_new_forms(
-            forms=empty_forms, application_id=application.id
-        )
+        add_new_forms(forms=empty_forms, application_id=application.id)
         return application.as_dict(), 201
 
     def get_by_id(self, application_id):
         try:
-            return_dict = get_application_with_forms(uuid.UUID(application_id))
+            return_dict = get_application(
+                application_id, as_json=True, include_forms=True
+            )
             return return_dict, 200
         except ValueError as e:
             current_app.logger.error(
@@ -122,8 +118,8 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         try:
             application = submit_application(application_id)
             account = get_account(account_id=application.account_id)
-            application_with_form_json = get_application_with_forms(
-                application_id
+            application_with_form_json = get_application(
+                application_id, as_json=True, include_forms=True
             )
 
             Notification.send(

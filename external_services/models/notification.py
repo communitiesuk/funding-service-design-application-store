@@ -1,5 +1,5 @@
 from config import Config
-from external_services.http_methods import post_data
+from external_services import post_data
 from flask import current_app
 
 

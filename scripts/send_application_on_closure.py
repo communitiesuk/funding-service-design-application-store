@@ -5,10 +5,10 @@ from datetime import datetime
 
 sys.path.insert(1, ".")
 
-import api.routes.application.helpers as helpers
+import external_services
 from app import app
 from config import Config
-from db.models.applications import ApplicationsMethods
+from db.models.application.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
 from external_services.models.notification import Notification
 from flask import current_app
@@ -20,7 +20,7 @@ def send_incomplete_applications_after_deadline(fund_id, round_id):
         datetime.now().replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
     )
 
-    fund_rounds = helpers.get_data(
+    fund_rounds = external_services.get_data(
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
@@ -39,7 +39,7 @@ def send_incomplete_applications_after_deadline(fund_id, round_id):
                 application.get("id")
             )
             application["round_name"] = fund_rounds.get("title")
-            account_id = helpers.get_account(
+            account_id = external_services.get_account(
                 account_id=application.get("account_id")
             )
             application["account_email"] = account_id.email

@@ -1,13 +1,16 @@
 import json
 
 import pytest
-from db.models.aggregate_functions import get_round_name
-from db.models.applications import ApplicationError
-from db.models.applications import Applications
-from db.models.applications import ApplicationTestMethods
+from db.exc.application import ApplicationError
+from db.models import Applications
+from db.queries.application import get_all_applications
+from db.schemas import ApplicationSchema
+from db.schemas import ApplicationWithFormsSchema
+from external_services import get_round_name
 from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
+from tests.helpers import get_random_row
 from tests.helpers import key_list_to_regex
 from tests.helpers import post_data
 from tests.helpers import post_test_applications
@@ -120,12 +123,15 @@ def test_get_all_applications(client):
     THEN the response should return all applications
     """
     post_test_applications(client)
-    expected_data = application_expected_data
+    serialiser = ApplicationSchema()
+    expected_data = [serialiser.dump(row) for row in get_all_applications()]
     expected_data_within_response(
         client,
         "/applications",
         expected_data,
-        exclude_regex_paths=key_list_to_regex(),
+        exclude_regex_paths=key_list_to_regex(
+            ["round_name", "date_submitted", "last_edited"]
+        ),
     )
 
 
@@ -155,6 +161,7 @@ def test_get_applications_of_account_id(client):
                 "project_name",
                 "last_edited",
                 "date_submitted",
+                "round_name",
             ]
         ),
     )
@@ -168,9 +175,11 @@ def test_update_section_of_application(client):
     match the PUT'ed json and be marked as in-progress.
     """
     post_test_applications(client)
-    random_app = ApplicationTestMethods.get_random_app()
+    random_app = get_random_row(Applications)
     random_application_id = random_app.id
-    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
+    form_name = (
+        "declarations" if random_app.language.name == "en" else "datganiadau"
+    )
     section_put = {
         "questions": [
             {
@@ -255,9 +264,11 @@ def test_update_section_of_application_with_incomplete_answers(
     match the PUT'ed json and be marked as complete.
     """
     post_test_applications(client)
-    random_app = ApplicationTestMethods.get_random_app()
+    random_app = get_random_row(Applications)
     random_application_id = random_app.id
-    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
+    form_name = (
+        "declarations" if random_app.language.name == "en" else "datganiadau"
+    )
     section_put = {
         "questions": [
             {
@@ -328,14 +339,11 @@ def test_get_application_by_application_id(client):
     THEN the response should contain the application object
     """
     post_test_applications(client)
-    random_app = ApplicationTestMethods.get_random_app()
+    random_app = get_random_row(Applications)
     random_id = random_app.id
     round_name = get_round_name(random_app.fund_id, random_app.round_id)
-    expected_data = {
-        **random_app.as_dict(),
-        "round_name": round_name,
-        "forms": [],
-    }
+    serialiser = ApplicationWithFormsSchema()
+    expected_data = serialiser.dump(random_app)
     expected_data_within_response(
         client,
         f"/applications/{random_id}",
@@ -367,10 +375,12 @@ def test_update_section_of_application_changes_last_edited_field(client):
     THEN the section json.last_edited should be updated.
     """
     post_test_applications(client)
-    random_app = ApplicationTestMethods.get_random_app()
+    random_app = get_random_row(Applications)
     random_application_id = random_app.id
     old_last_edited = random_app.last_edited
-    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
+    form_name = (
+        "declarations" if random_app.language.name == "en" else "datganiadau"
+    )
     section_put = {
         "questions": [
             {
@@ -426,7 +436,7 @@ def test_update_section_of_application_does_not_change_last_edited_field(
     THEN The section json.last_edited should not be updated.
     """
     post_test_applications(client)
-    random_app = ApplicationTestMethods.get_random_app()
+    random_app = get_random_row(Applications)
     random_application_id = random_app.id
     old_last_edited = random_app.last_edited
     section_put = {
@@ -453,10 +463,14 @@ def test_update_project_name_of_application(client):
     THEN the project name should be updated on the application.
     """
     post_test_applications(client)
-    random_app = ApplicationTestMethods.get_random_app()
+    random_app = get_random_row(Applications)
     random_application_id = random_app.id
     old_project_name = random_app.project_name
-    form_name = "project-information" if random_app.language.name == "en" else "gwybodaeth-am-y-prosiect"
+    form_name = (
+        "project-information"
+        if random_app.language.name == "en"
+        else "gwybodaeth-am-y-prosiect"
+    )
     section_put = {
         "questions": [
             {
@@ -532,7 +546,7 @@ def test_update_project_name_of_application(client):
         ],
         "metadata": {
             "application_id": str(random_application_id),
-            "form_name": form_name
+            "form_name": form_name,
         },
     }
     client.put(
@@ -552,9 +566,11 @@ def test_complete_form(client):
     match the PUT'ed json and be marked as in-progress.
     """
     post_test_applications(client)
-    random_app = ApplicationTestMethods.get_random_app()
+    random_app = get_random_row(Applications)
     random_application_id = random_app.id
-    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
+    form_name = (
+        "declarations" if random_app.language.name == "en" else "datganiadau"
+    )
     section_put = {
         "questions": [
             {
@@ -638,7 +654,9 @@ def test_put_returns_400_on_submitted_application(client, db_session):
     random_app = random.choice(application_list)
     random_application_id = random_app.id
     random_app.status = "SUBMITTED"
-    form_name = "declarations" if random_app.language.name == "en" else "datganiadau"
+    form_name = (
+        "declarations" if random_app.language.name == "en" else "datganiadau"
+    )
     db_session.add(random_app)
     db_session.commit()
     section_put = {

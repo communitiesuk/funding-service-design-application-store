@@ -3,6 +3,7 @@ import io
 import re
 from datetime import datetime
 from datetime import timezone
+from typing import Iterable
 
 import api.routes.application.helpers
 import sqlalchemy.orm.exc
@@ -261,15 +262,49 @@ def get_general_status_applications_report():
     return ApplicationsMethods.get_count_by_status()
 
 
-KEY_REPORT_FIELDS = [
-    "eoi_reference",
-    "organisation_name",
-    "organisation_type",
-    "asset_type",
-    "geography",
-    "capital",
-    "revenue",
+KEY_REPORT_MAPPING = [
+    {
+        "form_name": "organisation-information",
+        "key": "WWWWxy",
+        "return_field": "eoi_reference",
+    },
+    {
+        "form_name": "organisation-information",
+        "key": "YdtlQZ",
+        "return_field": "organisation_name",
+    },
+    {
+        "form_name": "organisation-information",
+        "key": "lajFtB",
+        "return_field": "organisation_type",
+    },
+    {
+        "form_name": "asset-information",
+        "key": "yaQoxU",
+        "return_field": "asset_type",
+    },
+    {
+        "form_name": "project-information",
+        "key": "yEmHpp",
+        "return_field": "geography",
+    },
+    {
+        "form_name": "funding-required",
+        "key": "JzWvhj",
+        "return_field": "capital",
+    },
+    {
+        "form_name": "funding-required",
+        "key": "jLIgoi",
+        "return_field": "revenue",
+    },
 ]
+
+
+def get_key_report_field_headers(
+    mapping: Iterable[dict] = KEY_REPORT_MAPPING,
+) -> Iterable[str]:
+    return [field["return_field"] for field in KEY_REPORT_MAPPING]
 
 
 def get_report_for_all_applications(
@@ -289,57 +324,22 @@ def get_report_for_all_applications(
         applications = ApplicationsMethods.get_all(status=Status.SUBMITTED)
     return_json_list = []
     for application in applications:
-        return_json = {field: None for field in KEY_REPORT_FIELDS}
+
+        return_json = {field: None for field in get_key_report_field_headers()}
         stored_forms = [form.as_json() for form in application.forms]
-        report_fields = [
-            {
-                "form_name": "organisation-information",
-                "key": "WWWWxy",
-                "return_field": "eoi_reference",
-            },
-            {
-                "form_name": "organisation-information",
-                "key": "YdtlQZ",
-                "return_field": "organisation_name",
-            },
-            {
-                "form_name": "organisation-information",
-                "key": "lajFtB",
-                "return_field": "organisation_type",
-            },
-            {
-                "form_name": "asset-information",
-                "key": "yaQoxU",
-                "return_field": "asset_type",
-            },
-            {
-                "form_name": "project-information",
-                "key": "yEmHpp",
-                "return_field": "geography",
-            },
-            {
-                "form_name": "funding-required",
-                "key": "JzWvhj",
-                "return_field": "capital",
-            },
-            {
-                "form_name": "funding-required",
-                "key": "jLIgoi",
-                "return_field": "revenue",
-            },
-        ]
+
         for form in stored_forms:
             if form.get("name") in [
-                form.get("form_name") for form in report_fields
+                form.get("form_name") for form in KEY_REPORT_MAPPING
             ]:
                 for question in form["questions"]:
                     for field in question["fields"]:
                         if field.get("key") in [
-                            form.get("key") for form in report_fields
+                            form.get("key") for form in KEY_REPORT_MAPPING
                         ]:
                             return_field = [
                                 form.get("return_field")
-                                for form in report_fields
+                                for form in KEY_REPORT_MAPPING
                                 if form.get("key") == field.get("key")
                             ][0]
                             if field.get("key") == "yEmHpp" and field.get(

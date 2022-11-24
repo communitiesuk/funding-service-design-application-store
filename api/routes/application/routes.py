@@ -8,9 +8,9 @@ from db.models.aggregate_functions import get_application_with_forms
 from db.models.aggregate_functions import (
     get_general_status_applications_report,
 )
+from db.models.aggregate_functions import get_key_report_field_headers
 from db.models.aggregate_functions import get_report_for_all_applications
 from db.models.aggregate_functions import get_report_for_application
-from db.models.aggregate_functions import KEY_REPORT_FIELDS
 from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
 from db.models.applications import ApplicationsMethods
@@ -98,7 +98,8 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         try:
             return send_file(
                 export_json_to_csv(
-                    get_report_for_all_applications(), KEY_REPORT_FIELDS
+                    get_report_for_all_applications(),
+                    get_key_report_field_headers(),
                 ),
                 "text/csv",
                 as_attachment=True,

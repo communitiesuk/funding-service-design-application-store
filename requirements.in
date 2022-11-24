@@ -19,3 +19,4 @@ Flask-Migrate
 sqlalchemy-utils
 sqlalchemy_json
 psycopg2-binary
+marshmallow-sqlalchemy

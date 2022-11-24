@@ -46,6 +46,13 @@ paths:
             type: string
           required: false
           explode: false
+        - in: query
+          name: status_only
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
         # - filtering applications
         - in: query
           name: order_by

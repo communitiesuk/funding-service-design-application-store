@@ -152,9 +152,11 @@ class ApplicationsMethods:
             )
 
     @staticmethod
-    def get_all():
-        application_list = db.session.query(Applications).all()
-        return application_list
+    def get_all(status=None):
+        query = db.session.query(Applications)
+        if status:
+            query = query.filter_by(status=status)
+        return query.all()
 
     @staticmethod
     def get_count_by_status():

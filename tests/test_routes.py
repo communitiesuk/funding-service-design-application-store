@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from db.exc.application import ApplicationError
+from db.exceptions import ApplicationError
 from db.models import Applications
 from db.queries.application import get_all_applications
 from db.schemas import ApplicationSchema

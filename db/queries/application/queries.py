@@ -4,7 +4,7 @@ from datetime import datetime
 from datetime import timezone
 
 from db import db
-from db.exc.application import ApplicationError
+from db.exceptions import ApplicationError
 from db.models import Applications
 from db.models.application.enums import Status as ApplicationStatus
 from db.schemas import ApplicationSchema

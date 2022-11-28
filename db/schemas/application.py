@@ -33,8 +33,4 @@ class ApplicationSchema(SQLAlchemyAutoSchema):
     status = Enum(Status)
     last_edited = DateTime(format="iso")
     round_name = Method("get_round_name")
-
-
-class ApplicationWithFormsSchema(ApplicationSchema):
-
-    forms = Nested(FormsRunnerSchema, many=True)
+    forms = Nested(FormsRunnerSchema, many=True, allow_none=True)

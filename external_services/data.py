@@ -1,6 +1,6 @@
 import json
 import os
-from typing import List
+from typing import Optional, List
 from urllib.parse import urlencode
 
 import requests
@@ -12,7 +12,7 @@ from flask import abort
 from flask import current_app
 
 
-def get_data(endpoint: str, params: dict = None):
+def get_data(endpoint: str, params: Optional[dict] = None):
     """
         Queries the api endpoint provided and returns a
         data response in json format.
@@ -36,7 +36,7 @@ def get_data(endpoint: str, params: dict = None):
     return data
 
 
-def get_remote_data(endpoint, params: dict = None):
+def get_remote_data(endpoint, params: Optional[dict] = None):
     query_string = ""
     if params:
         params = {k: v for k, v in params.items() if v is not None}
@@ -56,7 +56,7 @@ def get_remote_data(endpoint, params: dict = None):
         return None
 
 
-def get_local_data(endpoint: str, params: dict = None):
+def get_local_data(endpoint: str, params: Optional[dict] = None):
     query_string = ""
     if params:
         params = {k: v for k, v in params.items() if v is not None}
@@ -120,7 +120,7 @@ def get_round(fund_id: str, round_id: str) -> Round | None:
         return Round.from_json(round_response)
 
 
-def get_account(email: str = None, account_id: str = None) -> Account | None:
+def get_account(email: Optional[str] = None, account_id: Optional[str] = None) -> Account | None:
     """
     Get an account from the account store using either
     an email address or account_id.

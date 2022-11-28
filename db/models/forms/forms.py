@@ -5,9 +5,11 @@ from db.models.application.applications import Applications
 from .enums import Status
 from sqlalchemy_json import NestedMutableJson
 from sqlalchemy_utils.types import UUIDType
+from flask_sqlalchemy import DefaultMeta
 
+BaseModel: DefaultMeta = db.Model
 
-class Forms(db.Model):
+class Forms(BaseModel):
     __table_args__ = (db.UniqueConstraint("id", "name"),)
     id = db.Column(
         "id",
@@ -31,35 +33,3 @@ class Forms(db.Model):
             "questions": self.json,
         }
 
-
-class FormsMethods:
-    @staticmethod
-    def add_new_forms(forms, application_id):
-        for form in forms:
-            new_form_row = Forms(
-                application_id=application_id,
-                json=[],
-                name=form,
-                status="NOT_STARTED",
-            )
-            db.session.add(new_form_row)
-            db.session.commit()
-        return {"forms": forms}
-
-    @staticmethod
-    def get_forms_by_app_id(application_id, as_json=True):
-        forms = (
-            db.session.query(Forms).filter(Forms.application_id == application_id).all()
-        )
-        if as_json:
-            return [form.as_json() for form in forms]
-        else:
-            return forms
-
-    @staticmethod
-    def get_form(application_id, form_name):
-        return (
-            db.session.query(Forms)
-            .filter(Forms.application_id == application_id, Forms.name == form_name)
-            .one()
-        )

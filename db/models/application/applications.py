@@ -8,32 +8,38 @@ from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from sqlalchemy_utils.types import UUIDType
+from sqlalchemy import Column
+from flask_sqlalchemy import DefaultMeta
+from sqlalchemy.dialects.postgresql import UUID
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from db.models import Forms
 
+BaseModel: DefaultMeta = db.Model
 
-class Applications(db.Model):
-    id = db.Column(
+class Applications(BaseModel):
+    id = Column(
         "id",
-        UUIDType(binary=False),
+        UUID,
         default=uuid.uuid4,
         primary_key=True,
         nullable=False,
     )
-    account_id = db.Column("account_id", db.String(), nullable=False)
-    fund_id = db.Column("fund_id", db.String(), nullable=False)
-    round_id = db.Column("round_id", db.String(), nullable=False)
-    key = db.Column("key", db.String(), nullable=False)
-    language = db.Column("language", ENUM(Language), nullable=True)
-    reference = db.Column("reference", db.String(), nullable=False, unique=True)
-    project_name = db.Column(
+    account_id = Column("account_id", db.String(), nullable=False)
+    fund_id = Column("fund_id", db.String(), nullable=False)
+    round_id = Column("round_id", db.String(), nullable=False)
+    key = Column("key", db.String(), nullable=False)
+    language = Column("language", ENUM(Language), nullable=True)
+    reference = Column("reference", db.String(), nullable=False, unique=True)
+    project_name = Column(
         "project_name",
         db.String(),
         nullable=True,
     )
-    started_at = db.Column("started_at", DateTime(), server_default=func.now())
-    status = db.Column("status", ENUM(Status), default="NOT_STARTED", nullable=False)
-    date_submitted = db.Column("date_submitted", DateTime())
-    last_edited = db.Column("last_edited", DateTime(), server_default=func.now())
+    started_at = Column("started_at", DateTime(), server_default=func.now())
+    status = Column("status", ENUM(Status), default="NOT_STARTED", nullable=False)
+    date_submitted = Column("date_submitted", DateTime())
+    last_edited = Column("last_edited", DateTime(), server_default=func.now())
     forms = relationship("Forms")
 
     __table_args__ = (

@@ -22,11 +22,11 @@ class Notification(object):
                 fill out the notification template
         """
         url = Config.NOTIFICATION_SERVICE_HOST + Config.SEND_ENDPOINT
-        params = {"type": template_type, "to": to_email, "content": content}
+        json_payload = {"type": template_type, "to": to_email, "content": content}
         current_app.logger.info(
             f"Sending application to notification service. endpoint: '{url}',"
-            f" params: '{params}'."
+            f" json payload: '{json_payload}'."
         )
-        response = post_data(url, params)
+        response = post_data(url, json_payload)
 
         return response

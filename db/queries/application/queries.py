@@ -2,35 +2,36 @@ import random
 import string
 from datetime import datetime
 from datetime import timezone
+from typing import Dict, List
 
 from db import db
 from db.exceptions import ApplicationError
 from db.models import Applications
 from db.models.application.enums import Status as ApplicationStatus
 from db.schemas import ApplicationSchema
-from db.schemas import ApplicationWithFormsSchema
 from external_services import get_fund
 from external_services import get_round
 from flask import current_app
 from sqlalchemy import func
 from sqlalchemy import select
+from sqlalchemy.sql.expression import Select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import noload
 
 
-def get_application(app_id, include_forms=False, as_json=False):
+def get_application(app_id, include_forms=False, as_json=False) -> Dict | Applications:
 
-    stmt = select(Applications).filter(Applications.id == app_id)
+    stmt : Select = select(Applications.id).filter(Applications.id == app_id)
 
     if include_forms:
         stmt.options(joinedload(Applications.forms))
-        serialiser = ApplicationWithFormsSchema()
+        serialiser = ApplicationSchema()
     else:
         stmt.options(noload(Applications.forms))
-        serialiser = ApplicationSchema()
+        serialiser = ApplicationSchema(exclude=("forms"))
 
-    row = db.session.scalars(stmt).unique().one()
+    row : Applications = db.session.scalars(stmt).unique().one()
 
     if as_json:
         json_row = serialiser.dump(row)
@@ -39,20 +40,22 @@ def get_application(app_id, include_forms=False, as_json=False):
         return row
 
 
-def get_applications(filters=[], include_forms=False, as_json=False):
 
-    stmt = select(Applications)
-    if len(filters) != 0:
+def get_applications(filters=[], include_forms=False, as_json=False) -> List[Dict] | List[Applications]:
+
+    stmt : Select = select(Applications)
+
+    if len(filters) > 0:
         stmt = stmt.where(*filters)
 
     if include_forms:
         stmt = stmt.options(joinedload(Applications.forms))
-        serialiser = ApplicationWithFormsSchema()
+        serialiser = ApplicationSchema()
     else:
         stmt = stmt.options(noload(Applications.forms))
-        serialiser = ApplicationSchema()
+        serialiser = ApplicationSchema(exclude=("forms"))
 
-    rows = db.session.scalars(stmt).unique().all()
+    rows : Applications = db.session.scalars(stmt).unique().all()
 
     if as_json:
         return [serialiser.dump(row) for row in rows]
@@ -73,7 +76,7 @@ def random_key_generator(length: int = 6):
 
 def _create_application_try(
     account_id, fund_id, round_id, key, language, reference, attempt
-):
+) -> Applications:
     try:
         new_application_row = Applications(
             account_id=account_id,
@@ -95,7 +98,7 @@ def _create_application_try(
         )
 
 
-def create_application(account_id, fund_id, round_id, language):
+def create_application(account_id, fund_id, round_id, language) -> Applications:
     fund = get_fund(fund_id)
     fund_round = get_round(fund_id, round_id)
     if fund and fund_round and fund.short_name and fund_round.short_name:
@@ -134,12 +137,12 @@ def create_application(account_id, fund_id, round_id, language):
         )
 
 
-def get_all_applications():
+def get_all_applications() -> List:
     application_list = db.session.query(Applications).all()
     return application_list
 
 
-def get_count_by_status():
+def get_count_by_status() -> Dict[str : int]:
     statuses = {s.name: 0 for s in ApplicationStatus}
     status_query = (
         db.session.query(Applications.status, func.count(Applications.status))
@@ -182,7 +185,7 @@ def search_applications(**params):
     return found_apps
 
 
-def submit_application(application_id):
+def submit_application(application_id) -> Applications:
     current_app.logger.info(
         "Processing database submission for application_id:"
         f" '{application_id}."
@@ -194,7 +197,7 @@ def submit_application(application_id):
     return application
 
 
-def update_project_name(form_name, question_json, application):
+def update_project_name(form_name, question_json, application) -> None:
     if form_name in ("project-information", "gwybodaeth-am-y-prosiect"):
         for question in question_json:
             for field in question["fields"]:

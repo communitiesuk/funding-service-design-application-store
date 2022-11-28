@@ -47,6 +47,13 @@ paths:
           required: false
           explode: false
         - in: query
+          name: round_id
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        - in: query
           name: status_only
           style: form
           schema:

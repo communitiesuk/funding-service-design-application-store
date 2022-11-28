@@ -15,7 +15,6 @@ class ApplicationSchema(SQLAlchemyAutoSchema):
 
     @post_dump
     def handle_nones(self, data, **kwargs):
-        print(data)
         if data["last_edited"] is None:
             data["last_edited"] = data["started_at"]
         if data["date_submitted"] is None:

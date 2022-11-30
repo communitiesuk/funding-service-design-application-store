@@ -2,7 +2,8 @@ import random
 import string
 from datetime import datetime
 from datetime import timezone
-from typing import Dict, List
+from typing import Dict
+from typing import List
 
 from db import db
 from db.exceptions import ApplicationError
@@ -14,24 +15,26 @@ from external_services import get_round
 from flask import current_app
 from sqlalchemy import func
 from sqlalchemy import select
-from sqlalchemy.sql.expression import Select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import noload
+from sqlalchemy.sql.expression import Select
 
 
-def get_application(app_id, include_forms=False, as_json=False) -> Dict | Applications:
+def get_application(
+    app_id, include_forms=False, as_json=False
+) -> Dict | Applications:
 
-    stmt : Select = select(Applications.id).filter(Applications.id == app_id)
+    stmt: Select = select(Applications.id).filter(Applications.id == app_id)
 
     if include_forms:
         stmt.options(joinedload(Applications.forms))
         serialiser = ApplicationSchema()
     else:
         stmt.options(noload(Applications.forms))
-        serialiser = ApplicationSchema(exclude=("forms"))
+        serialiser = ApplicationSchema(exclude="forms")
 
-    row : Applications = db.session.scalars(stmt).unique().one()
+    row: Applications = db.session.scalars(stmt).unique().one()
 
     if as_json:
         json_row = serialiser.dump(row)
@@ -40,10 +43,11 @@ def get_application(app_id, include_forms=False, as_json=False) -> Dict | Applic
         return row
 
 
+def get_applications(
+    filters=[], include_forms=False, as_json=False
+) -> List[Dict] | List[Applications]:
 
-def get_applications(filters=[], include_forms=False, as_json=False) -> List[Dict] | List[Applications]:
-
-    stmt : Select = select(Applications)
+    stmt: Select = select(Applications)
 
     if len(filters) > 0:
         stmt = stmt.where(*filters)
@@ -53,9 +57,9 @@ def get_applications(filters=[], include_forms=False, as_json=False) -> List[Dic
         serialiser = ApplicationSchema()
     else:
         stmt = stmt.options(noload(Applications.forms))
-        serialiser = ApplicationSchema(exclude=("forms"))
+        serialiser = ApplicationSchema(exclude="forms")
 
-    rows : Applications = db.session.scalars(stmt).unique().all()
+    rows: Applications = db.session.scalars(stmt).unique().all()
 
     if as_json:
         return [serialiser.dump(row) for row in rows]
@@ -98,7 +102,9 @@ def _create_application_try(
         )
 
 
-def create_application(account_id, fund_id, round_id, language) -> Applications:
+def create_application(
+    account_id, fund_id, round_id, language
+) -> Applications:
     fund = get_fund(fund_id)
     fund_round = get_round(fund_id, round_id)
     if fund and fund_round and fund.short_name and fund_round.short_name:
@@ -142,7 +148,7 @@ def get_all_applications() -> List:
     return application_list
 
 
-def get_count_by_status() -> Dict[str : int]:
+def get_count_by_status() -> Dict[str, int]:
     statuses = {s.name: 0 for s in ApplicationStatus}
     status_query = (
         db.session.query(Applications.status, func.count(Applications.status))

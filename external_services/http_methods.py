@@ -1,4 +1,6 @@
-from typing import Optional, Dict
+from typing import Dict
+from typing import Optional
+
 import requests
 from external_services.exceptions import NotificationError
 from flask import current_app
@@ -23,6 +25,7 @@ def post_data(endpoint: str, json_payload: Optional[dict] = None) -> Dict:
     raise NotificationError(
         message=(
             "Sorry, the notification could not be sent for endpoint:"
-            f" '{endpoint}', params: '{json_payload}', response: '{response.json()}'"
+            f" '{endpoint}', params: '{json_payload}', response:"
+            f" '{response.json()}'"
         )
     )

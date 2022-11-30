@@ -1,12 +1,13 @@
-from flask import abort, current_app
-from sqlalchemy import func
 import sqlalchemy
-from db.queries.application import get_application
-from db.models.application.enums import Status as ApplicationStatus
 from db import db
+from db.models.application.enums import Status as ApplicationStatus
+from db.queries.application import get_application
 from db.queries.application import update_project_name
 from db.queries.form import get_form
 from db.queries.statuses import update_statuses
+from flask import abort
+from flask import current_app
+from sqlalchemy import func
 
 
 def update_application_and_related_form(
@@ -31,7 +32,9 @@ def update_application_and_related_form(
     )
 
 
-def update_form(application_id, form_name, question_json, is_summary_page_submit):
+def update_form(
+    application_id, form_name, question_json, is_summary_page_submit
+):
     try:
         form_sql_row = get_form(application_id, form_name)
         # Running update form for the first time

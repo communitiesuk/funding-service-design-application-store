@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import List, Optional, Self
+from typing import List
+from typing import Optional
+from typing import Self
 
 from external_services.models.round import Round
 from flask import current_app

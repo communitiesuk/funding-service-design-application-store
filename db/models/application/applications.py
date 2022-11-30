@@ -1,21 +1,24 @@
 import random
 import string
 import uuid
+from typing import TYPE_CHECKING
 
 from db import db
-from db.models.application.enums import Language, Status
+from db.models.application.enums import Language
+from db.models.application.enums import Status
+from flask_sqlalchemy import DefaultMeta
+from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import ENUM
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from sqlalchemy import Column
-from flask_sqlalchemy import DefaultMeta
-from sqlalchemy.dialects.postgresql import UUID
-from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from db.models import Forms
 
 BaseModel: DefaultMeta = db.Model
+
 
 class Applications(BaseModel):
     id = Column(
@@ -37,7 +40,9 @@ class Applications(BaseModel):
         nullable=True,
     )
     started_at = Column("started_at", DateTime(), server_default=func.now())
-    status = Column("status", ENUM(Status), default="NOT_STARTED", nullable=False)
+    status = Column(
+        "status", ENUM(Status), default="NOT_STARTED", nullable=False
+    )
     date_submitted = Column("date_submitted", DateTime())
     last_edited = Column("last_edited", DateTime(), server_default=func.now())
     forms = relationship("Forms")

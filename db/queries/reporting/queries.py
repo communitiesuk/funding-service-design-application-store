@@ -1,5 +1,6 @@
 import csv
 import io
+
 from db.queries import get_application
 from db.queries.application import get_all_applications
 from db.queries.application import get_count_by_status
@@ -85,7 +86,9 @@ def get_report_for_all_applications(application_id=None):
             },
         ]
         for form in stored_forms:
-            if form.get("name") in [form.get("form_name") for form in list_of_forms]:
+            if form.get("name") in [
+                form.get("form_name") for form in list_of_forms
+            ]:
                 for question in form["questions"]:
                     for field in question["fields"]:
                         if field.get("key") in [
@@ -96,7 +99,9 @@ def get_report_for_all_applications(application_id=None):
                                 for form in list_of_forms
                                 if form.get("key") == field.get("key")
                             ][0]
-                            if field.get("key") == "yEmHpp" and field.get("answer"):
+                            if field.get("key") == "yEmHpp" and field.get(
+                                "answer"
+                            ):
                                 postcode = re.search(
                                     "([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]?"
                                     " ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr]"

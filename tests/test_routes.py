@@ -5,7 +5,6 @@ from db.exceptions import ApplicationError
 from db.models import Applications
 from db.queries.application import get_all_applications
 from db.schemas import ApplicationSchema
-from db.schemas import ApplicationWithFormsSchema
 from external_services import get_round_name
 from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
@@ -123,7 +122,7 @@ def test_get_all_applications(client):
     THEN the response should return all applications
     """
     post_test_applications(client)
-    serialiser = ApplicationSchema()
+    serialiser = ApplicationSchema(exclude="forms")
     expected_data = [serialiser.dump(row) for row in get_all_applications()]
     expected_data_within_response(
         client,
@@ -342,7 +341,7 @@ def test_get_application_by_application_id(client):
     random_app = get_random_row(Applications)
     random_id = random_app.id
     round_name = get_round_name(random_app.fund_id, random_app.round_id)
-    serialiser = ApplicationWithFormsSchema()
+    serialiser = ApplicationSchema()
     expected_data = serialiser.dump(random_app)
     expected_data_within_response(
         client,

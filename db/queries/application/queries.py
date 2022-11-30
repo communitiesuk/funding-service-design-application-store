@@ -25,7 +25,7 @@ def get_application(
     app_id, include_forms=False, as_json=False
 ) -> Dict | Applications:
 
-    stmt: Select = select(Applications.id).filter(Applications.id == app_id)
+    stmt: Select = select(Applications).filter(Applications.id == app_id)
 
     if include_forms:
         stmt.options(joinedload(Applications.forms))

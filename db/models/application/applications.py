@@ -23,7 +23,7 @@ BaseModel: DefaultMeta = db.Model
 class Applications(BaseModel):
     id = Column(
         "id",
-        UUID,
+        UUID(as_uuid=True),
         default=uuid.uuid4,
         primary_key=True,
         nullable=False,

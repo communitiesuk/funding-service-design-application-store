@@ -233,6 +233,7 @@
     "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
     "opens": "2022-02-01T00:00:01",
     "deadline": "2022-06-01T00:00:00",
+    "assessment_deadline": "2022-09-30T00:00:00",
     "assessment_criteria_weighting": [
             {
                 "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
@@ -264,6 +265,7 @@
     "opens": "2022-02-01T00:00:01",
     "deadline": "2022-06-01T00:00:00",
     "round_name": "random_round_name",
+    "assessment_deadline": "2022-09-30T00:00:00",
     "assessment_criteria_weighting": [
             {
                 "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
@@ -295,6 +297,7 @@
     "opens": "2022-02-01T00:00:01",
     "deadline": "2022-06-01T00:00:00",
     "round_name": "random_round_name",
+    "assessment_deadline": "2022-09-30T00:00:00",
     "assessment_criteria_weighting": [
             {
                 "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
@@ -325,6 +328,7 @@
     "id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
     "opens": "2022-06-01T00:00:01",
     "deadline": "2022-08-31T00:00:00",
+    "assessment_deadline": "2022-09-30T00:00:00",
     "assessment_criteria_weighting": [
             {
                 "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",
@@ -356,6 +360,7 @@
     "opens": "2022-09-01T00:00:01",
     "deadline": "2022-11-30T00:00:00",
     "round_name": "random_round_name",
+    "assessment_deadline": "2022-09-30T00:00:00",
     "assessment_criteria_weighting": [
             {
                 "id": "e2fd30d2-9207-421c-b8b3-c961bcee138b",

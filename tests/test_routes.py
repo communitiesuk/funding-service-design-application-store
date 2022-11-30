@@ -122,7 +122,7 @@ def test_get_all_applications(client):
     THEN the response should return all applications
     """
     post_test_applications(client)
-    serialiser = ApplicationSchema(exclude="forms")
+    serialiser = ApplicationSchema(exclude=["forms"])
     expected_data = [serialiser.dump(row) for row in get_all_applications()]
     expected_data_within_response(
         client,

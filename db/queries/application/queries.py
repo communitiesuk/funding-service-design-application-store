@@ -32,7 +32,7 @@ def get_application(
         serialiser = ApplicationSchema()
     else:
         stmt.options(noload(Applications.forms))
-        serialiser = ApplicationSchema(exclude="forms")
+        serialiser = ApplicationSchema(exclude=["forms"])
 
     row: Applications = db.session.scalars(stmt).unique().one()
 
@@ -57,7 +57,7 @@ def get_applications(
         serialiser = ApplicationSchema()
     else:
         stmt = stmt.options(noload(Applications.forms))
-        serialiser = ApplicationSchema(exclude="forms")
+        serialiser = ApplicationSchema(exclude=["forms"])
 
     rows: Applications = db.session.scalars(stmt).unique().all()
 

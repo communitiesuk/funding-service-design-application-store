@@ -1,5 +1,6 @@
 import csv
 import io
+import re
 from typing import Iterable
 from db.models.application.enums import Status
 
@@ -100,7 +101,7 @@ def get_report_for_all_applications(
     return_json = {field: None for field in get_key_report_field_headers()}
 
     for application in applications:
-        for form in application.forms:
+        for form in application["forms"]:
             if form.get("name") in [
                 form.get("form_name") for form in KEY_REPORT_MAPPING
             ]:

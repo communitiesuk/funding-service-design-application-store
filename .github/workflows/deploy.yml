@@ -9,7 +9,7 @@ on:
 jobs:
 
   test_and_deploy:
-    uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@main
+    uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@bau-faster-postgres-setup
     with:
       app_name: ${{ github.event.repository.name }}
       api: true

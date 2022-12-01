@@ -1,5 +1,6 @@
 import csv
 import io
+from typing import Iterable
 from db.models.application.enums import Status
 
 from db.queries import get_application

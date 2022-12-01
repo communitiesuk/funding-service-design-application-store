@@ -99,31 +99,32 @@ def get_report_for_all_applications(
     return_json_list = []
     return_json = {field: None for field in get_key_report_field_headers()}
 
-    for form in applications.forms:
-        if form.get("name") in [
-            form.get("form_name") for form in KEY_REPORT_MAPPING
-        ]:
-            for question in form["questions"]:
-                for field in question["fields"]:
-                    if field.get("key") in [
-                        form.get("key") for form in KEY_REPORT_MAPPING
-                    ]:
-                        return_field = [
-                            form.get("return_field")
-                            for form in KEY_REPORT_MAPPING
-                            if form.get("key") == field.get("key")
-                        ][0]
-                        if field.get("key") == "yEmHpp" and field.get(
-                            "answer"
-                        ):
-                            postcode = re.search(
-                                "([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]?"
-                                " ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr]"
-                                " ?0[Aa]{2})",  # noqa
-                                field.get("answer"),
-                            )
-                            return_json[return_field] = postcode.group()
-                        else:
-                            return_json[return_field] = field.get("answer")
-        return_json_list.append(return_json)
-    return return_json_list
+    for application in applications:
+        for form in application.forms:
+            if form.get("name") in [
+                form.get("form_name") for form in KEY_REPORT_MAPPING
+            ]:
+                for question in form["questions"]:
+                    for field in question["fields"]:
+                        if field.get("key") in [
+                            form.get("key") for form in KEY_REPORT_MAPPING
+                        ]:
+                            return_field = [
+                                form.get("return_field")
+                                for form in KEY_REPORT_MAPPING
+                                if form.get("key") == field.get("key")
+                            ][0]
+                            if field.get("key") == "yEmHpp" and field.get(
+                                "answer"
+                            ):
+                                postcode = re.search(
+                                    "([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]?"
+                                    " ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr]"
+                                    " ?0[Aa]{2})",  # noqa
+                                    field.get("answer"),
+                                )
+                                return_json[return_field] = postcode.group()
+                            else:
+                                return_json[return_field] = field.get("answer")
+            return_json_list.append(return_json)
+        return return_json_list

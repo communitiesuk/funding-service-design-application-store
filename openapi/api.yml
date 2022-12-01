@@ -46,6 +46,20 @@ paths:
             type: string
           required: false
           explode: false
+        - in: query
+          name: round_id
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+        - in: query
+          name: status_only
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
         # - filtering applications
         - in: query
           name: order_by
@@ -59,6 +73,13 @@ paths:
           style: form
           schema:
             type: string
+          required: false
+          explode: false
+        - in: query
+          name: forms
+          style: form
+          schema:
+            type: boolean
           required: false
           explode: false
     post:

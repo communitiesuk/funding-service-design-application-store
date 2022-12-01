@@ -1,6 +1,6 @@
-from db.models.applications import ApplicationTestMethods
-from db.models.status import Status
-from tests.helpers import post_data
+from db.models.application.enums import Status
+from db.models import Applications
+from tests.helpers import get_random_row, post_data
 from tests.helpers import post_test_applications
 
 
@@ -15,7 +15,7 @@ def test_get_application_statuses(client):
         == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n3,0,0,0\r\n"
     )
 
-    app = ApplicationTestMethods.get_random_app()
+    app = get_random_row(Applications)
     app.status = "IN_PROGRESS"
 
     response = client.get(
@@ -38,7 +38,7 @@ def test_get_applications_report(client):
 
     post_data(client, "/applications", application_data_1)
 
-    application = ApplicationTestMethods.get_random_app()
+    application = get_random_row(Applications)
     sections_put_en = [
         {
             "questions": [

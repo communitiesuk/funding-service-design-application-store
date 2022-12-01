@@ -11,7 +11,7 @@ class Account(object):
     @staticmethod
     def from_json(data: dict):
         return Account(
-            id=data.get("account_id"),
-            email=data.get("email_address"),
-            applications=data.get("applications"),
+            id=data["account_id"],
+            email=data["email_address"],
+            applications=data["applications"],
         )

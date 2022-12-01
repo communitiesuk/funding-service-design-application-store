@@ -7,22 +7,21 @@ from datetime import timedelta
 sys.path.insert(1, ".")
 
 from external_services.exceptions import NotificationError
-import api.routes.application.helpers as helpers
+import external_services
 from app import app
 from config import Config
-from db.models.applications import ApplicationsMethods
-from db.models.forms import FormsMethods
+from db.models.application.applications import ApplicationsMethods
 from external_services.models.notification import Notification
 from flask import current_app
 
 
 def application_deadline_reminder(fund_id: str, round_id: str):
 
-    fund_round = helpers.get_data(
+    fund_round = external_services.get_data(
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
-    
+
     fund_deadline_string = fund_round.get("deadline")
 
     status = {
@@ -39,7 +38,7 @@ def application_deadline_reminder(fund_id: str, round_id: str):
     for application in in_progress_applications:
 
         application["round_name"] = fund_round.get("title")
-        account = helpers.get_account(
+        account = external_services.get_account(
             account_id=application.get("account_id")
         )
         application["account_email"] = account.email
@@ -48,17 +47,17 @@ def application_deadline_reminder(fund_id: str, round_id: str):
 
     if len(all_applications) > 0:
         for count, application in enumerate(all_applications):
-                            
+
             email = {
                 "email": applicant.get("account_email")
                 for applicant in application.values()
             }
-            
+
             current_app.logger.info(
                 f"Sending application {count+1} of"
                 f" {len(all_applications)} to {email.get('email')}"
             )
-            
+
             try:
                 Notification.send(
                     template_type=Config.NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
@@ -68,7 +67,6 @@ def application_deadline_reminder(fund_id: str, round_id: str):
             except NotificationError as e:
                 current_app.logger.error(e.message)
 
-            
     else:
         current_app.logger.info(
             "Currently, there are no incomplete applications"

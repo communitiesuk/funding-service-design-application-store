@@ -4,8 +4,9 @@ from os import environ
 from pathlib import Path
 
 from distutils.util import strtobool
-from fsd_utils import configclass
 from fsd_utils import CommonConfig
+from fsd_utils import configclass
+
 
 @configclass
 class DefaultConfig:
@@ -39,11 +40,13 @@ class DefaultConfig:
     SEND_ENDPOINT = "/send"
     NOTIFY_TEMPLATE_SUBMIT_APPLICATION = "APPLICATION_RECORD_OF_SUBMISSION"
     NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION = "INCOMPLETE_APPLICATION_RECORDS"
-    NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER = "APPLICATION_DEADLINE_REMINDER"
+    NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER = (
+        "APPLICATION_DEADLINE_REMINDER"
+    )
     NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER = environ.get(
         "NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER",
-        NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER
-        )
+        NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
+    )
 
     # Account Store Endpoints
     ACCOUNTS_ENDPOINT = "/accounts"

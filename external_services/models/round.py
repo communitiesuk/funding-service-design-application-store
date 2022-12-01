@@ -17,14 +17,14 @@ class Round:
     @staticmethod
     def from_json(data: dict):
         return Round(
-            title=data.get("title"),
-            identifier=data.get("id"),
-            fund_id=data.get("fund_id"),
-            short_name=data.get("short_name"),
-            opens=data.get("opens"),
-            deadline=data.get("deadline"),
-            assessment_deadline=data.get("assessment_deadline"),
-            assessment_criteria_weighting=data.get(
+            title=data["title"],
+            identifier=data["id"],
+            fund_id=data["fund_id"],
+            short_name=data["short_name"],
+            opens=data["opens"],
+            deadline=data["deadline"],
+            assessment_deadline=data["assessment_deadline"],
+            assessment_criteria_weighting=data[
                 "assessment_criteria_weighting"
-            ),
+            ],
         )

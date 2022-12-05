@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import List
 from typing import Optional
-from typing import Self
 
 from external_services.models.round import Round
 from flask import current_app
@@ -16,7 +15,7 @@ class Fund:
     rounds: Optional[List[Round]] = None
 
     @staticmethod
-    def from_json(data: dict) -> Self:
+    def from_json(data: dict):
         try:
             return Fund(
                 name=data["name"],

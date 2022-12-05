@@ -1,7 +1,7 @@
 FROM python:3.10-bullseye
 
 # install git as pip needs to clone fsd_utils
-RUN apt update && apt -yq install git
+RUN apt update && apt -yq install git libpq-dev
 
 WORKDIR /app
 COPY requirements-dev.txt requirements-dev.txt

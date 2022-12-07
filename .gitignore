@@ -140,7 +140,3 @@ dmypy.json
 app/.DS_Store
 
 .scratch.*
-
-
-.flaskenv
-pytest.ini

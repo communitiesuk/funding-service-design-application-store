@@ -1,6 +1,6 @@
-from db.models.application.enums import Status
 from db.models import Applications
-from tests.helpers import get_random_row, post_data
+from tests.helpers import get_random_row
+from tests.helpers import post_data
 from tests.helpers import post_test_applications
 
 
@@ -28,7 +28,7 @@ def test_get_application_statuses(client):
     )
 
 
-def test_get_applications_report(client):
+def test_get_applications_report_query_param(client):
     application_data_1 = {
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
@@ -94,10 +94,9 @@ def test_get_applications_report(client):
             json=section,
             follow_redirects=True,
         )
-    application.status = Status.SUBMITTED
 
     response = client.get(
-        "/applications/reporting/key_application_metrics",
+        "/applications/reporting/key_application_metrics?status=IN_PROGRESS",
         follow_redirects=True,
     )
 

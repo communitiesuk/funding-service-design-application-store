@@ -244,6 +244,12 @@ paths:
       summary: Get the key data report on applications
       description: Get the key data report on applications
       operationId: api.ApplicationsView.get_key_applications_data_report
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: SUCCESS - Here is the report on applications

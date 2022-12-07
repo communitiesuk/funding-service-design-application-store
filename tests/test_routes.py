@@ -674,3 +674,30 @@ def test_put_returns_400_on_submitted_application(client, db_session):
 
     assert response.status_code == 400
     assert b"Not allowed to edit a submitted application." in response.data
+
+def test_successful_submitted_application(client, db_session, mock_successful_submit_notification):
+
+    post_test_applications(client)
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN an application is submitted
+    THEN a 201 response is received in the correct format
+    """
+    import random
+
+    application_list = db_session.query(Applications).all()
+    random_app = random.choice(application_list)
+    random_application_id = random_app.id
+    random_app.status = "SUBMITTED"
+
+    db_session.add(random_app)
+    db_session.commit()
+
+    # mock successful notification 
+    response = client.post(
+        f"/applications/{random_application_id}/submit",
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 201
+    assert all(k in response.json for k in ("id","email","reference"))

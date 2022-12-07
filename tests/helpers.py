@@ -174,30 +174,6 @@ def count_fund_applications(
     assert len(response_data) == expected_application_count, error_message
 
 
-def post_test_applications(client):
-    application_data_1 = {
-        "account_id": "usera",
-        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
-        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
-        "language": "en",
-    }
-    application_data_2 = {
-        "account_id": "userb",
-        "fund_id": "fund-b",
-        "round_id": "summer",
-        "language": "en",
-    }
-    application_data_3 = {
-        "account_id": "userc",
-        "fund_id": "funding-service-design",
-        "round_id": "spring",
-        "language": "cy",
-    }
-    post_data(client, "/applications", application_data_1)
-    post_data(client, "/applications", application_data_2)
-    post_data(client, "/applications", application_data_3)
-
-
 application_post_data = [
     {
         "account_id": "usera",
@@ -230,6 +206,11 @@ application_expected_data = [
     }
     for application_data in application_post_data
 ]
+
+def post_test_applications(client):
+    post_data(client, "/applications", application_post_data[0])
+    post_data(client, "/applications", application_post_data[1])
+    post_data(client, "/applications", application_post_data[2])
 
 
 def key_list_to_regex(

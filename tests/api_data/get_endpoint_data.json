@@ -1,19 +1,27 @@
 {
   "account_store/accounts?email_address=a%40example.com": {
     "account_id": "usera",
-    "emailAddress": "a@example.com"
+    "email_address": "a@example.com"
   },
   "account_store/accounts?email_address=b%40example.com": {
     "account_id": "userb",
-    "emailAddress": "b@example.com"
+    "email_address": "b@example.com"
   },
   "account_store/accounts?account_id=test-user": {
     "account_id": "test-user",
-    "emailAddress": "test@example.com"
+    "email_address": "test@example.com"
   },
   "account_store/accounts?account_id=usera": {
     "account_id": "usera",
-    "emailAddress": "a@example.com"
+    "email_address": "a@example.com"
+  },
+  "account_store/accounts?account_id=userb": {
+    "account_id": "userb",
+    "email_address": "b@example.com"
+  },
+  "account_store/accounts?account_id=userc": {
+    "account_id": "userc",
+    "email_address": "c@example.com"
   },
   "fund_store/funds": [
     {

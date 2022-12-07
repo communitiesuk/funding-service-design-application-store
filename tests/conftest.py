@@ -3,7 +3,7 @@ from app import create_app
 from db import db
 from flask_migrate import upgrade
 from tests.helpers import local_api_call
-
+from flask import Response
 
 @pytest.fixture(scope="session")
 def app():
@@ -45,6 +45,11 @@ def mock_get_data_fix(mocker):
 def mock_random_choices(mocker):
     # mock the function in the file it is invoked (not where it is declared)
     mocker.patch("random.choices", new=mock_get_random_choices)
+
+@pytest.fixture()
+def mock_successful_submit_notification(mocker):
+    # mock the function in the file it is invoked (not where it is declared)
+    mocker.patch("api.routes.application.routes.Notification.send", lambda template, email, application: Response(200))
 
 
 @pytest.fixture(autouse=True)

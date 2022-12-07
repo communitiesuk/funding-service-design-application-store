@@ -139,7 +139,11 @@ class ApplicationsView(MethodView):
                 "email": account.email,
             }, 201
         except KeyError as e:
-            return {"code": 404, "message": str(e)}
+            current_app.logger.exception(
+                "Key error on processing application submission"
+                f"for application: '{application_id}'"
+            )
+            return str(e), 500, {"x-error": "key error"}
         except NotificationError as e:
             current_app.logger.exception(
                 "Notification error on sending SUBMIT notification for"

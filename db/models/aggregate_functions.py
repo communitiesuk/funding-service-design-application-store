@@ -307,9 +307,7 @@ def get_key_report_field_headers(
     return [field["return_field"] for field in KEY_REPORT_MAPPING]
 
 
-def get_report_for_all_applications(
-    application_id=None,
-):
+def get_report_for_all_applications(status, application_id=None):
     """
 
     :param application_id: generate report for only this application ID
@@ -321,7 +319,7 @@ def get_report_for_all_applications(
             ApplicationsMethods.get_application_by_id(application_id)
         ]
     else:
-        applications = ApplicationsMethods.get_all(status=Status.SUBMITTED)
+        applications = ApplicationsMethods.get_all(status=status)
     return_json_list = []
     for application in applications:
 

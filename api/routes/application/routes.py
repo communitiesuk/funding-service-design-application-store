@@ -15,6 +15,7 @@ from db.models.aggregate_functions import submit_application
 from db.models.aggregate_functions import update_form
 from db.models.applications import ApplicationsMethods
 from db.models.forms import FormsMethods
+from db.models.status import Status
 from external_services.exceptions import NotificationError
 from external_services.models.notification import Notification
 from flask import current_app
@@ -94,11 +95,11 @@ class ApplicationsView(ApplicationsMethods, MethodView):
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 
-    def get_key_applications_data_report(self):
+    def get_key_applications_data_report(self, status=Status.SUBMITTED.name):
         try:
             return send_file(
                 export_json_to_csv(
-                    get_report_for_all_applications(),
+                    get_report_for_all_applications(status),
                     get_key_report_field_headers(),
                 ),
                 "text/csv",

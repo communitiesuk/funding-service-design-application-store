@@ -2,13 +2,11 @@ import csv
 import io
 import re
 from typing import Iterable
-from db.models.application.enums import Status
 
-from db.queries import get_application
-from db.queries.application import get_all_applications
-from db.queries.application import get_count_by_status
-from db.queries import get_application, get_applications
 from db.models import Applications
+from db.queries import get_application
+from db.queries import get_applications
+from db.queries.application import get_count_by_status
 
 
 def export_json_to_csv(return_data, headers=None):
@@ -82,6 +80,7 @@ def get_key_report_field_headers(
 
 
 def get_report_for_all_applications(
+    status,
     application_id=None,
 ):
     """
@@ -95,7 +94,11 @@ def get_report_for_all_applications(
             get_application(application_id, include_forms=True, as_json=True)
         ]
     else:
-        applications = get_applications(filters=[Applications.status == Status.SUBMITTED], include_forms=True, as_json=True)
+        applications = get_applications(
+            filters=[Applications.status == status],
+            include_forms=True,
+            as_json=True,
+        )
 
     return_json_list = []
     return_json = {field: None for field in get_key_report_field_headers()}

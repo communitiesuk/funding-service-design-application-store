@@ -1,17 +1,18 @@
 from _helpers import get_blank_forms
 from _helpers import order_applications
 from config import Config
+from db.models.application.enums import Status
 from db.queries import add_new_forms
 from db.queries import create_application
 from db.queries import export_json_to_csv
 from db.queries import get_application
 from db.queries import get_general_status_applications_report
+from db.queries import get_key_report_field_headers
 from db.queries import get_report_for_all_applications
 from db.queries import get_report_for_application
 from db.queries import search_applications
 from db.queries import submit_application
 from db.queries import update_form
-from db.queries import get_key_report_field_headers
 from external_services import get_account
 from external_services.exceptions import NotificationError
 from external_services.models.notification import Notification
@@ -42,9 +43,7 @@ class ApplicationsView(MethodView):
         round_id = args["round_id"]
         fund_id = args["fund_id"]
         language = args["language"]
-        empty_forms = get_blank_forms(
-            fund_id, round_id, language
-        )
+        empty_forms = get_blank_forms(fund_id, round_id, language)
         application = create_application(
             account_id=account_id,
             fund_id=fund_id,
@@ -90,11 +89,11 @@ class ApplicationsView(MethodView):
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 
-    def get_key_applications_data_report(self):
+    def get_key_applications_data_report(self, status=Status.SUBMITTED.name):
         try:
             return send_file(
                 export_json_to_csv(
-                    get_report_for_all_applications(),
+                    get_report_for_all_applications(status=status),
                     get_key_report_field_headers(),
                 ),
                 "text/csv",

@@ -40,6 +40,7 @@ def test_get_applications_report(client):
     post_data(client, "/applications", application_data_1)
 
     application = get_random_row(Applications)
+    application2 = get_random_row(Applications)
     sections_put_en = [
         {
             "questions": [
@@ -97,6 +98,62 @@ def test_get_applications_report(client):
         )
     application.status = Status.SUBMITTED
 
+    sections_put_en_2 = [
+        {
+            "questions": [
+                {
+                    "question": "About your organisation",
+                    "fields": [
+                        {
+                            "key": "YdtlQZ",
+                            "title": "Organisation Name",
+                            "type": "text",
+                            "answer": "Test Organisation Name 2",
+                        },
+                        {
+                            "key": "WWWWxy",
+                            "title": "EOI Reference",
+                            "type": "text",
+                            "answer": "Test Reference Number 2",
+                        },
+                    ],
+                },
+            ],
+            "metadata": {
+                "application_id": application2.id,
+                "form_name": "organisation-information",
+                "is_summary_page_submit": False,
+            },
+        },
+        {
+            "questions": [
+                {
+                    "question": "Address",
+                    "fields": [
+                        {
+                            "key": "yEmHpp",
+                            "title": "Address",
+                            "type": "text",
+                            "answer": "BBC, W1A 1AA",
+                        },
+                    ],
+                },
+            ],
+            "metadata": {
+                "application_id": application2.id,
+                "form_name": "project-information",
+                "is_summary_page_submit": False,
+            },
+        },
+    ]
+
+    for section in sections_put_en_2:
+        client.put(
+            "/applications/forms",
+            json=section,
+            follow_redirects=True,
+        )
+    application2.status = Status.SUBMITTED
     response = client.get(
         "/applications/reporting/key_application_metrics",
         follow_redirects=True,
@@ -180,6 +237,6 @@ def test_get_applications_report_query_param(client):
         follow_redirects=True,
     )
 
-    assert "Test Organisation Name" in response.data.decode("utf-8")
+    assert "Test Organisation Name 2" in response.data.decode("utf-8")
     assert "Test Reference Number" in response.data.decode("utf-8")
     assert "W1A 1AA" in response.data.decode("utf-8")

@@ -357,6 +357,21 @@ def test_get_application_by_application_id(client):
         exclude_types=[list],
     )
 
+def test_get_application_by_application_id_when_db_record_has_no_language_set(client):
+        """
+        GIVEN We have a functioning Application Store API
+        WHEN a GET /applications/<application_id> request is sent for an application
+            with no language set (such as a pre-language functionality application)
+        THEN the response should contain the application object with a default
+            language of english ('en')
+        """
+        post_test_applications(client)
+        random_app = get_random_row(Applications)
+        random_id = random_app.id
+        random_app.language = None
+        response = client.get(f"/applications/{random_id}", follow_redirects=True)
+        response_data = json.loads(response.data)
+        assert response_data["language"] == "en"
 
 def testHealthcheckRoute(client):
     expected_result = {

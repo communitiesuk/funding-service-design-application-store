@@ -37,7 +37,7 @@ def get_all_rows(table):
     """get_all_rows Uses a database-side select to get all rows.
 
     :param table: Sqlalchemy mapper object
-    :return: A random row from the given mapper.
+    :return: All rows in table provided.
     """
 
 

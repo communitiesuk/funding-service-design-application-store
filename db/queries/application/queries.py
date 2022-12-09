@@ -184,7 +184,10 @@ def search_applications(**params):
     if status_only:
         if " " in status_only:
             status_only = status_only.replace(" ", "_")
-        filters.append(Applications.status == status_only)
+        if type(status_only) == list:
+            filters.append(Applications.status.in_(status_only))
+        else:
+            filters.append(Applications.status == status_only)
     if application_id:
         filters.append(Applications.id == application_id)
     found_apps = get_applications(filters, include_forms=forms, as_json=True)

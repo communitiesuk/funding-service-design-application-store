@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 import argparse
 import sys
-from datetime import datetime
-from datetime import timedelta
 
 sys.path.insert(1, ".")
 
-from external_services.exceptions import NotificationError
-import external_services
-from app import app
-from config import Config
-from db.models.application.applications import ApplicationsMethods
-from external_services.models.notification import Notification
-from flask import current_app
+from external_services.exceptions import NotificationError  # noqa: E402
+import external_services  # noqa: E402
+from app import app  # noqa: E402
+from config import Config  # noqa: E402
+from external_services.models.notification import Notification  # noqa: E402
+from flask import current_app  # noqa: E402
+from db.queries import search_applications  # noqa: E402
 
 
 def application_deadline_reminder(fund_id: str, round_id: str):
@@ -25,17 +23,15 @@ def application_deadline_reminder(fund_id: str, round_id: str):
     fund_deadline_string = fund_round.get("deadline")
 
     status = {
-        "status_only": "IN_PROGRESS",
+        "status_only": ["IN_PROGRESS", "NOT_STARTED", "COMPLETED"],
         "fund_id": fund_id,
         "round_id": round_id,
     }
 
-    in_progress_applications = ApplicationsMethods.search_applications(
-        **status
-    )
+    not_submitted_applications = search_applications(**status)
 
     all_applications = []
-    for application in in_progress_applications:
+    for application in not_submitted_applications:
 
         application["round_name"] = fund_round.get("title")
         account = external_services.get_account(
@@ -44,9 +40,16 @@ def application_deadline_reminder(fund_id: str, round_id: str):
         application["account_email"] = account.email
         application["deadline_date"] = fund_deadline_string
         all_applications.append({"application": application})
+        # Only one email per account_email
+        unique = {}
+        for application in all_applications:
+            unique[application["application"]["account_email"]] = application
+        unique_application_email_addresses = list(unique.values())
 
-    if len(all_applications) > 0:
-        for count, application in enumerate(all_applications):
+    if len(unique_application_email_addresses) > 0:
+        for count, application in enumerate(
+            unique_application_email_addresses
+        ):
 
             email = {
                 "email": applicant.get("account_email")
@@ -60,7 +63,7 @@ def application_deadline_reminder(fund_id: str, round_id: str):
 
             try:
                 Notification.send(
-                    template_type=Config.NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
+                    template_type=Config.NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,  # noqa: E501
                     to_email=email.get("email"),
                     content=application,
                 )
@@ -69,7 +72,7 @@ def application_deadline_reminder(fund_id: str, round_id: str):
 
     else:
         current_app.logger.info(
-            "Currently, there are no incomplete applications"
+            "Currently, there are no non-submitted applications"
         )
 
 

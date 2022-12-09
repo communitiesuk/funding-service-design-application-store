@@ -101,9 +101,9 @@ def get_report_for_all_applications(
         )
 
     return_json_list = []
-    return_json = {field: None for field in get_key_report_field_headers()}
 
     for application in applications:
+        return_json = {field: None for field in get_key_report_field_headers()}
         for form in application["forms"]:
             if form.get("name") in [
                 form.get("form_name") for form in KEY_REPORT_MAPPING
@@ -130,5 +130,5 @@ def get_report_for_all_applications(
                                 return_json[return_field] = postcode.group()
                             else:
                                 return_json[return_field] = field.get("answer")
-            return_json_list.append(return_json)
-        return return_json_list
+        return_json_list.append(return_json)
+    return return_json_list

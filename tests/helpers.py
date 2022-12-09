@@ -33,6 +33,18 @@ def get_random_row(table):
         .one()
     )
 
+def get_all_rows(table):
+    """get_all_rows Uses a database-side select to get all rows.
+
+    :param table: Sqlalchemy mapper object
+    :return: A random row from the given mapper.
+    """
+
+
+    return (
+        db.session.query(table)
+        .all()
+    )
 
 def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
     api_data_json = os.path.join(

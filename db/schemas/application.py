@@ -24,6 +24,8 @@ class ApplicationSchema(SQLAlchemyAutoSchema):
             data["last_edited"] = data["started_at"]
         if data["date_submitted"] is None:
             data["date_submitted"] = "null"
+        if data["language"] is None:
+            data["language"] = "en"
         return data
 
     def get_round_name(self, obj):

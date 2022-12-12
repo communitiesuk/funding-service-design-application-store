@@ -28,8 +28,8 @@ class Notification(object):
             "content": content,
         }
         current_app.logger.info(
-            f"Sending application to notification service. endpoint: '{url}',"
-            f" json payload: '{template_type} to: {to_email}'."
+            f"Sending application to notification service. endpoint '{url}',"
+            f" json payload '{template_type}' to '{to_email}'."
         )
         response = post_data(url, json_payload)
 

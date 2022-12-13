@@ -9,6 +9,7 @@ on:
 jobs:
 
   test_and_deploy:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@main
     with:
       app_name: ${{ github.event.repository.name }}
@@ -19,13 +20,15 @@ jobs:
       users: 2
       spawn-rate: 2
       run-time: 11s
-    if: ${{ github.actor != 'dependabot[bot]' }}
+      run_performance_tests: true
+      run_e2e_tests: true
     secrets:
       CF_API: ${{secrets.CF_API}}
       CF_ORG: ${{secrets.CF_ORG}}
       CF_SPACE: ${{secrets.CF_SPACE}}
       CF_USER: ${{secrets.CF_USER}}
       CF_PASSWORD: ${{secrets.CF_PASSWORD}}
+      E2E_PAT: ${{secrets.E2E_PAT}}
   apply_network_policy_dev:
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest

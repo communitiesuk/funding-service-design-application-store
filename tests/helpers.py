@@ -33,6 +33,7 @@ def get_random_row(table):
         .one()
     )
 
+
 def get_all_rows(table):
     """get_all_rows Uses a database-side select to get all rows.
 
@@ -40,11 +41,8 @@ def get_all_rows(table):
     :return: All rows in table provided.
     """
 
+    return db.session.query(table).all()
 
-    return (
-        db.session.query(table)
-        .all()
-    )
 
 def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
     api_data_json = os.path.join(
@@ -133,7 +131,7 @@ def post_data(test_client, endpoint: str, data: dict):
         endpoint (str): The POST request endpoint
         data (dict): The content to post to the endpoint provided
     """
-    test_client.post(
+    return test_client.post(
         endpoint,
         data=json.dumps(data),
         content_type="application/json",
@@ -151,7 +149,7 @@ def put_data(test_client, endpoint: str, data: dict):
     """
     test_client.put(
         endpoint,
-        data=json.dumps(post_data),
+        data=json.dumps(data),
         content_type="application/json",
         follow_redirects=True,
     )
@@ -218,6 +216,7 @@ application_expected_data = [
     }
     for application_data in application_post_data
 ]
+
 
 def post_test_applications(client):
     post_data(client, "/applications", application_post_data[0])

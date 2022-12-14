@@ -161,6 +161,7 @@ def test_get_applications_of_account_id(client):
                 "last_edited",
                 "date_submitted",
                 "round_name",
+                "key"
             ]
         ),
     )

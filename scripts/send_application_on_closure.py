@@ -23,7 +23,7 @@ def send_incomplete_applications_after_deadline(fund_id, round_id):
     fund_rounds = get_fund_round(fund_id, round_id)
     if current_date_time > fund_rounds.get("deadline"):
         search_params = {
-            "status_only": "IN_PROGRESS",
+            "status_only": ["NOT_STARTED", "IN_PROGRESS"],
             "fund_id": fund_id,
             "round_id": round_id,
         }

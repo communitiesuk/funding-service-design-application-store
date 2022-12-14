@@ -163,8 +163,8 @@ paths:
               $ref: 'components.yml#/components/schemas/PutForms'
       tags:
         - applications
-      summary: Get an application
-      description: Return an application
+      summary: Update an application with new forms state
+      description: Updates the form state of an application
       operationId: api.ApplicationsView.put
       responses:
         201:

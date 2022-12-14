@@ -1,7 +1,4 @@
-import random
-import string
 import uuid
-from typing import TYPE_CHECKING
 
 from db import db
 from db.models.application.enums import Language
@@ -14,8 +11,6 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-if TYPE_CHECKING:
-    from db.models import Forms
 
 BaseModel: DefaultMeta = db.Model
 

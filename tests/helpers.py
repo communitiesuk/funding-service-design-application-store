@@ -213,7 +213,7 @@ application_expected_data = [
         "project_name": "project_name not set",
         "date_submitted": "null",
         "started_at": "2022-05-20 14:47:12",
-        "last_edited": None,        
+        "last_edited": None,
         **application_data,
     }
     for application_data in application_post_data

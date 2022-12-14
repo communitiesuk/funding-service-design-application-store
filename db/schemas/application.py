@@ -16,7 +16,6 @@ from .form import FormsRunnerSchema
 class ApplicationSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Applications
-        exclude = ["key"]
 
     @post_dump
     def handle_nones(self, data, **kwargs):
@@ -38,3 +37,4 @@ class ApplicationSchema(SQLAlchemyAutoSchema):
     last_edited = DateTime(format="iso")
     round_name = Method("get_round_name")
     forms = Nested(FormsRunnerSchema, many=True, allow_none=True)
+    key = auto_field()

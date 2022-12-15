@@ -30,11 +30,35 @@ def send_incomplete_applications_after_deadline(fund_id, round_id):
         in_progress_applications = search_applications(**search_params)
         all_applications = []
         for application in in_progress_applications:
-            application["forms"] = get_forms_by_app_id(application.get("id"))
+            try:
+                application["forms"] = get_forms_by_app_id(
+                    application.get("id")
+                )
+            except Exception:
+                current_app.logger.error(
+                    "Unable to retrieve forms for "
+                    + f"application id {application.get('id')}"
+                )
+                raise LookupError(
+                    "Unable to retrieve forms for "
+                    + f"application id {application.get('id')}"
+                )
             application["round_name"] = fund_rounds.get("title")
-            account_id = external_services.get_account(
-                account_id=application.get("account_id")
-            )
+            try:
+                account_id = external_services.get_account(
+                    account_id=application.get("account_id")
+                )
+            except Exception:
+                current_app.logger.error(
+                    "Unable to retrieve account id"
+                    f" ({application.get('account_id')}) for "
+                    + f"application id {application.get('id')}"
+                )
+                raise LookupError(
+                    "Unable to retrieve account id"
+                    f" ({application.get('account_id')}) for "
+                    + f"application id {application.get('id')}"
+                )
             application["account_email"] = account_id.email
             all_applications.append({"application": application})
         count = 0

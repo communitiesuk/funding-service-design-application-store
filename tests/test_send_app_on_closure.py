@@ -1,4 +1,7 @@
+import copy
+
 from config.envs.unit_testing import UnitTestingConfig
+from pytest import raises
 from scripts.send_application_on_closure import (
     send_incomplete_applications_after_deadline,
 )  # noqa
@@ -7,6 +10,29 @@ from tests.helpers import put_data
 
 
 class TestSendAppOnClosure:
+    def test_send_apps_bad_account_id(self, mocker, client):
+        fund_id = UnitTestingConfig.COF_FUND_ID
+        round_id = UnitTestingConfig.COF_ROUND_2_ID
+        app_data_bad_account = copy.copy(vanilla_application_data)
+        app_data_bad_account["account_id"] = "bad_id"
+        post_data(
+            client,
+            "/applications",
+            app_data_bad_account,
+        )
+
+        with (
+            mocker.patch(
+                "scripts.send_application_on_closure.get_fund_round",
+                return_value={
+                    "deadline": "2022-12-01 12:00:00",
+                    "round_name": "COF R2W2",
+                },
+            )
+        ):
+            with raises(LookupError):
+                send_incomplete_applications_after_deadline(fund_id, round_id)
+
     def test_send_apps_no_apps(self, mocker):
         fund_id = UnitTestingConfig.COF_FUND_ID
         round_id = UnitTestingConfig.COF_ROUND_2_ID

@@ -28,7 +28,7 @@
             cf_space:    ${{secrets.CF_SPACE }}
             cf_username: ${{secrets.CF_USER}}
             cf_password: ${{secrets.CF_PASSWORD}}
-            command: push funding-service-design-application-store-dev
+            command: push funding-service-design-application-store-dev --var GITHUB_SHA="${{ github.sha }}"
         - name: Apply network policy for notification service
           uses: citizen-of-planet-earth/cf-cli-action@v2
           with:

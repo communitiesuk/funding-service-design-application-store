@@ -38,3 +38,17 @@
             cf_username: ${{secrets.CF_USER}}
             cf_password: ${{secrets.CF_PASSWORD}}
             command: add-network-policy funding-service-design-application-store-dev funding-service-design-notification-dev --protocol tcp --port 8080
+
+    run-shared-tests_dev:
+      needs: deploy_dev
+      uses: communitiesuk/funding-design-service-workflows/.github/workflows/run-shared-tests.yml@main
+      with:
+        perf_test_target_url_application_store: https://funding-service-design-application-store-dev.london.cloudapps.digital
+        perf_test_target_url_fund_store: https://funding-service-design-fund-store-dev.london.cloudapps.digital
+        e2e_tests_target_url_frontend: https://fsd:fsd@frontend.dev.gids.dev
+        e2e_tests_target_url_authenticator: https://fsd:fsd@authenticator2.dev.gids.dev
+        e2e_tests_target_url_form_runner: https://fsd:fsd@forms.dev.gids.dev
+        run_performance_tests: true
+        run_e2e_tests: true
+      secrets:
+        E2E_PAT: ${{secrets.E2E_PAT}}

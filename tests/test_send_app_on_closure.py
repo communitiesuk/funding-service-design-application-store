@@ -31,7 +31,14 @@ class TestSendAppOnClosure:
             )
         ):
             with raises(LookupError):
-                send_incomplete_applications_after_deadline(fund_id, round_id)
+                send_incomplete_applications_after_deadline(
+                    fund_id, round_id, True
+                )
+
+            result = send_incomplete_applications_after_deadline(
+                fund_id, round_id, False
+            )
+            assert result == 0, "Not expecting result if emails not to be sent"
 
     def test_send_apps_no_apps(self, mocker):
         fund_id = UnitTestingConfig.COF_FUND_ID
@@ -45,9 +52,25 @@ class TestSendAppOnClosure:
         ):
 
             result = send_incomplete_applications_after_deadline(
-                fund_id, round_id
+                fund_id, round_id, True
             )
             assert 0 == result, "Unexpected result number"
+
+    def test_send_apps_send_emails_is_false(self, mocker):
+        fund_id = UnitTestingConfig.COF_FUND_ID
+        round_id = UnitTestingConfig.COF_ROUND_2_ID
+
+        with (
+            mocker.patch(
+                "scripts.send_application_on_closure.get_fund_round",
+                return_value={"deadline": "2022-01-01 12:00:00"},
+            )
+        ):
+
+            result = send_incomplete_applications_after_deadline(
+                fund_id, round_id, False
+            )
+            assert 0 == result, "Unexpected result"
 
     def test_send_apps_one_to_send_not_started(self, mocker, client):
         fund_id = UnitTestingConfig.COF_FUND_ID
@@ -69,7 +92,7 @@ class TestSendAppOnClosure:
         ):
 
             result = send_incomplete_applications_after_deadline(
-                fund_id, round_id
+                fund_id, round_id, True
             )
             assert 1 == result, "Unexpected result number"
 
@@ -106,7 +129,7 @@ class TestSendAppOnClosure:
         ):
 
             result = send_incomplete_applications_after_deadline(
-                fund_id, round_id
+                fund_id, round_id, True
             )
             assert 1 == result, "Unexpected result number"
 
@@ -150,9 +173,46 @@ class TestSendAppOnClosure:
         ):
 
             result = send_incomplete_applications_after_deadline(
-                fund_id, round_id
+                fund_id, round_id, True
             )
             assert 2 == result, "Unexpected result number"
+
+    def test_send_apps_one_to_send_one_bad_id(self, mocker, client):
+        fund_id = UnitTestingConfig.COF_FUND_ID
+        round_id = UnitTestingConfig.COF_ROUND_2_ID
+        # Add one not_started application
+        post_data(
+            client,
+            "/applications",
+            vanilla_application_data,
+        )
+        app_data_bad_account = copy.copy(vanilla_application_data)
+        app_data_bad_account["account_id"] = "bad_id"
+        # add one application with bad id
+        post_data(
+            client,
+            "/applications",
+            app_data_bad_account,
+        )
+
+        with (
+            mocker.patch(
+                "scripts.send_application_on_closure.get_fund_round",
+                return_value={
+                    "deadline": "2022-12-01 12:00:00",
+                    "round_name": "COF R2W2",
+                },
+            )
+        ):
+            with raises(LookupError):
+                result = send_incomplete_applications_after_deadline(
+                    fund_id, round_id, True
+                )
+
+            result = send_incomplete_applications_after_deadline(
+                fund_id, round_id, False
+            )
+            assert 1 == result, "Unexpected result number"
 
     def test_send_apps_before_deadline(self, mocker):
         fund_id = UnitTestingConfig.COF_FUND_ID

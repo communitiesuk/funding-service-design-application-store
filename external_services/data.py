@@ -27,10 +27,15 @@ def get_data(endpoint: str, params: Optional[dict] = None):
     """
 
     if Config.USE_LOCAL_DATA:
-        current_app.logger.info(f"Fetching local data from '{endpoint}'.")
+        current_app.logger.info(
+            f"Fetching local data from '{endpoint}'"
+            + f" with params {params}."
+        )
         data = get_local_data(endpoint, params)
     else:
-        current_app.logger.info(f"Fetching data from '{endpoint}'.")
+        current_app.logger.info(
+            f"Fetching data from '{endpoint}'" + f" with params {params}."
+        )
         data = get_remote_data(endpoint, params)
     if data is None:
         current_app.logger.error(

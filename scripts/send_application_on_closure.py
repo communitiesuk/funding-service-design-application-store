@@ -3,6 +3,8 @@ import argparse
 import sys
 from datetime import datetime
 
+from distutils.util import strtobool
+
 sys.path.insert(1, ".")
 
 import external_services  # noqa: E402
@@ -143,7 +145,7 @@ def init_argparse() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--send_emails",
-        help="Whether to actually send emails: y or n",
+        help="Whether to actually send emails: True or False",
         required=True,
     )
     return parser
@@ -155,7 +157,7 @@ def main() -> None:
     send_incomplete_applications_after_deadline(
         fund_id=args.fund_id,
         round_id=args.round_id,
-        send_emails=bool(args.send_emails),
+        send_emails=strtobool(args.send_emails),
     )
 
 

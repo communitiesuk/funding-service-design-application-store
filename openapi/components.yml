@@ -25,7 +25,9 @@ components:
         round_name:
           type: string
         forms:
-          type: array
+          oneOf:
+            - type: array
+            - type: object
         date_submitted:
           type: string
     PostApplication:

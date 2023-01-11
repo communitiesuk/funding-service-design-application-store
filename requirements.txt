@@ -59,7 +59,7 @@ flask-sqlalchemy==2.5.1
     # via
     #   -r requirements.in
     #   flask-migrate
-funding-service-design-utils==1.0.12
+funding-service-design-utils==1.0.18
     # via -r requirements.in
 gunicorn==20.1.0
     # via funding-service-design-utils

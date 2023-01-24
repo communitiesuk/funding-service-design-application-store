@@ -5,7 +5,6 @@ from db.exceptions import ApplicationError
 from db.models import Applications
 from db.queries.application import get_all_applications
 from db.schemas import ApplicationSchema
-from external_services import get_round_name
 from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
@@ -340,7 +339,6 @@ def test_get_application_by_application_id(client):
     post_test_applications(client)
     random_app = get_random_row(Applications)
     random_id = random_app.id
-    round_name = get_round_name(random_app.fund_id, random_app.round_id)
     serialiser = ApplicationSchema()
     expected_data = serialiser.dump(random_app)
     expected_data_within_response(
@@ -357,25 +355,31 @@ def test_get_application_by_application_id(client):
         exclude_types=[list],
     )
 
-def test_get_application_by_application_id_when_db_record_has_no_language_set(client):
-        """
-        GIVEN We have a functioning Application Store API
-        WHEN a GET /applications/<application_id> request is sent for an application
-            with no language set (such as a pre-language functionality application)
-        THEN the response should contain the application object with a default
-            language of english ('en')
-        """
-        post_test_applications(client)
-        random_app = get_random_row(Applications)
-        random_id = random_app.id
-        random_app.language = None
-        response = client.get(f"/applications/{random_id}", follow_redirects=True)
-        response_data = json.loads(response.data)
-        assert response_data["language"] == "en"
+
+def test_get_application_by_application_id_when_db_record_has_no_language_set(
+    client,
+):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a GET /applications/<application_id> request is sent for an
+        application with no language set (such as a pre-language
+        functionality application)
+    THEN the response should contain the application object with a default
+        language of english ('en')
+    """
+    post_test_applications(client)
+    random_app = get_random_row(Applications)
+    random_id = random_app.id
+    random_app.language = None
+    response = client.get(f"/applications/{random_id}", follow_redirects=True)
+    response_data = json.loads(response.data)
+    assert response_data["language"] == "en"
+
 
 def testHealthcheckRoute(client):
     expected_result = {
-        "checks": [{"check_flask_running": "OK"}, {"check_db": "OK"}]
+        "checks": [{"check_flask_running": "OK"}, {"check_db": "OK"}],
+        "version": "abc123",
     }
     result = client.get("/healthcheck")
     assert result.status_code == 200, "Unexpected status code"
@@ -690,7 +694,10 @@ def test_put_returns_400_on_submitted_application(client, db_session):
     assert response.status_code == 400
     assert b"Not allowed to edit a submitted application." in response.data
 
-def test_successful_submitted_application(client, db_session, mock_successful_submit_notification):
+
+def test_successful_submitted_application(
+    client, db_session, mock_successful_submit_notification
+):
 
     post_test_applications(client)
     """
@@ -708,11 +715,11 @@ def test_successful_submitted_application(client, db_session, mock_successful_su
     db_session.add(random_app)
     db_session.commit()
 
-    # mock successful notification 
+    # mock successful notification
     response = client.post(
         f"/applications/{random_application_id}/submit",
         follow_redirects=True,
     )
 
     assert response.status_code == 201
-    assert all(k in response.json for k in ("id","email","reference"))
+    assert all(k in response.json for k in ("id", "email", "reference"))

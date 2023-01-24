@@ -55,12 +55,14 @@ flask-migrate==4.0.0
     # via -r requirements.in
 flask-restx==1.0.3
     # via -r requirements.in
-flask-sqlalchemy==2.5.1
+flask-sqlalchemy==3.0.2
     # via
     #   -r requirements.in
     #   flask-migrate
 funding-service-design-utils==1.0.21
     # via -r requirements.in
+greenlet==2.0.1
+    # via sqlalchemy
 gunicorn==20.1.0
     # via funding-service-design-utils
 idna==3.4
@@ -156,8 +158,6 @@ rich==12.6.0
     # via funding-service-design-utils
 ruamel-yaml==0.17.21
     # via prance
-ruamel-yaml-clib==0.2.7
-    # via ruamel-yaml
 semver==2.13.0
     # via prance
 sentry-sdk[flask]==1.11.1

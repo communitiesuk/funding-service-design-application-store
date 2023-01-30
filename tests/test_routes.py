@@ -251,6 +251,57 @@ def test_update_section_of_application(client):
     assert all(answer_found_list)
     assert section_status == "IN_PROGRESS"
 
+def test_update_section_of_application_with_optional_field(client):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN A put is made with a completed section
+    THEN The section json should be updated to
+    match the PUT'ed json and be marked as in-progress.
+    """
+    post_test_applications(client)
+    random_app = get_random_row(Applications)
+    random_application_id = random_app.id
+    form_name = (
+        "declarations" if random_app.language.name == "en" else "datganiadau"
+    )
+    section_put = {
+        "questions": [
+            {
+                "question": "Management case",
+                "fields": [
+                    {
+                        "key": "application-name",
+                        "title": "Applicant name",
+                        "type": "text",
+                        "answer": "Coolio",
+                    },
+                    {
+                        "key": "applicant-email",
+                        "title": "Email",
+                        "type": "text",                       
+                    }
+                ],
+            }            
+        ],
+        "metadata": {
+            "application_id": str(random_application_id),
+            "form_name": form_name,
+            "is_summary_page_submit": False,
+        },
+    }
+    response = client.put(
+        "/applications/forms",
+        json=section_put,
+        follow_redirects=True,
+    )
+    answer_found_list = [
+        field["answer"] not in [None, ""]
+        for field in response.json["questions"][0]["fields"]
+    ]
+    section_status = response.json["status"]
+    assert all(answer_found_list)
+    assert section_status == "IN_PROGRESS"
+
 
 def test_update_section_of_application_with_incomplete_answers(
     client,

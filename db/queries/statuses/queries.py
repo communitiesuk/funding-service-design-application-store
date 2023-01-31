@@ -94,9 +94,7 @@ def update_question_statuses(application_id: str, form_name: str):
                         case "":
                             return False
                         case []:  # noqa (E211)
-                            return False
-                        case "answer_not_specified":
-                            return False
+                            return False                      
                         # optional questions return None (not string)
                         # when submitted with no answer
                         case None:

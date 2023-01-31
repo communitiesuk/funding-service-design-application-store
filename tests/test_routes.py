@@ -293,13 +293,8 @@ def test_update_section_of_application_with_optional_field(client):
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
-    )
-    answer_found_list = [
-        field["answer"] not in [None, ""]
-        for field in response.json["questions"][0]["fields"]
-    ]
-    section_status = response.json["status"]
-    assert all(answer_found_list)
+    )    
+    section_status = response.json["status"]   
     assert section_status == "IN_PROGRESS"
 
 

@@ -88,15 +88,13 @@ def update_question_statuses(application_id: str, form_name: str):
 
                 def is_field_answered(field):
                     answer_or_not_specified = field.get(
-                        "answer", "answer_not_specified"
+                        "answer"
                     )
                     match answer_or_not_specified:  # noqa
                         case "":
                             return False
                         case []:  # noqa (E211)
-                            return False
-                        case "answer_not_specified":
-                            return False
+                            return False                      
                         # optional questions return None (not string)
                         # when submitted with no answer
                         case None:

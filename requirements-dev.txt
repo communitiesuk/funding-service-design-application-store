@@ -108,7 +108,7 @@ flask-sqlalchemy==2.5.1
     #   -r requirements.txt
     #   flask-migrate
     #   pytest-flask-sqlalchemy
-funding-service-design-utils==1.0.21
+funding-service-design-utils==1.0.22
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython
@@ -291,6 +291,7 @@ requests==2.28.1
     # via
     #   -r requirements.txt
     #   connexion
+    #   funding-service-design-utils
     #   prance
 rich==12.6.0
     # via

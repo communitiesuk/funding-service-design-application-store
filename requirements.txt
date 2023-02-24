@@ -55,7 +55,7 @@ flask-migrate==4.0.0
     # via -r requirements.in
 flask-restx==1.0.3
     # via -r requirements.in
-flask-sqlalchemy==2.5.1
+flask-sqlalchemy==3.0.3
     # via
     #   -r requirements.in
     #   flask-migrate

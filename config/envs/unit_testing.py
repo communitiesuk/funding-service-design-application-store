@@ -21,7 +21,7 @@ class UnitTestingConfig(DefaultConfig):
     # Database
     SQLALCHEMY_DATABASE_URI = environ.get(
         "DATABASE_URL",
-        "postgresql://postgres:postgres@localhost:5432/postgres",
+        "postgresql://postgres:postgres@localhost:5432/fsd_app_store_test",
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

@@ -61,8 +61,6 @@ flask-sqlalchemy==2.5.1
     #   flask-migrate
 funding-service-design-utils==1.0.22
     # via -r requirements.in
-greenlet==2.0.2
-    # via sqlalchemy
 gunicorn==20.1.0
     # via funding-service-design-utils
 idna==3.4
@@ -71,7 +69,7 @@ importlib-resources==5.10.0
     # via openapi-spec-validator
 inflection==0.5.1
     # via connexion
-invoke==1.7.3
+invoke==2.0.0
     # via -r requirements.in
 itsdangerous==2.1.2
     # via
@@ -159,6 +157,8 @@ rich==12.6.0
     # via funding-service-design-utils
 ruamel-yaml==0.17.21
     # via prance
+ruamel-yaml-clib==0.2.7
+    # via ruamel-yaml
 semver==2.13.0
     # via prance
 sentry-sdk[flask]==1.11.1

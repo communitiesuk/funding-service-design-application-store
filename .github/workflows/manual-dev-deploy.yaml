@@ -4,6 +4,7 @@
   jobs:
     deploy_dev:
       runs-on: ubuntu-latest
+      concurrency: deploy_dev_${{github.repository}}
       environment: Dev
       env:
         FLASK_ENV: dev
@@ -41,6 +42,7 @@
 
     run-shared-tests_dev:
       needs: deploy_dev
+      concurrency: run-shared-tests_dev
       uses: communitiesuk/funding-design-service-workflows/.github/workflows/run-shared-tests.yml@main
       with:
         perf_test_target_url_application_store: https://funding-service-design-application-store-dev.london.cloudapps.digital

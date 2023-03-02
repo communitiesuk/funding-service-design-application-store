@@ -3,17 +3,22 @@ from uuid import uuid4
 
 import pytest
 from app import create_app
+from db import db
 from db.queries.application import create_application
 from db.queries.form import add_new_forms
 from external_services.models.fund import Fund
 from external_services.models.fund import Round
 from flask import Response
+from flask_migrate import upgrade
 from tests.helpers import local_api_call
 from tests.helpers import test_application_data
 from tests.helpers import test_question_data
 
 # Make the utils fixtures available, used in seed_application_records
 pytest_plugins = ["fsd_utils.fixtures.db_fixtures"]
+
+# from sqlalchemy.orm import scoped_session
+# from sqlalchemy.orm import sessionmaker
 
 
 @pytest.fixture(scope="session")
@@ -240,3 +245,18 @@ def mock_post_data_fix(mocker):
         "external_services.post_data",
         new=mock_post_data,
     )
+
+
+# @pytest.fixture(scope="session")
+# def _db(app):
+#     """
+#     Provide the transactional fixtures with access
+#     to the database via a Flask-SQLAlchemy
+#     database connection.
+#     """
+#     return db
+
+
+# @pytest.fixture(autouse=True)
+# def enable_transactional_tests(db_session):
+#     pass

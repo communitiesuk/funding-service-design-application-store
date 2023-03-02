@@ -38,7 +38,7 @@ class TestSendAppOnClosure:
             result = send_incomplete_applications_after_deadline(
                 fund_id, round_id, False
             )
-            assert result == 0, "Not expecting result if emails not to be sent"
+            assert result == 0
 
     def test_send_apps_no_apps(self, mocker):
         fund_id = UnitTestingConfig.COF_FUND_ID

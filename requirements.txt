@@ -16,7 +16,7 @@ babel==2.11.0
     # via flask-babel
 blinker==1.5
     # via sentry-sdk
-certifi==2022.9.24
+certifi==2022.12.7
     # via
     #   requests
     #   sentry-sdk

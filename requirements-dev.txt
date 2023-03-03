@@ -34,7 +34,7 @@ blinker==1.5
     #   sentry-sdk
 build==0.9.0
     # via pip-tools
-certifi==2022.9.24
+certifi==2022.12.7
     # via
     #   -r requirements.txt
     #   requests

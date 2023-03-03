@@ -76,7 +76,7 @@ cryptography==38.0.3
     # via
     #   -r requirements.txt
     #   pyjwt
-deepdiff==6.2.1
+deepdiff==6.2.3
     # via -r requirements-dev.in
 distlib==0.3.6
     # via virtualenv
@@ -192,6 +192,8 @@ openapi-schema-validator==0.3.4
 openapi-spec-validator==0.5.1
     # via -r requirements.txt
 ordered-set==4.1.0
+    # via deepdiff
+orjson==3.8.7
     # via deepdiff
 packaging==21.3
     # via

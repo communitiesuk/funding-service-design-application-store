@@ -110,7 +110,7 @@ funding-service-design-utils==1.0.22
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython
-gitpython==3.1.29
+gitpython==3.1.30
     # via bandit
 greenlet==2.0.2
     # via

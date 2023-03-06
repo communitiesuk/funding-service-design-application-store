@@ -48,6 +48,7 @@ def _transaction(request, _db):
     transaction = connection.begin()
 
     options = dict(bind=connection, binds={})
+    # create a session with "_make_scoped_session"
     session = _db._make_scoped_session(options=options)
 
     def teardown():

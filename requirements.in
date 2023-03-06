@@ -14,7 +14,7 @@ colored
 #   Database
 #-----------------------------------
 SQLAlchemy
-Flask-SQLAlchemy==2.5.1
+Flask-SQLAlchemy==3.0.3
 Flask-Migrate
 sqlalchemy-utils
 sqlalchemy_json

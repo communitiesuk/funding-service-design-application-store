@@ -257,11 +257,6 @@ def _db(app):
     return db
 
 
-# @pytest.fixture(autouse=True)
-# def enable_transactional_tests(db_session):
-#     pass
-
-
 @pytest.fixture(autouse=True)
 def clear_database(_db):
     """
@@ -276,14 +271,6 @@ def clear_database(_db):
     """
     yield
 
-    # with _db.engine.connect() as connection:
-    # disable foreign key checks
-    # connection.execute("SET session_replication_role = replica")
-    # # delete all data from tables
-    # for table in reversed(db.metadata.sorted_tables):
-    #     connection.execute(table.delete())
-    # # reset foreign key checks
-    # connection.execute("SET session_replication_role = DEFAULT")
     # disable foreign key checks
     _db.session.execute("SET session_replication_role = replica")
     # delete all data from tables

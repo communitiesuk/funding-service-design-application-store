@@ -19,13 +19,14 @@ def app():
     app = create_app()
     with app.app_context():
         upgrade()
-        conn = db.engine.connect()
-        nt = conn.begin_nested()
+    yield app
+    # conn = db.engine.connect()
+    # nt = conn.begin_nested()
 
-        yield app
+    # yield app
 
-        nt.rollback()
-        nt.close()
+    # nt.rollback()
+    # nt.close()
 
     # with app.app_context():
     #     upgrade()
@@ -98,16 +99,48 @@ def mock_post_data_fix(mocker):
     )
 
 
-# @pytest.fixture(scope="session")
-# def _db(app):
-#     """
-#     Provide the transactional fixtures with access
-#     to the database via a Flask-SQLAlchemy
-#     database connection.
-#     """
-#     return db
+@pytest.fixture(scope="session")
+def _db(app):
+    """
+    Provide the transactional fixtures with access
+    to the database via a Flask-SQLAlchemy
+    database connection.
+    """
+    return db
 
 
 # @pytest.fixture(autouse=True)
 # def enable_transactional_tests(db_session):
 #     pass
+
+
+@pytest.fixture(autouse=True)
+def clear_database(_db):
+    """
+    Fixture to clean up the database after each test.
+
+    This fixture clears the database by deleting all data
+    from tables and disabling foreign key checks before the test,
+    and resetting foreign key checks after the test.
+
+    Args:
+    _db: The database instance.
+    """
+    yield
+
+    # with _db.engine.connect() as connection:
+    # disable foreign key checks
+    # connection.execute("SET session_replication_role = replica")
+    # # delete all data from tables
+    # for table in reversed(db.metadata.sorted_tables):
+    #     connection.execute(table.delete())
+    # # reset foreign key checks
+    # connection.execute("SET session_replication_role = DEFAULT")
+    # disable foreign key checks
+    _db.session.execute("SET session_replication_role = replica")
+    # delete all data from tables
+    for table in reversed(db.metadata.sorted_tables):
+        _db.session.execute(table.delete())
+    # reset foreign key checks
+    _db.session.execute("SET session_replication_role = DEFAULT")
+    _db.session.commit()

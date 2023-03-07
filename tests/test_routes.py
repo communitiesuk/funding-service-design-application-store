@@ -251,6 +251,7 @@ def test_update_section_of_application(client):
     assert all(answer_found_list)
     assert section_status == "IN_PROGRESS"
 
+
 def test_update_section_of_application_with_optional_field(client):
     """
     GIVEN We have a functioning Application Store API
@@ -278,10 +279,10 @@ def test_update_section_of_application_with_optional_field(client):
                     {
                         "key": "applicant-email",
                         "title": "Email",
-                        "type": "text",                       
-                    }
+                        "type": "text",
+                    },
                 ],
-            }            
+            }
         ],
         "metadata": {
             "application_id": str(random_application_id),
@@ -293,8 +294,8 @@ def test_update_section_of_application_with_optional_field(client):
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
-    )    
-    section_status = response.json["status"]   
+    )
+    section_status = response.json["status"]
     assert section_status == "IN_PROGRESS"
 
 
@@ -704,7 +705,7 @@ def test_complete_form(client):
     assert section_status == "COMPLETED"
 
 
-def test_put_returns_400_on_submitted_application(client, db_session):
+def test_put_returns_400_on_submitted_application(client, _db):
 
     post_test_applications(client)
     """
@@ -714,15 +715,15 @@ def test_put_returns_400_on_submitted_application(client, db_session):
     """
     import random
 
-    application_list = db_session.query(Applications).all()
+    application_list = _db.session.query(Applications).all()
     random_app = random.choice(application_list)
     random_application_id = random_app.id
     random_app.status = "SUBMITTED"
     form_name = (
         "declarations" if random_app.language.name == "en" else "datganiadau"
     )
-    db_session.add(random_app)
-    db_session.commit()
+    _db.session.add(random_app)
+    _db.session.commit()
     section_put = {
         "metadata": {
             "application_id": random_application_id,
@@ -742,7 +743,7 @@ def test_put_returns_400_on_submitted_application(client, db_session):
 
 
 def test_successful_submitted_application(
-    client, db_session, mock_successful_submit_notification
+    client, mock_successful_submit_notification, _db
 ):
 
     post_test_applications(client)
@@ -753,13 +754,13 @@ def test_successful_submitted_application(
     """
     import random
 
-    application_list = db_session.query(Applications).all()
+    application_list = _db.session.query(Applications).all()
     random_app = random.choice(application_list)
     random_application_id = random_app.id
     random_app.status = "SUBMITTED"
 
-    db_session.add(random_app)
-    db_session.commit()
+    _db.session.add(random_app)
+    _db.session.commit()
 
     # mock successful notification
     response = client.post(

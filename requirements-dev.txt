@@ -103,11 +103,10 @@ flask-migrate==4.0.0
     # via -r requirements.txt
 flask-restx==1.0.3
     # via -r requirements.txt
-flask-sqlalchemy==2.5.1
+flask-sqlalchemy==3.0.3
     # via
     #   -r requirements.txt
     #   flask-migrate
-    #   pytest-flask-sqlalchemy
 funding-service-design-utils==1.0.22
     # via -r requirements.txt
 gitdb==4.0.9
@@ -202,7 +201,6 @@ packaging==21.3
     #   marshmallow-sqlalchemy
     #   prance
     #   pytest
-    #   pytest-flask-sqlalchemy
 pathable==0.4.3
     # via
     #   -r requirements.txt
@@ -252,16 +250,10 @@ pytest==7.2.0
     #   -r requirements-dev.in
     #   pytest-env
     #   pytest-flask
-    #   pytest-flask-sqlalchemy
-    #   pytest-mock
 pytest-env==0.8.1
     # via -r requirements-dev.in
 pytest-flask==1.2.0
     # via -r requirements-dev.in
-pytest-flask-sqlalchemy==1.1.0
-    # via -r requirements-dev.in
-pytest-mock==3.10.0
-    # via pytest-flask-sqlalchemy
 python-dateutil==2.8.2
     # via -r requirements.txt
 python-dotenv==0.20.0
@@ -331,7 +323,6 @@ sqlalchemy==1.4.44
     #   alembic
     #   flask-sqlalchemy
     #   marshmallow-sqlalchemy
-    #   pytest-flask-sqlalchemy
     #   sqlalchemy-json
     #   sqlalchemy-utils
 sqlalchemy-json==0.5.0

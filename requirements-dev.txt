@@ -105,7 +105,7 @@ flask-sqlalchemy==3.0.3
     # via
     #   -r requirements.txt
     #   flask-migrate
-funding-service-design-utils==1.0.22
+funding-service-design-utils @ git+https://github.com/communitiesuk/funding-service-design-utils.git
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython

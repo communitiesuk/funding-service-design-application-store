@@ -5,8 +5,7 @@ from flask import Response
 from flask_migrate import upgrade
 from tests.helpers import local_api_call
 
-# from sqlalchemy.orm import scoped_session
-# from sqlalchemy.orm import sessionmaker
+pytest_plugins = ["fsd_utils.test_utils.db_fixtures"]
 
 
 @pytest.fixture(scope="session")
@@ -20,6 +19,16 @@ def app():
     with app.app_context():
         upgrade()
     yield app
+
+
+@pytest.fixture(scope="session")
+def _db(app):
+    """
+    Provide the transactional fixtures with access
+    to the database via a Flask-SQLAlchemy
+    database connection.
+    """
+    return db
 
 
 def mock_get_data(endpoint, params=None):
@@ -67,37 +76,3 @@ def mock_post_data_fix(mocker):
         "external_services.post_data",
         new=mock_post_data,
     )
-
-
-@pytest.fixture(scope="session")
-def _db(app):
-    """
-    Provide the transactional fixtures with access
-    to the database via a Flask-SQLAlchemy
-    database connection.
-    """
-    return db
-
-
-@pytest.fixture(autouse=True)
-def clear_database(_db):
-    """
-    Fixture to clean up the database after each test.
-
-    This fixture clears the database by deleting all data
-    from tables and disabling foreign key checks before the test,
-    and resetting foreign key checks after the test.
-
-    Args:
-    _db: The database instance.
-    """
-    yield
-
-    # disable foreign key checks
-    _db.session.execute("SET session_replication_role = replica")
-    # delete all data from tables
-    for table in reversed(db.metadata.sorted_tables):
-        _db.session.execute(table.delete())
-    # reset foreign key checks
-    _db.session.execute("SET session_replication_role = DEFAULT")
-    _db.session.commit()

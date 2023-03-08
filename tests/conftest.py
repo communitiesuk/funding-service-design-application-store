@@ -3,9 +3,10 @@ from app import create_app
 from db import db
 from flask import Response
 from flask_migrate import upgrade
+from fsd_utils.fixtures import db_fixtures  # noqa
 from tests.helpers import local_api_call
 
-pytest_plugins = ["fsd_utils.test_utils.db_fixtures"]
+pytest_plugins = ["fsd_utils.fixtures.db_fixtures"]
 
 
 @pytest.fixture(scope="session")

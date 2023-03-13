@@ -53,7 +53,8 @@ def test_get_application_statuses_query_param(client, query_params):
     )
 
 
-def test_get_applications_report(client):
+@pytest.mark.parametrize("include_application_id", (True, False))
+def test_get_applications_report(client, include_application_id):
     application_data_1 = {
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
@@ -122,7 +123,8 @@ def test_get_applications_report(client):
     application.status = Status.SUBMITTED
 
     response = client.get(
-        "/applications/reporting/key_application_metrics",
+        "/applications/reporting/key_application_metrics"
+        f"{'/' + str(application.id) if include_application_id else ''}",
         follow_redirects=True,
     )
 

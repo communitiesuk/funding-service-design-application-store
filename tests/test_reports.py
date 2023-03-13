@@ -1,8 +1,10 @@
+import pytest
 from db.models import Applications
 from db.models.application.enums import Status
+from tests.helpers import get_all_rows
 from tests.helpers import get_random_row
 from tests.helpers import post_data
-from tests.helpers import post_test_applications, get_all_rows
+from tests.helpers import post_test_applications
 
 
 def test_get_application_statuses(client):
@@ -26,6 +28,28 @@ def test_get_application_statuses(client):
     assert (
         response.data
         == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n2,1,0,0\r\n"
+    )
+
+
+@pytest.mark.parametrize(
+    "query_params",
+    [
+        "?fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+        "?round_id=c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "?fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4"
+        "&round_id=c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+    ],
+)
+def test_get_application_statuses_query_param(client, query_params):
+    post_test_applications(client)
+
+    response = client.get(
+        f"/applications/reporting/applications_statuses_data{query_params}",
+    )
+
+    assert (
+        response.data
+        == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n1,0,0,0\r\n"
     )
 
 
@@ -236,4 +260,3 @@ def test_get_applications_report_query_param(client):
     assert "Test Reference Number" in report_reponse
     assert "W1A 1AA" in report_reponse
     assert "BA2 1AA" in report_reponse
-    

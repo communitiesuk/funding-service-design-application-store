@@ -1,3 +1,5 @@
+from typing import Optional
+
 from _helpers import get_blank_forms
 from _helpers import order_applications
 from config import Config
@@ -8,8 +10,7 @@ from db.queries import export_json_to_csv
 from db.queries import get_application
 from db.queries import get_general_status_applications_report
 from db.queries import get_key_report_field_headers
-from db.queries import get_report_for_all_applications
-from db.queries import get_report_for_application
+from db.queries import get_report_for_applications
 from db.queries import search_applications
 from db.queries import submit_application
 from db.queries import update_form
@@ -70,7 +71,11 @@ class ApplicationsView(MethodView):
     def get_key_application_data_report(self, application_id):
         try:
             return send_file(
-                export_json_to_csv(get_report_for_application(application_id)),
+                export_json_to_csv(
+                    get_report_for_applications(
+                        application_ids=[application_id]
+                    )
+                ),
                 "text/csv",
                 as_attachment=True,
                 download_name="required_data.csv",
@@ -78,22 +83,33 @@ class ApplicationsView(MethodView):
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 
-    def get_applications_statuses_report(self):
-        try:
-            return send_file(
-                export_json_to_csv(get_general_status_applications_report()),
-                "text/csv",
-                as_attachment=True,
-                download_name="required_data.csv",
-            )
-        except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
-
-    def get_key_applications_data_report(self, status=Status.SUBMITTED.name):
+    def get_applications_statuses_report(
+        self, round_id: Optional[str] = None, fund_id: Optional[str] = None
+    ):
         try:
             return send_file(
                 export_json_to_csv(
-                    get_report_for_all_applications(status=status),
+                    get_general_status_applications_report(round_id, fund_id)
+                ),
+                "text/csv",
+                as_attachment=True,
+                download_name="required_data.csv",
+            )
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}
+
+    def get_key_applications_data_report(
+        self,
+        status=Status.SUBMITTED.name,
+        round_id: Optional[str] = None,
+        fund_id: Optional[str] = None,
+    ):
+        try:
+            return send_file(
+                export_json_to_csv(
+                    get_report_for_applications(
+                        status=status, round_id=round_id, fund_id=fund_id
+                    ),
                     get_key_report_field_headers(),
                 ),
                 "text/csv",

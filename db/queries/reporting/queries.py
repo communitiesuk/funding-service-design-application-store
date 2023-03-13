@@ -2,9 +2,9 @@ import csv
 import io
 import re
 from typing import Iterable
+from typing import Optional
 
 from db.models import Applications
-from db.queries import get_application
 from db.queries import get_applications
 from db.queries.application import get_count_by_status
 
@@ -26,12 +26,10 @@ def export_json_to_csv(return_data, headers=None):
     return bytes_output
 
 
-def get_report_for_application(application_id):
-    return get_report_for_all_applications(application_id)
-
-
-def get_general_status_applications_report():
-    return get_count_by_status()
+def get_general_status_applications_report(
+    round_id: Optional[str] = None, fund_id: Optional[str] = None
+):
+    return get_count_by_status(round_id, fund_id)
 
 
 KEY_REPORT_MAPPING = [
@@ -79,29 +77,29 @@ def get_key_report_field_headers(
     return [field["return_field"] for field in KEY_REPORT_MAPPING]
 
 
-def get_report_for_all_applications(
-    status,
-    application_id=None,
+def get_report_for_applications(
+    *,  # kwargs only
+    status: Optional[str] = None,
+    application_ids: Optional[list[str]] = None,
+    round_id: Optional[str] = None,
+    fund_id: Optional[str] = None,
 ):
-    """
-
-    :param application_id: generate report for only this application ID
-    (if not specified all applications are queried)
-    :return: list of dict
-    """
-    if application_id:
-        applications = [
-            get_application(application_id, include_forms=True, as_json=True)
-        ]
-    else:
-        applications = get_applications(
-            filters=[Applications.status == status],
-            include_forms=True,
-            as_json=True,
-        )
+    filters = []
+    if status:
+        filters.append(Applications.status == status)
+    if application_ids:
+        filters.append(Applications.id.in_(application_ids))
+    if fund_id:
+        filters.append(Applications.fund_id == fund_id)
+    if round_id:
+        filters.append(Applications.round_id == round_id)
+    applications = get_applications(
+        filters=filters,
+        include_forms=True,
+        as_json=True,
+    )
 
     return_json_list = []
-
     for application in applications:
         return_json = {field: None for field in get_key_report_field_headers()}
         for form in application["forms"]:

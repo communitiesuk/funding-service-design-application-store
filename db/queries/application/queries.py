@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import timezone
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from db import db
 from db.exceptions import ApplicationError
@@ -148,17 +149,24 @@ def get_all_applications() -> List:
     return application_list
 
 
-def get_count_by_status() -> Dict[str, int]:
-    statuses = {s.name: 0 for s in ApplicationStatus}
-    status_query = (
-        db.session.query(Applications.status, func.count(Applications.status))
-        .group_by(Applications.status)
-        .all()
+def get_count_by_status(
+    round_id: Optional[str] = None, fund_id: Optional[str] = None
+) -> Dict[str, int]:
+    query = db.session.query(
+        Applications.status, func.count(Applications.status)
     )
+
+    if round_id is not None:
+        query = query.filter_by(round_id=round_id)
+    if fund_id is not None:
+        query = query.filter_by(fund_id=fund_id)
+
+    status_query = query.group_by(Applications.status).all()
     statuses_with_counts = {
         status[0].name: status[1] for status in status_query
     }
-    return statuses | statuses_with_counts
+
+    return {**{s.name: 0 for s in ApplicationStatus}, **statuses_with_counts}
 
 
 def search_applications(**params):

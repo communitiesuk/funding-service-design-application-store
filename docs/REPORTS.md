@@ -14,7 +14,7 @@ This endpoint returns a CSV report on the status of started and submitted applic
 To get the report using the command line, use the following command:
 
 ```bash
-cf ssh <app-name> --command "curl --silent localhost:<port>/applications/reporting/applications_statuses_data" > output.csv
+cf ssh funding-service-design-application-store --command "curl --silent localhost:8080/applications/reporting/applications_statuses_data" > output.csv
 ```
 
 2. GET /applications/reporting/key_application_metrics
@@ -24,7 +24,7 @@ This endpoint returns a CSV report on key data related to applications. It accep
 To get the report using the command line, use the following command:
 
 ```bash
-cf ssh <app-name> --command "curl --silent localhost:<port>/applications/reporting/key_application_metrics" > output.csv
+cf ssh funding-service-design-application-store --command "curl --silent localhost:8080/applications/reporting/key_application_metrics" > output.csv
 ```
 
 3. GET /applications/reporting/key_application_metrics/{application_id}
@@ -34,5 +34,5 @@ This endpoint returns a CSV report on key data related to a specific application
 To get the report using the command line, use the following command:
 
 ```bash
-cf ssh <app-name> --command "curl --silent localhost:<port>/applications/reporting/key_application_metrics/<application_id>" > output.csv
+cf ssh funding-service-design-application-store --command "curl --silent localhost:8080/applications/reporting/key_application_metrics/<application_id>" > output.csv
 ```

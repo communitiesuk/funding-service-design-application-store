@@ -9,9 +9,8 @@ from .form import get_form
 from .form import get_forms_by_app_id
 from .reporting import export_json_to_csv
 from .reporting import get_general_status_applications_report
-from .reporting import get_report_for_all_applications
-from .reporting import get_report_for_application
 from .reporting import get_key_report_field_headers
+from .reporting import get_report_for_applications
 from .updating import update_application_and_related_form
 from .updating import update_form
 
@@ -27,8 +26,8 @@ __all__ = [
     get_forms_by_app_id,
     export_json_to_csv,
     get_general_status_applications_report,
-    get_report_for_all_applications,
-    get_report_for_application,
+    get_key_report_field_headers,
+    get_report_for_applications,
     update_application_and_related_form,
     update_form,
 ]

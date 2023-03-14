@@ -98,12 +98,10 @@ class ApplicationsView(MethodView):
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}
 
-    def get_key_applications_data_report(
-        self,
-        status=Status.SUBMITTED.name,
-        round_id: Optional[str] = None,
-        fund_id: Optional[str] = None,
-    ):
+    def get_key_applications_data_report(self):
+        status = request.args.get("status", Status.SUBMITTED.name)
+        round_id = request.args.get("round_id")
+        fund_id = request.args.get("fund_id")
         try:
             return send_file(
                 export_json_to_csv(

@@ -124,7 +124,7 @@ paths:
         - applications
       summary: Get a specific application
       description: Get a specific application by application id
-      operationId: api.ApplicationsView.get_by_id
+      operationId: api.routes.application.routes.get_by_id
       responses:
         200:
           description: SUCCESS - An applicaton by id
@@ -224,7 +224,7 @@ paths:
         - reporting
       summary: Get report on started and submitted applications
       description: Get report on started and submitted applications
-      operationId: api.ApplicationsView.get_applications_statuses_report
+      operationId: api.routes.application.routes.get_applications_statuses_report
       parameters:
         - name: round_id
           in: query
@@ -255,7 +255,7 @@ paths:
         - reporting
       summary: Get the key data report on applications
       description: Get the key data report on applications
-      operationId: api.ApplicationsView.get_key_applications_data_report
+      operationId: api.routes.application.routes.get_key_applications_data_report
       parameters:
         - name: status
           in: query
@@ -290,7 +290,7 @@ paths:
         - reporting
       summary: Get the key data report on an application
       description: Get the key data report on an application
-      operationId: api.ApplicationsView.get_key_application_data_report
+      operationId: api.routes.application.routes.get_key_application_data_report
       responses:
         200:
           description: SUCCESS - Here is the report on requested application

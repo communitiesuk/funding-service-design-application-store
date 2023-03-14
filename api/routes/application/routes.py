@@ -54,69 +54,6 @@ class ApplicationsView(MethodView):
         add_new_forms(forms=empty_forms, application_id=application.id)
         return application.as_dict(), 201
 
-    def get_by_id(self, application_id):
-        try:
-            return_dict = get_application(
-                application_id, as_json=True, include_forms=True
-            )
-            return return_dict, 200
-        except ValueError as e:
-            current_app.logger.error(
-                "Value error getting application ID: {application_id}"
-            )
-            raise e
-        except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
-
-    def get_key_application_data_report(self, application_id):
-        try:
-            return send_file(
-                export_json_to_csv(
-                    get_report_for_applications(
-                        application_ids=[application_id]
-                    )
-                ),
-                "text/csv",
-                as_attachment=True,
-                download_name="required_data.csv",
-            )
-        except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
-
-    def get_applications_statuses_report(
-        self, round_id: Optional[str] = None, fund_id: Optional[str] = None
-    ):
-        try:
-            return send_file(
-                export_json_to_csv(
-                    get_general_status_applications_report(round_id, fund_id)
-                ),
-                "text/csv",
-                as_attachment=True,
-                download_name="required_data.csv",
-            )
-        except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
-
-    def get_key_applications_data_report(self):
-        status = request.args.get("status", Status.SUBMITTED.name)
-        round_id = request.args.get("round_id")
-        fund_id = request.args.get("fund_id")
-        try:
-            return send_file(
-                export_json_to_csv(
-                    get_report_for_applications(
-                        status=status, round_id=round_id, fund_id=fund_id
-                    ),
-                    get_key_report_field_headers(),
-                ),
-                "text/csv",
-                as_attachment=True,
-                download_name="required_data.csv",
-            )
-        except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
-
     def put(self):
         request_json = request.get_json(force=True)
         form_dict = {
@@ -169,3 +106,69 @@ class ApplicationsView(MethodView):
                 f" {application_id}"
             )
             return str(e), 500, {"x-error": "Error"}
+
+
+def get_by_id(application_id):
+    try:
+        return_dict = get_application(
+            application_id, as_json=True, include_forms=True
+        )
+        return return_dict, 200
+    except ValueError as e:
+        current_app.logger.error(
+            "Value error getting application ID: {application_id}"
+        )
+        raise e
+    except NoResultFound as e:
+        return {"code": 404, "message": str(e)}
+
+
+def get_key_application_data_report(application_id):
+    try:
+        return send_file(
+            export_json_to_csv(
+                get_report_for_applications(application_ids=[application_id])
+            ),
+            "text/csv",
+            as_attachment=True,
+            download_name="required_data.csv",
+        )
+    except NoResultFound as e:
+        return {"code": 404, "message": str(e)}
+
+
+def get_applications_statuses_report(
+    round_id: Optional[str] = None, fund_id: Optional[str] = None
+):
+    try:
+        return send_file(
+            export_json_to_csv(
+                get_general_status_applications_report(round_id, fund_id)
+            ),
+            "text/csv",
+            as_attachment=True,
+            download_name="required_data.csv",
+        )
+    except NoResultFound as e:
+        return {"code": 404, "message": str(e)}
+
+
+def get_key_applications_data_report():
+    status = request.args.get("status", Status.SUBMITTED.name)
+    round_id = request.args.get("round_id")
+    fund_id = request.args.get("fund_id")
+    current_app.logger.info(["ALX32A", status, round_id, fund_id])
+    try:
+        return send_file(
+            export_json_to_csv(
+                get_report_for_applications(
+                    status=status, round_id=round_id, fund_id=fund_id
+                ),
+                get_key_report_field_headers(),
+            ),
+            "text/csv",
+            as_attachment=True,
+            download_name="required_data.csv",
+        )
+    except NoResultFound as e:
+        return {"code": 404, "message": str(e)}

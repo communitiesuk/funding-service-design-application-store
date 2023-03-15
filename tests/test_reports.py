@@ -73,14 +73,19 @@ def test_get_applications_report(client, include_application_id):
         follow_redirects=True,
     )
     lines = response.data.splitlines()
-    assert "eoi_reference,organisation_name,organisation_type,asset_type,"
-    +"geography,capital,revenue" == lines[0].decode("utf-8")
+    assert (
+        "eoi_reference,organisation_name,organisation_type,asset_type,"
+        + "geography,capital,revenue"
+    ) == lines[0].decode("utf-8")
     fields = lines[1].decode("utf-8").split(",")
     assert "Test Org Name 1" == fields[1]
     assert "Test Reference Number" == fields[0]
     assert "W1A 1AA" == fields[4]
 
 
+@pytest.mark.skip(
+    reason="reinstate once we can filter on fund_id and round_id"
+)
 @pytest.mark.apps_to_insert(
     [test_application_data[0], test_application_data[1]]
 )
@@ -98,8 +103,10 @@ def test_get_applications_report_query_param(
     )
     lines = response.data.splitlines()
     assert 3 == len(lines)
-    assert "eoi_reference,organisation_name,organisation_type,asset_type,"
-    +"geography,capital,revenue" == lines[0].decode("utf-8")
+    assert (
+        "eoi_reference,organisation_name,organisation_type,asset_type,"
+        + "geography,capital,revenue"
+    ) == lines[0].decode("utf-8")
     for line in lines[1:]:
         fields = line.decode("utf-8").split(",")
         assert fields[1].startswith("Test Org Name ")

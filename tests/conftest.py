@@ -1,9 +1,15 @@
+from datetime import datetime
+from uuid import uuid4
+
 import pytest
 from app import create_app
 from db.queries.application import create_application
 from db.queries.form import add_new_forms
+from external_services.models.fund import Fund
+from external_services.models.fund import Round
 from flask import Response
 from tests.helpers import local_api_call
+from tests.helpers import test_application_data
 from tests.helpers import test_question_data
 
 pytest_plugins = ["fsd_utils.fixtures.db_fixtures"]
@@ -21,23 +27,31 @@ def app():
 
 
 @pytest.fixture(scope="function")
+def unique_fund_round(mock_get_fund, mock_get_round):
+    return (str(uuid4()), str(uuid4()))
+
+
+@pytest.fixture(scope="function")
 def seed_application_records(
-    request, recreate_db, app, clear_test_data, enable_preserve_test_data
+    request,
+    recreate_db,
+    app,
+    clear_test_data,
+    enable_preserve_test_data,
+    unique_fund_round,
 ):
     marker = request.node.get_closest_marker("apps_to_insert")
     if marker is None:
-        apps = [
-            {
-                "account_id": "usera",
-                "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
-                "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
-                "language": "en",
-            },
-        ]
+        apps = [test_application_data[0]]
     else:
         apps = marker.args[0]
+    unique_fr_marker = request.node.get_closest_marker("unique_fund_round")
+
     seeded_ids = []
     for app in apps:
+        if unique_fr_marker is not None:
+            app["fund_id"] = unique_fund_round[0]
+            app["round_id"] = unique_fund_round[1]
         app = create_application(**app)
         add_new_forms(
             [
@@ -127,6 +141,41 @@ def mock_get_random_choices(
     population, weights=None, *, cum_weights=None, k=1
 ):
     return "ABCDEF"
+
+
+def generate_mock_fund(fund_id: str) -> Fund:
+    return Fund("Generated test fund", fund_id, "TEST", "Testing fund", [])
+
+
+@pytest.fixture(scope="function", autouse=True)
+def mock_get_fund(mocker):
+    mocker.patch(
+        "db.queries.application.queries.get_fund", new=generate_mock_fund
+    )
+
+
+def generate_mock_round(fund_id: str, round_id: str) -> Round:
+    return Round(
+        "Generated test round",
+        round_id,
+        fund_id,
+        "TEST",
+        datetime.strptime("2023-01-01 12:00:00", "%Y-%m-%d %H:%M:%S"),
+        datetime.strptime("2023-01-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
+        datetime.strptime("2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
+        [],
+    )
+
+
+@pytest.fixture(scope="function", autouse=True)
+def mock_get_round(mocker):
+    mocker.patch(
+        "db.queries.application.queries.get_round", new=generate_mock_round
+    )
+    mocker.patch(
+        "db.schemas.application.get_round_name",
+        return_value="Generated test round",
+    )
 
 
 @pytest.fixture(autouse=True)

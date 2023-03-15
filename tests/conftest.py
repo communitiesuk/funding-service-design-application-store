@@ -9,7 +9,6 @@ from db.queries.form import add_new_forms
 from external_services.models.fund import Fund
 from external_services.models.fund import Round
 from flask import Response
-from flask_migrate import upgrade
 from tests.helpers import local_api_call
 from tests.helpers import test_application_data
 from tests.helpers import test_question_data

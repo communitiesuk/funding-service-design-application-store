@@ -75,7 +75,7 @@ def test_create_application_creates_formatted_reference(
         follow_redirects=True,
     )
     application = response.json
-    assert application["reference"].startswith("COF-SUM-")
+    assert application["reference"].startswith("TEST-TEST-")
     assert application["reference"][-6:].isupper()
     assert application["reference"][-6:].isalpha()
 
@@ -101,7 +101,7 @@ def test_create_application_creates_unique_reference(
         follow_redirects=True,
     )
     application = response.json
-    assert application["reference"] == "COF-SUM-ABCDEF"
+    assert application["reference"] == "TEST-TEST-ABCDEF"
 
     with pytest.raises(ApplicationError) as ex_info:
         client.post(
@@ -135,29 +135,27 @@ def test_get_all_applications(client):
     )
 
 
-@pytest.mark.apps_to_insert([test_application_data[1]])
-def test_get_applications_of_account_id(client, seed_application_records):
+@pytest.mark.apps_to_insert([{"account_id": "unique_user", "language": "en"}])
+@pytest.mark.unique_fund_round(True)
+def test_get_applications_of_account_id(
+    client, seed_application_records, unique_fund_round
+):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications of account_id
     THEN the response should return applications of the account_id
     """
-    expected_data = []
-    app_dict = seed_application_records[0].as_dict()
-    expected_data.append(app_dict)
     expected_data_within_response(
         client,
-        "/applications?account_id=userb",
-        expected_data,
+        "/applications?account_id=unique_user",
+        [seed_application_records[0].as_dict()],
         exclude_regex_paths=key_list_to_regex(
             [
-                "id",
-                "reference",
                 "started_at",
-                "project_name",
                 "last_edited",
                 "date_submitted",
                 "round_name",
+                "forms",
             ]
         ),
     )

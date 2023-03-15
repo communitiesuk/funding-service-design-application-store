@@ -1,7 +1,7 @@
 connexion
 flask_restx
 # funding-service-design-utils>=1.0.22,<1.1.0
-# git+https://github.com/communitiesuk/funding-service-design-utils.git@fs-2382-db-unittests
+git+https://github.com/communitiesuk/funding-service-design-utils.git@fs-2382-db-unittests
 openapi-spec-validator
 prance
 requests

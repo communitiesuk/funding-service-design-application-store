@@ -1,5 +1,4 @@
 import pytest
-import pytest
 from db.models import Applications
 from db.models.application.enums import Status
 from tests.helpers import get_row_by_pk

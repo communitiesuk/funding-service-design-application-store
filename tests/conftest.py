@@ -153,6 +153,54 @@ def add_org_data_for_reports(seed_application_records, client):
             )
 
 
+@pytest.fixture(scope="function")
+def add_org_data_for_reports(seed_application_records, client):
+    i = 0
+    for application in seed_application_records:
+        i += 1
+        sections_put_en = [
+            {
+                "questions": test_question_data,
+                "metadata": {
+                    "application_id": application.id,
+                    "form_name": "organisation-information",
+                    "is_summary_page_submit": False,
+                },
+            },
+            {
+                "questions": [
+                    {
+                        "question": "Address",
+                        "fields": [
+                            {
+                                "key": "yEmHpp",
+                                "title": "Address",
+                                "type": "text",
+                                "answer": "BBC, W1A 1AA",
+                            },
+                        ],
+                    },
+                ],
+                "metadata": {
+                    "application_id": application.id,
+                    "form_name": "project-information",
+                    "is_summary_page_submit": False,
+                },
+            },
+        ]
+        # Make the org names unique
+        sections_put_en[0]["questions"][1]["fields"][0][
+            "answer"
+        ] = f"Test Org Name {i}"
+
+        for section in sections_put_en:
+            client.put(
+                "/applications/forms",
+                json=section,
+                follow_redirects=True,
+            )
+
+
 def mock_get_data(endpoint, params=None):
     return local_api_call(endpoint, params, "get")
 

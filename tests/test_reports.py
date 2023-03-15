@@ -1,7 +1,6 @@
 import pytest
 from db.models import Applications
 from db.models.application.enums import Status
-from tests.helpers import get_all_rows
 from tests.helpers import get_row_by_pk
 from tests.helpers import test_application_data
 
@@ -64,10 +63,9 @@ def test_get_applications_report(
 def test_get_applications_report_query_param(
     client, seed_application_records, add_org_data_for_reports, _db
 ):
-    all_apps = get_all_rows(Applications)
-    for app in all_apps:
+    for app in seed_application_records:
         app.status = "IN_PROGRESS"
-    _db.session.add_all(all_apps)
+    _db.session.add_all(seed_application_records)
     _db.session.commit()
     response = client.get(
         "/applications/reporting/key_application_metrics?status=IN_PROGRESS",

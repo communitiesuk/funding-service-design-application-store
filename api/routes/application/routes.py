@@ -65,7 +65,7 @@ class ApplicationsView(MethodView):
             )
             raise e
         except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
+            return {"code": 404, "message": str(e)}, 404
 
     def get_key_application_data_report(self, application_id):
         try:
@@ -76,7 +76,7 @@ class ApplicationsView(MethodView):
                 download_name="required_data.csv",
             )
         except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
+            return {"code": 404, "message": str(e)}, 404
 
     def get_applications_statuses_report(self):
         try:
@@ -87,7 +87,7 @@ class ApplicationsView(MethodView):
                 download_name="required_data.csv",
             )
         except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
+            return {"code": 404, "message": str(e)}, 404
 
     def get_key_applications_data_report(self, status=Status.SUBMITTED.name):
         try:
@@ -101,7 +101,7 @@ class ApplicationsView(MethodView):
                 download_name="required_data.csv",
             )
         except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
+            return {"code": 404, "message": str(e)}, 404
 
     def put(self):
         request_json = request.get_json(force=True)
@@ -117,7 +117,7 @@ class ApplicationsView(MethodView):
             updated_form = update_form(**form_dict)
             return updated_form, 201
         except NoResultFound as e:
-            return {"code": 404, "message": str(e)}
+            return {"code": 404, "message": str(e)}, 404
 
     def submit(self, application_id):
         try:

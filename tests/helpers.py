@@ -34,6 +34,17 @@ def get_random_row(table):
     )
 
 
+def get_row_by_pk(table, primary_key):
+    """Retrieves a single row from the database
+
+    :param table: Sqlalchemy mapper object
+    :param primary_key: Primary key of the row to retrieve
+    :return: A single row from the given mapper.
+    """
+
+    return table.query.filter_by(id=primary_key).first()
+
+
 def get_all_rows(table):
     """get_all_rows Uses a database-side select to get all rows.
 
@@ -184,7 +195,7 @@ def count_fund_applications(
     assert len(response_data) == expected_application_count, error_message
 
 
-application_post_data = [
+test_application_data = [
     {
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
@@ -195,13 +206,67 @@ application_post_data = [
         "account_id": "userb",
         "fund_id": "fund-b",
         "round_id": "summer",
-        "language": "en",
+        "language": None,
     },
     {
         "account_id": "userc",
         "fund_id": "funding-service-design",
         "round_id": "spring",
         "language": "cy",
+    },
+]
+
+test_question_data = [
+    {
+        "question": "About your organisation",
+        "fields": [
+            {
+                "key": "application-name",
+                "title": "Applicant name",
+                "type": "text",
+                "answer": "Coolio",
+            },
+            {
+                "key": "applicant-email",
+                "title": "Email",
+                "type": "text",
+                "answer": "a@example.com",
+            },
+            {
+                "key": "applicant-telephone-number",
+                "title": "Telephone number",
+                "type": "text",
+                "answer": "Wow",
+            },
+            {
+                "key": "applicant-website",
+                "title": "Website",
+                "type": "text",
+                "answer": "www.example.com",
+            },
+        ],
+    },
+    {
+        "question": "About your organisation",
+        "fields": [
+            {
+                "key": "data",
+                "title": "Applicant name",
+                "type": "text",
+                "answer": "cool",
+            },
+        ],
+    },
+    {
+        "question": "About your organisation",
+        "fields": [
+            {
+                "key": "data",
+                "title": "Applicant job",
+                "type": "text",
+                "answer": "cool",
+            },
+        ],
     },
 ]
 
@@ -214,14 +279,14 @@ application_expected_data = [
         "last_edited": None,
         **application_data,
     }
-    for application_data in application_post_data
+    for application_data in test_application_data
 ]
 
 
 def post_test_applications(client):
-    post_data(client, "/applications", application_post_data[0])
-    post_data(client, "/applications", application_post_data[1])
-    post_data(client, "/applications", application_post_data[2])
+    post_data(client, "/applications", test_application_data[0])
+    post_data(client, "/applications", test_application_data[1])
+    post_data(client, "/applications", test_application_data[2])
 
 
 def key_list_to_regex(

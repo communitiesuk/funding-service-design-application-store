@@ -250,10 +250,16 @@ test_question_data = [
         "question": "About your organisation",
         "fields": [
             {
-                "key": "data",
-                "title": "Applicant name",
+                "key": "YdtlQZ",
+                "title": "Organisation Name",
                 "type": "text",
-                "answer": "cool",
+                "answer": "Test Organisation Name",
+            },
+            {
+                "key": "WWWWxy",
+                "title": "EOI Reference",
+                "type": "text",
+                "answer": "Test Reference Number",
             },
         ],
     },

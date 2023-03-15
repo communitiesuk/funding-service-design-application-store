@@ -5,33 +5,7 @@ import urllib
 from typing import List
 
 from config import Config
-from db import db
 from deepdiff import DeepDiff
-from sqlalchemy import func
-from sqlalchemy import inspect
-
-
-def get_random_row(table):
-    """get_random_row Uses a database-side select to get a random row. Does
-    this by using a random offset with range (1, number of rows)
-
-    :param table: Sqlalchemy mapper object
-    :return: A random row from the given mapper.
-    """
-
-    primary_key_name = inspect(table).primary_key[0].name
-    primary_key_column = getattr(table, primary_key_name)
-    return (
-        db.session.query(table)
-        .offset(
-            func.floor(
-                func.random()
-                * db.session.query(func.count(primary_key_column))
-            )
-        )
-        .limit(1)
-        .one()
-    )
 
 
 def get_row_by_pk(table, primary_key):
@@ -43,16 +17,6 @@ def get_row_by_pk(table, primary_key):
     """
 
     return table.query.filter_by(id=primary_key).first()
-
-
-def get_all_rows(table):
-    """get_all_rows Uses a database-side select to get all rows.
-
-    :param table: Sqlalchemy mapper object
-    :return: All rows in table provided.
-    """
-
-    return db.session.query(table).all()
 
 
 def local_api_call(endpoint: str, params: dict = None, method: str = "get"):

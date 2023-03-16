@@ -34,7 +34,6 @@ def unique_fund_round(mock_get_fund, mock_get_round):
 @pytest.fixture(scope="function")
 def seed_application_records(
     request,
-    recreate_db,
     app,
     clear_test_data,
     enable_preserve_test_data,

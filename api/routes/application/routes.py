@@ -67,6 +67,7 @@ class ApplicationsView(MethodView):
             raise e
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}, 404
+            return {"code": 404, "message": str(e)}, 404
 
     def get_key_application_data_report(self, application_id):
         try:

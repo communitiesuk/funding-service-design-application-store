@@ -12,7 +12,7 @@ attrs==22.1.0
     # via
     #   jsonschema
     #   openapi-schema-validator
-babel==2.11.0
+babel==2.12.1
     # via flask-babel
 blinker==1.5
     # via sentry-sdk

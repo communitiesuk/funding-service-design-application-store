@@ -251,6 +251,7 @@ def test_update_section_of_application(client):
     assert all(answer_found_list)
     assert section_status == "IN_PROGRESS"
 
+
 def test_update_section_of_application_with_optional_field(client):
     """
     GIVEN We have a functioning Application Store API
@@ -278,10 +279,10 @@ def test_update_section_of_application_with_optional_field(client):
                     {
                         "key": "applicant-email",
                         "title": "Email",
-                        "type": "text",                       
-                    }
+                        "type": "text",
+                    },
                 ],
-            }            
+            }
         ],
         "metadata": {
             "application_id": str(random_application_id),
@@ -293,8 +294,8 @@ def test_update_section_of_application_with_optional_field(client):
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
-    )    
-    section_status = response.json["status"]   
+    )
+    section_status = response.json["status"]
     assert section_status == "IN_PROGRESS"
 
 

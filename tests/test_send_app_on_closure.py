@@ -12,9 +12,7 @@ class TestSendAppOnClosure:
         [
             {
                 "account_id": "bad_id",
-                "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
                 "language": "en",
-                "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
             }
         ]
     )

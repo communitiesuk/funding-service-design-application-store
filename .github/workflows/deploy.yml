@@ -7,16 +7,16 @@ on:
       - '**/README.md'
 
 jobs:
-
   test_and_deploy:
     if: ${{ github.actor != 'dependabot[bot]' }}
-    uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@main
+    uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@fs-2415-standardise-github-workflows
     with:
       app_name: ${{ github.event.repository.name }}
       api: true
       postgres_unit_testing: true
       db_name: fsd_app_store_test
       deploy_to_dev: false
+      apply_network_policy: true
       users: 2
       spawn-rate: 2
       run-time: 11s
@@ -29,31 +29,3 @@ jobs:
       CF_USER: ${{secrets.CF_USERNAME}}
       CF_PASSWORD: ${{secrets.CF_PASSWORD}}
       E2E_PAT: ${{secrets.E2E_PAT}}
-  apply_network_policy_dev:
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    runs-on: ubuntu-latest
-    environment: Dev
-    steps:
-    - name: Apply network policy for notification service for dev
-      uses: citizen-of-planet-earth/cf-cli-action@v2
-      with:
-          cf_api:      ${{secrets.CF_API}}
-          cf_org:      ${{secrets.CF_ORG}}
-          cf_space:    ${{secrets.CF_SPACE }}
-          cf_username: ${{secrets.CF_USERNAME}}
-          cf_password: ${{secrets.CF_PASSWORD}}
-          command: add-network-policy funding-service-design-application-store-dev funding-service-design-notification-dev --protocol tcp --port 8080
-  apply_network_policy_test:
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    runs-on: ubuntu-latest
-    environment: Test
-    steps:
-    - name: Apply network policy for notification service for test
-      uses: citizen-of-planet-earth/cf-cli-action@v2
-      with:
-          cf_api:      ${{secrets.CF_API}}
-          cf_org:      ${{secrets.CF_ORG}}
-          cf_space:    ${{secrets.CF_SPACE }}
-          cf_username: ${{secrets.CF_USERNAME}}
-          cf_password: ${{secrets.CF_PASSWORD}}
-          command: add-network-policy funding-service-design-application-store-test funding-service-design-notification-test --protocol tcp --port 8080

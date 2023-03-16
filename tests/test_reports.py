@@ -32,47 +32,70 @@ def test_get_application_statuses(client, seed_application_records, _db):
     )
 
 
+fund_1_id = "47aef2f5-3fcb-4d45-1111-f0152b5f03c4"
+fund_2_id = "47aef2f5-3fcb-4d45-2222-f0152b5f03c4"
+round_1_id = "47aef2f5-3fcb-1111-1111-f0152b5f03c4"
+round_2_id = "47aef2f5-3fcb-2222-2222-f0152b5f03c4"
+round_3_id = "47aef2f5-3fcb-3333-2222-f0152b5f03c4"
+user_lang = {
+    "account_id": "usera",
+    "language": "en",
+}
+
+
 @pytest.mark.parametrize(
-    "query_params",
+    "fund_id,round_id,expected_not_started",
     [
-        "?fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
-        "?round_id=c603d114-5364-4474-a0c4-c41cbf4d3bbd",
-        "?fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4"
-        "&round_id=c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        (fund_1_id, round_1_id, 1),
+        (fund_2_id, round_2_id, 1),
+        (fund_2_id, round_3_id, 2),
+        (fund_2_id, "", 3),
+        ("", "", 4),
     ],
 )
-def test_get_application_statuses_query_param(client, query_params):
+@pytest.mark.apps_to_insert(
+    [
+        {"fund_id": fund_1_id, "round_id": round_1_id, **user_lang},
+        {"fund_id": fund_2_id, "round_id": round_2_id, **user_lang},
+        {"fund_id": fund_2_id, "round_id": round_3_id, **user_lang},
+        {"fund_id": fund_2_id, "round_id": round_3_id, **user_lang},
+    ]
+)
+# @pytest.mark.preserve_test_data(True)
+def test_get_application_statuses_query_param(
+    fund_id, round_id, expected_not_started, client, seed_application_records
+):
 
     response = client.get(
-        f"/applications/reporting/applications_statuses_data{query_params}",
+        f"/applications/reporting/applications_statuses_data?fund_id={fund_id}"
+        + f"&round_id={round_id}",
     )
 
-    assert (
-        response.data
-        == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n1,0,0,0\r\n"
-    )
+    lines = response.data.splitlines()
+    assert 2 == len(lines)
+    assert lines[0] == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED"
+    assert expected_not_started == int(lines[1].decode("utf-8").split(",")[0])
 
 
 @pytest.mark.parametrize("include_application_id", (True, False))
+@pytest.mark.apps_to_insert([test_application_data[0]])
 def test_get_applications_report(
-    client, include_application_id, seed_application_records
+    client,
+    include_application_id,
+    seed_application_records,
+    add_org_data_for_reports,
 ):
-    # application_data_1 = {
-    #     "account_id": "usera",
-    #     "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
-    #     "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
-    #     "language": "en",
-    # }
 
     application = get_row_by_pk(Applications, seed_application_records[0].id)
     application.status = Status.SUBMITTED
 
     response = client.get(
         "/applications/reporting/key_application_metrics"
-        f"{'/' + str(application.id) if include_application_id else ''}",
+        + f"{'/' + str(application.id) if include_application_id else ''}",
         follow_redirects=True,
     )
     lines = response.data.splitlines()
+    assert 2 == len(lines)
     assert (
         "eoi_reference,organisation_name,organisation_type,asset_type,"
         + "geography,capital,revenue"
@@ -83,21 +106,24 @@ def test_get_applications_report(
     assert "W1A 1AA" == fields[4]
 
 
-@pytest.mark.skip(
-    reason="reinstate once we can filter on fund_id and round_id"
-)
 @pytest.mark.apps_to_insert(
     [test_application_data[0], test_application_data[1]]
 )
+@pytest.mark.unique_fund_round(True)
 def test_get_applications_report_query_param(
-    client, seed_application_records, add_org_data_for_reports, _db
+    client,
+    seed_application_records,
+    add_org_data_for_reports,
+    _db,
+    unique_fund_round,
 ):
     for app in seed_application_records:
         app.status = "IN_PROGRESS"
     _db.session.add_all(seed_application_records)
     _db.session.commit()
     response = client.get(
-        "/applications/reporting/key_application_metrics?status=IN_PROGRESS",
+        "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
+        + f"fund_id={unique_fund_round[0]}&round_id={unique_fund_round[1]}",
         follow_redirects=True,
     )
     lines = response.data.splitlines()

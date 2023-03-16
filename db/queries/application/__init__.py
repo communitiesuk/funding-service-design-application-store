@@ -1,1 +1,1 @@
-from .queries import * # noqa
+from .queries import *  # noqa

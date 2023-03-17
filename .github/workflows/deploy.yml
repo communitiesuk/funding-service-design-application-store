@@ -15,7 +15,7 @@ jobs:
       api: true
       postgres_unit_testing: true
       db_name: fsd_app_store_test
-      deploy_to_dev: true
+      deploy_to_dev: false
       apply_network_policy: true
       users: 2
       spawn-rate: 2

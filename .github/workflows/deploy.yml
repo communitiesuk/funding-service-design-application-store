@@ -17,9 +17,6 @@ jobs:
       db_name: fsd_app_store_test
       deploy_to_dev: false
       apply_network_policy: true
-      users: 2
-      spawn-rate: 2
-      run-time: 11s
       run_performance_tests: true
       run_e2e_tests: true
     secrets:

@@ -136,7 +136,7 @@ inflection==0.5.1
     #   connexion
 iniconfig==1.1.1
     # via pytest
-invoke==1.7.3
+invoke==2.0.0
     # via -r requirements.txt
 itsdangerous==2.1.2
     # via

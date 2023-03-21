@@ -1,11 +1,5 @@
 from db import db
-from db.models.application.enums import Status as ApplicationStatus
 from db.queries.application import get_application
-from db.queries.application import update_project_name
-from db.queries.form import get_form
-from flask import abort
-from flask import current_app
-from sqlalchemy import func
 
 
 def update_application_status(application_id: str):
@@ -87,14 +81,12 @@ def update_question_statuses(application_id: str, form_name: str):
                     break
 
                 def is_field_answered(field):
-                    answer_or_not_specified = field.get(
-                        "answer"
-                    )
+                    answer_or_not_specified = field.get("answer")
                     match answer_or_not_specified:  # noqa
                         case "":
                             return False
                         case []:  # noqa (E211)
-                            return False                      
+                            return False
                         # optional questions return None (not string)
                         # when submitted with no answer
                         case None:

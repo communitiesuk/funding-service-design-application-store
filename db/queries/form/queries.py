@@ -1,7 +1,5 @@
-import sqlalchemy
 from db import db
 from db.models import Forms
-from flask import current_app
 
 
 def add_new_forms(forms, application_id):

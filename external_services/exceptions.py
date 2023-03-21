@@ -7,7 +7,7 @@ class NotificationError(Exception):
 
     def __init__(
         self,
-        message="Sorry, there was a problem posting to the notification service",
+        message="Sorry, there was a problem posting to the notification service",  # noqa
     ):
         self.message = message
         super().__init__(self.message)

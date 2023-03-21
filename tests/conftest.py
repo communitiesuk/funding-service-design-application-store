@@ -161,6 +161,17 @@ def add_org_data_for_reports(application, unique_append, client):
 def seed_data_multiple_funds_rounds(
     request, app, clear_test_data, enable_preserve_test_data, client
 ):
+    """
+    Alternative to seed_application_records above that allows you to specify
+    a set of funds/rounds and how many applications per round to allow
+    testing of reporting functions. Expects to find fund/round config as a
+    marker named 'fund_round_config' in the format:
+    {funds: [rounds: [{applications: [{app_data}]}]]}
+
+    yields a data structure containing the generated IDs:
+    {[(fund_id: xxx, round_ids: [(round_id: yyy,
+        application_ids: [111, 222])])]}
+    """
     marker = request.node.get_closest_marker("fund_round_config")
     if marker is None:
         config = {

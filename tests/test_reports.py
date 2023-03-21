@@ -147,7 +147,6 @@ def test_get_applications_report(
         ]
     }
 )
-@pytest.mark.unique_fund_round(True)
 def test_get_applications_report_query_param(
     client, seed_data_multiple_funds_rounds
 ):

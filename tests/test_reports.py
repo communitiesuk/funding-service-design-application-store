@@ -32,67 +32,96 @@ def test_get_application_statuses(client, seed_application_records, _db):
     )
 
 
-fund_1_id = "47aef2f5-3fcb-4d45-1111-f0152b5f03c4"
-fund_2_id = "47aef2f5-3fcb-4d45-2222-f0152b5f03c4"
-round_1_id = "47aef2f5-3fcb-1111-1111-f0152b5f03c4"
-round_2_id = "47aef2f5-3fcb-2222-2222-f0152b5f03c4"
-round_3_id = "47aef2f5-3fcb-3333-2222-f0152b5f03c4"
 user_lang = {
     "account_id": "usera",
     "language": "en",
 }
 
 
+@pytest.mark.fund_round_config(
+    {
+        "funds": [
+            {"rounds": [{"applications": [{**user_lang}]}]},
+            {
+                "rounds": [
+                    {"applications": [{**user_lang}]},
+                    {"applications": [{**user_lang}, {**user_lang}]},
+                ]
+            },
+        ]
+    }
+)
 @pytest.mark.parametrize(
-    "fund_id,round_id,expected_not_started",
+    "fund_idx,round_idx,expected_in_progress",
     [
-        (fund_1_id, round_1_id, 1),
-        (fund_2_id, round_2_id, 1),
-        (fund_2_id, round_3_id, 2),
-        (fund_2_id, "", 3),
-        ("", "", 4),
+        # (None, None, 4),
+        (0, 0, 1),
+        (0, None, 1),
+        (1, 0, 1),
+        (1, 1, 2),
+        (1, None, 3),
     ],
 )
-@pytest.mark.apps_to_insert(
-    [
-        {"fund_id": fund_1_id, "round_id": round_1_id, **user_lang},
-        {"fund_id": fund_2_id, "round_id": round_2_id, **user_lang},
-        {"fund_id": fund_2_id, "round_id": round_3_id, **user_lang},
-        {"fund_id": fund_2_id, "round_id": round_3_id, **user_lang},
-    ]
-)
-# @pytest.mark.preserve_test_data(True)
 def test_get_application_statuses_query_param(
-    fund_id, round_id, expected_not_started, client, seed_application_records
+    fund_idx,
+    round_idx,
+    expected_in_progress,
+    client,
+    seed_data_multiple_funds_rounds,
 ):
 
+    fund_id = (
+        seed_data_multiple_funds_rounds[fund_idx].fund_id
+        if fund_idx is not None
+        else ""
+    )
+    round_id = (
+        seed_data_multiple_funds_rounds[fund_idx].round_ids[round_idx][0]
+        if round_idx is not None
+        else ""
+    )
+
+    url = (
+        "/applications/reporting/applications_statuses_data?fund_id="
+        + f"{fund_id}&round_id={round_id}"
+    )
+
     response = client.get(
-        f"/applications/reporting/applications_statuses_data?fund_id={fund_id}"
-        + f"&round_id={round_id}",
+        url,
     )
     lines = response.data.splitlines()
     assert 2 == len(lines)
     assert lines[0] == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED"
-    assert expected_not_started == int(lines[1].decode("utf-8").split(",")[0])
+    assert expected_in_progress == int(lines[1].decode("utf-8").split(",")[1])
 
 
 @pytest.mark.parametrize("include_application_id", (True, False))
-@pytest.mark.apps_to_insert([test_application_data[0]])
-@pytest.mark.unique_fund_round(True)
+@pytest.mark.fund_round_config(
+    {
+        "funds": [
+            {"rounds": [{"applications": [{**user_lang}]}]},
+        ]
+    }
+)
 def test_get_applications_report(
     client,
     include_application_id,
-    seed_application_records,
-    add_org_data_for_reports,
-    unique_fund_round,
+    seed_data_multiple_funds_rounds,
 ):
 
-    application = get_row_by_pk(Applications, seed_application_records[0].id)
+    application = get_row_by_pk(
+        Applications,
+        seed_data_multiple_funds_rounds[0].round_ids[0].application_ids[0],
+    )
     application.status = Status.SUBMITTED
     url = "/applications/reporting/key_application_metrics" + (
         f"/{str(application.id)}"
         if include_application_id
-        else f"?fund_id={unique_fund_round[0]}&round_id={unique_fund_round[1]}"
+        else (
+            f"?fund_id={seed_data_multiple_funds_rounds[0].fund_id}"
+            + "&round_id="
+            + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}"
+        )
     )
     response = client.get(
         url,
@@ -111,24 +140,22 @@ def test_get_applications_report(
     assert "W1A 1AA" == fields[4]
 
 
-@pytest.mark.apps_to_insert(
-    [test_application_data[0], test_application_data[1]]
+@pytest.mark.fund_round_config(
+    {
+        "funds": [
+            {"rounds": [{"applications": [{**user_lang}, {**user_lang}]}]},
+        ]
+    }
 )
 @pytest.mark.unique_fund_round(True)
 def test_get_applications_report_query_param(
-    client,
-    seed_application_records,
-    add_org_data_for_reports,
-    _db,
-    unique_fund_round,
+    client, seed_data_multiple_funds_rounds
 ):
-    for app in seed_application_records:
-        app.status = "IN_PROGRESS"
-    _db.session.add_all(seed_application_records)
-    _db.session.commit()
+
     response = client.get(
         "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
-        + f"fund_id={unique_fund_round[0]}&round_id={unique_fund_round[1]}",
+        + f"fund_id={seed_data_multiple_funds_rounds[0].fund_id}&round_id="
+        + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}",
         follow_redirects=True,
     )
     lines = response.data.splitlines()

@@ -3,6 +3,7 @@ from uuid import uuid4
 
 import pytest
 from app import create_app
+from db.models.application.applications import Applications
 from db.queries.application import create_application
 from db.queries.form import add_new_forms
 from external_services.models.fund import Fund
@@ -37,6 +38,42 @@ def unique_fund_round(mock_get_fund, mock_get_round):
     return (str(uuid4()), str(uuid4()))
 
 
+def create_app_with_blank_forms(app_to_create: dict) -> Applications:
+    """
+    Creates a new application record in the database using the supplied
+    dictionary of application fields.
+    Each inserted application has 3 blank forms attached (declarations,
+    project-info, org-info, or their welsh equivalents depending
+    on language).
+    """
+    app = create_application(**app_to_create)
+    add_new_forms(
+        [
+            "datganiadau"
+            if (app.language and app.language.name == "cy")
+            else "declarations"
+        ],
+        app.id,
+    )
+    add_new_forms(
+        [
+            "gwybodaeth-am-y-prosiect"
+            if (app.language and app.language.name == "cy")
+            else "project-information"
+        ],
+        app.id,
+    )
+    add_new_forms(
+        [
+            "gwybodaeth-am-y-sefydliad"
+            if (app.language and app.language.name == "cy")
+            else "organisation-information"
+        ],
+        app.id,
+    )
+    return app
+
+
 @pytest.fixture(scope="function")
 def seed_application_records(
     request,
@@ -66,88 +103,96 @@ def seed_application_records(
         if unique_fr_marker is not None:
             app["fund_id"] = unique_fund_round[0]
             app["round_id"] = unique_fund_round[1]
-        app = create_application(**app)
-        add_new_forms(
-            [
-                "datganiadau"
-                if (app.language and app.language.name == "cy")
-                else "declarations"
-            ],
-            app.id,
-        )
-        add_new_forms(
-            [
-                "gwybodaeth-am-y-prosiect"
-                if (app.language and app.language.name == "cy")
-                else "project-information"
-            ],
-            app.id,
-        )
-        add_new_forms(
-            [
-                "gwybodaeth-am-y-sefydliad"
-                if (app.language and app.language.name == "cy")
-                else "organisation-information"
-            ],
-            app.id,
-        )
-        seeded_apps.append(app)
+        created_app = create_app_with_blank_forms(app)
+        seeded_apps.append(created_app)
     yield seeded_apps
 
 
-@pytest.fixture(scope="function")
-def add_org_data_for_reports(seed_application_records, client):
+def add_org_data_for_reports(application, unique_append, client):
     """
     Adds additional form data to the application so it is present for
-    testing the reports. Uses seed_application_records to update
-    all the applications that were inserted. Each org name is unique
-    in the format 'Test Org Name {n}' where n is the index+1 of the
-    application's position in seed_application_records.
+    testing the reports. Each org name is unique
+    in the format 'Test Org Name {unique_append}'
     """
-    i = 0
-    for application in seed_application_records:
-        i += 1
-        sections_put_en = [
-            {
-                "questions": test_question_data,
-                "metadata": {
-                    "application_id": application.id,
-                    "form_name": "organisation-information",
-                    "is_summary_page_submit": False,
-                },
+    sections_put_en = [
+        {
+            "questions": test_question_data,
+            "metadata": {
+                "application_id": application.id,
+                "form_name": "organisation-information",
+                "is_summary_page_submit": False,
             },
-            {
-                "questions": [
-                    {
-                        "question": "Address",
-                        "fields": [
-                            {
-                                "key": "yEmHpp",
-                                "title": "Address",
-                                "type": "text",
-                                "answer": "BBC, W1A 1AA",
-                            },
-                        ],
-                    },
-                ],
-                "metadata": {
-                    "application_id": application.id,
-                    "form_name": "project-information",
-                    "is_summary_page_submit": False,
+        },
+        {
+            "questions": [
+                {
+                    "question": "Address",
+                    "fields": [
+                        {
+                            "key": "yEmHpp",
+                            "title": "Address",
+                            "type": "text",
+                            "answer": "BBC, W1A 1AA",
+                        },
+                    ],
                 },
+            ],
+            "metadata": {
+                "application_id": application.id,
+                "form_name": "project-information",
+                "is_summary_page_submit": False,
             },
-        ]
-        # Make the org names unique
-        sections_put_en[0]["questions"][1]["fields"][0][
-            "answer"
-        ] = f"Test Org Name {i}"
+        },
+    ]
+    # Make the org names unique
+    sections_put_en[0]["questions"][1]["fields"][0][
+        "answer"
+    ] = f"Test Org Name {unique_append}"
 
-        for section in sections_put_en:
-            client.put(
-                "/applications/forms",
-                json=section,
-                follow_redirects=True,
-            )
+    for section in sections_put_en:
+        client.put(
+            "/applications/forms",
+            json=section,
+            follow_redirects=True,
+        )
+
+
+@pytest.fixture(scope="function")
+def seed_data_multiple_funds_rounds(
+    request, app, clear_test_data, enable_preserve_test_data, client
+):
+    marker = request.node.get_closest_marker("fund_round_config")
+    if marker is None:
+        config = {
+            "funds": [
+                {"rounds": [{"applications": [test_application_data[0]]}]}
+            ]
+        }
+    else:
+        config = marker.args[0]
+
+    from collections import namedtuple
+
+    FundRound = namedtuple("FundRound", "fund_id round_ids")
+    RoundApps = namedtuple("RoundApps", "round_id application_ids")
+    funds_rounds = []
+    for fund in config["funds"]:
+        fund_id = str(uuid4())
+        round_ids = []
+        for round in fund["rounds"]:
+            round_id = str(uuid4())
+            i = 0
+            application_ids = []
+            for appl in round["applications"]:
+                i += 1
+                appl["fund_id"] = fund_id
+                appl["round_id"] = round_id
+                created_app = create_app_with_blank_forms(appl)
+                add_org_data_for_reports(created_app, i, client)
+                application_ids.append(created_app.id)
+            round_ids.append(RoundApps(round_id, application_ids))
+        funds_rounds.append(FundRound(fund_id, round_ids))
+    yield funds_rounds
 
 
 def mock_get_data(endpoint, params=None):

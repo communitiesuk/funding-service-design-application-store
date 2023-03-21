@@ -70,7 +70,6 @@ def test_get_application_statuses_query_param(
         f"/applications/reporting/applications_statuses_data?fund_id={fund_id}"
         + f"&round_id={round_id}",
     )
-
     lines = response.data.splitlines()
     assert 2 == len(lines)
     assert lines[0] == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED"
@@ -79,21 +78,27 @@ def test_get_application_statuses_query_param(
 
 @pytest.mark.parametrize("include_application_id", (True, False))
 @pytest.mark.apps_to_insert([test_application_data[0]])
+@pytest.mark.unique_fund_round(True)
 def test_get_applications_report(
     client,
     include_application_id,
     seed_application_records,
     add_org_data_for_reports,
+    unique_fund_round,
 ):
 
     application = get_row_by_pk(Applications, seed_application_records[0].id)
     application.status = Status.SUBMITTED
-
+    url = "/applications/reporting/key_application_metrics" + (
+        f"/{str(application.id)}"
+        if include_application_id
+        else f"?fund_id={unique_fund_round[0]}&round_id={unique_fund_round[1]}"
+    )
     response = client.get(
-        "/applications/reporting/key_application_metrics"
-        + f"{'/' + str(application.id) if include_application_id else ''}",
+        url,
         follow_redirects=True,
     )
+    assert 200 == response.status_code
     lines = response.data.splitlines()
     assert 2 == len(lines)
     assert (

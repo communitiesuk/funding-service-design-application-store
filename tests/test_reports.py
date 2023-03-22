@@ -156,14 +156,20 @@ def test_get_applications_report_query_param(
         + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}",
         follow_redirects=True,
     )
-    lines = response.data.splitlines()
-    assert 3 == len(lines)
-    assert (
-        "eoi_reference,organisation_name,organisation_type,asset_type,"
-        + "geography,capital,revenue"
-    ) == lines[0].decode("utf-8")
-    for line in lines[1:]:
-        fields = line.decode("utf-8").split(",")
-        assert fields[1].startswith("Test Org Name ")
-        assert "Test Reference Number" == fields[0]
-        assert "W1A 1AA" == fields[4]
+    raw_lines = response.data.splitlines()
+    assert len(raw_lines) == 3
+
+    line1, line2, line3 = [
+        line.decode("utf-8") for line in response.data.splitlines()
+    ]
+    assert line1 == (
+       "eoi_reference,organisation_name,organisation_type,asset_type,"
+       "geography,capital,revenue"
+    )
+    for line in line2, line3:
+        field1, field2, _, _, field5, _, _ = line.split(",")
+        # could also do this to ignore all fields after 5.
+        # field1, field2, _, _, field5, *_ = line.split(",")
+        assert field1 == "Test Reference Number"
+        assert field2.startswith("Test Org Name ")
+        assert field5 == "W1A 1AA"

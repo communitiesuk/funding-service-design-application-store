@@ -90,8 +90,8 @@ class ApplicationsView(MethodView):
             return send_file(
                 export_json_to_csv(
                     get_general_status_applications_report(
-                        round_id if round_id else None,
-                        fund_id if fund_id else None,
+                        round_id or None,
+                        fund_id or None,
                     )
                 ),
                 "text/csv",

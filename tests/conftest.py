@@ -14,7 +14,7 @@ from tests.helpers import test_application_data
 from tests.helpers import test_question_data
 
 # Make the utils fixtures available, used in seed_application_records
-pytest_plugins = ["fsd_utils.fixtures.db_fixtures"]
+pytest_plugins = ["fsd_test_utils.fixtures.db_fixtures"]
 
 
 @pytest.fixture(scope="session")

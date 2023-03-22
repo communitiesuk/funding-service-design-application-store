@@ -1,14 +1,12 @@
 import pytest
 from db.models import Applications
 from db.models.application.enums import Status
-from tests.helpers import get_all_rows
-from tests.helpers import get_random_row
-from tests.helpers import post_data
-from tests.helpers import post_test_applications
+from tests.helpers import get_row_by_pk
+from tests.helpers import test_application_data
 
 
-def test_get_application_statuses(client):
-    post_test_applications(client)
+@pytest.mark.apps_to_insert(test_application_data)
+def test_get_application_statuses(client, seed_application_records, _db):
     response = client.get(
         "/applications/reporting/applications_statuses_data",
         follow_redirects=True,
@@ -18,8 +16,10 @@ def test_get_application_statuses(client):
         == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n3,0,0,0\r\n"
     )
 
-    app = get_random_row(Applications)
+    app = get_row_by_pk(Applications, seed_application_records[0].id)
     app.status = "IN_PROGRESS"
+    _db.session.add(app)
+    _db.session.commit()
 
     response = client.get(
         "/applications/reporting/applications_statuses_data",
@@ -31,234 +31,146 @@ def test_get_application_statuses(client):
     )
 
 
+user_lang = {
+    "account_id": "usera",
+    "language": "en",
+}
+
+
+@pytest.mark.fund_round_config(
+    {
+        "funds": [
+            {"rounds": [{"applications": [{**user_lang}]}]},
+            {
+                "rounds": [
+                    {"applications": [{**user_lang}]},
+                    {"applications": [{**user_lang}, {**user_lang}]},
+                ]
+            },
+        ]
+    }
+)
 @pytest.mark.parametrize(
-    "query_params",
+    "fund_idx,round_idx,expected_in_progress",
     [
-        "?fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
-        "?round_id=c603d114-5364-4474-a0c4-c41cbf4d3bbd",
-        "?fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4"
-        "&round_id=c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        # (None, None, 4),
+        (0, 0, 1),
+        (0, None, 1),
+        (1, 0, 1),
+        (1, 1, 2),
+        (1, None, 3),
     ],
 )
-def test_get_application_statuses_query_param(client, query_params):
-    post_test_applications(client)
+def test_get_application_statuses_query_param(
+    fund_idx,
+    round_idx,
+    expected_in_progress,
+    client,
+    seed_data_multiple_funds_rounds,
+):
+
+    fund_id = (
+        seed_data_multiple_funds_rounds[fund_idx].fund_id
+        if fund_idx is not None
+        else ""
+    )
+    round_id = (
+        seed_data_multiple_funds_rounds[fund_idx].round_ids[round_idx][0]
+        if round_idx is not None
+        else ""
+    )
+
+    url = (
+        "/applications/reporting/applications_statuses_data?fund_id="
+        + f"{fund_id}&round_id={round_id}"
+    )
 
     response = client.get(
-        f"/applications/reporting/applications_statuses_data{query_params}",
+        url,
     )
-
-    assert (
-        response.data
-        == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n1,0,0,0\r\n"
-    )
+    lines = response.data.splitlines()
+    assert 2 == len(lines)
+    assert lines[0] == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED"
+    assert expected_in_progress == int(lines[1].decode("utf-8").split(",")[1])
 
 
 @pytest.mark.parametrize("include_application_id", (True, False))
-def test_get_applications_report(client, include_application_id):
-    application_data_1 = {
-        "account_id": "usera",
-        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
-        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
-        "language": "en",
+@pytest.mark.fund_round_config(
+    {
+        "funds": [
+            {"rounds": [{"applications": [{**user_lang}]}]},
+        ]
     }
+)
+def test_get_applications_report(
+    client,
+    include_application_id,
+    seed_data_multiple_funds_rounds,
+):
 
-    post_data(client, "/applications", application_data_1)
-
-    application = get_random_row(Applications)
-    sections_put_en = [
-        {
-            "questions": [
-                {
-                    "question": "About your organisation",
-                    "fields": [
-                        {
-                            "key": "YdtlQZ",
-                            "title": "Organisation Name",
-                            "type": "text",
-                            "answer": "Test Organisation Name",
-                        },
-                        {
-                            "key": "WWWWxy",
-                            "title": "EOI Reference",
-                            "type": "text",
-                            "answer": "Test Reference Number",
-                        },
-                    ],
-                },
-            ],
-            "metadata": {
-                "application_id": application.id,
-                "form_name": "organisation-information",
-                "is_summary_page_submit": False,
-            },
-        },
-        {
-            "questions": [
-                {
-                    "question": "Address",
-                    "fields": [
-                        {
-                            "key": "yEmHpp",
-                            "title": "Address",
-                            "type": "text",
-                            "answer": "BBC, W1A 1AA",
-                        },
-                    ],
-                },
-            ],
-            "metadata": {
-                "application_id": application.id,
-                "form_name": "project-information",
-                "is_summary_page_submit": False,
-            },
-        },
-    ]
-
-    for section in sections_put_en:
-        client.put(
-            "/applications/forms",
-            json=section,
-            follow_redirects=True,
-        )
+    application = get_row_by_pk(
+        Applications,
+        seed_data_multiple_funds_rounds[0].round_ids[0].application_ids[0],
+    )
     application.status = Status.SUBMITTED
-
+    url = "/applications/reporting/key_application_metrics" + (
+        f"/{str(application.id)}"
+        if include_application_id
+        else (
+            f"?fund_id={seed_data_multiple_funds_rounds[0].fund_id}"
+            + "&round_id="
+            + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}"
+        )
+    )
     response = client.get(
-        "/applications/reporting/key_application_metrics"
-        f"{'/' + str(application.id) if include_application_id else ''}",
+        url,
         follow_redirects=True,
     )
+    assert 200 == response.status_code
+    lines = response.data.splitlines()
+    assert 2 == len(lines)
+    assert (
+        "eoi_reference,organisation_name,organisation_type,asset_type,"
+        + "geography,capital,revenue"
+    ) == lines[0].decode("utf-8")
+    fields = lines[1].decode("utf-8").split(",")
+    assert "Test Org Name 1" == fields[1]
+    assert "Test Reference Number" == fields[0]
+    assert "W1A 1AA" == fields[4]
 
-    assert "Test Organisation Name" in response.data.decode("utf-8")
-    assert "Test Reference Number" in response.data.decode("utf-8")
-    assert "W1A 1AA" in response.data.decode("utf-8")
 
-
-def test_get_applications_report_query_param(client):
-    post_test_applications(client)
-    apps = get_all_rows(Applications)
-    app_one = apps[0]
-    app_two = apps[1]
-    sections_put_app_one = [
-        {
-            "questions": [
-                {
-                    "question": "About your organisation",
-                    "fields": [
-                        {
-                            "key": "YdtlQZ",
-                            "title": "Organisation Name",
-                            "type": "text",
-                            "answer": "Test Organisation Name",
-                        },
-                        {
-                            "key": "WWWWxy",
-                            "title": "EOI Reference",
-                            "type": "text",
-                            "answer": "Test Reference Number",
-                        },
-                    ],
-                },
-            ],
-            "metadata": {
-                "application_id": app_one.id,
-                "form_name": "organisation-information",
-                "is_summary_page_submit": False,
-            },
-        },
-        {
-            "questions": [
-                {
-                    "question": "Address",
-                    "fields": [
-                        {
-                            "key": "yEmHpp",
-                            "title": "Address",
-                            "type": "text",
-                            "answer": "BBC, W1A 1AA",
-                        },
-                    ],
-                },
-            ],
-            "metadata": {
-                "application_id": app_one.id,
-                "form_name": "project-information",
-                "is_summary_page_submit": False,
-            },
-        },
-    ]
-    sections_put_app_two = [
-        {
-            "questions": [
-                {
-                    "question": "About your organisation",
-                    "fields": [
-                        {
-                            "key": "YdtlQZ",
-                            "title": "Organisation Name",
-                            "type": "text",
-                            "answer": "Test Organisation Name 2",
-                        },
-                        {
-                            "key": "WWWWxy",
-                            "title": "EOI Reference",
-                            "type": "text",
-                            "answer": "Test Reference Number 2",
-                        },
-                    ],
-                },
-            ],
-            "metadata": {
-                "application_id": app_two.id,
-                "form_name": "organisation-information",
-                "is_summary_page_submit": False,
-            },
-        },
-        {
-            "questions": [
-                {
-                    "question": "Address",
-                    "fields": [
-                        {
-                            "key": "yEmHpp",
-                            "title": "Address",
-                            "type": "text",
-                            "answer": "BBC, BA2 1AA",
-                        },
-                    ],
-                },
-            ],
-            "metadata": {
-                "application_id": app_two.id,
-                "form_name": "project-information",
-                "is_summary_page_submit": False,
-            },
-        },
-    ]
-
-    for section in sections_put_app_one:
-        client.put(
-            "/applications/forms",
-            json=section,
-            follow_redirects=True,
-        )
-    for section in sections_put_app_two:
-        client.put(
-            "/applications/forms",
-            json=section,
-            follow_redirects=True,
-        )
-    app_one.status = Status.IN_PROGRESS
-    app_two.status = Status.IN_PROGRESS
-    apps[2].status = Status.IN_PROGRESS
+@pytest.mark.fund_round_config(
+    {
+        "funds": [
+            {"rounds": [{"applications": [{**user_lang}, {**user_lang}]}]},
+        ]
+    }
+)
+def test_get_applications_report_query_param(
+    client, seed_data_multiple_funds_rounds
+):
 
     response = client.get(
-        "/applications/reporting/key_application_metrics?status=IN_PROGRESS",
+        "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
+        + f"fund_id={seed_data_multiple_funds_rounds[0].fund_id}&round_id="
+        + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}",
         follow_redirects=True,
     )
-    report_reponse = response.data.decode("utf-8")
-    assert "organisation_name" in report_reponse
-    assert "Test Organisation Name" in report_reponse
-    assert "Test Organisation Name 2" in report_reponse
-    assert "Test Reference Number" in report_reponse
-    assert "W1A 1AA" in report_reponse
-    assert "BA2 1AA" in report_reponse
+    raw_lines = response.data.splitlines()
+    assert len(raw_lines) == 3
+
+    line1, line2, line3 = [
+        line.decode("utf-8") for line in response.data.splitlines()
+    ]
+    assert (
+        line1
+        == "eoi_reference,organisation_name,organisation_type,asset_type,"
+        "geography,capital,revenue"
+    )
+    for line in line2, line3:
+        field1, field2, _, _, field5, _, _ = line.split(",")
+        # could also do this to ignore all fields after 5.
+        # field1, field2, _, _, field5, *_ = line.split(",")
+        assert field1 == "Test Reference Number"
+        assert field2.startswith("Test Org Name ")
+        assert field5 == "W1A 1AA"

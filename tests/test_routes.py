@@ -5,16 +5,16 @@ from db.exceptions import ApplicationError
 from db.models import Applications
 from db.queries.application import get_all_applications
 from db.schemas import ApplicationSchema
-from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
-from tests.helpers import get_random_row
+from tests.helpers import get_row_by_pk
 from tests.helpers import key_list_to_regex
 from tests.helpers import post_data
-from tests.helpers import post_test_applications
+from tests.helpers import test_application_data
+from tests.helpers import test_question_data
 
 
-def test_create_application_is_successful(client):
+def test_create_application_is_successful(client, clear_test_data):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -54,7 +54,9 @@ def test_create_application_is_successful(client):
     count_fund_applications(client, "fund-b", expected_length_fund_b)
 
 
-def test_create_application_creates_formatted_reference(client):
+def test_create_application_creates_formatted_reference(
+    client, clear_test_data
+):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -73,13 +75,13 @@ def test_create_application_creates_formatted_reference(client):
         follow_redirects=True,
     )
     application = response.json
-    assert application["reference"].startswith("COF-SUM-")
+    assert application["reference"].startswith("TEST-TEST-")
     assert application["reference"][-6:].isupper()
     assert application["reference"][-6:].isalpha()
 
 
 def test_create_application_creates_unique_reference(
-    client, mock_random_choices
+    client, mock_random_choices, clear_test_data
 ):
     """
     GIVEN We have a functioning Application Store API
@@ -99,7 +101,7 @@ def test_create_application_creates_unique_reference(
         follow_redirects=True,
     )
     application = response.json
-    assert application["reference"] == "COF-SUM-ABCDEF"
+    assert application["reference"] == "TEST-TEST-ABCDEF"
 
     with pytest.raises(ApplicationError) as ex_info:
         client.post(
@@ -114,13 +116,13 @@ def test_create_application_creates_unique_reference(
     )
 
 
+@pytest.mark.apps_to_insert(test_application_data)
 def test_get_all_applications(client):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications with no set params
     THEN the response should return all applications
     """
-    post_test_applications(client)
     serialiser = ApplicationSchema(exclude=["forms"])
     expected_data = [serialiser.dump(row) for row in get_all_applications()]
     expected_data_within_response(
@@ -133,108 +135,45 @@ def test_get_all_applications(client):
     )
 
 
-def test_get_applications_of_account_id(client):
+@pytest.mark.apps_to_insert([{"account_id": "unique_user", "language": "en"}])
+@pytest.mark.unique_fund_round(True)
+def test_get_applications_of_account_id(
+    client, seed_application_records, unique_fund_round
+):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications of account_id
     THEN the response should return applications of the account_id
     """
-    post_test_applications(client)
-    account_id_to_filter = "userb"
-    expected_data = list(
-        filter(
-            lambda app_dict: app_dict["account_id"] == account_id_to_filter,
-            application_expected_data,
-        )
-    )
     expected_data_within_response(
         client,
-        "/applications?account_id=userb",
-        expected_data,
+        "/applications?account_id=unique_user",
+        [seed_application_records[0].as_dict()],
         exclude_regex_paths=key_list_to_regex(
             [
-                "id",
-                "reference",
                 "started_at",
-                "project_name",
                 "last_edited",
                 "date_submitted",
                 "round_name",
+                "forms",
             ]
         ),
     )
 
 
-def test_update_section_of_application(client):
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_update_section_of_application(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
     THEN The section json should be updated to
     match the PUT'ed json and be marked as in-progress.
     """
-    post_test_applications(client)
-    random_app = get_random_row(Applications)
-    random_application_id = random_app.id
-    form_name = (
-        "declarations" if random_app.language.name == "en" else "datganiadau"
-    )
     section_put = {
-        "questions": [
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "application-name",
-                        "title": "Applicant name",
-                        "type": "text",
-                        "answer": "Coolio",
-                    },
-                    {
-                        "key": "applicant-email",
-                        "title": "Email",
-                        "type": "text",
-                        "answer": "a@example.com",
-                    },
-                    {
-                        "key": "applicant-telephone-number",
-                        "title": "Telephone number",
-                        "type": "text",
-                        "answer": "Wow",
-                    },
-                    {
-                        "key": "applicant-website",
-                        "title": "Website",
-                        "type": "text",
-                        "answer": "www.example.com",
-                    },
-                ],
-            },
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "data",
-                        "title": "Applicant name",
-                        "type": "text",
-                        "answer": "cool",
-                    },
-                ],
-            },
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "data",
-                        "title": "Applicant job",
-                        "type": "text",
-                        "answer": "cool",
-                    },
-                ],
-            },
-        ],
+        "questions": test_question_data,
         "metadata": {
-            "application_id": str(random_application_id),
-            "form_name": form_name,
+            "application_id": str(seed_application_records[0].id),
+            "form_name": "declarations",
             "is_summary_page_submit": False,
         },
     }
@@ -243,6 +182,7 @@ def test_update_section_of_application(client):
         json=section_put,
         follow_redirects=True,
     )
+    assert 201 == response.status_code
     answer_found_list = [
         field["answer"] not in [None, ""]
         for field in response.json["questions"][0]["fields"]
@@ -252,19 +192,16 @@ def test_update_section_of_application(client):
     assert section_status == "IN_PROGRESS"
 
 
-def test_update_section_of_application_with_optional_field(client):
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_update_section_of_application_with_optional_field(
+    client, seed_application_records
+):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
     THEN The section json should be updated to
     match the PUT'ed json and be marked as in-progress.
     """
-    post_test_applications(client)
-    random_app = get_random_row(Applications)
-    random_application_id = random_app.id
-    form_name = (
-        "declarations" if random_app.language.name == "en" else "datganiadau"
-    )
     section_put = {
         "questions": [
             {
@@ -285,8 +222,8 @@ def test_update_section_of_application_with_optional_field(client):
             }
         ],
         "metadata": {
-            "application_id": str(random_application_id),
-            "form_name": form_name,
+            "application_id": str(seed_application_records[0].id),
+            "form_name": "declarations",
             "is_summary_page_submit": False,
         },
     }
@@ -295,12 +232,14 @@ def test_update_section_of_application_with_optional_field(client):
         json=section_put,
         follow_redirects=True,
     )
+    assert 201 == response.status_code
     section_status = response.json["status"]
     assert section_status == "IN_PROGRESS"
 
 
+@pytest.mark.apps_to_insert([test_application_data[0]])
 def test_update_section_of_application_with_incomplete_answers(
-    client,
+    client, seed_application_records
 ):
     """
     GIVEN We have a functioning Application Store API
@@ -308,61 +247,15 @@ def test_update_section_of_application_with_incomplete_answers(
     THEN The section json should be updated to
     match the PUT'ed json and be marked as complete.
     """
-    post_test_applications(client)
-    random_app = get_random_row(Applications)
-    random_application_id = random_app.id
-    form_name = (
-        "declarations" if random_app.language.name == "en" else "datganiadau"
-    )
     section_put = {
-        "questions": [
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "application-name",
-                        "title": "Applicant name",
-                        "type": "text",
-                        "answer": "Coolio",
-                    },
-                    {
-                        "key": "applicant-email",
-                        "title": "Email",
-                        "type": "text",
-                        "answer": "a@example.com",
-                    },
-                    {
-                        "key": "applicant-telephone-number",
-                        "title": "Telephone number",
-                        "type": "text",
-                        # NOT GIVEN!!
-                        "answer": "",
-                    },
-                    {
-                        "key": "applicant-website",
-                        "title": "Website",
-                        "type": "text",
-                        "answer": "www.example.com",
-                    },
-                ],
-            },
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "data",
-                        "title": "Applicant name",
-                        "type": "text",
-                        "answer": "cool",
-                    },
-                ],
-            },
-        ],
+        "questions": test_question_data,
         "metadata": {
-            "application_id": str(random_application_id),
-            "form_name": form_name,
+            "application_id": str(seed_application_records[0].id),
+            "form_name": "declarations",
         },
     }
+    # Update an optional field to have no answer
+    section_put["questions"][0]["fields"][2]["answer"] = ""
     expected_data = section_put.copy()
     # The whole section has been COMPLETED here so it will have a status of
     # COMPLETE not IN_PROGRESS
@@ -373,24 +266,25 @@ def test_update_section_of_application_with_incomplete_answers(
         json=section_put,
         follow_redirects=True,
     )
+    assert 201 == response.status_code
     section_status = response.json["status"]
     assert section_status == "IN_PROGRESS"
 
 
-def test_get_application_by_application_id(client):
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_get_application_by_application_id(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN a GET /applications/<application_id> request is sent
     THEN the response should contain the application object
     """
-    post_test_applications(client)
-    random_app = get_random_row(Applications)
-    random_id = random_app.id
+
+    id = seed_application_records[0].id
     serialiser = ApplicationSchema()
-    expected_data = serialiser.dump(random_app)
+    expected_data = serialiser.dump(seed_application_records[0])
     expected_data_within_response(
         client,
-        f"/applications/{random_id}",
+        f"/applications/{id}",
         expected_data,
         exclude_regex_paths=key_list_to_regex(
             ["reference", "started_at", "project_name", "forms"]
@@ -403,8 +297,12 @@ def test_get_application_by_application_id(client):
     )
 
 
+@pytest.mark.apps_to_insert(
+    # element 1 has no lang set
+    [test_application_data[1]]
+)
 def test_get_application_by_application_id_when_db_record_has_no_language_set(
-    client,
+    client, seed_application_records
 ):
     """
     GIVEN We have a functioning Application Store API
@@ -414,11 +312,10 @@ def test_get_application_by_application_id_when_db_record_has_no_language_set(
     THEN the response should contain the application object with a default
         language of english ('en')
     """
-    post_test_applications(client)
-    random_app = get_random_row(Applications)
-    random_id = random_app.id
-    random_app.language = None
-    response = client.get(f"/applications/{random_id}", follow_redirects=True)
+    response = client.get(
+        f"/applications/{seed_application_records[0].id}",
+        follow_redirects=True,
+    )
     response_data = json.loads(response.data)
     assert response_data["language"] == "en"
 
@@ -433,19 +330,18 @@ def testHealthcheckRoute(client):
     assert result.json == expected_result, "Unexpected json body"
 
 
-def test_update_section_of_application_changes_last_edited_field(client):
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_update_section_of_application_changes_last_edited_field(
+    client, seed_application_records
+):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
     THEN the section json.last_edited should be updated.
     """
-    post_test_applications(client)
-    random_app = get_random_row(Applications)
-    random_application_id = random_app.id
-    old_last_edited = random_app.last_edited
-    form_name = (
-        "declarations" if random_app.language.name == "en" else "datganiadau"
-    )
+    target_row = get_row_by_pk(Applications, seed_application_records[0].id)
+    old_last_edited = target_row.last_edited
+    form_name = "declarations"
     section_put = {
         "questions": [
             {
@@ -479,35 +375,35 @@ def test_update_section_of_application_changes_last_edited_field(client):
             }
         ],
         "metadata": {
-            "application_id": str(random_application_id),
+            "application_id": str(target_row.id),
             "form_name": form_name,
         },
     }
-    client.put(
+    response = client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
     )
-    new_last_edited = random_app.last_edited
+    assert 201 == response.status_code
+    target_row = get_row_by_pk(Applications, seed_application_records[0].id)
+    new_last_edited = target_row.last_edited
     assert new_last_edited != old_last_edited
 
 
+@pytest.mark.apps_to_insert([test_application_data[0]])
 def test_update_section_of_application_does_not_change_last_edited_field(
-    client,
+    client, seed_application_records
 ):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
     THEN The section json.last_edited should not be updated.
     """
-    post_test_applications(client)
-    random_app = get_random_row(Applications)
-    random_application_id = random_app.id
-    old_last_edited = random_app.last_edited
+    old_last_edited = seed_application_records[0].last_edited
     section_put = {
         "questions": [],
         "metadata": {
-            "application_id": str(random_application_id),
+            "application_id": str(seed_application_records[0].id),
             "form_name": "declarations",
         },
     }
@@ -516,59 +412,24 @@ def test_update_section_of_application_does_not_change_last_edited_field(
         json=section_put,
         follow_redirects=True,
     )
-    new_last_edited = random_app.last_edited
+    app = get_row_by_pk(Applications, seed_application_records[0].id)
+    new_last_edited = app.last_edited
     assert new_last_edited == old_last_edited
 
 
-def test_update_project_name_of_application(client):
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_update_project_name_of_application(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN a put is made into the 'project information' section
      containing a project name field
     THEN the project name should be updated on the application.
     """
-    post_test_applications(client)
-    random_app = get_random_row(Applications)
-    random_application_id = random_app.id
-    old_project_name = random_app.project_name
-    form_name = (
-        "project-information"
-        if random_app.language.name == "en"
-        else "gwybodaeth-am-y-prosiect"
-    )
+    old_project_name = seed_application_records[0].project_name
+    new_project_name = "updated by unit test"
+    form_name = "project-information"
     section_put = {
         "questions": [
-            {
-                "question": "About your project",
-                "fields": [
-                    {
-                        "key": "gScdbf",
-                        "title": (
-                            "Have you been given funding through the Community"
-                            " Ownership Fund before?"
-                        ),
-                        "type": "list",
-                        "answer": True,
-                    }
-                ],
-            },
-            {
-                "question": "About your project",
-                "fields": [
-                    {
-                        "key": "IrIYcA",
-                        "title": "Describe your previous project",
-                        "type": "text",
-                        "answer": "fcbcfbxf",
-                    },
-                    {
-                        "key": "TFdnGq",
-                        "title": "Amount of funding received",
-                        "type": "text",
-                        "answer": "4255",
-                    },
-                ],
-            },
             {
                 "question": "About your project",
                 "fields": [
@@ -576,41 +437,13 @@ def test_update_project_name_of_application(client):
                         "key": "KAgrBz",
                         "title": "Project name",
                         "type": "text",
-                        "answer": "YESS ONEEEE",
-                    },
-                    {
-                        "key": "wudRxx",
-                        "title": (
-                            "Tell us how the asset is currently being used, or"
-                            " how it has been used before, and why it's"
-                            " important to the community"
-                        ),
-                        "type": "text",
-                        "answer": "dcfcdc",
-                    },
-                    {
-                        "key": "TlGjXb",
-                        "title": (
-                            "Explain why the asset is at risk of being lost to"
-                            " the community, or why it has already been lost"
-                        ),
-                        "type": "text",
-                        "answer": "czcxzc",
-                    },
-                    {
-                        "key": "GCjCse",
-                        "title": (
-                            "Give a brief summary of your project, including"
-                            " what you hope to achieve"
-                        ),
-                        "type": "text",
-                        "answer": "xzczcxzxcz",
+                        "answer": new_project_name,
                     },
                 ],
             },
         ],
         "metadata": {
-            "application_id": str(random_application_id),
+            "application_id": str(seed_application_records[0].id),
             "form_name": form_name,
         },
     }
@@ -619,80 +452,26 @@ def test_update_project_name_of_application(client):
         json=section_put,
         follow_redirects=True,
     )
-    new_project_name = random_app.project_name
-    assert new_project_name != old_project_name
+    updated_project_name = get_row_by_pk(
+        Applications, seed_application_records[0].id
+    ).project_name
+    assert updated_project_name == new_project_name
+    assert updated_project_name != old_project_name
 
 
-def test_complete_form(client):
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_complete_form(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
     THEN The section json should be updated to
     match the PUT'ed json and be marked as in-progress.
     """
-    post_test_applications(client)
-    random_app = get_random_row(Applications)
-    random_application_id = random_app.id
-    form_name = (
-        "declarations" if random_app.language.name == "en" else "datganiadau"
-    )
     section_put = {
-        "questions": [
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "application-name",
-                        "title": "Applicant name",
-                        "type": "text",
-                        "answer": "Coolio",
-                    },
-                    {
-                        "key": "applicant-email",
-                        "title": "Email",
-                        "type": "text",
-                        "answer": "a@example.com",
-                    },
-                    {
-                        "key": "applicant-telephone-number",
-                        "title": "Telephone number",
-                        "type": "text",
-                        "answer": "Wow",
-                    },
-                    {
-                        "key": "applicant-website",
-                        "title": "Website",
-                        "type": "text",
-                        "answer": "www.example.com",
-                    },
-                ],
-            },
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "data",
-                        "title": "Applicant name",
-                        "type": "text",
-                        "answer": "cool",
-                    },
-                ],
-            },
-            {
-                "question": "About your organisation",
-                "fields": [
-                    {
-                        "key": "data",
-                        "title": "Applicant job",
-                        "type": "text",
-                        "answer": "cool",
-                    },
-                ],
-            },
-        ],
+        "questions": test_question_data,
         "metadata": {
-            "application_id": str(random_application_id),
-            "form_name": form_name,
+            "application_id": str(seed_application_records[0].id),
+            "form_name": "declarations",
             "isSummaryPageSubmit": True,
         },
     }
@@ -705,31 +484,26 @@ def test_complete_form(client):
     assert section_status == "COMPLETED"
 
 
-def test_put_returns_400_on_submitted_application(client, db_session):
+@pytest.mark.apps_to_insert([test_application_data[2]])
+def test_put_returns_400_on_submitted_application(
+    client, _db, seed_application_records
+):
 
-    post_test_applications(client)
     """
     GIVEN We have a functioning Application Store API
     WHEN A there is an application with a status of SUBMITTED
     THEN any PUTs to the application data should return a 400 response
     """
-    import random
 
-    application_list = db_session.query(Applications).all()
-    random_app = random.choice(application_list)
-    random_application_id = random_app.id
-    random_app.status = "SUBMITTED"
-    form_name = (
-        "declarations" if random_app.language.name == "en" else "datganiadau"
-    )
-    db_session.add(random_app)
-    db_session.commit()
+    seed_application_records[0].status = "SUBMITTED"
+    _db.session.add(seed_application_records[0])
+    _db.session.commit()
     section_put = {
         "metadata": {
-            "application_id": random_application_id,
-            "form_name": form_name,
+            "application_id": seed_application_records[0].id,
+            "form_name": "datganiadau",
         },
-        "questions": [{"TEST": "TEST"}],
+        "questions": test_question_data,
     }
 
     response = client.put(
@@ -742,29 +516,24 @@ def test_put_returns_400_on_submitted_application(client, db_session):
     assert b"Not allowed to edit a submitted application." in response.data
 
 
+@pytest.mark.apps_to_insert([test_application_data[0]])
 def test_successful_submitted_application(
-    client, db_session, mock_successful_submit_notification
+    client, mock_successful_submit_notification, _db, seed_application_records
 ):
 
-    post_test_applications(client)
     """
     GIVEN We have a functioning Application Store API
     WHEN an application is submitted
     THEN a 201 response is received in the correct format
     """
-    import random
+    seed_application_records[0].status = "SUBMITTED"
 
-    application_list = db_session.query(Applications).all()
-    random_app = random.choice(application_list)
-    random_application_id = random_app.id
-    random_app.status = "SUBMITTED"
-
-    db_session.add(random_app)
-    db_session.commit()
+    _db.session.add(seed_application_records[0])
+    _db.session.commit()
 
     # mock successful notification
     response = client.post(
-        f"/applications/{random_application_id}/submit",
+        f"/applications/{seed_application_records[0].id}/submit",
         follow_redirects=True,
     )
 

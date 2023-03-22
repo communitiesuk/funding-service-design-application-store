@@ -5,43 +5,18 @@ import urllib
 from typing import List
 
 from config import Config
-from db import db
 from deepdiff import DeepDiff
-from sqlalchemy import func
-from sqlalchemy import inspect
 
 
-def get_random_row(table):
-    """get_random_row Uses a database-side select to get a random row. Does
-    this by using a random offset with range (1, number of rows)
+def get_row_by_pk(table, primary_key):
+    """Retrieves a single row from the database
 
     :param table: Sqlalchemy mapper object
-    :return: A random row from the given mapper.
+    :param primary_key: Primary key of the row to retrieve
+    :return: A single row from the given mapper.
     """
 
-    primary_key_name = inspect(table).primary_key[0].name
-    primary_key_column = getattr(table, primary_key_name)
-    return (
-        db.session.query(table)
-        .offset(
-            func.floor(
-                func.random()
-                * db.session.query(func.count(primary_key_column))
-            )
-        )
-        .limit(1)
-        .one()
-    )
-
-
-def get_all_rows(table):
-    """get_all_rows Uses a database-side select to get all rows.
-
-    :param table: Sqlalchemy mapper object
-    :return: All rows in table provided.
-    """
-
-    return db.session.query(table).all()
+    return table.query.filter_by(id=primary_key).first()
 
 
 def local_api_call(endpoint: str, params: dict = None, method: str = "get"):
@@ -184,7 +159,7 @@ def count_fund_applications(
     assert len(response_data) == expected_application_count, error_message
 
 
-application_post_data = [
+test_application_data = [
     {
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
@@ -195,13 +170,73 @@ application_post_data = [
         "account_id": "userb",
         "fund_id": "fund-b",
         "round_id": "summer",
-        "language": "en",
+        "language": None,
     },
     {
         "account_id": "userc",
         "fund_id": "funding-service-design",
         "round_id": "spring",
         "language": "cy",
+    },
+]
+
+test_question_data = [
+    {
+        "question": "About your organisation",
+        "fields": [
+            {
+                "key": "application-name",
+                "title": "Applicant name",
+                "type": "text",
+                "answer": "Coolio",
+            },
+            {
+                "key": "applicant-email",
+                "title": "Email",
+                "type": "text",
+                "answer": "a@example.com",
+            },
+            {
+                "key": "applicant-telephone-number",
+                "title": "Telephone number",
+                "type": "text",
+                "answer": "Wow",
+            },
+            {
+                "key": "applicant-website",
+                "title": "Website",
+                "type": "text",
+                "answer": "www.example.com",
+            },
+        ],
+    },
+    {
+        "question": "About your organisation",
+        "fields": [
+            {
+                "key": "YdtlQZ",
+                "title": "Organisation Name",
+                "type": "text",
+                "answer": "Test Organisation Name",
+            },
+            {
+                "key": "WWWWxy",
+                "title": "EOI Reference",
+                "type": "text",
+                "answer": "Test Reference Number",
+            },
+        ],
+    },
+    {
+        "question": "About your organisation",
+        "fields": [
+            {
+                "key": "data",
+                "title": "Applicant job",
+                "type": "text",
+                "answer": "cool",
+            },
+        ],
     },
 ]
 
@@ -214,14 +249,14 @@ application_expected_data = [
         "last_edited": None,
         **application_data,
     }
-    for application_data in application_post_data
+    for application_data in test_application_data
 ]
 
 
 def post_test_applications(client):
-    post_data(client, "/applications", application_post_data[0])
-    post_data(client, "/applications", application_post_data[1])
-    post_data(client, "/applications", application_post_data[2])
+    post_data(client, "/applications", test_application_data[0])
+    post_data(client, "/applications", test_application_data[1])
+    post_data(client, "/applications", test_application_data[2])
 
 
 def key_list_to_regex(

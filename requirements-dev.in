@@ -8,4 +8,4 @@ pytest-env
 pytest-flask
 pip-tools
 asserts
-pytest-flask-sqlalchemy
+pytest-mock

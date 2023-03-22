@@ -41,6 +41,15 @@ def virtualenv(c):
 def bootstrap_test_db(c, database_host="localhost"):
     """Create a clean database for testing"""
     c.run(f"dropdb -h {database_host} --if-exists fsd_app_store_test")
-    print(stylize("fsd_app_store_test db dropped...", ECHO_STYLE))
+    print(
+        stylize(
+            f"fsd_app_store_test db dropped from {database_host}...",
+            ECHO_STYLE,
+        )
+    )
     c.run(f"createdb -h {database_host} fsd_app_store_test")
-    print(stylize("fsd_app_store_test db created...", ECHO_STYLE))
+    print(
+        stylize(
+            f"fsd_app_store_test db created on {database_host}...", ECHO_STYLE
+        )
+    )

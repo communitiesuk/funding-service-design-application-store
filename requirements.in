@@ -1,20 +1,20 @@
 connexion
 flask_restx
-funding-service-design-utils>=1.0.22,<1.1.0
+funding-service-design-utils>=1.0.26,<1.1.0
 openapi-spec-validator
 prance
 requests
 swagger-ui-bundle
 slugify
 python-dateutil
-invoke
+invoke>=2.0.0
 colored
 
 #-----------------------------------
 #   Database
 #-----------------------------------
 SQLAlchemy
-Flask-SQLAlchemy==2.5.1
+Flask-SQLAlchemy>=3.0.3
 Flask-Migrate
 sqlalchemy-utils
 sqlalchemy_json

@@ -110,7 +110,12 @@ def get_report_for_applications(
     for application in applications:
         return_json = {field: None for field in get_key_report_field_headers()}
 
-        report_config_forms = [report_config.get("form_name_cy") if application['language'] == 'cy' else report_config.get("form_name") for report_config in KEY_REPORT_MAPPING]
+        report_config_forms = [
+            report_config.get("form_name_cy")
+            if application["language"] == "cy"
+            else report_config.get("form_name")
+            for report_config in KEY_REPORT_MAPPING
+        ]
 
         report_config_keys = [
             report_config.get("key") for report_config in KEY_REPORT_MAPPING

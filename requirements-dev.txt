@@ -142,6 +142,10 @@ gitdb==4.0.9
     # via gitpython
 gitpython==3.1.30
     # via bandit
+greenlet==2.0.2
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt

@@ -189,15 +189,11 @@ def test_get_applications_report_query_param(
     )
 
     field1, field2, _, _, field5, _, _ = line2.split(",")
-    # could also do this to ignore all fields after 5.
-    # field1, field2, _, _, field5, *_ = line.split(",")
     assert field1 == "Test Reference Number"
     assert field2.startswith("Test Org Name ")
     assert field5 == "W1A 1AA"
 
     field1, field2, _, _, field5, _, _ = line3.split(",")
-    # could also do this to ignore all fields after 5.
-    # field1, field2, _, _, field5, *_ = line.split(",")
     assert field1 == "Test Reference Number Welsh"
     assert field2.startswith("Test Org Name 2cy")
     assert field5 == "CF10 3NQ"

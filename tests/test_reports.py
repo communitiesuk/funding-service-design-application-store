@@ -36,15 +36,20 @@ user_lang = {
     "language": "en",
 }
 
+user_lang_cy = {
+    "account_id": "userw",
+    "language": "cy",
+}
+
 
 @pytest.mark.fund_round_config(
     {
         "funds": [
-            {"rounds": [{"applications": [{**user_lang}]}]},
+            {"rounds": [{"applications": [{**user_lang_cy}]}]},
             {
                 "rounds": [
                     {"applications": [{**user_lang}]},
-                    {"applications": [{**user_lang}, {**user_lang}]},
+                    {"applications": [{**user_lang_cy}, {**user_lang}]},
                 ]
             },
         ]
@@ -94,23 +99,38 @@ def test_get_application_statuses_query_param(
     assert expected_in_progress == int(lines[1].decode("utf-8").split(",")[1])
 
 
+@pytest.mark.parametrize(
+    "language,expected_org_name,expected_address,ref_number",
+    [
+        ("en", "Test Org Name 1", "W1A 1AA", "Test Reference Number"),
+        ("cy", "Test Org Name 2cy", "CF10 3NQ", "Test Reference Number Welsh"),
+    ],
+)
 @pytest.mark.parametrize("include_application_id", (True, False))
 @pytest.mark.fund_round_config(
     {
         "funds": [
-            {"rounds": [{"applications": [{**user_lang}]}]},
+            {"rounds": [{"applications": [{**user_lang}, {**user_lang_cy}]}]},
         ]
     }
 )
 def test_get_applications_report(
     client,
     include_application_id,
+    language,
+    expected_org_name,
+    expected_address,
+    ref_number,
     seed_data_multiple_funds_rounds,
 ):
-
+    application_id = (
+        seed_data_multiple_funds_rounds[0].round_ids[0].application_ids[0]
+        if language == "en"
+        else seed_data_multiple_funds_rounds[0].round_ids[0].application_ids[1]
+    )
     application = get_row_by_pk(
         Applications,
-        seed_data_multiple_funds_rounds[0].round_ids[0].application_ids[0],
+        application_id,
     )
     application.status = Status.SUBMITTED
     url = "/applications/reporting/key_application_metrics" + (
@@ -134,15 +154,15 @@ def test_get_applications_report(
         + "geography,capital,revenue"
     ) == lines[0].decode("utf-8")
     fields = lines[1].decode("utf-8").split(",")
-    assert "Test Org Name 1" == fields[1]
-    assert "Test Reference Number" == fields[0]
-    assert "W1A 1AA" == fields[4]
+    assert expected_org_name == fields[1]
+    assert ref_number == fields[0]
+    assert expected_address == fields[4]
 
 
 @pytest.mark.fund_round_config(
     {
         "funds": [
-            {"rounds": [{"applications": [{**user_lang}, {**user_lang}]}]},
+            {"rounds": [{"applications": [{**user_lang}, {**user_lang_cy}]}]},
         ]
     }
 )
@@ -167,10 +187,13 @@ def test_get_applications_report_query_param(
         == "eoi_reference,organisation_name,organisation_type,asset_type,"
         "geography,capital,revenue"
     )
-    for line in line2, line3:
-        field1, field2, _, _, field5, _, _ = line.split(",")
-        # could also do this to ignore all fields after 5.
-        # field1, field2, _, _, field5, *_ = line.split(",")
-        assert field1 == "Test Reference Number"
-        assert field2.startswith("Test Org Name ")
-        assert field5 == "W1A 1AA"
+
+    field1, field2, _, _, field5, _, _ = line2.split(",")
+    assert field1 == "Test Reference Number"
+    assert field2.startswith("Test Org Name ")
+    assert field5 == "W1A 1AA"
+
+    field1, field2, _, _, field5, _, _ = line3.split(",")
+    assert field1 == "Test Reference Number Welsh"
+    assert field2.startswith("Test Org Name 2cy")
+    assert field5 == "CF10 3NQ"

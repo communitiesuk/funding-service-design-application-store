@@ -12,6 +12,7 @@ from flask import Response
 from tests.helpers import local_api_call
 from tests.helpers import test_application_data
 from tests.helpers import test_question_data
+from tests.helpers import test_question_data_cy
 
 # Make the utils fixtures available, used in seed_application_records
 pytest_plugins = ["fsd_test_utils.fixtures.db_fixtures"]
@@ -114,12 +115,21 @@ def add_org_data_for_reports(application, unique_append, client):
     testing the reports. Each org name is unique
     in the format 'Test Org Name {unique_append}'
     """
-    sections_put_en = [
+    if application.language and application.language.name == "cy":
+        form_names = ["gwybodaeth-am-y-sefydliad", "gwybodaeth-am-y-prosiect"]
+        address = "WelshGov, CF10 3NQ"
+        unique_append = str(unique_append) + "cy"
+        question_data = test_question_data_cy
+    else:
+        address = "BBC, W1A 1AA"
+        form_names = ["organisation-information", "project-information"]
+        question_data = test_question_data
+    sections_put = [
         {
-            "questions": test_question_data,
+            "questions": question_data,
             "metadata": {
                 "application_id": application.id,
-                "form_name": "organisation-information",
+                "form_name": form_names[0],
                 "is_summary_page_submit": False,
             },
         },
@@ -132,24 +142,24 @@ def add_org_data_for_reports(application, unique_append, client):
                             "key": "yEmHpp",
                             "title": "Address",
                             "type": "text",
-                            "answer": "BBC, W1A 1AA",
+                            "answer": address,
                         },
                     ],
                 },
             ],
             "metadata": {
                 "application_id": application.id,
-                "form_name": "project-information",
+                "form_name": form_names[1],
                 "is_summary_page_submit": False,
             },
         },
     ]
     # Make the org names unique
-    sections_put_en[0]["questions"][1]["fields"][0][
+    sections_put[0]["questions"][1]["fields"][0][
         "answer"
     ] = f"Test Org Name {unique_append}"
 
-    for section in sections_put_en:
+    for section in sections_put:
         client.put(
             "/applications/forms",
             json=section,

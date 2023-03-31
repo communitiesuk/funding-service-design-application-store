@@ -35,36 +35,43 @@ def get_general_status_applications_report(
 KEY_REPORT_MAPPING = [
     {
         "form_name": "organisation-information",
+        "form_name_cy": "gwybodaeth-am-y-sefydliad",
         "key": "WWWWxy",
         "return_field": "eoi_reference",
     },
     {
         "form_name": "organisation-information",
+        "form_name_cy": "gwybodaeth-am-y-sefydliad",
         "key": "YdtlQZ",
         "return_field": "organisation_name",
     },
     {
         "form_name": "organisation-information",
+        "form_name_cy": "gwybodaeth-am-y-sefydliad",
         "key": "lajFtB",
         "return_field": "organisation_type",
     },
     {
         "form_name": "asset-information",
+        "form_name_cy": "gwybodaeth-am-yr-ased",
         "key": "yaQoxU",
         "return_field": "asset_type",
     },
     {
         "form_name": "project-information",
+        "form_name_cy": "gwybodaeth-am-y-prosiect",
         "key": "yEmHpp",
         "return_field": "geography",
     },
     {
         "form_name": "funding-required",
+        "form_name_cy": "cyllid-sydd-ei-angen",
         "key": "JzWvhj",
         "return_field": "capital",
     },
     {
         "form_name": "funding-required",
+        "form_name_cy": "cyllid-sydd-ei-angen",
         "key": "jLIgoi",
         "return_field": "revenue",
     },
@@ -102,19 +109,30 @@ def get_report_for_applications(
     return_json_list = []
     for application in applications:
         return_json = {field: None for field in get_key_report_field_headers()}
-        for form in application["forms"]:
-            if form.get("name") in [
-                form.get("form_name") for form in KEY_REPORT_MAPPING
-            ]:
-                for question in form["questions"]:
+
+        report_config_forms = [
+            report_config.get("form_name_cy")
+            if application["language"] == "cy"
+            else report_config.get("form_name")
+            for report_config in KEY_REPORT_MAPPING
+        ]
+
+        report_config_keys = [
+            report_config.get("key") for report_config in KEY_REPORT_MAPPING
+        ]
+
+        for application_form in application["forms"]:
+            # does form exist in form reporting config
+            if application_form.get("name") in report_config_forms:
+                for question in application_form["questions"]:
+                    # does forms field_id exist in
+                    # form reporting config
                     for field in question["fields"]:
-                        if field.get("key") in [
-                            form.get("key") for form in KEY_REPORT_MAPPING
-                        ]:
+                        if field.get("key") in report_config_keys:
                             return_field = [
-                                form.get("return_field")
-                                for form in KEY_REPORT_MAPPING
-                                if form.get("key") == field.get("key")
+                                report_config.get("return_field")
+                                for report_config in KEY_REPORT_MAPPING
+                                if report_config.get("key") == field.get("key")
                             ][0]
                             if field.get("key") == "yEmHpp" and field.get(
                                 "answer"

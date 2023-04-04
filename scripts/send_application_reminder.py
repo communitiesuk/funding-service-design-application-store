@@ -14,7 +14,6 @@ from db.queries import search_applications  # noqa: E402
 
 
 def application_deadline_reminder(fund_id: str, round_id: str):
-
     fund_round = external_services.get_data(
         Config.FUND_STORE_API_HOST
         + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
@@ -32,7 +31,6 @@ def application_deadline_reminder(fund_id: str, round_id: str):
 
     all_applications = []
     for application in not_submitted_applications:
-
         application["round_name"] = fund_round.get("title")
         account = external_services.get_account(
             account_id=application.get("account_id")
@@ -50,7 +48,6 @@ def application_deadline_reminder(fund_id: str, round_id: str):
         for count, application in enumerate(
             unique_application_email_addresses
         ):
-
             email = {
                 "email": applicant.get("account_email")
                 for applicant in application.values()

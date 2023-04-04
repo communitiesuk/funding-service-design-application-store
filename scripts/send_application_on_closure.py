@@ -19,7 +19,6 @@ from flask import current_app  # noqa: E402
 def send_incomplete_applications_after_deadline(
     fund_id, round_id, send_emails=False
 ):
-
     """
     Gets a list of unsubmitted applications, then retrieves form and user
     data for each. Once all data is retrieved, uses the notification service

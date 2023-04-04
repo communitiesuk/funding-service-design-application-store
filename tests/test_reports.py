@@ -73,7 +73,6 @@ def test_get_application_statuses_query_param(
     client,
     seed_data_multiple_funds_rounds,
 ):
-
     fund_id = (
         seed_data_multiple_funds_rounds[fund_idx].fund_id
         if fund_idx is not None
@@ -169,7 +168,6 @@ def test_get_applications_report(
 def test_get_applications_report_query_param(
     client, seed_data_multiple_funds_rounds
 ):
-
     response = client.get(
         "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
         + f"fund_id={seed_data_multiple_funds_rounds[0].fund_id}&round_id="

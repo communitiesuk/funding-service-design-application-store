@@ -20,7 +20,6 @@ class TestSendAppOnClosure:
     def test_send_apps_bad_account_id(
         self, mocker, client, seed_application_records, unique_fund_round
     ):
-
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
@@ -81,7 +80,6 @@ class TestSendAppOnClosure:
     def test_send_apps_one_to_send_not_started(
         self, mocker, client, seed_application_records, unique_fund_round
     ):
-
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
@@ -100,7 +98,6 @@ class TestSendAppOnClosure:
     def test_send_apps_one_to_send_in_progress(
         self, mocker, client, seed_application_records, _db, unique_fund_round
     ):
-
         seed_application_records[0].status = "IN_PROGRESS"
         _db.session.add(seed_application_records[0])
         _db.session.commit()
@@ -125,7 +122,6 @@ class TestSendAppOnClosure:
     def test_send_apps_two_to_send(
         self, mocker, client, seed_application_records, unique_fund_round
     ):
-
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
@@ -154,7 +150,6 @@ class TestSendAppOnClosure:
     def test_send_apps_one_to_send_one_bad_id(
         self, mocker, client, seed_application_records, unique_fund_round
     ):
-
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={

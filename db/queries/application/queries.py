@@ -25,7 +25,6 @@ from sqlalchemy.sql.expression import Select
 def get_application(
     app_id, include_forms=False, as_json=False
 ) -> Dict | Applications:
-
     stmt: Select = select(Applications).filter(Applications.id == app_id)
 
     if include_forms:
@@ -47,7 +46,6 @@ def get_application(
 def get_applications(
     filters=[], include_forms=False, as_json=False
 ) -> List[Dict] | List[Applications]:
-
     stmt: Select = select(Applications)
 
     if len(filters) > 0:

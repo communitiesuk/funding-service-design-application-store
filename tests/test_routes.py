@@ -488,7 +488,6 @@ def test_complete_form(client, seed_application_records):
 def test_put_returns_400_on_submitted_application(
     client, _db, seed_application_records
 ):
-
     """
     GIVEN We have a functioning Application Store API
     WHEN A there is an application with a status of SUBMITTED
@@ -520,7 +519,6 @@ def test_put_returns_400_on_submitted_application(
 def test_successful_submitted_application(
     client, mock_successful_submit_notification, _db, seed_application_records
 ):
-
     """
     GIVEN We have a functioning Application Store API
     WHEN an application is submitted

@@ -101,3 +101,29 @@ of any pep8 errors during commits.
 
 In deploy.yml, there are three environment variables called users, spawn-rate and run-time. These are used
 to override the locust config if the performance tests need to run with different configs for application store.
+
+# Scripts
+## send_applications_on_closure
+Sends the contents of all unsubmitted applications in a particular round to the applicant for their records.
+
+### Execution
+
+#### PaaS
+
+Execute the script as a task (example is for COF R2W3)
+`cf run-task funding-service-design-application-store-dev --command "./scripts/send_application_on_closure.py --fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id=5cf439bf-ef6f-431e-92c5-a1d90a4dd32f --send_emails=True" --name unsubmitted_emails`
+
+View logs
+`cf logs funding-service-design-application-store-dev --recent | grep unsubmitted_emails`
+
+#### Local
+Run the full service via the docker runner, then find the container ID of the application-store:
+`docker ps`
+Then copy that container id and execute as below:
+`funding-service-design-application-store % docker exec -it <app-store container id> scripts/send_application_on_closure.py --fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id=5cf439bf-ef6f-431e-92c5-a1d90a4dd32f --send_emails=True`
+
+### Useful Queries
+Show count of applications by status for each round
+`select fund_id, round_id, status, count(status) from applications group by fund_id, status, round_id;`
+Total to be sent, by fund/round
+`select fund_id, round_id, count(id) from applications where status not in ('SUBMITTED') group by fund_id, round_id;`

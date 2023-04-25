@@ -18,5 +18,5 @@ Flask-SQLAlchemy>=3.0.3
 Flask-Migrate
 sqlalchemy-utils
 sqlalchemy_json
-psycopg2-binary
+psycopg2-binary==2.9.6
 marshmallow-sqlalchemy

@@ -1,11 +1,12 @@
 -r requirements.txt
 bandit
 black
+debugpy
 deepdiff
 pre-commit
 pytest
 pytest-env
 pytest-flask
-pip-tools
+pip-tools>=6.13.0
 asserts
 pytest-mock

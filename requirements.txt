@@ -4,12 +4,10 @@
 #
 #    pip-compile requirements.in
 #
-alembic==1.8.1
+alembic==1.10.4
     # via flask-migrate
 aniso8601==9.0.1
     # via flask-restx
-async-timeout==4.0.2
-    # via redis
 attrs==22.1.0
     # via
     #   jsonschema
@@ -62,7 +60,7 @@ flask==2.2.2
     #   sentry-sdk
 flask-babel==2.0.0
     # via funding-service-design-utils
-flask-migrate==4.0.0
+flask-migrate==4.0.4
     # via
     #   -r requirements.in
     #   funding-service-design-utils
@@ -79,6 +77,8 @@ flipper-client==1.3.1
     # via funding-service-design-utils
 funding-service-design-utils==1.0.27
     # via -r requirements.in
+greenlet==2.0.2
+    # via sqlalchemy
 gunicorn==20.1.0
     # via funding-service-design-utils
 idna==3.4
@@ -190,8 +190,6 @@ rich==12.6.0
     # via funding-service-design-utils
 ruamel-yaml==0.17.21
     # via prance
-ruamel-yaml-clib==0.2.7
-    # via ruamel-yaml
 s3transfer==0.6.0
     # via boto3
 semver==2.13.0
@@ -226,7 +224,9 @@ swagger-ui-bundle==0.0.9
 thrift==0.16.0
     # via flipper-client
 typing-extensions==4.4.0
-    # via jsonschema-spec
+    # via
+    #   alembic
+    #   jsonschema-spec
 urllib3==1.26.12
     # via
     #   botocore

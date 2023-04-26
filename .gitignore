@@ -131,9 +131,6 @@ dmypy.json
 # IntelliJ
 .idea
 
-# VS Code
-.vscode/
-
 # Mac files
 .bash_profile
 .DS_Store

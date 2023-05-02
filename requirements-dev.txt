@@ -14,10 +14,6 @@ aniso8601==9.0.1
     #   flask-restx
 asserts==0.12.0
     # via -r requirements-dev.in
-async-timeout==4.0.2
-    # via
-    #   -r requirements.txt
-    #   redis
 attrs==22.1.0
     # via
     #   -r requirements.txt
@@ -32,9 +28,10 @@ bandit==1.7.4
     # via -r requirements-dev.in
 black==22.10.0
     # via -r requirements-dev.in
-blinker==1.5
+blinker==1.6.2
     # via
     #   -r requirements.txt
+    #   flask
     #   sentry-sdk
 boto3==1.26.95
     # via
@@ -99,11 +96,9 @@ deepdiff==6.2.1
     # via -r requirements-dev.in
 distlib==0.3.6
     # via virtualenv
-exceptiongroup==1.1.0
-    # via pytest
 filelock==3.8.0
     # via virtualenv
-flask==2.2.2
+flask==2.3.2
     # via
     #   -r requirements.txt
     #   connexion
@@ -144,6 +139,10 @@ gitdb==4.0.9
     # via gitpython
 gitpython==3.1.30
     # via bandit
+greenlet==2.0.2
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt
@@ -348,10 +347,6 @@ ruamel-yaml==0.17.21
     # via
     #   -r requirements.txt
     #   prance
-ruamel-yaml-clib==0.2.7
-    # via
-    #   -r requirements.txt
-    #   ruamel-yaml
 s3transfer==0.6.0
     # via
     #   -r requirements.txt
@@ -400,12 +395,6 @@ thrift==0.16.0
     #   flipper-client
 toml==0.10.2
     # via pre-commit
-tomli==2.0.1
-    # via
-    #   black
-    #   build
-    #   pep517
-    #   pytest
 typing-extensions==4.4.0
     # via
     #   -r requirements.txt
@@ -418,7 +407,7 @@ urllib3==1.26.12
     #   sentry-sdk
 virtualenv==20.16.7
     # via pre-commit
-werkzeug==2.2.3
+werkzeug==2.3.3
     # via
     #   -r requirements.txt
     #   connexion

@@ -29,6 +29,11 @@ class ApplicationSchema(SQLAlchemyAutoSchema):
         return data
 
     def get_round_name(self, obj):
+        # TODO: is this actually being used at all?
+        # If we're not using this, it would be good to remove it or exclude it.
+        # i.e exclude = ["round_name"], as we don't want it to run during each
+        # serialization - it makes a GET request per application.  The request
+        # is LRU cached for now, incase this is actually used.
         return get_round_name(obj.fund_id, obj.round_id)
 
     language = Enum(Language, default=Language.en)

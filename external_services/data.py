@@ -1,3 +1,4 @@
+import functools
 import json
 import os
 from typing import List
@@ -162,6 +163,7 @@ def get_account(
         return Account.from_json(response)
 
 
+@functools.lru_cache(maxsize=1)
 def get_round_name(fund_id, round_id):
     response = get_data(
         Config.FUND_STORE_API_HOST

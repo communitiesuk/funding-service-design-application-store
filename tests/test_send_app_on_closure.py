@@ -56,9 +56,7 @@ class TestSendAppOnClosure:
             return_value={"deadline": "2022-01-01 12:00:00"},
         )
 
-        result = send_incomplete_applications_after_deadline(
-            fund_id, round_id, True
-        )
+        result = send_incomplete_applications_after_deadline(fund_id, round_id, True)
         assert 0 == result, "Unexpected result number"
 
     @pytest.mark.apps_to_insert([test_application_data[0]])
@@ -118,9 +116,7 @@ class TestSendAppOnClosure:
         )
         assert 1 == result, "Unexpected result number"
 
-    @pytest.mark.apps_to_insert(
-        [test_application_data[0], test_application_data[0]]
-    )
+    @pytest.mark.apps_to_insert([test_application_data[0], test_application_data[0]])
     @pytest.mark.unique_fund_round(True)
     def test_send_apps_two_to_send(
         self, mocker, client, seed_application_records, unique_fund_round

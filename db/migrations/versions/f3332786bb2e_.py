@@ -21,9 +21,7 @@ def upgrade():
     language_enum = postgresql.ENUM("en", "cy", name="language")
     language_enum.create(op.get_bind(), checkfirst=True)
     with op.batch_alter_table("applications", schema=None) as batch_op:
-        batch_op.add_column(
-            sa.Column("language", language_enum, nullable=True)
-        )
+        batch_op.add_column(sa.Column("language", language_enum, nullable=True))
 
     # ### end Alembic commands ###
 

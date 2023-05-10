@@ -184,11 +184,7 @@ def seed_data_multiple_funds_rounds(
     """
     marker = request.node.get_closest_marker("fund_round_config")
     if marker is None:
-        config = {
-            "funds": [
-                {"rounds": [{"applications": [test_application_data[0]]}]}
-            ]
-        }
+        config = {"funds": [{"rounds": [{"applications": [test_application_data[0]]}]}]}
     else:
         config = marker.args[0]
 
@@ -224,9 +220,7 @@ def mock_post_data(endpoint, params=None):
     return local_api_call(endpoint, params, "post")
 
 
-def mock_get_random_choices(
-    population, weights=None, *, cum_weights=None, k=1
-):
+def mock_get_random_choices(population, weights=None, *, cum_weights=None, k=1):
     return "ABCDEF"
 
 
@@ -241,9 +235,7 @@ def mock_get_fund(mocker):
     Used with unique_fund_round to ensure when the fund and
     round are retrieved, they match what's expected
     """
-    mocker.patch(
-        "db.queries.application.queries.get_fund", new=generate_mock_fund
-    )
+    mocker.patch("db.queries.application.queries.get_fund", new=generate_mock_fund)
 
 
 def generate_mock_round(fund_id: str, round_id: str) -> Round:
@@ -266,9 +258,7 @@ def mock_get_round(mocker):
     Used with unique_fund_round to ensure when the fund and
     round are retrieved, they match what's expected
     """
-    mocker.patch(
-        "db.queries.application.queries.get_round", new=generate_mock_round
-    )
+    mocker.patch("db.queries.application.queries.get_round", new=generate_mock_round)
     mocker.patch(
         "db.schemas.application.get_round_name",
         return_value="Generated test round",

@@ -24,7 +24,5 @@ class Round:
             opens=data["opens"],
             deadline=data["deadline"],
             assessment_deadline=data["assessment_deadline"],
-            assessment_criteria_weighting=data[
-                "assessment_criteria_weighting"
-            ],
+            assessment_criteria_weighting=data["assessment_criteria_weighting"],
         )

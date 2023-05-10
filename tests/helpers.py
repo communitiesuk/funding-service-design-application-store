@@ -130,9 +130,7 @@ def put_data(test_client, endpoint: str, data: dict):
     )
 
 
-def count_fund_applications(
-    test_client, fund_id: str, expected_application_count
-):
+def count_fund_applications(test_client, fund_id: str, expected_application_count):
     """
     Given a fund_id, check the number of applications for it
 
@@ -144,9 +142,7 @@ def count_fund_applications(
 
     """
     fund_applications_endpoint = f"/applications?fund_id={fund_id}"
-    response = test_client.get(
-        fund_applications_endpoint, follow_redirects=True
-    )
+    response = test_client.get(fund_applications_endpoint, follow_redirects=True)
     response_data = json.loads(response.data)
     error_message = (
         "Response from "
@@ -329,15 +325,11 @@ def key_list_to_regex(
         "date_submitted",
     ]
 ):
-    exclude_regex_path_strings = [
-        rf"root\[\d+\]\['{key}'\]" for key in exclude_keys
-    ]
+    exclude_regex_path_strings = [rf"root\[\d+\]\['{key}'\]" for key in exclude_keys]
 
     exclude_regex_path_strings_nested = [
         rf"root\[\d+\]\['{key}'\]\[\d+\]" for key in exclude_keys
     ]
 
-    regex_paths = (
-        exclude_regex_path_strings + exclude_regex_path_strings_nested
-    )
+    regex_paths = exclude_regex_path_strings + exclude_regex_path_strings_nested
     return [re.compile(regex_string) for regex_string in regex_paths]

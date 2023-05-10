@@ -54,9 +54,7 @@ def test_create_application_is_successful(client, clear_test_data):
     count_fund_applications(client, "fund-b", expected_length_fund_b)
 
 
-def test_create_application_creates_formatted_reference(
-    client, clear_test_data
-):
+def test_create_application_creates_formatted_reference(client, clear_test_data):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -111,8 +109,7 @@ def test_create_application_creates_unique_reference(
             follow_redirects=True,
         )
     assert str(ex_info.value).startswith(
-        "Max (10) tries exceeded for create application with application key"
-        " ABCDEF"
+        "Max (10) tries exceeded for create application with application key ABCDEF"
     )
 
 

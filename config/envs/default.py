@@ -56,6 +56,9 @@ class DefaultConfig:
     FUND_ENDPOINT = "/funds/{fund_id}"
     FUND_ROUNDS_ENDPOINT = "/funds/{fund_id}/rounds"
     FUND_ROUND_ENDPOINT = "/funds/{fund_id}/rounds/{round_id}"
+    FUND_ROUND_APPLICATION_SECTIONS_ENDPOINT = (
+        "/funds/{fund_id}/rounds/{round_id}/sections/application"
+    )
 
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False

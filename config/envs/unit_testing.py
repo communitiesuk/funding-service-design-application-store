@@ -35,16 +35,3 @@ class UnitTestingConfig(DefaultConfig):
     }
 
     USE_LOCAL_DATA = True
-
-    COF_FUND_ID = CommonConfig.COF_FUND_ID
-    COF_ROUND_2_ID = CommonConfig.COF_ROUND_2_ID
-
-    # ---------------
-    #  Form Config
-    # ---------------
-
-    FORMS_CONFIG_FOR_FUND_ROUND = {
-        f"{COF_FUND_ID}:{COF_ROUND_2_ID}": CommonConfig.COF_R2_ORDERED_FORMS_CONFIG,  # noqa
-        "fund-b:summer": CommonConfig.COF_R2_ORDERED_FORMS_CONFIG,
-        "funding-service-design:spring": CommonConfig.COF_R2_ORDERED_FORMS_CONFIG,  # noqa
-    }

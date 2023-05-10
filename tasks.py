@@ -48,8 +48,4 @@ def bootstrap_test_db(c, database_host="localhost"):
         )
     )
     c.run(f"createdb -h {database_host} fsd_app_store_test")
-    print(
-        stylize(
-            f"fsd_app_store_test db created on {database_host}...", ECHO_STYLE
-        )
-    )
+    print(stylize(f"fsd_app_store_test db created on {database_host}...", ECHO_STYLE))

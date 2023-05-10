@@ -29,8 +29,7 @@ def get_data(endpoint: str, params: Optional[dict] = None):
 
     if Config.USE_LOCAL_DATA:
         current_app.logger.info(
-            f"Fetching local data from '{endpoint}'"
-            + f" with params {params}."
+            f"Fetching local data from '{endpoint}'" + f" with params {params}."
         )
         data = get_local_data(endpoint, params)
     else:
@@ -39,9 +38,7 @@ def get_data(endpoint: str, params: Optional[dict] = None):
         )
         data = get_remote_data(endpoint, params)
     if data is None:
-        current_app.logger.error(
-            f"Data request failed, unable to recover: {endpoint}"
-        )
+        current_app.logger.error(f"Data request failed, unable to recover: {endpoint}")
         return abort(500)
     return data
 
@@ -97,9 +94,7 @@ def get_funds() -> List[Fund] | None:
 
 
 def get_fund(fund_id: str) -> Fund | None:
-    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(
-        fund_id=fund_id
-    )
+    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(fund_id=fund_id)
     current_app.logger.info(f"Request made to {endpoint}")
     response = get_data(endpoint)
     if response is None:
@@ -124,9 +119,8 @@ def get_round(fund_id: str, round_id: str) -> Round | None:
     """
     Gets round from round store api using round_id if given.
     """
-    round_endpoint = (
-        Config.FUND_STORE_API_HOST
-        + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
+    round_endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ROUND_ENDPOINT.format(
+        fund_id=fund_id, round_id=round_id
     )
     round_response = get_data(round_endpoint)
     if round_response and "id" in round_response:

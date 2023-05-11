@@ -26,3 +26,5 @@ class UnitTestingConfig(DefaultConfig):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     USE_LOCAL_DATA = True
+    COF_FUND_ID = CommonConfig.COF_FUND_ID
+    COF_ROUND_2_ID = CommonConfig.COF_ROUND_2_ID

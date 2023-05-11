@@ -9,6 +9,7 @@ from db.queries.form import add_new_forms
 from external_services.models.fund import Fund
 from external_services.models.fund import Round
 from flask import Response
+from tests.helpers import APPLICATION_DISPLAY_CONFIG
 from tests.helpers import local_api_call
 from tests.helpers import test_application_data
 from tests.helpers import test_question_data
@@ -246,6 +247,14 @@ def mock_get_fund(mocker):
     )
 
 
+@pytest.fixture(scope="function")
+def mock_get_application_display_config(mocker):
+    mocker.patch(
+        "_helpers.form.get_application_sections",
+        return_value=APPLICATION_DISPLAY_CONFIG,
+    )
+
+
 def generate_mock_round(fund_id: str, round_id: str) -> Round:
     return Round(
         title="Generated test round",
@@ -306,67 +315,4 @@ def mock_post_data_fix(mocker):
     mocker.patch(
         "external_services.post_data",
         new=mock_post_data,
-    )
-
-
-@pytest.fixture(scope="function")
-def mock_get_sections_from_fund_store(mocker):
-
-    sections_response = [
-        {
-            "children": [
-                {
-                    "children": [],
-                    "fields": [],
-                    "form_name": "value-to-the-community",
-                    "id": 56,
-                    "path": "1.1.6.1",
-                    "title": "Value To The Community",
-                }
-            ],
-            "fields": [],
-            "form_name": None,
-            "id": 55,
-            "path": "1.1.6",
-            "title": "Added value to community",
-        },
-        {
-            "children": [
-                {
-                    "children": [],
-                    "fields": [],
-                    "form_name": "project-qualification",
-                    "id": 58,
-                    "path": "1.1.7.1",
-                    "title": "Project Qualification",
-                }
-            ],
-            "fields": [],
-            "form_name": None,
-            "id": 57,
-            "path": "1.1.7",
-            "title": "Subsidy control / state aid",
-        },
-        {
-            "children": [
-                {
-                    "children": [],
-                    "fields": [],
-                    "form_name": "declarations",
-                    "id": 60,
-                    "path": "1.1.8.1",
-                    "title": "Declarations",
-                }
-            ],
-            "fields": [],
-            "form_name": None,
-            "id": 59,
-            "path": "1.1.8",
-            "title": "Check declarations",
-        },
-    ]
-
-    mocker.patch(
-        "_helpers.form.get_application_sections",
-        return_value=sections_response,
     )

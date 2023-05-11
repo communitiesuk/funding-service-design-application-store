@@ -16,7 +16,7 @@ from tests.helpers import test_question_data
 
 @pytest.mark.unique_fund_round(True)
 def test_create_application_is_successful(
-    client, unique_fund_round, mock_get_sections_from_fund_store
+    client, unique_fund_round, mock_get_application_display_config
 ):
 
     """
@@ -39,7 +39,7 @@ def test_create_application_is_successful(
 
 
 def test_create_application_creates_formatted_reference(
-    client, clear_test_data, mock_get_sections_from_fund_store
+    client, clear_test_data, mock_get_application_display_config
 ):
     """
     GIVEN We have a functioning Application Store API
@@ -59,7 +59,7 @@ def test_create_application_creates_formatted_reference(
         follow_redirects=True,
     )
     application = response.json
-    assert application["reference"].startswith("TEST-TEST-")
+    assert application["reference"].startswith("TEST-TEST")
     assert application["reference"][-6:].isupper()
     assert application["reference"][-6:].isalpha()
 
@@ -68,7 +68,7 @@ def test_create_application_creates_unique_reference(
     client,
     mock_random_choices,
     clear_test_data,
-    mock_get_sections_from_fund_store,
+    mock_get_application_display_config,
 ):
     """
     GIVEN We have a functioning Application Store API

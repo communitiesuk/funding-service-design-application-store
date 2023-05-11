@@ -14,7 +14,9 @@ from tests.helpers import test_application_data
 from tests.helpers import test_question_data
 
 
-def test_create_application_is_successful(client, clear_test_data, mock_get_application_display_config):
+def test_create_application_is_successful(
+    client, clear_test_data, mock_get_application_display_config
+):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -81,7 +83,10 @@ def test_create_application_creates_formatted_reference(
 
 
 def test_create_application_creates_unique_reference(
-    client, mock_random_choices, clear_test_data, mock_get_application_display_config
+    client,
+    mock_random_choices,
+    clear_test_data,
+    mock_get_application_display_config,
 ):
     """
     GIVEN We have a functioning Application Store API

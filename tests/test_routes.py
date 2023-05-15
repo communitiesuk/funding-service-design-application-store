@@ -98,8 +98,7 @@ def test_create_application_creates_unique_reference(
             follow_redirects=True,
         )
     assert str(ex_info.value).startswith(
-        "Max (10) tries exceeded for create application with application key"
-        " ABCDEF"
+        "Max (10) tries exceeded for create application with application key ABCDEF"
     )
 
 

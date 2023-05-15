@@ -16,9 +16,7 @@ from external_services.models.notification import Notification  # noqa: E402
 from flask import current_app  # noqa: E402
 
 
-def send_incomplete_applications_after_deadline(
-    fund_id, round_id, send_emails=False
-):
+def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=False):
 
     """
     Gets a list of unsubmitted applications, then retrieves form and user
@@ -53,9 +51,7 @@ def send_incomplete_applications_after_deadline(
         applications_to_send = []
         for application in matching_applications:
             try:
-                application["forms"] = get_forms_by_app_id(
-                    application.get("id")
-                )
+                application["forms"] = get_forms_by_app_id(application.get("id"))
                 application["round_name"] = fund_rounds.get("title")
                 try:
                     account_id = external_services.get_account(
@@ -107,9 +103,7 @@ def send_incomplete_applications_after_deadline(
                 current_app.logger.info(f"Sent {count} emails")
                 return count
             else:
-                current_app.logger.info(
-                    "There are no applications to be sent."
-                )
+                current_app.logger.info("There are no applications to be sent.")
                 return 0
         else:
             current_app.logger.info(
@@ -137,12 +131,8 @@ def get_fund_round(fund_id, round_id):
 
 def init_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--fund_id", help="Provide fund id of a fund", required=True
-    )
-    parser.add_argument(
-        "--round_id", help="Provide round id of a fund", required=True
-    )
+    parser.add_argument("--fund_id", help="Provide fund id of a fund", required=True)
+    parser.add_argument("--round_id", help="Provide round id of a fund", required=True)
     parser.add_argument(
         "--send_emails",
         help="Whether to actually send emails: True or False",

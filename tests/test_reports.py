@@ -12,8 +12,7 @@ def test_get_application_statuses(client, seed_application_records, _db):
         follow_redirects=True,
     )
     assert (
-        response.data
-        == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n3,0,0,0\r\n"
+        response.data == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n3,0,0,0\r\n"
     )
 
     app = get_row_by_pk(Applications, seed_application_records[0].id)
@@ -26,8 +25,7 @@ def test_get_application_statuses(client, seed_application_records, _db):
         follow_redirects=True,
     )
     assert (
-        response.data
-        == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n2,1,0,0\r\n"
+        response.data == b"NOT_STARTED,IN_PROGRESS,SUBMITTED,COMPLETED\r\n2,1,0,0\r\n"
     )
 
 
@@ -166,9 +164,7 @@ def test_get_applications_report(
         ]
     }
 )
-def test_get_applications_report_query_param(
-    client, seed_data_multiple_funds_rounds
-):
+def test_get_applications_report_query_param(client, seed_data_multiple_funds_rounds):
 
     response = client.get(
         "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
@@ -179,9 +175,7 @@ def test_get_applications_report_query_param(
     raw_lines = response.data.splitlines()
     assert len(raw_lines) == 3
 
-    line1, line2, line3 = [
-        line.decode("utf-8") for line in response.data.splitlines()
-    ]
+    line1, line2, line3 = [line.decode("utf-8") for line in response.data.splitlines()]
     assert (
         line1
         == "eoi_reference,organisation_name,organisation_type,asset_type,"

@@ -32,9 +32,7 @@ def update_application_and_related_form(
     )
 
 
-def update_form(
-    application_id, form_name, question_json, is_summary_page_submit
-):
+def update_form(application_id, form_name, question_json, is_summary_page_submit):
     try:
         form_sql_row = get_form(application_id, form_name)
         # Running update form for the first time

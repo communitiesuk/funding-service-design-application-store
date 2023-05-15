@@ -134,9 +134,7 @@ def get_report_for_applications(
                                 for report_config in KEY_REPORT_MAPPING
                                 if report_config.get("key") == field.get("key")
                             ][0]
-                            if field.get("key") == "yEmHpp" and field.get(
-                                "answer"
-                            ):
+                            if field.get("key") == "yEmHpp" and field.get("answer"):
                                 postcode = re.search(
                                     "([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]?"
                                     " ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr]"

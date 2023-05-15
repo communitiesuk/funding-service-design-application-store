@@ -43,9 +43,7 @@ def update_form_statuses(
     ).forms
 
     current_form = [
-        stored_form
-        for stored_form in stored_forms
-        if stored_form.name == form_name
+        stored_form for stored_form in stored_forms if stored_form.name == form_name
     ][0]
     status_list = [question["status"] for question in current_form.json]
     if "COMPLETED" not in status_list:
@@ -74,9 +72,7 @@ def update_question_statuses(application_id: str, form_name: str):
     for stored_form in stored_forms:
         if stored_form.name == form_name:
             for question_page in stored_form.json:
-                question_page["status"] = question_page.get(
-                    "status", "NOT_STARTED"
-                )
+                question_page["status"] = question_page.get("status", "NOT_STARTED")
                 if question_page["status"] == "SUBMITTED":
                     break
 
@@ -96,16 +92,13 @@ def update_question_statuses(application_id: str, form_name: str):
                             return True
 
                 answer_found_list = [
-                    is_field_answered(field)
-                    for field in question_page["fields"]
+                    is_field_answered(field) for field in question_page["fields"]
                 ]
                 # If all answers are given
                 if all(answer_found_list):
                     question_page["status"] = "COMPLETED"
                 # If some answers are given
-                elif not all(
-                    [not found_answer for found_answer in answer_found_list]
-                ):
+                elif not all([not found_answer for found_answer in answer_found_list]):
                     question_page["status"] = "IN_PROGRESS"
                 # If no answers are given
                 else:
@@ -113,9 +106,7 @@ def update_question_statuses(application_id: str, form_name: str):
     db.session.commit()
 
 
-def update_statuses(
-    application_id, form_name, is_summary_page_submitted=False
-):
+def update_statuses(application_id, form_name, is_summary_page_submitted=False):
     update_question_statuses(application_id, form_name)
     update_form_statuses(application_id, form_name, is_summary_page_submitted)
     update_application_status(application_id)

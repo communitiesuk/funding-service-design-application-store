@@ -22,9 +22,7 @@ from sqlalchemy.orm import noload
 from sqlalchemy.sql.expression import Select
 
 
-def get_application(
-    app_id, include_forms=False, as_json=False
-) -> Dict | Applications:
+def get_application(app_id, include_forms=False, as_json=False) -> Dict | Applications:
 
     stmt: Select = select(Applications).filter(Applications.id == app_id)
 
@@ -103,9 +101,7 @@ def _create_application_try(
         )
 
 
-def create_application(
-    account_id, fund_id, round_id, language
-) -> Applications:
+def create_application(account_id, fund_id, round_id, language) -> Applications:
     fund = get_fund(fund_id)
     fund_round = get_round(fund_id, round_id)
     if fund and fund_round and fund.short_name and fund_round.short_name:
@@ -122,9 +118,7 @@ def create_application(
                 round_id=round_id,
                 key=key,
                 language=language,
-                reference="-".join(
-                    [fund.short_name, fund_round.short_name, key]
-                ),
+                reference="-".join([fund.short_name, fund_round.short_name, key]),
                 attempt=attempt,
             )
             attempt += 1
@@ -152,9 +146,7 @@ def get_all_applications() -> List:
 def get_count_by_status(
     round_id: Optional[str] = None, fund_id: Optional[str] = None
 ) -> Dict[str, int]:
-    query = db.session.query(
-        Applications.status, func.count(Applications.status)
-    )
+    query = db.session.query(Applications.status, func.count(Applications.status))
 
     if round_id is not None:
         query = query.filter_by(round_id=round_id)
@@ -162,9 +154,7 @@ def get_count_by_status(
         query = query.filter_by(fund_id=fund_id)
 
     status_query = query.group_by(Applications.status).all()
-    statuses_with_counts = {
-        status[0].name: status[1] for status in status_query
-    }
+    statuses_with_counts = {status[0].name: status[1] for status in status_query}
 
     return {**{s.name: 0 for s in ApplicationStatus}, **statuses_with_counts}
 
@@ -204,8 +194,7 @@ def search_applications(**params):
 
 def submit_application(application_id) -> Applications:
     current_app.logger.info(
-        "Processing database submission for application_id:"
-        f" '{application_id}."
+        f"Processing database submission for application_id: '{application_id}."
     )
     application = get_application(application_id)
     application.date_submitted = datetime.now(timezone.utc).isoformat()

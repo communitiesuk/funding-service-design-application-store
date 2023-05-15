@@ -72,9 +72,7 @@ class ApplicationsView(MethodView):
         try:
             return send_file(
                 export_json_to_csv(
-                    get_report_for_applications(
-                        application_ids=[application_id]
-                    )
+                    get_report_for_applications(application_ids=[application_id])
                 ),
                 "text/csv",
                 as_attachment=True,
@@ -170,7 +168,6 @@ class ApplicationsView(MethodView):
             return str(e), 500, {"x-error": "notification error"}
         except Exception as e:
             current_app.logger.exception(
-                "Error on sending SUBMIT notification for application"
-                f" {application_id}"
+                f"Error on sending SUBMIT notification for application {application_id}"
             )
             return str(e), 500, {"x-error": "Error"}

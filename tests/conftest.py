@@ -9,6 +9,7 @@ from db.queries.form import add_new_forms
 from external_services.models.fund import Fund
 from external_services.models.fund import Round
 from flask import Response
+from tests.helpers import APPLICATION_DISPLAY_CONFIG
 from tests.helpers import local_api_call
 from tests.helpers import test_application_data
 from tests.helpers import test_question_data
@@ -238,16 +239,25 @@ def mock_get_fund(mocker):
     mocker.patch("db.queries.application.queries.get_fund", new=generate_mock_fund)
 
 
+@pytest.fixture(scope="function")
+def mock_get_application_display_config(mocker):
+    mocker.patch(
+        "_helpers.form.get_application_sections",
+        return_value=APPLICATION_DISPLAY_CONFIG,
+    )
+
+
 def generate_mock_round(fund_id: str, round_id: str) -> Round:
     return Round(
-        "Generated test round",
-        round_id,
-        fund_id,
-        "TEST",
-        datetime.strptime("2023-01-01 12:00:00", "%Y-%m-%d %H:%M:%S"),
-        datetime.strptime("2023-01-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
-        datetime.strptime("2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
-        [],
+        title="Generated test round",
+        id=round_id,
+        fund_id=fund_id,
+        short_name="TEST",
+        opens=datetime.strptime("2023-01-01 12:00:00", "%Y-%m-%d %H:%M:%S"),
+        deadline=datetime.strptime("2023-01-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
+        assessment_deadline=datetime.strptime(
+            "2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"
+        ),
     )
 
 

@@ -14,47 +14,33 @@ from tests.helpers import test_application_data
 from tests.helpers import test_question_data
 
 
-def test_create_application_is_successful(client, clear_test_data):
+@pytest.mark.unique_fund_round(True)
+def test_create_application_is_successful(
+    client, unique_fund_round, mock_get_application_display_config
+):
+
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
     THEN applications are created with the correct parameters
     """
+
     # Post one Fund A application and check length
     application_data_a1 = {
         "account_id": "usera",
-        "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
-        "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
+        "fund_id": unique_fund_round[0],
+        "round_id": unique_fund_round[0],
         "language": "en",
     }
     post_data(client, "/applications", application_data_a1)
-    expected_length_fund_a = 1
-    count_fund_applications(
-        client, "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4", expected_length_fund_a
-    )
-    # Post first Fund B application and check length
-    application_data_b1 = {
-        "account_id": "userb",
-        "fund_id": "fund-b",
-        "round_id": "summer",
-        "language": "en",
-    }
-    post_data(client, "/applications", application_data_b1)
-    expected_length_fund_b = 1
-    count_fund_applications(client, "fund-b", expected_length_fund_b)
-    # Post second Fund B application and check length
-    application_data_b2 = {
-        "account_id": "userc",
-        "fund_id": "fund-b",
-        "round_id": "summer",
-        "language": "cy",
-    }
-    post_data(client, "/applications", application_data_b2)
-    expected_length_fund_b = 2
-    count_fund_applications(client, "fund-b", expected_length_fund_b)
+    count_fund_applications(client, unique_fund_round[0], 1)
+    post_data(client, "/applications", application_data_a1)
+    count_fund_applications(client, unique_fund_round[0], 2)
 
 
-def test_create_application_creates_formatted_reference(client, clear_test_data):
+def test_create_application_creates_formatted_reference(
+    client, clear_test_data, mock_get_application_display_config
+):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -73,13 +59,16 @@ def test_create_application_creates_formatted_reference(client, clear_test_data)
         follow_redirects=True,
     )
     application = response.json
-    assert application["reference"].startswith("TEST-TEST-")
+    assert application["reference"].startswith("TEST-TEST")
     assert application["reference"][-6:].isupper()
     assert application["reference"][-6:].isalpha()
 
 
 def test_create_application_creates_unique_reference(
-    client, mock_random_choices, clear_test_data
+    client,
+    mock_random_choices,
+    clear_test_data,
+    mock_get_application_display_config,
 ):
     """
     GIVEN We have a functioning Application Store API

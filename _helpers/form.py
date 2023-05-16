@@ -1,14 +1,20 @@
-from config import Config
-from external_services import get_fund
-from external_services import get_round
+from external_services import get_application_sections
 
 
-def get_forms_from_form_config(form_config, fund_id, round_id, language):
+def get_form_name(section):
+    forms = set()
+    if section["children"]:
+        for child in section["children"]:
+            forms.update(get_form_name(child))
+    if section["form_name"]:
+        forms.add(section["form_name"])
+    return forms
+
+
+def get_forms_from_sections(sections, language=None):
     mint_form_list = set()
-    forms_config = form_config.get(":".join([fund_id, round_id]))
-    for form_config in forms_config:
-        for form in form_config["ordered_form_names_within_section"]:
-            mint_form_list.add(form[language])
+    for section in sections:
+        mint_form_list.update(get_form_name(section))
     return mint_form_list
 
 
@@ -24,14 +30,12 @@ def get_blank_forms(fund_id: str, round_id: str, language: str):
     Returns:
         A list of json forms to populate the form
     """
-    fund = get_fund(fund_id)
-    fund_round = get_round(fund_id, round_id)
-    if fund and fund_round:
-        form_config = Config.FORMS_CONFIG_FOR_FUND_ROUND
-        forms = get_forms_from_form_config(form_config, fund_id, round_id, language)
+    application_sections = get_application_sections(fund_id, round_id)
+    if application_sections:
+        forms = get_forms_from_sections(application_sections)
         if not forms:
             raise Exception(f"Could not find forms for {fund_id} - {round_id}")
-        return forms.copy()
+        return forms
     raise Exception(
         f"Could not find fund round for {fund_id} - {round_id}  in fund store."
     )

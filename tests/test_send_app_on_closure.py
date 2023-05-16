@@ -1,5 +1,4 @@
 import pytest
-from config.envs.unit_testing import UnitTestingConfig
 from pytest import raises
 from scripts.send_application_on_closure import (
     send_incomplete_applications_after_deadline,
@@ -171,8 +170,8 @@ class TestSendAppOnClosure:
         assert 1 == result, "Unexpected result number"
 
     def test_send_apps_before_deadline(self, mocker, app):
-        fund_id = UnitTestingConfig.COF_FUND_ID
-        round_id = UnitTestingConfig.COF_ROUND_2_ID
+        fund_id = "abc123"
+        round_id = "987gfd"
 
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",

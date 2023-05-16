@@ -333,3 +333,59 @@ def key_list_to_regex(
 
     regex_paths = exclude_regex_path_strings + exclude_regex_path_strings_nested
     return [re.compile(regex_string) for regex_string in regex_paths]
+
+
+APPLICATION_DISPLAY_CONFIG = [
+    {
+        "children": [
+            {
+                "children": [],
+                "fields": [],
+                "form_name": "risk",
+                "id": 4,
+                "path": "1.1.1.1",
+                "title": "Risk",
+                "title_content_id": None,
+                "weighting": None,
+            },
+            {
+                "children": [],
+                "fields": [],
+                "form_name": "declarations",
+                "id": 5,
+                "path": "1.1.1.2",
+                "title": "Declarations",
+                "title_content_id": None,
+                "weighting": None,
+            },
+        ],
+        "fields": [],
+        "form_name": None,
+        "id": 3,
+        "path": "1.1.1",
+        "title": "Test Section 1",
+        "title_content_id": None,
+        "weighting": None,
+    },
+    {
+        "children": [
+            {
+                "children": [],
+                "fields": [],
+                "form_name": "community-use",
+                "id": 7,
+                "path": "1.1.2.1",
+                "title": "Community use",
+                "title_content_id": None,
+                "weighting": None,
+            }
+        ],
+        "fields": [],
+        "form_name": None,
+        "id": 6,
+        "path": "1.1.2",
+        "title": "Test section 2",
+        "title_content_id": None,
+        "weighting": None,
+    },
+]

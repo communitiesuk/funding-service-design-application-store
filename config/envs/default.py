@@ -48,12 +48,13 @@ class DefaultConfig:
     ACCOUNTS_ENDPOINT = "/accounts"
 
     # Fund Store Endpoints
-    FUNDS_ENDPOINT = "/funds"
-    FUND_ENDPOINT = "/funds/{fund_id}"
-    FUND_ROUNDS_ENDPOINT = "/funds/{fund_id}/rounds"
-    FUND_ROUND_ENDPOINT = "/funds/{fund_id}/rounds/{round_id}"
+    FUNDS_ENDPOINT = CommonConfig.FUNDS_ENDPOINT
+    FUND_ENDPOINT = CommonConfig.FUND_ENDPOINT
+    FUND_ROUNDS_ENDPOINT = CommonConfig.ROUNDS_ENDPOINT
+    FUND_ROUND_ENDPOINT = CommonConfig.ROUND_ENDPOINT
+    FUND_ROUND_APPLICATION_SECTIONS_ENDPOINT = (
+        "/funds/{fund_id}/rounds/{round_id}/sections/application"
+    )
 
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-    FORMS_CONFIG_FOR_FUND_ROUND = CommonConfig.FORMS_CONFIG_FOR_FUND_ROUND

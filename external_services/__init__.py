@@ -1,4 +1,5 @@
 from .data import get_account  # noqa
+from .data import get_application_sections  # noqa
 from .data import get_data  # noqa
 from .data import get_fund  # noqa
 from .data import get_funds  # noqa

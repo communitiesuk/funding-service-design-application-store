@@ -83,6 +83,14 @@ def get_local_data(endpoint: str, params: Optional[dict] = None):
     return None
 
 
+def get_application_sections(fund_id, round_id):
+    endpoint = (
+        Config.FUND_STORE_API_HOST + Config.FUND_ROUND_APPLICATION_SECTIONS_ENDPOINT
+    ).format(fund_id=fund_id, round_id=round_id)
+    response = get_remote_data(endpoint)
+    return response
+
+
 def get_funds() -> List[Fund] | None:
     endpoint = Config.FUND_STORE_API_HOST + Config.FUNDS_ENDPOINT
     response = get_data(endpoint)

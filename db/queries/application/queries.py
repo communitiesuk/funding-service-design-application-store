@@ -204,11 +204,13 @@ def submit_application(application_id) -> Applications:
 
 
 def update_project_name(form_name, question_json, application) -> None:
-    if form_name in ("project-information", "gwybodaeth-am-y-prosiect"):
+    if form_name.startswith("project-information") or form_name.startswith(
+        "gwybodaeth-am-y-prosiect"
+    ):
         for question in question_json:
             for field in question["fields"]:
                 # field id for project name in json
-                if field["key"] == "KAgrBz":
+                if field["title"] == "Project name":
                     try:
                         application.project_name = field["answer"]
                     except KeyError:

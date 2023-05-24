@@ -5,6 +5,7 @@ from db.exceptions import ApplicationError
 from db.models import Applications
 from db.queries.application import get_all_applications
 from db.schemas import ApplicationSchema
+from external_services.models.fund import Fund
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
 from tests.helpers import get_row_by_pk
@@ -32,10 +33,45 @@ def test_create_application_is_successful(
         "round_id": unique_fund_round[0],
         "language": "en",
     }
-    post_data(client, "/applications", application_data_a1)
+    application_data_a2 = {
+        "account_id": "usera",
+        "fund_id": unique_fund_round[0],
+        "round_id": unique_fund_round[0],
+        "language": "cy",
+    }
+    response = post_data(client, "/applications", application_data_a1)
+    assert response.json["language"] == "en"
     count_fund_applications(client, unique_fund_round[0], 1)
-    post_data(client, "/applications", application_data_a1)
+    response = post_data(client, "/applications", application_data_a2)
+    assert response.json["language"] == "cy"
     count_fund_applications(client, unique_fund_round[0], 2)
+
+
+@pytest.mark.unique_fund_round(True)
+def test_create_application_welsh_not_available(
+    client, unique_fund_round, mocker, mock_get_application_display_config
+):
+    mocker.patch(
+        "db.queries.application.queries.get_fund",
+        return_value=Fund(
+            "Generated test fund no welsh",
+            unique_fund_round[0],
+            "TEST",
+            "Testing fund",
+            False,
+            [],
+        ),
+    )
+
+    # Post one Fund A application and check length
+    application_data_a1 = {
+        "account_id": "usera",
+        "fund_id": unique_fund_round[0],
+        "round_id": unique_fund_round[0],
+        "language": "cy",
+    }
+    response = post_data(client, "/applications", application_data_a1)
+    assert response.json["language"] == "en"
 
 
 def test_create_application_creates_formatted_reference(

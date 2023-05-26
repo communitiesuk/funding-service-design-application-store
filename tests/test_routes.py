@@ -512,7 +512,9 @@ def test_successful_submitted_application(
     WHEN an application is submitted
     THEN a 201 response is received in the correct format
     """
-    mocker.patch("db.queries.list_files_by_prefix", new=lambda _: [])
+    mocker.patch(
+        "db.queries.application.queries.list_files_by_prefix", new=lambda _: []
+    )
     seed_application_records[0].status = "SUBMITTED"
 
     _db.session.add(seed_application_records[0])

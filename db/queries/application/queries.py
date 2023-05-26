@@ -2,6 +2,7 @@ import random
 import string
 from datetime import datetime
 from datetime import timezone
+from itertools import groupby
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -13,6 +14,7 @@ from db.models.application.enums import Status as ApplicationStatus
 from db.schemas import ApplicationSchema
 from external_services import get_fund
 from external_services import get_round
+from external_services.aws import list_files_by_prefix
 from flask import current_app
 from sqlalchemy import func
 from sqlalchemy import select
@@ -198,6 +200,30 @@ def submit_application(application_id) -> Applications:
     )
     application = get_application(application_id)
     application.date_submitted = datetime.now(timezone.utc).isoformat()
+
+    current_app.logger.info(
+        "Grabbing file upload states from relevant s3 component directories"
+    )
+    file_upload_states = list_files_by_prefix(application_id)
+
+    grouped_states_by_component_id = {}
+    for key, group in groupby(file_upload_states, key=lambda x: x.component_id):
+        grouped_states_by_component_id[key] = list(group)
+
+    for form in application.forms:
+        for component in form.json:
+            for field in component["fields"]:
+                component_id = field["key"]
+                if component_id not in grouped_states_by_component_id:
+                    continue
+
+                component_file_upload_states = grouped_states_by_component_id[
+                    component_id
+                ]
+                field["answer"] = ", ".join(
+                    state.filename for state in component_file_upload_states
+                )
+
     application.status = "SUBMITTED"
     db.session.commit()
     return application

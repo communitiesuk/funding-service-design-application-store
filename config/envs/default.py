@@ -1,5 +1,7 @@
 """Flask configuration."""
+import json
 import logging
+import os
 from os import environ
 from pathlib import Path
 
@@ -43,6 +45,16 @@ class DefaultConfig:
         "NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER",
         NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
     )
+
+    if "VCAP_SERVICES" in os.environ:
+        vcap_services = json.loads(os.environ["VCAP_SERVICES"])
+
+        if "aws-s3-bucket" in vcap_services:
+            s3_credentials = vcap_services["aws-s3-bucket"][0]["credentials"]
+            AWS_REGION = s3_credentials["aws_region"]
+            AWS_ACCESS_KEY_ID = s3_credentials["aws_access_key_id"]
+            AWS_SECRET_ACCESS_KEY = s3_credentials["aws_secret_access_key"]
+            AWS_BUCKET_NAME = s3_credentials["bucket_name"]
 
     # Account Store Endpoints
     ACCOUNTS_ENDPOINT = "/accounts"

@@ -1,5 +1,6 @@
 # flake8 : noqa
 """Flask Unit Testing Environment Configuration."""
+import os
 from os import environ
 
 from config.envs.default import DefaultConfig
@@ -26,3 +27,8 @@ class UnitTestingConfig(DefaultConfig):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     USE_LOCAL_DATA = True
+
+    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+    AWS_BUCKET_NAME = os.environ.get("AWS_BUCKET_NAME")
+    AWS_REGION = os.environ.get("AWS_REGION")

@@ -2,6 +2,7 @@ import random
 import string
 from datetime import datetime
 from datetime import timezone
+from itertools import groupby
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -13,6 +14,8 @@ from db.models.application.enums import Status as ApplicationStatus
 from db.schemas import ApplicationSchema
 from external_services import get_fund
 from external_services import get_round
+from external_services.aws import FileData
+from external_services.aws import list_files_by_prefix
 from flask import current_app
 from sqlalchemy import func
 from sqlalchemy import select
@@ -198,8 +201,26 @@ def submit_application(application_id) -> Applications:
     )
     application = get_application(application_id)
     application.date_submitted = datetime.now(timezone.utc).isoformat()
+
+    all_application_files = list_files_by_prefix(application_id)
+    application = process_files(application, all_application_files)
+
     application.status = "SUBMITTED"
     db.session.commit()
+    return application
+
+
+def process_files(application: Applications, all_files: list[FileData]) -> Applications:
+    comp_id_to_files = {
+        comp_id: list(files)
+        for comp_id, files in groupby(all_files, key=lambda x: x.component_id)
+    }
+    for form in application.forms:
+        for component in form.json:
+            for field in component["fields"]:
+                comp_id = field["key"]
+                if files := comp_id_to_files.get(comp_id):
+                    field["answer"] = ", ".join(state.filename for state in files)
     return application
 
 

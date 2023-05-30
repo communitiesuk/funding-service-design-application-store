@@ -1,9 +1,9 @@
-import contextlib
 from collections import namedtuple
 
 import boto3
 from config import Config
 
+_KEY_PARTS = ("application_id", "form", "path", "component_id", "filename")
 _S3_CLIENT = boto3.client(
     "s3",
     aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
@@ -12,9 +12,7 @@ _S3_CLIENT = boto3.client(
 )
 
 
-FileData = namedtuple(
-    "FileData", ["application_id", "form", "path", "component_id", "filename"]
-)
+FileData = namedtuple("FileData", _KEY_PARTS)
 
 
 def list_files_by_prefix(prefix: str) -> list[FileData]:
@@ -23,21 +21,9 @@ def list_files_by_prefix(prefix: str) -> list[FileData]:
         Prefix=prefix,
     )
 
-    if not objects_response.get("Contents"):
-        return []
-
-    files = []
-    keys = [file["Key"] for file in objects_response["Contents"]]
-    for key in keys:
-        with contextlib.suppress(ValueError):  # if we don't have a valid key, skip it
-            application_id, form, path, component_id, filename = key.split("/")
-            files.append(
-                FileData(
-                    application_id=application_id,
-                    form=form,
-                    path=path,
-                    component_id=component_id,
-                    filename=filename,
-                )
-            )
-    return files
+    contents = objects_response.get("Contents") or []
+    return [
+        FileData(*key_parts)
+        for key in [file["Key"] for file in contents]
+        if len(key_parts := key.split("/")) == len(_KEY_PARTS)
+    ]

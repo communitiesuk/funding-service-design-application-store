@@ -107,6 +107,9 @@ def _create_application_try(
 def create_application(account_id, fund_id, round_id, language) -> Applications:
     fund = get_fund(fund_id)
     fund_round = get_round(fund_id, round_id)
+    application_start_language = language
+    if language == "cy" and not fund.welsh_available:
+        application_start_language = "en"
     if fund and fund_round and fund.short_name and fund_round.short_name:
         new_application = None
         max_tries = 10
@@ -120,7 +123,7 @@ def create_application(account_id, fund_id, round_id, language) -> Applications:
                 fund_id=fund_id,
                 round_id=round_id,
                 key=key,
-                language=language,
+                language=application_start_language,
                 reference="-".join([fund.short_name, fund_round.short_name, key]),
                 attempt=attempt,
             )

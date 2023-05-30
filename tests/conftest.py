@@ -226,7 +226,7 @@ def mock_get_random_choices(population, weights=None, *, cum_weights=None, k=1):
 
 
 def generate_mock_fund(fund_id: str) -> Fund:
-    return Fund("Generated test fund", fund_id, "TEST", "Testing fund", [])
+    return Fund("Generated test fund", fund_id, "TEST", "Testing fund", True, [])
 
 
 @pytest.fixture(scope="function", autouse=True)

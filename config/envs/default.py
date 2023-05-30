@@ -55,6 +55,11 @@ class DefaultConfig:
             AWS_ACCESS_KEY_ID = s3_credentials["aws_access_key_id"]
             AWS_SECRET_ACCESS_KEY = s3_credentials["aws_secret_access_key"]
             AWS_BUCKET_NAME = s3_credentials["bucket_name"]
+    else:
+        AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+        AWS_BUCKET_NAME = os.environ.get("AWS_BUCKET_NAME")
+        AWS_REGION = os.environ.get("AWS_REGION")
 
     # Account Store Endpoints
     ACCOUNTS_ENDPOINT = "/accounts"

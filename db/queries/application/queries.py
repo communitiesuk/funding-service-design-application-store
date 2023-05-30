@@ -203,7 +203,7 @@ def submit_application(application_id) -> Applications:
     application.date_submitted = datetime.now(timezone.utc).isoformat()
 
     all_application_files = list_files_by_prefix(application_id)
-    process_files(application, all_application_files)
+    application = process_files(application, all_application_files)
 
     application.status = "SUBMITTED"
     db.session.commit()

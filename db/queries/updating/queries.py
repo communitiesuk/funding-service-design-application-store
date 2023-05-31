@@ -5,6 +5,7 @@ from db.queries.application import get_application
 from db.queries.application import update_project_name
 from db.queries.form import get_form
 from db.queries.statuses import update_statuses
+from external_services import get_round
 from flask import abort
 from flask import current_app
 from sqlalchemy import func
@@ -23,7 +24,8 @@ def update_application_and_related_form(
 
     application.last_edited = func.now()
     form_sql_row = get_form(application_id, form_name)
-    update_project_name(form_name, question_json, application)
+    project_name_field_id = get_round(application.fund_id, application.round_id).project_name_field_id
+    update_project_name(form_name, question_json, application, project_name_field_id)
     form_sql_row.json = question_json
     update_statuses(application_id, form_name, is_summary_page_submit)
     db.session.commit()

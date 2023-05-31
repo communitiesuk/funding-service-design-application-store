@@ -482,6 +482,48 @@ def test_update_project_name_of_application(client, seed_application_records):
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
+def test_update_project_name_of_application_driven_by_fund_config(client, seed_application_records):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a put is made into the 'project information' section
+     containing a project key specified in fund configuration
+    THEN the project name should be updated on the application.
+    """
+    old_project_name = seed_application_records[0].project_name
+    new_project_name = "updated by unit test"
+    form_name = "project-information"
+    section_put = {
+        "questions": [
+            {
+                "question": "About your project",
+                "fields": [
+                    {
+                        "key": "KAgrBz",
+                        "title": "Rely on field key",
+                        "type": "text",
+                        "answer": new_project_name,
+                    },
+                ],
+            },
+        ],
+        "metadata": {
+            "application_id": str(seed_application_records[0].id),
+            "form_name": form_name,
+        },
+    }
+    client.put(
+        "/applications/forms",
+        json=section_put,
+        follow_redirects=True,
+    )
+    updated_project_name = get_row_by_pk(
+        Applications, seed_application_records[0].id
+    ).project_name
+    assert updated_project_name == new_project_name
+    assert updated_project_name != old_project_name
+
+
+@pytest.mark.apps_to_insert([test_application_data[0]])
 def test_complete_form(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API

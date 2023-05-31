@@ -227,14 +227,13 @@ def process_files(application: Applications, all_files: list[FileData]) -> Appli
     return application
 
 
-def update_project_name(form_name, question_json, application) -> None:
-    if form_name.startswith("project-information") or form_name.startswith(
-        "gwybodaeth-am-y-prosiect"
-    ):
+def update_project_name(form_name, question_json, application, project_name_field_id = None) -> None:
+    forms_containing_project_name = ["project-information", "gwybodaeth-am-y-prosiect", "name-your-application"]
+    if any(form_name.startswith(item) for item in forms_containing_project_name):
         for question in question_json:
             for field in question["fields"]:
                 # field id for project name in json
-                if field["title"] == "Project name":
+                if field["title"] == "Project name" or field["key"] == project_name_field_id:
                     try:
                         application.project_name = field["answer"]
                     except KeyError:

@@ -69,6 +69,7 @@ def test_get_application_statuses_query_param(
     round_idx,
     expected_in_progress,
     client,
+    mock_get_round,
     seed_data_multiple_funds_rounds,
 ):
 

@@ -170,7 +170,7 @@ def add_org_data_for_reports(application, unique_append, client):
 
 @pytest.fixture(scope="function")
 def seed_data_multiple_funds_rounds(
-    request, app, clear_test_data, enable_preserve_test_data, client
+    request, mocker, app, clear_test_data, enable_preserve_test_data, client
 ):
     """
     Alternative to seed_application_records above that allows you to specify
@@ -184,6 +184,7 @@ def seed_data_multiple_funds_rounds(
         application_ids: [111, 222])])]}
     """
     marker = request.node.get_closest_marker("fund_round_config")
+    mocker.patch("db.queries.updating.queries.get_round", new=generate_mock_round)
     if marker is None:
         config = {"funds": [{"rounds": [{"applications": [test_application_data[0]]}]}]}
     else:
@@ -257,7 +258,7 @@ def generate_mock_round(fund_id: str, round_id: str) -> Round:
         deadline=datetime.strptime("2023-01-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
         assessment_deadline=datetime.strptime(
             "2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"
-        ),
+        )
     )
 
 

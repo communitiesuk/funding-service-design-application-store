@@ -240,3 +240,18 @@ def update_project_name(form_name, question_json, application) -> None:
                     except KeyError:
                         current_app.logger.info("Project name was not edited")
                         continue
+
+
+def get_fund_id(application_id):
+    """Function takes an application_id and returns the fund_id of that application."""
+    try:
+        application = (
+            db.session.query(Applications).filter_by(id=application_id).first()
+        )
+        if application:
+            return application.fund_id
+        else:
+            return None
+    except Exception:
+        current_app.logger.error(f"Incorrect application id: {application_id}")
+        return None

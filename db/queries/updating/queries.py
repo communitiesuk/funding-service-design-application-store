@@ -24,7 +24,9 @@ def update_application_and_related_form(
 
     application.last_edited = func.now()
     form_sql_row = get_form(application_id, form_name)
-    project_name_field_id = get_round(application.fund_id, application.round_id).project_name_field_id
+    project_name_field_id = get_round(
+        application.fund_id, application.round_id
+    ).project_name_field_id
     update_project_name(form_name, question_json, application, project_name_field_id)
     form_sql_row.json = question_json
     update_statuses(application_id, form_name, is_summary_page_submit)

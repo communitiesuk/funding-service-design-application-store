@@ -23,5 +23,5 @@ class Round:
             opens=data["opens"],
             deadline=data["deadline"],
             assessment_deadline=data["assessment_deadline"],
-            project_name_field_id=data.get("project_name_field_id", None)
+            project_name_field_id=data.get("project_name_field_id", None),
         )

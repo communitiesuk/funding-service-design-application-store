@@ -482,7 +482,9 @@ def test_update_project_name_of_application(client, seed_application_records):
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_project_name_of_application_driven_by_fund_config(client, seed_application_records):
+def test_update_project_name_of_application_driven_by_fund_config(
+    client, seed_application_records
+):
     """
     GIVEN We have a functioning Application Store API
     WHEN a put is made into the 'project information' section

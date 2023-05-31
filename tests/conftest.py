@@ -258,7 +258,7 @@ def generate_mock_round(fund_id: str, round_id: str) -> Round:
         deadline=datetime.strptime("2023-01-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
         assessment_deadline=datetime.strptime(
             "2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"
-        )
+        ),
     )
 
 

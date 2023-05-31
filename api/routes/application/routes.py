@@ -141,7 +141,8 @@ class ApplicationsView(MethodView):
     def submit(self, application_id):
         try:
             fund_id = get_fund_id(application_id)
-            fund_name = get_fund(fund_id).name
+            fund_data = get_fund(fund_id)
+            fund_name = fund_data.name
             application = submit_application(application_id)
             account = get_account(account_id=application.account_id)
             application_with_form_json = get_application(

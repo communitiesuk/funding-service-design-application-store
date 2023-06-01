@@ -227,6 +227,36 @@ def process_files(application: Applications, all_files: list[FileData]) -> Appli
     return application
 
 
+def update_project_name(form_name, question_json, application) -> None:
+    if form_name.startswith("project-information") or form_name.startswith(
+        "gwybodaeth-am-y-prosiect"
+    ):
+        for question in question_json:
+            for field in question["fields"]:
+                # field id for project name in json
+                if field["title"] == "Project name":
+                    try:
+                        application.project_name = field["answer"]
+                    except KeyError:
+                        current_app.logger.info("Project name was not edited")
+                        continue
+
+
+def get_fund_id(application_id):
+    """Function takes an application_id and returns the fund_id of that application."""
+    try:
+        application = (
+            db.session.query(Applications).filter_by(id=application_id).first()
+        )
+        if application:
+            return application.fund_id
+        else:
+            return None
+    except Exception:
+        current_app.logger.error(f"Incorrect application id: {application_id}")
+        return None
+
+
 def attempt_to_find_and_update_project_name(question_json, application) -> None:
     """
     Updates the applications project name if the updated question_json

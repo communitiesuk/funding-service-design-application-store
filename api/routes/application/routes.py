@@ -8,6 +8,7 @@ from db.queries import add_new_forms
 from db.queries import create_application
 from db.queries import export_json_to_csv
 from db.queries import get_application
+from db.queries import get_fund_id
 from db.queries import get_general_status_applications_report
 from db.queries import get_key_report_field_headers
 from db.queries import get_report_for_applications
@@ -15,6 +16,7 @@ from db.queries import search_applications
 from db.queries import submit_application
 from db.queries import update_form
 from external_services import get_account
+from external_services import get_fund
 from external_services.exceptions import NotificationError
 from external_services.models.notification import Notification
 from flask import current_app
@@ -138,16 +140,24 @@ class ApplicationsView(MethodView):
 
     def submit(self, application_id):
         try:
+            fund_id = get_fund_id(application_id)
+            fund_data = get_fund(fund_id)
+            fund_name = fund_data.name
             application = submit_application(application_id)
             account = get_account(account_id=application.account_id)
             application_with_form_json = get_application(
                 application_id, as_json=True, include_forms=True
             )
 
+            application_with_form_json_and_fund_name = {
+                **application_with_form_json,
+                "fund_name": fund_name,
+            }
+
             Notification.send(
                 Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
                 account.email,
-                {"application": application_with_form_json},
+                {"application": application_with_form_json_and_fund_name},
             )
             return {
                 "id": application_id,

@@ -540,7 +540,12 @@ def test_put_returns_400_on_submitted_application(
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_successful_submitted_application(
-    client, mock_successful_submit_notification, _db, seed_application_records, mocker
+    client,
+    mock_successful_submit_notification,
+    _db,
+    seed_application_records,
+    mocker,
+    mock_get_fund_data,
 ):
 
     """

@@ -227,16 +227,15 @@ def process_files(application: Applications, all_files: list[FileData]) -> Appli
     return application
 
 
-def update_project_name(form_name, question_json, application) -> None:
-    if form_name.startswith("project-information") or form_name.startswith(
-        "gwybodaeth-am-y-prosiect"
-    ):
-        for question in question_json:
-            for field in question["fields"]:
-                # field id for project name in json
-                if field["title"] == "Project name":
-                    try:
-                        application.project_name = field["answer"]
-                    except KeyError:
-                        current_app.logger.info("Project name was not edited")
-                        continue
+def attempt_to_find_and_update_project_name(question_json, application) -> None:
+    """
+    Updates the applications project name if the updated question_json
+    contains a field_id match on the pre-configured project_name field_id.
+    """
+    round = get_round(application.fund_id, application.round_id)
+    project_name_field_id = round.project_name_field_id
+
+    for question in question_json:
+        for field in question["fields"]:
+            if field["key"] == project_name_field_id:
+                return field["answer"]

@@ -70,7 +70,7 @@ class DefaultConfig:
     FUND_ROUNDS_ENDPOINT = CommonConfig.ROUNDS_ENDPOINT
     FUND_ROUND_ENDPOINT = CommonConfig.ROUND_ENDPOINT
     FUND_ROUND_APPLICATION_SECTIONS_ENDPOINT = (
-        "/funds/{fund_id}/rounds/{round_id}/sections/application"
+        "/funds/{fund_id}/rounds/{round_id}/sections/application?language={language}"
     )
 
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")

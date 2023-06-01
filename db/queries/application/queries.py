@@ -255,6 +255,8 @@ def get_fund_id(application_id):
     except Exception:
         current_app.logger.error(f"Incorrect application id: {application_id}")
         return None
+
+
 def attempt_to_find_and_update_project_name(question_json, application) -> None:
     """
     Updates the applications project name if the updated question_json

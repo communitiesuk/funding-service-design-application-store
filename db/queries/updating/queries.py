@@ -23,7 +23,8 @@ def update_application_and_related_form(
 
     application.last_edited = func.now()
     form_sql_row = get_form(application_id, form_name)
-    attempt_to_find_and_update_project_name(question_json, application)
+    if (project_name := attempt_to_find_and_update_project_name(question_json, application)) is not None:
+        application.project_name = project_name
     form_sql_row.json = question_json
     update_statuses(application_id, form_name, is_summary_page_submit)
     db.session.commit()

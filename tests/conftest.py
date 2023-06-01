@@ -184,7 +184,6 @@ def seed_data_multiple_funds_rounds(
         application_ids: [111, 222])])]}
     """
     marker = request.node.get_closest_marker("fund_round_config")
-    mocker.patch("db.queries.updating.queries.get_round", new=generate_mock_round)
     if marker is None:
         config = {"funds": [{"rounds": [{"applications": [test_application_data[0]]}]}]}
     else:
@@ -259,6 +258,7 @@ def generate_mock_round(fund_id: str, round_id: str) -> Round:
         assessment_deadline=datetime.strptime(
             "2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"
         ),
+        project_name_field_id="testfieldid",
     )
 
 

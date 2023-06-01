@@ -255,3 +255,15 @@ def get_fund_id(application_id):
     except Exception:
         current_app.logger.error(f"Incorrect application id: {application_id}")
         return None
+def attempt_to_find_and_update_project_name(question_json, application) -> None:
+    """
+    Updates the applications project name if the updated question_json
+    contains a field_id match on the pre-configured project_name field_id.
+    """
+    round = get_round(application.fund_id, application.round_id)
+    project_name_field_id = round.project_name_field_id
+
+    for question in question_json:
+        for field in question["fields"]:
+            if field["key"] == project_name_field_id:
+                return field["answer"]

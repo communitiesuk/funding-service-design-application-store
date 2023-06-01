@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -10,6 +11,7 @@ class Round:
     opens: str
     title: str
     short_name: str
+    project_name_field_id: Optional[str] = None
 
     @staticmethod
     def from_json(data: dict):
@@ -21,4 +23,5 @@ class Round:
             opens=data["opens"],
             deadline=data["deadline"],
             assessment_deadline=data["assessment_deadline"],
+            project_name_field_id=data.get("project_name_field_id", None),
         )

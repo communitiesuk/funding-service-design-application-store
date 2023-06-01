@@ -170,7 +170,7 @@ def add_org_data_for_reports(application, unique_append, client):
 
 @pytest.fixture(scope="function")
 def seed_data_multiple_funds_rounds(
-    request, app, clear_test_data, enable_preserve_test_data, client
+    request, mocker, app, clear_test_data, enable_preserve_test_data, client
 ):
     """
     Alternative to seed_application_records above that allows you to specify
@@ -258,6 +258,7 @@ def generate_mock_round(fund_id: str, round_id: str) -> Round:
         assessment_deadline=datetime.strptime(
             "2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"
         ),
+        project_name_field_id="TestFieldId",
     )
 
 

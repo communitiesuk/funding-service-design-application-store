@@ -237,5 +237,5 @@ def attempt_to_find_and_update_project_name(question_json, application) -> None:
 
     for question in question_json:
         for field in question["fields"]:
-            if field["key"] == project_name_field_id:
+            if field["key"] == project_name_field_id and "answer" in field.keys():
                 return field["answer"]

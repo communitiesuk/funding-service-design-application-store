@@ -456,7 +456,7 @@ def test_update_project_name_of_application(client, seed_application_records):
                 "question": "About your project",
                 "fields": [
                     {
-                        "key": "testfieldid",
+                        "key": "TestFieldId",
                         "title": "Project name field",
                         "type": "text",
                         "answer": new_project_name,

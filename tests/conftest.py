@@ -306,3 +306,17 @@ def mock_post_data_fix(mocker):
         "external_services.post_data",
         new=mock_post_data,
     )
+
+
+@pytest.fixture(autouse=False)
+def mock_get_fund_data(mocker):
+    mocker.patch(
+        "api.routes.application.routes.get_fund",
+        return_value=Fund(
+            name="COF",
+            short_name="COF",
+            identifier="47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+            description="An example fund for testing the funding service",
+            welsh_available=False,
+        ),
+    )

@@ -2,6 +2,7 @@ from .application import create_application
 from .application import get_application
 from .application import get_applications
 from .application import get_count_by_status
+from .application import get_fund_id
 from .application import search_applications
 from .application import submit_application
 from .form import add_new_forms
@@ -30,4 +31,5 @@ __all__ = [
     get_report_for_applications,
     update_application_and_related_form,
     update_form,
+    get_fund_id,
 ]

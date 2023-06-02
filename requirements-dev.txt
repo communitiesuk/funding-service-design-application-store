@@ -14,10 +14,6 @@ aniso8601==9.0.1
     #   flask-restx
 asserts==0.12.0
     # via -r requirements-dev.in
-async-timeout==4.0.2
-    # via
-    #   -r requirements.txt
-    #   redis
 attrs==22.1.0
     # via
     #   -r requirements.txt
@@ -81,13 +77,6 @@ clickclick==20.10.2
     # via
     #   -r requirements.txt
     #   connexion
-colorama==0.4.6
-    # via
-    #   -r requirements.txt
-    #   bandit
-    #   build
-    #   click
-    #   pytest
 colored==1.4.4
     # via -r requirements.txt
 commonmark==0.9.1
@@ -96,7 +85,7 @@ commonmark==0.9.1
     #   rich
 connexion==2.14.1
     # via -r requirements.txt
-cryptography==39.0.2
+cryptography==41.0.0
     # via
     #   -r requirements.txt
     #   pyjwt
@@ -106,8 +95,6 @@ deepdiff==6.2.1
     # via -r requirements-dev.in
 distlib==0.3.6
     # via virtualenv
-exceptiongroup==1.1.0
-    # via pytest
 filelock==3.8.0
     # via virtualenv
 flask==2.2.2
@@ -359,10 +346,6 @@ ruamel-yaml==0.17.21
     # via
     #   -r requirements.txt
     #   prance
-ruamel-yaml-clib==0.2.7
-    # via
-    #   -r requirements.txt
-    #   ruamel-yaml
 s3transfer==0.6.0
     # via
     #   -r requirements.txt
@@ -411,12 +394,6 @@ thrift==0.16.0
     #   flipper-client
 toml==0.10.2
     # via pre-commit
-tomli==2.0.1
-    # via
-    #   black
-    #   build
-    #   pep517
-    #   pytest
 typing-extensions==4.4.0
     # via
     #   -r requirements.txt

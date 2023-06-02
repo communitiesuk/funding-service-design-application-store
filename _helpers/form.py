@@ -11,7 +11,7 @@ def get_form_name(section):
     return forms
 
 
-def get_forms_from_sections(sections, language=None):
+def get_forms_from_sections(sections):
     mint_form_list = set()
     for section in sections:
         mint_form_list.update(get_form_name(section))
@@ -30,7 +30,7 @@ def get_blank_forms(fund_id: str, round_id: str, language: str):
     Returns:
         A list of json forms to populate the form
     """
-    application_sections = get_application_sections(fund_id, round_id)
+    application_sections = get_application_sections(fund_id, round_id, language)
     if application_sections:
         forms = get_forms_from_sections(application_sections)
         if not forms:

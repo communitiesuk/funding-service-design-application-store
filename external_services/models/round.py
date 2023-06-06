@@ -11,6 +11,7 @@ class Round:
     opens: str
     title: str
     short_name: str
+    contact_email: str
     project_name_field_id: Optional[str] = None
 
     @staticmethod
@@ -24,4 +25,5 @@ class Round:
             deadline=data["deadline"],
             assessment_deadline=data["assessment_deadline"],
             project_name_field_id=data.get("project_name_field_id", None),
+            contact_email=data.get("contact_email", None),
         )

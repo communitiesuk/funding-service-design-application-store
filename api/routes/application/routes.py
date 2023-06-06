@@ -17,12 +17,14 @@ from db.queries import submit_application
 from db.queries import update_form
 from external_services import get_account
 from external_services import get_fund
+from external_services import get_round
 from external_services.exceptions import NotificationError
 from external_services.models.notification import Notification
 from flask import current_app
 from flask import request
 from flask import send_file
 from flask.views import MethodView
+from fsd_utils.config.notify_constants import NotifyConstants
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -145,6 +147,7 @@ class ApplicationsView(MethodView):
             fund_name = fund_data.name
             application = submit_application(application_id)
             account = get_account(account_id=application.account_id)
+            round_data = get_round(fund_id, application.round_id)
             application_with_form_json = get_application(
                 application_id, as_json=True, include_forms=True
             )
@@ -157,7 +160,10 @@ class ApplicationsView(MethodView):
             Notification.send(
                 Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
                 account.email,
-                {"application": application_with_form_json_and_fund_name},
+                {
+                    NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
+                    NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
+                },
             )
             return {
                 "id": application_id,

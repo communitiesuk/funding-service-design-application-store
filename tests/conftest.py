@@ -259,6 +259,7 @@ def generate_mock_round(fund_id: str, round_id: str) -> Round:
             "2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"
         ),
         project_name_field_id="TestFieldId",
+        contact_email="test@outlook.com",
     )
 
 

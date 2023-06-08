@@ -79,7 +79,7 @@ KEY_REPORT_MAPPING = [
         "form_name": "organisation-information-ns",
         "key": "opFJRm",
         "return_field": "organisation_name_nstf",
-    }
+    },
 ]
 
 

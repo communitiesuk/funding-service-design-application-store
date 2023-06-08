@@ -149,7 +149,7 @@ def test_get_applications_report(
     assert 2 == len(lines)
     assert (
         "eoi_reference,organisation_name,organisation_type,asset_type,"
-        + "geography,capital,revenue,organisation_name_ns"
+        + "geography,capital,revenue,organisation_name_nstf"
     ) == lines[0].decode("utf-8")
     fields = lines[1].decode("utf-8").split(",")
     assert expected_org_name == fields[1]
@@ -179,7 +179,7 @@ def test_get_applications_report_query_param(client, seed_data_multiple_funds_ro
     assert (
         line1
         == "eoi_reference,organisation_name,organisation_type,asset_type,"
-        "geography,capital,revenue,organisation_name_ns"
+        "geography,capital,revenue,organisation_name_nstf"
     )
 
     field1, field2, _, _, field5, _, _, _ = line2.split(",")

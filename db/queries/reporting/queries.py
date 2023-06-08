@@ -75,6 +75,11 @@ KEY_REPORT_MAPPING = [
         "key": "jLIgoi",
         "return_field": "revenue",
     },
+    {
+        "form_name": "organisation-information-ns",
+        "key": "opFJRm",
+        "return_field": "organisation_name_nstf",
+    },
 ]
 
 

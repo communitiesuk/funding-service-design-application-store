@@ -173,3 +173,20 @@ def get_round_name(fund_id, round_id):
     )
     if response:
         return response.get("title")
+
+
+# TODO: Delete this function when NSR2 is closed
+
+
+def replace_ns_question_key_GRWtfV(application):
+    """temporary function to correct one of the question from NSR2"""
+
+    update_question = "Revenue for 1 April 2023 to 31 March 2024"
+    if application["round_id"] == "fc7aa604-989e-4364-98a7-d1234271435a":
+        for form in application["forms"]:
+            for question in form["questions"]:
+                for field in question["fields"]:
+                    if field["key"] == "GRWtfV":
+                        field["title"] = update_question
+
+    return application

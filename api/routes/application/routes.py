@@ -157,11 +157,18 @@ class ApplicationsView(MethodView):
                 "fund_name": fund_name,
             }
 
+            # This is temporary fix to replace one of the incorrect question in NSR2
+            from external_services.data import replace_ns_question_key_GRWtfV
+
+            application = replace_ns_question_key_GRWtfV(
+                application_with_form_json_and_fund_name
+            )
+
             Notification.send(
                 Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
                 account.email,
                 {
-                    NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
+                    NotifyConstants.APPLICATION_FIELD: application,
                     NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
                 },
             )

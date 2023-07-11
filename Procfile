@@ -1,1 +1,1 @@
-web: gunicorn -c run/gunicorn/devtest.py wsgi:app
+scripts/run_migrations_paas.py && flask run --host 0.0.0.0 --port 8080

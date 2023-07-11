@@ -87,7 +87,7 @@ ACCOUNT_STORE_API_HOST
 FUND_STORE_API_HOST
 SENTRY_DSN
 GITHUB_SHA
-These can be found from the Terraform at https://github.com/communitiesuk/funding-service-design-terraform-prod/blob/main/apps.tf, search for 
+These can be found from the Terraform at https://github.com/communitiesuk/funding-service-design-terraform-prod/blob/main/apps.tf, search for
 `resource "cloudfoundry_v3_app" "funding-service-design-application-store"`
 
 ```

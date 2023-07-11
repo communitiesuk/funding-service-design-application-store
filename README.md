@@ -59,6 +59,43 @@ Eg.
 `export DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres`
 
 
+### Build with Paketo
+
+[Pack](https://buildpacks.io/docs/tools/pack/cli/pack_build/)
+
+[Paketo buildpacks](https://paketo.io/)
+
+```pack build <name your image> --builder paketobuildpacks/builder:base```
+
+Example:
+
+```
+[~/work/repos/funding-service-design-fund-store] pack build paketo-demofsd-app --builder paketobuildpacks/builder:base
+***
+Successfully built image paketo-demofsd-app
+```
+
+You can then use that image with docker to run a container
+
+```
+docker run -d -p 8080:8080 --env PORT=8080 --env FLASK_ENV=dev [envs] paketo-demofsd-app
+```
+
+`envs` needs to include values for each of:
+NOTIFICATION_SERVICE_HOST
+ACCOUNT_STORE_API_HOST
+FUND_STORE_API_HOST
+SENTRY_DSN
+GITHUB_SHA
+These can be found from the Terraform at https://github.com/communitiesuk/funding-service-design-terraform-prod/blob/main/apps.tf, search for 
+`resource "cloudfoundry_v3_app" "funding-service-design-application-store"`
+
+```
+docker ps -a
+CONTAINER ID   IMAGE                       COMMAND                  CREATED          STATUS                    PORTS                    NAMES
+42633142c619   paketo-demofsd-app          "/cnb/process/web"       8 seconds ago    Up 7 seconds              0.0.0.0:8080->8080/tcp   peaceful_knuth
+```
+
 
 ## How to use
 

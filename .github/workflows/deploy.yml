@@ -29,6 +29,8 @@ jobs:
   paketo_build:
     permissions:
       packages: write
-    uses: ./.github/workflows/package.yml
+    uses: communitiesuk/funding-design-service-workflows/.github/workflows/package.yml@main
     with:
       version_to_build: $(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+      owner: ${{ github.repository_owner }}
+      application: funding-design-service-application-store

@@ -36,4 +36,4 @@ jobs:
     with:
       version_to_build: ${{ needs.tag-to-release.outputs.new_tag }}
       owner: ${{ github.repository_owner }}
-      application: funding-design-service-application-store
+      application: funding-service-design-application-store

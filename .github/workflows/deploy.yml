@@ -33,4 +33,4 @@ jobs:
     with:
       version_to_build: $(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
       owner: ${{ github.repository_owner }}
-      application: funding-design-service-application-store
+      application: funding-service-design-application-store

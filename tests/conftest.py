@@ -322,3 +322,23 @@ def mock_get_fund_data(mocker):
             welsh_available=False,
         ),
     )
+
+
+@pytest.fixture(autouse=False)
+def mocked_get_fund(mocker):
+    return mocker.patch(
+        "scripts.send_application_on_closure.get_fund",
+        return_value=Fund(
+            name="Community Ownership Fund",
+            identifier="47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
+            short_name="COF",
+            description=(
+                "The Community Ownership Fund is a £150 million fund over 4 years to"
+                " support community groups across England, Wales, Scotland and Northern"
+                " Ireland to take ownership of assets which are at risk of being lost"
+                " to the community."
+            ),
+            welsh_available=True,
+            rounds=None,
+        ),
+    )

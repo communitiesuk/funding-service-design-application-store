@@ -198,6 +198,12 @@ paths:
           schema:
             type: string
             format: path
+        - name: dont_send_email
+          in: query
+          required: false
+          description: Whether to send an email notification for the submitted application
+          schema:
+            type: boolean
       responses:
         201:
           description: Application has been submitted successfully

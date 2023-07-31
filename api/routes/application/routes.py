@@ -141,6 +141,10 @@ class ApplicationsView(MethodView):
             return {"code": 404, "message": str(e)}, 404
 
     def submit(self, application_id):
+        should_send_email = True
+        if request.args.get("dont_send_email") == "true":
+            should_send_email = False
+
         try:
             fund_id = get_fund_id(application_id)
             fund_data = get_fund(fund_id)
@@ -157,14 +161,15 @@ class ApplicationsView(MethodView):
                 "fund_name": fund_name,
             }
 
-            Notification.send(
-                Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
-                account.email,
-                {
-                    NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
-                    NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
-                },
-            )
+            if should_send_email:
+                Notification.send(
+                    Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
+                    account.email,
+                    {
+                        NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
+                        NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
+                    },
+                )
             return {
                 "id": application_id,
                 "reference": application_with_form_json["reference"],

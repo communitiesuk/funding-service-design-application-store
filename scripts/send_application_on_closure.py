@@ -91,19 +91,29 @@ def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=F
                 for application in applications_to_send:
                     count += 1
                     email = {
-                        "email": application.get("account_email")
-                        for application in application.values()
+                        "email": app.get("account_email")
+                        for app in application.values()
                     }
                     current_app.logger.info(
                         f"Sending application {count} of"
                         f" {len(applications_to_send)} to {email.get('email')}"
                     )
                     application["contact_help_email"] = fund_rounds.get("contact_email")
-                    Notification.send(
-                        template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,  # noqa
-                        to_email=email.get("email"),
-                        content=application,
-                    )
+
+                    try:
+                        Notification.send(
+                            template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,  # noqa
+                            to_email=email.get("email"),
+                            content=application,
+                        )
+
+                    except Exception as e:
+                        current_app.logger.error(
+                            f"The application number {count} for email:"
+                            f" {application.get('account_email')} could not be sent,"
+                            f" Error:{e}"
+                        )
+
                 current_app.logger.info(f"Sent {count} emails")
                 return count
             else:

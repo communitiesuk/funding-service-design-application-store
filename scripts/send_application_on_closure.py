@@ -109,9 +109,11 @@ def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=F
 
                     except Exception as e:
                         current_app.logger.error(
-                            f"The application number {count} for email: {application['application']['account_email']},"
-                            f" Reference: {application['application']['reference']} could not be sent,"
-                            f" Error:{e}"
+                            f"The application number {count} for email:"
+                            f" {application['application']['account_email']},"
+                            " Reference:"
+                            f" {application['application']['reference']} could not be"
+                            f" sent, Error:{e}"
                         )
 
                 current_app.logger.info(f"Sent {count} emails")

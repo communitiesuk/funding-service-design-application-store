@@ -17,7 +17,12 @@ class TestSendAppOnClosure:
     )
     @pytest.mark.unique_fund_round(True)
     def test_send_apps_bad_account_id(
-        self, mocker, client, seed_application_records, unique_fund_round
+        self,
+        mocker,
+        client,
+        seed_application_records,
+        unique_fund_round,
+        mocked_get_fund,
     ):
 
         mocker.patch(
@@ -46,6 +51,7 @@ class TestSendAppOnClosure:
         seed_application_records,
         unique_fund_round,
         mock_get_fund,
+        mocked_get_fund,
     ):
         fund_id = unique_fund_round[0]
         round_id = unique_fund_round[1]
@@ -61,7 +67,7 @@ class TestSendAppOnClosure:
     @pytest.mark.apps_to_insert([test_application_data[0]])
     @pytest.mark.unique_fund_round(True)
     def test_send_apps_send_emails_is_false(
-        self, mocker, seed_application_records, unique_fund_round
+        self, mocker, seed_application_records, unique_fund_round, mocked_get_fund
     ):
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
@@ -76,7 +82,12 @@ class TestSendAppOnClosure:
     @pytest.mark.apps_to_insert([test_application_data[0]])
     @pytest.mark.unique_fund_round(True)
     def test_send_apps_one_to_send_not_started(
-        self, mocker, client, seed_application_records, unique_fund_round
+        self,
+        mocker,
+        client,
+        seed_application_records,
+        unique_fund_round,
+        mocked_get_fund,
     ):
 
         mocker.patch(
@@ -95,7 +106,13 @@ class TestSendAppOnClosure:
     @pytest.mark.apps_to_insert([test_application_data[0]])
     @pytest.mark.unique_fund_round(True)
     def test_send_apps_one_to_send_in_progress(
-        self, mocker, client, seed_application_records, _db, unique_fund_round
+        self,
+        mocker,
+        client,
+        seed_application_records,
+        _db,
+        unique_fund_round,
+        mocked_get_fund,
     ):
 
         seed_application_records[0].status = "IN_PROGRESS"
@@ -118,7 +135,12 @@ class TestSendAppOnClosure:
     @pytest.mark.apps_to_insert([test_application_data[0], test_application_data[0]])
     @pytest.mark.unique_fund_round(True)
     def test_send_apps_two_to_send(
-        self, mocker, client, seed_application_records, unique_fund_round
+        self,
+        mocker,
+        client,
+        seed_application_records,
+        unique_fund_round,
+        mocked_get_fund,
     ):
 
         mocker.patch(
@@ -147,7 +169,12 @@ class TestSendAppOnClosure:
     )
     @pytest.mark.unique_fund_round(True)
     def test_send_apps_one_to_send_one_bad_id(
-        self, mocker, client, seed_application_records, unique_fund_round
+        self,
+        mocker,
+        client,
+        seed_application_records,
+        unique_fund_round,
+        mocked_get_fund,
     ):
 
         mocker.patch(
@@ -169,7 +196,7 @@ class TestSendAppOnClosure:
         )
         assert 1 == result, "Unexpected result number"
 
-    def test_send_apps_before_deadline(self, mocker, app):
+    def test_send_apps_before_deadline(self, mocker, app, mocked_get_fund):
         fund_id = "abc123"
         round_id = "987gfd"
 

@@ -13,6 +13,7 @@ from config import Config  # noqa: E402
 from db.queries import search_applications  # noqa: E402
 from db.queries import get_forms_by_app_id  # noqa: E402
 from external_services.models.notification import Notification  # noqa: E402
+from external_services.data import get_fund  # noqa: E402
 from flask import current_app  # noqa: E402
 
 
@@ -48,8 +49,10 @@ def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=F
             "round_id": round_id,
         }
         matching_applications = search_applications(**search_params)
+        fund_data = get_fund(fund_id)
         applications_to_send = []
         for application in matching_applications:
+            application = {**application, "fund_name": fund_data.name}
             try:
                 application["forms"] = get_forms_by_app_id(application.get("id"))
                 application["round_name"] = fund_rounds.get("title")
@@ -95,6 +98,7 @@ def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=F
                         f"Sending application {count} of"
                         f" {len(applications_to_send)} to {email.get('email')}"
                     )
+                    application["contact_help_email"] = fund_rounds.get("contact_email")
                     Notification.send(
                         template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,  # noqa
                         to_email=email.get("email"),

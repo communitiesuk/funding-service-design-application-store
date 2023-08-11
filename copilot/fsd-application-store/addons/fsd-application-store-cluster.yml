@@ -132,7 +132,7 @@ Outputs:
         PORT: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:port}}" ]]
         DBNAME: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:dbname}}" ]]
 
-  fsdapplicationstoreclusterSecret: # injected as FSDACCOUNTSTORECLUSTER_SECRET environment variable by Copilot.
+  fsdapplicationstoreclusterSecret: # injected as FSDAPPLICATIONSTORECLUSTER_SECRET environment variable by Copilot.
     Description: "The JSON secret that holds the database username and password. Fields are 'host', 'port', 'dbname', 'username', 'password', 'dbClusterIdentifier' and 'engine'"
     Value: !Ref fsdapplicationstoreclusterAuroraSecret
   fsdapplicationstoreclusterSecurityGroup:

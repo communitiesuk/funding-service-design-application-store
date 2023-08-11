@@ -68,7 +68,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v2
       with:
         role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GithubCopilotDeploy
-        role-session-name: ACCOUNT_STORE_COPILOT_${{ steps.currentdatetime.outputs.datetime }}
+        role-session-name: APPLICATION_STORE_COPILOT_${{ steps.currentdatetime.outputs.datetime }}
         aws-region: eu-west-2
 
     - name: Install AWS Copilot CLI

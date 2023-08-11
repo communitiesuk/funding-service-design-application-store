@@ -45,6 +45,9 @@ network:
 variables:
   # SENTRY_DSN: "https://8092c54bdc3a4b4ba124dea42b836504@o1432034.ingest.sentry.io/4503918903820288"
   FLASK_ENV: ${COPILOT_ENVIRONMENT_NAME}
+  NOTIFICATION_SERVICE_HOST: http://fsd-notification.test.pre-award.internal
+  ACCOUNT_STORE_API_HOST: http://fsd-account-store.test.pre-award.internal
+  FUND_STORE_API_HOST: http://fsd-fund-store.test.pre-award.internal
 
 # You can override any of the values defined above by environment.
 environments:

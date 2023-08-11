@@ -179,6 +179,6 @@ copilot init \
     --type 'Backend Service' \
     --image 'ghcr.io/communitiesuk/funding-service-design-application-store:latest' \
     --port 80
-``` 
+```
 
 This will initalise this service, using the current created image

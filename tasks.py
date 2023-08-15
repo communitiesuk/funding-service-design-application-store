@@ -7,6 +7,7 @@ from colored import fg
 from colored import stylize
 from invoke import task
 
+
 ECHO_STYLE = fg("light_gray") + attr("bold")
 
 
@@ -49,3 +50,23 @@ def bootstrap_test_db(c, database_host="localhost"):
     )
     c.run(f"createdb -h {database_host} fsd_app_store_test")
     print(stylize(f"fsd_app_store_test db created on {database_host}...", ECHO_STYLE))
+
+
+# @task
+# def seed_applications(c, database_host="localhost"):
+#     from flask import current_app
+
+#     account_id = "00000000-0000-0000-0000-000000000000"
+#     fund_id = ""
+#     round_id = ""
+#     language = "en"
+
+#     print("Available funds/rounds:")
+#     print(f"\tCOF:\t{UsefulConfig.COF_FUND_ID}")
+#     print(f"\t\tR2W1:\t{UsefulConfig.COF_ROUND_3_W1_ID}")
+
+#     fund_id = input("Enter fund ID: ")
+#     round_id = input("Enter round ID: ")
+
+#     app = seed_not_started_application(fund_id=fund_id, round_id=round_id, account_id=account_id, language=language)
+#     print(f"{app.id} - {app.reference} - {app.status}")

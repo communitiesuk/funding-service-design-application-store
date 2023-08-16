@@ -26,7 +26,7 @@ on:
 
 jobs:
   test_and_deploy:
-    if: ${{ github.actor != 'dependabot[bot]' }} && ${{ !github.event.inputs.copilot }}
+    if: ${{ github.actor != 'dependabot[bot]' && !github.event.inputs.copilot }}
     uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@main
     with:
       app_name: ${{ github.event.repository.name }}

@@ -15,17 +15,29 @@ from tests.seed_data.seed_db import (  # noqa: E402
 )  # noqa: E402
 
 
-COF_R3W1_PROJECT_INFO_FORM_NAME = "project-information-cof-r3-w1"
 FUND_CONFIG = {
     "COF": {
         "id": UsefulConfig.COF_FUND_ID,
+        "short_code": "COF",
         "rounds": {
             "R3W1": {
+                "short_code": "R3W1",
                 "id": UsefulConfig.COF_ROUND_3_W1_ID,
                 "project_name_form": "project-information-cof-r3-w1",
             }
         },
-    }
+    },
+    "NSTF": {
+        "id": UsefulConfig.NSTF_FUND_ID,
+        "short_code": "NSTF",
+        "rounds": {
+            "R2": {
+                "short_code": "R2",
+                "id": UsefulConfig.NSTF_ROUND_2_ID,
+                "project_name_form": "name-your-application-ns",
+            }
+        },
+    },
 }
 
 
@@ -33,14 +45,14 @@ FUND_CONFIG = {
 @click.option(
     "--fund_short_code",
     default="COF",
-    type=click.Choice(["COF"]),
+    type=click.Choice(["COF", "NSTF"]),
     help="Fund to seed applications for",
     prompt=True,
 )
 @click.option(
     "--round_short_code",
     default="R3W1",
-    type=click.Choice(["R3W1"]),
+    type=click.Choice(["R3W1", "R2"]),
     help="Round to seed applications for",
     prompt=True,
 )
@@ -63,13 +75,13 @@ FUND_CONFIG = {
 def seed_applications(fund_short_code, round_short_code, account_id, status, count):
     language = "en"
 
-    fund = FUND_CONFIG[fund_short_code]
-    round_config = fund["rounds"][round_short_code]
+    fund_config = FUND_CONFIG[fund_short_code]
+    round_config = fund_config["rounds"][round_short_code]
     match status:
         case Status.NOT_STARTED.name:
             for i in range(count):
                 app = seed_not_started_application(
-                    fund_id=fund["id"],
+                    fund_config=fund_config,
                     round_config=round_config,
                     account_id=account_id,
                     language=language,
@@ -78,7 +90,7 @@ def seed_applications(fund_short_code, round_short_code, account_id, status, cou
         case Status.IN_PROGRESS.name:
             for i in range(count):
                 app = seed_in_progress_application(
-                    fund_id=fund["id"],
+                    fund_config=fund_config,
                     round_config=round_config,
                     account_id=account_id,
                     language=language,
@@ -87,7 +99,7 @@ def seed_applications(fund_short_code, round_short_code, account_id, status, cou
         case Status.COMPLETED.name:
             for i in range(count):
                 app = seed_completed_application(
-                    fund_id=fund["id"],
+                    fund_config=fund_config,
                     round_config=round_config,
                     account_id=account_id,
                     language=language,
@@ -96,7 +108,7 @@ def seed_applications(fund_short_code, round_short_code, account_id, status, cou
         case Status.SUBMITTED.name:
             for i in range(count):
                 app = seed_submitted_application(
-                    fund_id=fund["id"],
+                    fund_config=fund_config,
                     round_config=round_config,
                     account_id=account_id,
                     language=language,

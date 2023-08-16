@@ -8,20 +8,21 @@ from db.queries.application import submit_application
 from db.queries.updating.queries import update_form
 
 
-with open("tests/seed_data/COF_R3W1_all_forms.json", "r") as f:
-    COF_R3_W1_FORMS = json.load(f)
+def seed_not_started_application(fund_config, round_config, account_id, language):
+    return _seed_application(
+        fund_config["id"], round_config["id"], account_id, language
+    )
 
 
-def seed_not_started_application(fund_id, round_config, account_id, language):
-    return _seed_application(fund_id, round_config["id"], account_id, language)
-
-
-def seed_in_progress_application(fund_id, round_config, account_id, language):
-    app = _seed_application(fund_id, round_config["id"], account_id, language)
+def seed_in_progress_application(fund_config, round_config, account_id, language):
+    app = _seed_application(fund_config["id"], round_config["id"], account_id, language)
+    with open(
+        f"tests/seed_data/{fund_config['short_code']}_{round_config['short_code']}_all_forms.json",
+        "r",
+    ) as f:
+        ALL_FORMS = json.load(f)
     form = [
-        form
-        for form in COF_R3_W1_FORMS
-        if form["name"] == round_config["project_name_form"]
+        form for form in ALL_FORMS if form["name"] == round_config["project_name_form"]
     ][0]
     update_form(
         app.id,
@@ -32,9 +33,14 @@ def seed_in_progress_application(fund_id, round_config, account_id, language):
     return app
 
 
-def seed_completed_application(fund_id, round_config, account_id, language):
-    app = _seed_application(fund_id, round_config["id"], account_id, language)
-    for form in COF_R3_W1_FORMS:
+def seed_completed_application(fund_config, round_config, account_id, language):
+    app = _seed_application(fund_config["id"], round_config["id"], account_id, language)
+    with open(
+        f"tests/seed_data/{fund_config['short_code']}_{round_config['short_code']}_all_forms.json",
+        "r",
+    ) as f:
+        ALL_FORMS = json.load(f)
+    for form in ALL_FORMS:
         update_form(
             app.id,
             form["name"],
@@ -44,8 +50,8 @@ def seed_completed_application(fund_id, round_config, account_id, language):
     return app
 
 
-def seed_submitted_application(fund_id, round_config, account_id, language):
-    app = seed_completed_application(fund_id, round_config, account_id, language)
+def seed_submitted_application(fund_config, round_config, account_id, language):
+    app = seed_completed_application(fund_config, round_config, account_id, language)
     submit_application(str(app.id))
     return app
 

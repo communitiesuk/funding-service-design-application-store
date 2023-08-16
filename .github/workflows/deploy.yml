@@ -61,8 +61,7 @@ jobs:
       db_name: fsd_app_store_test
       postgres_unit_testing: true
   copilot_build:
-    if: ${{ !always() }}
-    #if: ${{ github.event.inputs.copilot }}
+    if: ${{ github.event.inputs.copilot }}
     needs: [pre_deploy_tests, paketo_build]
     concurrency: deploy-${{ inputs.environment || 'test' }}
     permissions:

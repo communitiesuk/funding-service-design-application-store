@@ -1,6 +1,7 @@
 -r requirements.txt
 bandit
 black
+click
 debugpy
 deepdiff
 pre-commit

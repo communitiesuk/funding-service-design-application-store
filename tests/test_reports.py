@@ -51,36 +51,6 @@ def test_get_application_statuses_csv(client, seed_application_records, _db):
     )
 
 
-@pytest.mark.apps_to_insert(test_application_data)
-def test_get_application_statuses_json(client, seed_application_records, _db):
-    response = client.get(
-        "/applications/reporting/applications_statuses_data?format=json",
-        follow_redirects=True,
-    )
-    result = response.json
-    assert result
-    assert result["NOT_STARTED"] == 3
-    assert result["IN_PROGRESS"] == 0
-    assert result["SUBMITTED"] == 0
-    assert result["COMPLETED"] == 0
-
-    app = get_row_by_pk(Applications, seed_application_records[0].id)
-    app.status = "IN_PROGRESS"
-    _db.session.add(app)
-    _db.session.commit()
-
-    response = client.get(
-        "/applications/reporting/applications_statuses_data?format=json",
-        follow_redirects=True,
-    )
-    result = response.json
-    assert result
-    assert result["NOT_STARTED"] == 2
-    assert result["IN_PROGRESS"] == 1
-    assert result["SUBMITTED"] == 0
-    assert result["COMPLETED"] == 0
-
-
 user_lang = {
     "account_id": "usera",
     "language": "en",
@@ -90,6 +60,55 @@ user_lang_cy = {
     "account_id": "userw",
     "language": "cy",
 }
+
+# @pytest.mark.apps_to_insert(test_application_data)
+
+
+@pytest.mark.fund_round_config(
+    {
+        "funds": [
+            {
+                "rounds": [
+                    {
+                        "applications": [
+                            {**user_lang_cy},
+                            {**user_lang_cy},
+                            {**user_lang},
+                        ]
+                    }
+                ]
+            },
+        ]
+    }
+)
+def test_get_application_statuses_json(client, seed_data_multiple_funds_rounds, _db):
+    fund = seed_data_multiple_funds_rounds[0]
+    response = client.get(
+        f"/applications/reporting/applications_statuses_data?format=json&fund_id={fund[0]}",
+        follow_redirects=True,
+    )
+    result = response.json
+    assert result
+    assert result["NOT_STARTED"] == 0
+    assert result["IN_PROGRESS"] == 3
+    assert result["SUBMITTED"] == 0
+    assert result["COMPLETED"] == 0
+
+    app = get_row_by_pk(Applications, fund[1][0][1][0])
+    app.status = "COMPLETED"
+    _db.session.add(app)
+    _db.session.commit()
+
+    response = client.get(
+        f"/applications/reporting/applications_statuses_data?format=json&fund_id={fund[0]}",
+        follow_redirects=True,
+    )
+    result = response.json
+    assert result
+    assert result["NOT_STARTED"] == 0
+    assert result["IN_PROGRESS"] == 2
+    assert result["SUBMITTED"] == 0
+    assert result["COMPLETED"] == 1
 
 
 @pytest.mark.fund_round_config(

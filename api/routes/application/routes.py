@@ -86,22 +86,28 @@ class ApplicationsView(MethodView):
             return {"code": 404, "message": str(e)}, 404
 
     def get_applications_statuses_report(
-        self, round_id: Optional[str] = None, fund_id: Optional[str] = None
+        self,
+        round_id: Optional[str] = None,
+        fund_id: Optional[str] = None,
+        format: Optional[str] = "csv",
     ):
         try:
+            report_data = get_general_status_applications_report(
+                round_id or None,
+                fund_id or None,
+            )
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}, 404
+
+        if format.lower() == "json":
+            return report_data
+        else:
             return send_file(
-                export_json_to_csv(
-                    get_general_status_applications_report(
-                        round_id or None,
-                        fund_id or None,
-                    )
-                ),
+                export_json_to_csv(report_data),
                 "text/csv",
                 as_attachment=True,
                 download_name="required_data.csv",
             )
-        except NoResultFound as e:
-            return {"code": 404, "message": str(e)}, 404
 
     def get_key_applications_data_report(
         self,

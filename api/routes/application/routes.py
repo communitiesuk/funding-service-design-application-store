@@ -1,3 +1,4 @@
+from typing import List
 from typing import Optional
 
 from _helpers import get_blank_forms
@@ -87,8 +88,8 @@ class ApplicationsView(MethodView):
 
     def get_applications_statuses_report(
         self,
-        round_id: Optional[str] = None,
-        fund_id: Optional[str] = None,
+        round_id: Optional[List] = [],
+        fund_id: Optional[List] = [],
         format: Optional[str] = "csv",
     ):
         try:
@@ -100,7 +101,7 @@ class ApplicationsView(MethodView):
             return {"code": 404, "message": str(e)}, 404
 
         if format.lower() == "json":
-            return report_data
+            return {"metrics": report_data}
         else:
             return send_file(
                 export_json_to_csv(report_data),

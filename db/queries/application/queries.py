@@ -150,19 +150,50 @@ def get_all_applications() -> List:
 
 
 def get_count_by_status(
-    round_id: Optional[str] = None, fund_id: Optional[str] = None
+    round_ids: Optional[List] = None, fund_ids: Optional[List] = None
 ) -> Dict[str, int]:
-    query = db.session.query(Applications.status, func.count(Applications.status))
+    query = db.session.query(
+        Applications.fund_id,
+        Applications.round_id,
+        Applications.status,
+        func.count(Applications.status),
+    )
 
-    if round_id is not None:
-        query = query.filter_by(round_id=round_id)
-    if fund_id is not None:
-        query = query.filter_by(fund_id=fund_id)
+    if round_ids:
+        query = query.filter(Applications.round_id.in_(round_ids))
+    if fund_ids:
+        query = query.filter(Applications.fund_id.in_(fund_ids))
 
-    status_query = query.group_by(Applications.status).all()
-    statuses_with_counts = {status[0].name: status[1] for status in status_query}
-
-    return {**{s.name: 0 for s in ApplicationStatus}, **statuses_with_counts}
+    grouped_by_fund_round_result = (
+        query.group_by(Applications.fund_id)
+        .group_by(Applications.round_id)
+        .group_by(Applications.status)
+        .all()
+    )
+    results = []
+    unique_funds = set([f[0] for f in grouped_by_fund_round_result])
+    for fund_id in unique_funds:
+        unique_rounds = set(
+            row[1] for row in grouped_by_fund_round_result if row[0] == fund_id
+        )
+        rounds = []
+        for round_id in unique_rounds:
+            this_round_statuses = {
+                s[2].name: s[3]
+                for s in grouped_by_fund_round_result
+                if s[0] == fund_id and s[1] == round_id
+            }
+            rounds.append(
+                {
+                    "round_id": round_id,
+                    "metrics": {
+                        **{s.name: 0 for s in ApplicationStatus},
+                        **this_round_statuses,
+                    },
+                }
+            )
+        results.append({"fund_id": fund_id, "rounds": rounds})
+    return results
 
 
 def search_applications(**params):

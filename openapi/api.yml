@@ -236,12 +236,20 @@ paths:
           in: query
           description: Optional round ID to filter by
           schema:
-            type: string
+            type: array
+            items:
+              type: string
+          # schema:
+          #   type: string
         - name: fund_id
           in: query
           description: Optional fund ID to filter by
           schema:
-            type: string
+            type: array
+            items:
+              type: string
+          # schema:
+          #   type: string
         - name: format
           in: query
           description: Optional format specifier, csv or json

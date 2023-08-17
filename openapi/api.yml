@@ -242,11 +242,19 @@ paths:
           description: Optional fund ID to filter by
           schema:
             type: string
+        - name: format
+          in: query
+          description: Optional format specifier, csv or json
+          schema:
+            type: string
       responses:
         200:
           description: SUCCESS - Here is the status report on applications
           content:
             text/csv: {}
+            application/json:
+              schema:
+                type: object
         404:
           description: ERROR - Could not get report
           content:

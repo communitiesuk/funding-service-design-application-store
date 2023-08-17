@@ -11,4 +11,3 @@ pytest-flask
 pip-tools>=6.13.0
 asserts
 pytest-mock
-beautifulsoup4

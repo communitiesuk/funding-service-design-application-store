@@ -4,7 +4,6 @@ from db import db
 from db.models.application.enums import Status
 from db.models.application.applications import Applications
 from flask_sqlalchemy import DefaultMeta
-from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -13,22 +12,22 @@ from sqlalchemy_json import NestedMutableJson
 BaseModel: DefaultMeta = db.Model
 
 class Feedback(BaseModel):
-    id = Column(
+    id = db.Column(
         "id",
         UUID(as_uuid=True),
         default=uuid.uuid4,
         primary_key=True,
         nullable=False,
     )
-    application_id = Column(
+    application_id = db.Column(
         "application_id", db.ForeignKey(Applications.id), nullable=False
     )
-    fund_id = Column("fund_id", db.String(), nullable=False)
-    round_id = Column("round_id", db.String(), nullable=False)
-    section_id = Column("section_id", db.String(), nullable=False)
-    feedback_json = Column("feedback_json", NestedMutableJson, nullable=False)
-    status = Column("status", db.Enum(Status), default="NOT_STARTED", nullable=False)
-    date_submitted = Column("date_submitted", DateTime())
+    fund_id = db.Column("fund_id", db.String(), nullable=False)
+    round_id = db.Column("round_id", db.String(), nullable=False)
+    section_id = db.Column("section_id", db.String(), nullable=False)
+    feedback_json = db.Column("feedback_json", NestedMutableJson, nullable=False)
+    status = db.Column("status", db.Enum(Status), default="NOT_STARTED", nullable=False)
+    date_submitted = db.Column("date_submitted", DateTime())
 
     __table_args__ = (db.UniqueConstraint("id", "section_id"),)
 

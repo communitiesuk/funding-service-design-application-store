@@ -9,7 +9,6 @@ class FeedbackSchema(SQLAlchemySchema):
     class Meta:
         model = Feedback
 
-    id = auto_field()
     application_id = auto_field()
     fund_id = auto_field()
     round_id = auto_field()

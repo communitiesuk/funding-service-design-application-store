@@ -15,8 +15,12 @@ def get_queue_url(sqs_client, queue_name):
 def submit_message(queue_name, message):
     sqs_client = boto3.client(
         "sqs",
+        aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY,
         region_name=Config.AWS_REGION,
-        endpoint_url=Config.AWS_ENDPOINT_OVERRIDE,  # Set the LocalStack SQS endpoint
+        endpoint_url=Config.AWS_ENDPOINT_OVERRIDE # optional local override
+        if Config.AWS_ENDPOINT_OVERRIDE
+        else None,  # Set the LocalStack SQS endpoint
     )
 
     custom_attributes = {

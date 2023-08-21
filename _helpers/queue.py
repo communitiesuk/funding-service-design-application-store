@@ -18,7 +18,7 @@ def submit_message(queue_name, message):
         aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY,
         region_name=Config.AWS_REGION,
-        endpoint_url=Config.AWS_ENDPOINT_OVERRIDE # optional local override
+        endpoint_url=Config.AWS_ENDPOINT_OVERRIDE  # optional local override
         if Config.AWS_ENDPOINT_OVERRIDE
         else None,  # Set the LocalStack SQS endpoint
     )

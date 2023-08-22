@@ -1,7 +1,10 @@
+from datetime import datetime
 from typing import Optional
+from uuid import uuid4
 
 from _helpers import get_blank_forms
 from _helpers import order_applications
+from _helpers import submit_message
 from config import Config
 from db.models.application.enums import Status
 from db.queries import add_new_forms
@@ -26,9 +29,7 @@ from flask import send_file
 from flask.views import MethodView
 from fsd_utils.config.notify_constants import NotifyConstants
 from sqlalchemy.orm.exc import NoResultFound
-from _helpers import submit_message
-from datetime import datetime
-from uuid import uuid4
+
 
 class ApplicationsView(MethodView):
     def get(self, **kwargs):
@@ -167,8 +168,12 @@ class ApplicationsView(MethodView):
             }
 
             # Submit message to queue, in a future state this can trigger the assessment service to import the application
-            #  (currently assessment is using a CRON timer to pick up messages, not a webhook for triggers) 
-            message_submitted = submit_message(Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME, application_with_form_json, application_attributes)
+            #  (currently assessment is using a CRON timer to pick up messages, not a webhook for triggers)
+            message_submitted = submit_message(
+                Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME,
+                application_with_form_json,
+                application_attributes,
+            )
 
             if should_send_email:
                 Notification.send(

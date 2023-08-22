@@ -345,6 +345,7 @@ def test_get_application_statuses_json_multi_fund(
         + f"format=json&{'&'.join(fund_params)}&{'&'.join(round_params)}"
     )
     response = client.get(url, follow_redirects=True)
+    assert response.status_code == 200
     result = response.json
     assert result
     funds = result["metrics"]

@@ -16,6 +16,7 @@ from db.queries import get_report_for_applications
 from db.queries import search_applications
 from db.queries import submit_application
 from db.queries import update_form
+from db.queries.reporting.queries import export_application_statuses_to_csv
 from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
@@ -104,7 +105,7 @@ class ApplicationsView(MethodView):
             return {"metrics": report_data}
         else:
             return send_file(
-                export_json_to_csv(report_data),
+                export_application_statuses_to_csv(report_data),
                 "text/csv",
                 as_attachment=True,
                 download_name="required_data.csv",

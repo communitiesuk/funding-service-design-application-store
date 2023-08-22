@@ -150,7 +150,7 @@ def get_all_applications() -> List:
 
 
 def get_count_by_status(
-    round_ids: Optional[List] = None, fund_ids: Optional[List] = None
+    round_ids: Optional[List] = [], fund_ids: Optional[List] = []
 ) -> Dict[str, int]:
     query = db.session.query(
         Applications.fund_id,
@@ -171,11 +171,13 @@ def get_count_by_status(
         .all()
     )
     results = []
-    unique_funds = set([f[0] for f in grouped_by_fund_round_result])
+    unique_funds = set([f[0] for f in grouped_by_fund_round_result]).union(
+        fund_ids or []
+    )
     for fund_id in unique_funds:
         unique_rounds = set(
             row[1] for row in grouped_by_fund_round_result if row[0] == fund_id
-        )
+        ).union(round_ids or [])
         rounds = []
         for round_id in unique_rounds:
             this_round_statuses = {
@@ -186,7 +188,7 @@ def get_count_by_status(
             rounds.append(
                 {
                     "round_id": round_id,
-                    "metrics": {
+                    "application_statuses": {
                         **{s.name: 0 for s in ApplicationStatus},
                         **this_round_statuses,
                     },

@@ -26,7 +26,9 @@ from flask import send_file
 from flask.views import MethodView
 from fsd_utils.config.notify_constants import NotifyConstants
 from sqlalchemy.orm.exc import NoResultFound
-
+from _helpers import submit_message
+from datetime import datetime
+from uuid import uuid4
 
 class ApplicationsView(MethodView):
     def get(self, **kwargs):
@@ -141,7 +143,7 @@ class ApplicationsView(MethodView):
             return {"code": 404, "message": str(e)}, 404
 
     def submit(self, application_id):
-        should_send_email = True
+        should_send_email = False
         if request.args.get("dont_send_email") == "true":
             should_send_email = False
 
@@ -160,6 +162,13 @@ class ApplicationsView(MethodView):
                 **application_with_form_json,
                 "fund_name": fund_name,
             }
+            application_attributes = {
+                "application_id": {"StringValue": application_id, "DataType": "String"},
+            }
+
+            # Submit message to queue, in a future state this can trigger the assessment service to import the application
+            #  (currently assessment is using a CRON timer to pick up messages, not a webhook for triggers) 
+            message_submitted = submit_message(Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME, application_with_form_json, application_attributes)
 
             if should_send_email:
                 Notification.send(

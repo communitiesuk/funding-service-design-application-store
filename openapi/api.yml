@@ -315,15 +315,15 @@ paths:
             type: string
             format: path
 
-  /queue/{queue_name}:
+  /queue_for_assessment/{application_id}:
     post:
       tags:
         - SQS (queues)
-      summary: post a complete application to assessment-import-queue-dev
-      description: post a complete application to assessment-import-queue-dev
-      operationId: api.QueueView.post
+      summary: post an application (if it has the status submitted) to the assessment import queue
+      description: post an application (if it has the status submitted) to assessment import queue
+      operationId: api.QueueView.post_submitted_application_to_assessment
       parameters:
-        - name: queue_name
+        - name: application_id
           in: path
           required: true
           schema:
@@ -351,12 +351,3 @@ paths:
                 code: 500
                 status: 'error'
                 message: 'Message could not be staged'
-      requestBody:
-        required: true
-        content:
-          application/json:  # Specify the media type
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string

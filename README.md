@@ -15,6 +15,8 @@ this data store is [here](https://github.com/communitiesuk/funding-service-desig
 
 # Getting started
 
+## [Linked external services](docs/external_services.md)
+
 ## Installation
 
 Clone the repository

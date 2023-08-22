@@ -9,6 +9,38 @@ from db.queries import get_applications
 from db.queries.application import get_count_by_status
 
 
+APPLICATION_STATUS_HEADERS = [
+    "fund_id",
+    "round_id",
+    "NOT_STARTED",
+    "IN_PROGRESS",
+    "COMPLETED",
+    "SUBMITTED",
+]
+
+
+def export_application_statuses_to_csv(return_data):
+    output = io.StringIO()
+
+    w = csv.DictWriter(output, APPLICATION_STATUS_HEADERS)
+    w.writeheader()
+    for fund in return_data:
+        fund_id = fund["fund_id"]
+        for round in fund["rounds"]:
+            round_id = round["round_id"]
+            w.writerow(
+                {
+                    "fund_id": fund_id,
+                    "round_id": round_id,
+                    **round["application_statuses"],
+                }
+            )
+
+    bytes_object = bytes(output.getvalue(), encoding="utf-8")
+    bytes_output = io.BytesIO(bytes_object)
+    return bytes_output
+
+
 def export_json_to_csv(return_data, headers=None):
     output = io.StringIO()
     if type(return_data) == list:

@@ -239,8 +239,6 @@ paths:
             type: array
             items:
               type: string
-          # schema:
-          #   type: string
         - name: fund_id
           in: query
           description: Optional fund ID to filter by
@@ -248,13 +246,12 @@ paths:
             type: array
             items:
               type: string
-          # schema:
-          #   type: string
         - name: format
           in: query
           description: Optional format specifier, csv or json
           schema:
             type: string
+            enum: [csv,json]
       responses:
         200:
           description: SUCCESS - Here is the status report on applications
@@ -262,7 +259,7 @@ paths:
             text/csv: {}
             application/json:
               schema:
-                type: object
+                $ref: 'components.yml#/components/schemas/StatusReport'
         404:
           description: ERROR - Could not get report
           content:

@@ -249,17 +249,6 @@ paths:
         - name: format
           in: query
           description: Optional format specifier, csv or json
-          
-        - name: format
-          in: query
-          description: Optional format specifier, csv or json
-          schema:
-            type: array
-            items:
-              type: string
-        - name: format
-          in: query
-          description: Optional format specifier, csv or json
           schema:
             type: string
             enum: [csv,json]

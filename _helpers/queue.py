@@ -1,7 +1,6 @@
 import json
 from datetime import datetime
 from typing import Dict
-from uuid import uuid4
 
 import boto3
 from config import Config

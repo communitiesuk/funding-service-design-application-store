@@ -344,17 +344,24 @@ def mocked_get_fund(mocker):
     )
 
 
-
 @pytest.fixture(autouse=False)
 def mock_submit_message_to_queue(mocker, request):
 
     message_attributes_marker = request.node.get_closest_marker("message_attributes")
-    function_calls_to_mock_marker = request.node.get_closest_marker("function_calls_to_mock")
-    message_attributes = message_attributes_marker.args[0] if message_attributes_marker else None
-    function_calls_to_mock = function_calls_to_mock_marker.args[0] if function_calls_to_mock_marker else [
-        "api.routes.application.routes.submit_message_to_queue",
-        "api.routes.queues.routes.submit_message_to_queue",
-    ]
+    function_calls_to_mock_marker = request.node.get_closest_marker(
+        "function_calls_to_mock"
+    )
+    message_attributes = (
+        message_attributes_marker.args[0] if message_attributes_marker else None
+    )
+    function_calls_to_mock = (
+        function_calls_to_mock_marker.args[0]
+        if function_calls_to_mock_marker
+        else [
+            "api.routes.application.routes.submit_message_to_queue",
+            "api.routes.queues.routes.submit_message_to_queue",
+        ]
+    )
 
     queue = message_attributes["queue_name"]
 

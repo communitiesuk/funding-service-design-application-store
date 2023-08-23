@@ -1,6 +1,6 @@
-from external_services.aws import submit_message_to_queue
 from config import Config
 from db.queries import get_application
+from external_services.aws import submit_message_to_queue
 from flask import request
 from flask.views import MethodView
 
@@ -17,8 +17,10 @@ class QueueView(MethodView):
                 "application_id": {"StringValue": application_id, "DataType": "String"},
             }
 
-            # Submit message to queue, in a future state this can trigger the assessment service to import the application
-            #  (currently assessment is using a CRON timer to pick up messages, not a webhook for triggers)
+            # Submit message to queue, in a future state this can
+            # trigger the assessment service to import the application
+            #  (currently assessment is using a CRON timer to pick up messages,
+            # not a webhook for triggers)
             message_submitted_id = submit_message_to_queue(
                 Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME,
                 application_with_form_json,

@@ -1,8 +1,12 @@
+import json
 from collections import namedtuple
+from datetime import datetime
 from os import getenv
+from typing import Dict
 
 import boto3
 from config import Config
+from flask import current_app
 
 _KEY_PARTS = ("application_id", "form", "path", "component_id", "filename")
 _S3_CLIENT = boto3.client(
@@ -29,14 +33,6 @@ def list_files_by_prefix(prefix: str) -> list[FileData]:
         for key in [file["Key"] for file in contents]
         if len(key_parts := key.split("/")) == len(_KEY_PARTS)
     ]
-
-import json
-from datetime import datetime
-from typing import Dict
-
-import boto3
-from config import Config
-from flask import current_app
 
 
 def _get_queue_url(sqs_client, queue_name):

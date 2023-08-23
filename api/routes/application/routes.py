@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from _helpers import get_blank_forms
 from _helpers import order_applications
-from _helpers import submit_message
+from external_services.aws import submit_message_to_queue
 from config import Config
 from db.models.application.enums import Status
 from db.queries import add_new_forms
@@ -169,7 +169,7 @@ class ApplicationsView(MethodView):
 
             # Submit message to queue, in a future state this can trigger the assessment service to import the application
             #  (currently assessment is using a CRON timer to pick up messages, not a webhook for triggers)
-            message_submitted = submit_message(
+            message_submitted = submit_message_to_queue(
                 Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME,
                 application_with_form_json,
                 application_attributes,

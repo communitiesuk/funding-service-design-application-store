@@ -26,3 +26,4 @@ class UnitTestingConfig(DefaultConfig):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     USE_LOCAL_DATA = True
+    SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME = "fsd-queue-test"

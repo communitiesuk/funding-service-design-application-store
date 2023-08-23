@@ -1,4 +1,4 @@
-from _helpers import submit_message
+from external_services.aws import submit_message_to_queue
 from config import Config
 from db.queries import get_application
 from flask import request
@@ -19,13 +19,13 @@ class QueueView(MethodView):
 
             # Submit message to queue, in a future state this can trigger the assessment service to import the application
             #  (currently assessment is using a CRON timer to pick up messages, not a webhook for triggers)
-            message_submitted = submit_message(
+            message_submitted_id = submit_message_to_queue(
                 Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME,
                 application_with_form_json,
                 application_attributes,
             )
 
-            return f"Message queued, message_id is: {message_submitted}.", 201
+            return f"Message queued, message_id is: {message_submitted_id}.", 201
         else:
             return {
                 "code": 400,

@@ -1,6 +1,6 @@
-from external_services.aws import submit_message_to_queue
 from config import Config
 from db.queries import get_application
+from external_services.aws import submit_message_to_queue
 from flask import request
 from flask.views import MethodView
 

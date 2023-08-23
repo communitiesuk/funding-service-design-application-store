@@ -4,7 +4,6 @@ from uuid import uuid4
 
 from _helpers import get_blank_forms
 from _helpers import order_applications
-from external_services.aws import submit_message_to_queue
 from config import Config
 from db.models.application.enums import Status
 from db.queries import add_new_forms
@@ -21,6 +20,7 @@ from db.queries import update_form
 from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
+from external_services.aws import submit_message_to_queue
 from external_services.exceptions import NotificationError
 from external_services.models.notification import Notification
 from flask import current_app

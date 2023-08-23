@@ -3,8 +3,6 @@ import string
 from datetime import datetime
 from datetime import timezone
 from itertools import groupby
-from typing import Dict
-from typing import List
 from typing import Optional
 
 from db import db
@@ -25,7 +23,7 @@ from sqlalchemy.orm import noload
 from sqlalchemy.sql.expression import Select
 
 
-def get_application(app_id, include_forms=False, as_json=False) -> Dict | Applications:
+def get_application(app_id, include_forms=False, as_json=False) -> dict | Applications:
 
     stmt: Select = select(Applications).filter(Applications.id == app_id)
 
@@ -47,7 +45,7 @@ def get_application(app_id, include_forms=False, as_json=False) -> Dict | Applic
 
 def get_applications(
     filters=[], include_forms=False, as_json=False
-) -> List[Dict] | List[Applications]:
+) -> list[dict] | list[Applications]:
 
     stmt: Select = select(Applications)
 
@@ -144,14 +142,14 @@ def create_application(account_id, fund_id, round_id, language) -> Applications:
         )
 
 
-def get_all_applications() -> List:
+def get_all_applications() -> list:
     application_list = db.session.query(Applications).all()
     return application_list
 
 
 def get_count_by_status(
-    round_ids: Optional[List] = [], fund_ids: Optional[List] = []
-) -> Dict[str, int]:
+    round_ids: Optional[list] = [], fund_ids: Optional[list] = []
+) -> dict[str, int]:
     query = db.session.query(
         Applications.fund_id,
         Applications.round_id,
@@ -171,13 +169,11 @@ def get_count_by_status(
         .all()
     )
     results = []
-    unique_funds = set([f[0] for f in grouped_by_fund_round_result]).union(
-        fund_ids or []
-    )
+    unique_funds = {f[0] for f in grouped_by_fund_round_result}.union(fund_ids or [])
     for fund_id in unique_funds:
-        unique_rounds = set(
+        unique_rounds = {
             row[1] for row in grouped_by_fund_round_result if row[0] == fund_id
-        ).union(round_ids or [])
+        }.union(round_ids or [])
         rounds = []
         for round_id in unique_rounds:
             this_round_statuses = {

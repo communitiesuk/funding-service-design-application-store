@@ -2,7 +2,6 @@ import json
 import os
 import re
 import urllib
-from typing import List
 
 from config import Config
 from deepdiff import DeepDiff
@@ -316,7 +315,7 @@ def post_test_applications(client):
 
 
 def key_list_to_regex(
-    exclude_keys: List[str] = [
+    exclude_keys: list[str] = [
         "id",
         "reference",
         "started_at",

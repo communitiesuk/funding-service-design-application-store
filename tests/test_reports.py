@@ -454,7 +454,7 @@ def test_get_applications_report_query_param(client, seed_data_multiple_funds_ro
     raw_lines = response.data.splitlines()
     assert len(raw_lines) == 3
 
-    line1, line2, line3 = [line.decode("utf-8") for line in response.data.splitlines()]
+    line1, line2, line3 = (line.decode("utf-8") for line in response.data.splitlines())
     assert (
         line1
         == "eoi_reference,organisation_name,organisation_type,asset_type,"

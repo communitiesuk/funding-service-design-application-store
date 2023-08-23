@@ -1,4 +1,3 @@
-from typing import List
 from typing import Optional
 
 from _helpers import get_blank_forms
@@ -89,8 +88,8 @@ class ApplicationsView(MethodView):
 
     def get_applications_statuses_report(
         self,
-        round_id: Optional[List] = [],
-        fund_id: Optional[List] = [],
+        round_id: Optional[list] = [],
+        fund_id: Optional[list] = [],
         format: Optional[str] = "csv",
     ):
         try:

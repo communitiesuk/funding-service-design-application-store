@@ -1,7 +1,7 @@
 import csv
 import io
 import re
-from typing import Iterable
+from collections.abc import Iterable
 from typing import Optional
 
 from db.models import Applications

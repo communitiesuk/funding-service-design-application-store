@@ -18,7 +18,6 @@ def seed_in_progress_application(fund_config, round_config, account_id, language
     app = _seed_application(fund_config["id"], round_config["id"], account_id, language)
     with open(
         f"tests/seed_data/{fund_config['short_code']}_{round_config['short_code']}_all_forms.json",
-        "r",
     ) as f:
         ALL_FORMS = json.load(f)
     form = [
@@ -37,7 +36,6 @@ def seed_completed_application(fund_config, round_config, account_id, language):
     app = _seed_application(fund_config["id"], round_config["id"], account_id, language)
     with open(
         f"tests/seed_data/{fund_config['short_code']}_{round_config['short_code']}_all_forms.json",
-        "r",
     ) as f:
         ALL_FORMS = json.load(f)
     for form in ALL_FORMS:

@@ -2,7 +2,6 @@ import json
 from collections import namedtuple
 from datetime import datetime
 from os import getenv
-from typing import Dict
 
 import boto3
 from config import Config
@@ -42,7 +41,7 @@ def _get_queue_url(sqs_client, queue_name):
     return response["QueueUrl"]
 
 
-def submit_message_to_queue(queue_name, message, extra_attributes: Dict = None):
+def submit_message_to_queue(queue_name, message, extra_attributes: dict = None):
     current_app.logger.info(f"Attempting to place message on queue '{queue_name}'.")
     try:
         SQS_CUSTOM_ATTRIBUTES = {

@@ -119,10 +119,10 @@ def create_sqs_and_dlq_queue():
             Attributes={"RedrivePolicy": json.dumps(redrive_policy)},
         )
 
-    return sqs_queue_url, dlq_queue_url
+    return sqs_queue_url
 
 
-_SQS_QUEUE_URL, _DQL_QUEUE_URL = create_sqs_and_dlq_queue()
+_SQS_QUEUE_URL = Config.AWS_PRIMARY_QUEUE_URL or create_sqs_and_dlq_queue()
 
 
 def _get_queue_url(sqs_client, queue_name):
@@ -168,11 +168,3 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             f" attributes '{str(extra_attributes)}'."
         )
         return str(e), 500, {"x-error": "Error"}
-
-
-# if __name__ == "__main__":
-#     from app import app
-#     with app.app_context():
-#         print("done")
-#         remove_queue(_DQL_QUEUE_URL)
-#         remove_queue(_SQS_QUEUE_URL)

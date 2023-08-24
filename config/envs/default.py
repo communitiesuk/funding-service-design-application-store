@@ -55,11 +55,19 @@ class DefaultConfig:
             AWS_ACCESS_KEY_ID = s3_credentials["aws_access_key_id"]
             AWS_SECRET_ACCESS_KEY = s3_credentials["aws_secret_access_key"]
             AWS_BUCKET_NAME = s3_credentials["bucket_name"]
+        if "aws-sqs-queue" in vcap_services:
+            sqs_credentials = vcap_services["aws-s3-bucket"][0]["credentials"]
+            AWS_SQS_REGION = sqs_credentials["aws_region"]
+            AWS_SQS_ACCESS_KEY_ID = sqs_credentials["aws_access_key_id"]
+            AWS_SQS_SECRET_ACCESS_KEY = sqs_credentials["aws_secret_access_key"]
+            AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE  = sqs_credentials["primary_queue_url"]
+            AWS_SQS_APPLICATION_TO_ASSESSMENT_DEAD_LETTER_QUEUE = sqs_credentials["secondary_queue_url"]
     else:
-        AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-        AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+        AWS_ACCESS_KEY_ID, AWS_SQS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY, AWS_SQS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
         AWS_BUCKET_NAME = os.environ.get("AWS_BUCKET_NAME")
-        AWS_REGION = os.environ.get("AWS_REGION")
+        AWS_REGION, AWS_SQS_REGION = os.environ.get("AWS_REGION")
+        AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE = environ.get("AWS_SQS_QUEUE_NAME")
 
     # Account Store Endpoints
     ACCOUNTS_ENDPOINT = "/accounts"
@@ -76,5 +84,3 @@ class DefaultConfig:
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # TODO: ADD TO UTILS COMMON CONFIG
-    SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME = environ.get("AWS_SQS_QUEUE_NAME")

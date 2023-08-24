@@ -170,7 +170,6 @@ class ApplicationsView(MethodView):
             #  (currently assessment is using a CRON timer to pick up messages,
             # not a webhook for triggers)
             message_submitted = submit_message_to_queue(
-                Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME,
                 application_with_form_json,
                 application_attributes,
             )

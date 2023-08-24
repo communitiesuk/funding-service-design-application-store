@@ -77,52 +77,52 @@ def remove_queue(queue_url):
         raise error
 
 
-def create_sqs_and_dlq_queue():
-    """
-    Creates an Amazon SQS & DLQ queue.
+# def create_sqs_and_dlq_queue():
+#     """
+#     Creates an Amazon SQS & DLQ queue.
 
-    :return: (sqs_queue_url, dlq_queue_url)
-    """
-    # get queue list
-    queue_list = get_queues()
+#     :return: (sqs_queue_url, dlq_queue_url)
+#     """
+#     # get queue list
+#     queue_list = get_queues()
 
-    # create DLQ queue if not exists
-    dlq_queue_name = getenv("AWS_DLQ_QUEUE_NAME", "fsd-dlq")
-    if dlq_queue_name not in queue_list:
-        dlq_queue_url = _SQS_CLIENT.create_queue(
-            QueueName=dlq_queue_name,
-        )["QueueUrl"]
-        dlq_queue_arn = _SQS_CLIENT.get_queue_attributes(
-            QueueUrl=dlq_queue_url, AttributeNames=["QueueArn"]
-        )["Attributes"]["QueueArn"]
-    else:
-        dlq_queue_url = _SQS_CLIENT.get_queue_url(QueueName=dlq_queue_name)["QueueUrl"]
-        dlq_queue_arn = _SQS_CLIENT.get_queue_attributes(
-            QueueUrl=dlq_queue_url, AttributeNames=["QueueArn"]
-        )["Attributes"]["QueueArn"]
+#     # create DLQ queue if not exists
+#     dlq_queue_name = getenv("AWS_DLQ_QUEUE_NAME", "fsd-dlq")
+#     if dlq_queue_name not in queue_list:
+#         dlq_queue_url = _SQS_CLIENT.create_queue(
+#             QueueName=dlq_queue_name,
+#         )["QueueUrl"]
+#         dlq_queue_arn = _SQS_CLIENT.get_queue_attributes(
+#             QueueUrl=dlq_queue_url, AttributeNames=["QueueArn"]
+#         )["Attributes"]["QueueArn"]
+#     else:
+#         dlq_queue_url = _SQS_CLIENT.get_queue_url(QueueName=dlq_queue_name)["QueueUrl"]
+#         dlq_queue_arn = _SQS_CLIENT.get_queue_attributes(
+#             QueueUrl=dlq_queue_url, AttributeNames=["QueueArn"]
+#         )["Attributes"]["QueueArn"]
 
-    # create SQS queue if not exists
-    sqs_queue_name = getenv("AWS_SQS_QUEUE_NAME", "fsd-queue")
-    redrive_policy = {
-        "deadLetterTargetArn": dlq_queue_arn,
-        "maxReceiveCount": getenv("AWS_DLQ_MAX_RECIEVE_COUNT", "3"),
-    }
-    if sqs_queue_name not in queue_list:
-        sqs_queue_url = _SQS_CLIENT.create_queue(
-            QueueName=sqs_queue_name,
-            Attributes={"RedrivePolicy": json.dumps(redrive_policy)},
-        )
-    else:
-        sqs_queue_url = _SQS_CLIENT.get_queue_url(QueueName=sqs_queue_name)["QueueUrl"]
-        _SQS_CLIENT.set_queue_attributes(
-            QueueUrl=sqs_queue_url,
-            Attributes={"RedrivePolicy": json.dumps(redrive_policy)},
-        )
+#     # create SQS queue if not exists
+#     sqs_queue_name = getenv("AWS_SQS_QUEUE_NAME", "fsd-queue")
+#     redrive_policy = {
+#         "deadLetterTargetArn": dlq_queue_arn,
+#         "maxReceiveCount": getenv("AWS_DLQ_MAX_RECIEVE_COUNT", "3"),
+#     }
+#     if sqs_queue_name not in queue_list:
+#         sqs_queue_url = _SQS_CLIENT.create_queue(
+#             QueueName=sqs_queue_name,
+#             Attributes={"RedrivePolicy": json.dumps(redrive_policy)},
+#         )
+#     else:
+#         sqs_queue_url = _SQS_CLIENT.get_queue_url(QueueName=sqs_queue_name)["QueueUrl"]
+#         _SQS_CLIENT.set_queue_attributes(
+#             QueueUrl=sqs_queue_url,
+#             Attributes={"RedrivePolicy": json.dumps(redrive_policy)},
+#         )
 
-    return sqs_queue_url
+#     return sqs_queue_url
 
 
-_SQS_QUEUE_URL = Config.AWS_PRIMARY_QUEUE_URL or create_sqs_and_dlq_queue()
+# _SQS_QUEUE_URL = Config.AWS_PRIMARY_QUEUE_URL or create_sqs_and_dlq_queue()
 
 
 def _get_queue_url(sqs_client, queue_name):
@@ -133,7 +133,7 @@ def _get_queue_url(sqs_client, queue_name):
 
 
 def submit_message_to_queue(message, extra_attributes: dict = None):
-    print(f"Attempting to place message on queue '{_SQS_QUEUE_URL}'.")
+    print(f"Attempting to place message on queue '{Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE}'.")
     try:
         SQS_CUSTOM_ATTRIBUTES = {
             "message_created_at": {
@@ -158,13 +158,13 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
         message_id = response["MessageId"]
         print(
             f"Message (id: {message_id}) submitted to queue:"
-            f" {Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE}."
+            f" {queue_url}."
         )
         return message_id
     except Exception as e:
         print(
             "Error whilst staging onto queue"
-            f" '{Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE}', message with"
+            f" '{queue_url}', message with"
             f" attributes '{str(extra_attributes)}'."
         )
         return str(e), 500, {"x-error": "Error"}

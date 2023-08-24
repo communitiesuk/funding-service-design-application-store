@@ -55,7 +55,7 @@ class DefaultConfig:
             AWS_ACCESS_KEY_ID = s3_credentials["aws_access_key_id"]
             AWS_SECRET_ACCESS_KEY = s3_credentials["aws_secret_access_key"]
             AWS_BUCKET_NAME = s3_credentials["bucket_name"]
-        if "aws-sqs-queue" in vcap_services:
+        elif "aws-sqs-queue" in vcap_services:
             sqs_credentials = vcap_services["aws-s3-bucket"][0]["credentials"]
             AWS_SQS_REGION = sqs_credentials["aws_region"]
             AWS_SQS_ACCESS_KEY_ID = sqs_credentials["aws_access_key_id"]
@@ -67,12 +67,12 @@ class DefaultConfig:
                 "secondary_queue_url"
             ]
     else:
-        AWS_ACCESS_KEY_ID, AWS_SQS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-        AWS_SECRET_ACCESS_KEY, AWS_SQS_SECRET_ACCESS_KEY = os.environ.get(
+        AWS_ACCESS_KEY_ID = AWS_SQS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = AWS_SQS_SECRET_ACCESS_KEY = os.environ.get(
             "AWS_SECRET_ACCESS_KEY"
         )
         AWS_BUCKET_NAME = os.environ.get("AWS_BUCKET_NAME")
-        AWS_REGION, AWS_SQS_REGION = os.environ.get("AWS_REGION")
+        AWS_REGION = AWS_SQS_REGION = os.environ.get("AWS_REGION")
         AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE = environ.get(
             "AWS_SQS_QUEUE_NAME"
         )

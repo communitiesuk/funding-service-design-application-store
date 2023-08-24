@@ -1,7 +1,6 @@
 import functools
 import json
 import os
-from typing import List
 from typing import Optional
 from urllib.parse import urlencode
 
@@ -91,7 +90,7 @@ def get_application_sections(fund_id, round_id, language):
     return response
 
 
-def get_funds() -> List[Fund] | None:
+def get_funds() -> list[Fund] | None:
     endpoint = Config.FUND_STORE_API_HOST + Config.FUNDS_ENDPOINT
     response = get_data(endpoint)
     if response and len(response) > 0:
@@ -111,7 +110,7 @@ def get_fund(fund_id: str) -> Fund | None:
     return fund
 
 
-def get_rounds(fund_id: str) -> Fund | List:
+def get_rounds(fund_id: str) -> Fund | list:
     endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ROUNDS_ENDPOINT.format(
         fund_id=fund_id
     )

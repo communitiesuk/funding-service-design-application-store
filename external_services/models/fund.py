@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 from typing import Optional
 
 from external_services.models.round import Round
@@ -13,7 +12,7 @@ class Fund:
     short_name: str
     description: str
     welsh_available: bool
-    rounds: Optional[List[Round]] = None
+    rounds: Optional[list[Round]] = None
 
     @staticmethod
     def from_json(data: dict):

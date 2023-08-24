@@ -15,6 +15,7 @@ from db.queries import get_report_for_applications
 from db.queries import search_applications
 from db.queries import submit_application
 from db.queries import update_form
+from db.queries.reporting.queries import export_application_statuses_to_csv
 from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
@@ -87,22 +88,28 @@ class ApplicationsView(MethodView):
             return {"code": 404, "message": str(e)}, 404
 
     def get_applications_statuses_report(
-        self, round_id: Optional[str] = None, fund_id: Optional[str] = None
+        self,
+        round_id: Optional[list] = [],
+        fund_id: Optional[list] = [],
+        format: Optional[str] = "csv",
     ):
         try:
+            report_data = get_general_status_applications_report(
+                round_id or None,
+                fund_id or None,
+            )
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}, 404
+
+        if format.lower() == "json":
+            return {"metrics": report_data}
+        else:
             return send_file(
-                export_json_to_csv(
-                    get_general_status_applications_report(
-                        round_id or None,
-                        fund_id or None,
-                    )
-                ),
+                export_application_statuses_to_csv(report_data),
                 "text/csv",
                 as_attachment=True,
                 download_name="required_data.csv",
             )
-        except NoResultFound as e:
-            return {"code": 404, "message": str(e)}, 404
 
     def get_key_applications_data_report(
         self,

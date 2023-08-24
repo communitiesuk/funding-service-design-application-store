@@ -133,7 +133,10 @@ def _get_queue_url(sqs_client, queue_name):
 
 
 def submit_message_to_queue(message, extra_attributes: dict = None):
-    print(f"Attempting to place message on queue '{Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE}'.")
+    print(
+        "Attempting to place message on queue"
+        f" '{Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE}'."
+    )
     try:
         SQS_CUSTOM_ATTRIBUTES = {
             "message_created_at": {
@@ -156,10 +159,7 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             MessageAttributes=SQS_CUSTOM_ATTRIBUTES,
         )
         message_id = response["MessageId"]
-        print(
-            f"Message (id: {message_id}) submitted to queue:"
-            f" {queue_url}."
-        )
+        print(f"Message (id: {message_id}) submitted to queue: {queue_url}.")
         return message_id
     except Exception as e:
         print(

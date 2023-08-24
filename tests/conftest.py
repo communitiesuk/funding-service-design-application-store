@@ -377,5 +377,4 @@ def mock_submit_message_to_queue(mocker, request):
     if function_calls_to_mock_marker:
         for mock in mocked_calls:
             assert mock.called == True
-            assert len(mock.call_args[0]) == 3
-            assert mock.call_args[0][0] == queue
+            assert len(mock.call_args[0]) == 2

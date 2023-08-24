@@ -541,7 +541,7 @@ def test_put_returns_400_on_submitted_application(
 
 @pytest.mark.message_attributes(
     {
-        "queue_name": Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME,
+        "queue_name": Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE,
     }
 )
 @pytest.mark.function_calls_to_mock(
@@ -583,7 +583,7 @@ def test_successful_submitted_application(
 
 @pytest.mark.message_attributes(
     {
-        "queue_name": Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME,
+        "queue_name": Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE,
     }
 )
 @pytest.mark.apps_to_insert([test_application_data[0]])
@@ -622,7 +622,7 @@ def test_stage_unsubmitted_application_to_queue_fails(
 
 @pytest.mark.message_attributes(
     {
-        "queue_name": Config.SUBMIT_APPLICATION_TO_ASSESSMENT_QUEUE_NAME,
+        "queue_name": Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE,
     }
 )
 @pytest.mark.function_calls_to_mock(

@@ -101,9 +101,12 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             for key, value in extra_attributes.items():
                 SQS_CUSTOM_ATTRIBUTES[key] = value
 
-        queue_url = Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE or _get_queue_url(
-            _SQS_CLIENT,
-            Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE,
+        queue_url = (
+            Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE
+            or _get_queue_url(
+                _SQS_CLIENT,
+                Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE,
+            )
         )
         response = _SQS_CLIENT.send_message(
             QueueUrl=queue_url,

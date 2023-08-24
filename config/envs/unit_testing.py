@@ -28,5 +28,5 @@ class UnitTestingConfig(DefaultConfig):
     AWS_SQS_SECRET_ACCESS_KEY = ""
     AWS_SQS_ACCESS_KEY_ID = ""
     USE_LOCAL_DATA = True
-    AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE = "fsd-queue-test"
+    AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = "fsd-queue-test"
     AWS_SQS_REGION = "eu-west-2"

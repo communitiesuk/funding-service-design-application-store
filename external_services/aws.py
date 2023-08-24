@@ -19,7 +19,7 @@ _SQS_CLIENT = boto3.client(
     "sqs",
     aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
     aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY,
-    region_name=getenv("AWS_REGION", None),
+    region_name=Config.AWS_REGION,
     endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
 )
 
@@ -119,10 +119,10 @@ def create_sqs_and_dlq_queue():
             Attributes={"RedrivePolicy": json.dumps(redrive_policy)},
         )
 
-    return sqs_queue_url, dlq_queue_url
+    return sqs_queue_url
 
 
-_SQS_QUEUE_URL, _DQL_QUEUE_URL = create_sqs_and_dlq_queue()
+_SQS_QUEUE_URL = Config.AWS_PRIMARY_QUEUE_URL or create_sqs_and_dlq_queue()
 
 
 def _get_queue_url(sqs_client, queue_name):
@@ -146,17 +146,6 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             for key, value in extra_attributes.items():
                 SQS_CUSTOM_ATTRIBUTES[key] = value
 
-        # sqs_client = boto3.client(
-        #     "sqs",
-        #     aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
-        #     aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY,
-        #     region_name=Config.AWS_REGION,
-        #     endpoint_url=Config.AWS_ENDPOINT_OVERRIDE
-        #     if hasattr(Config, "AWS_ENDPOINT_OVERRIDE")
-        #     else None,  # optional local override
-        # )
-
-        # queue_url = _get_queue_url(sqs_client, queue_name)
         response = _SQS_CLIENT.send_message(
             QueueUrl=_SQS_QUEUE_URL,
             MessageBody=json.dumps(message),
@@ -171,11 +160,3 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             f" attributes '{str(extra_attributes)}'."
         )
         return str(e), 500, {"x-error": "Error"}
-
-
-# if __name__ == "__main__":
-#     from app import app
-#     with app.app_context():
-#         print("done")
-#         remove_queue(_DQL_QUEUE_URL)
-#         remove_queue(_SQS_QUEUE_URL)

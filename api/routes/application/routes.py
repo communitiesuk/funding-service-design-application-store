@@ -176,7 +176,7 @@ class ApplicationsView(MethodView):
             # assessment service to import the application
             #  (currently assessment is using a CRON timer to pick up messages,
             # not a webhook for triggers)
-            message_submitted = submit_message_to_queue(
+            submit_message_to_queue(
                 application_with_form_json,
                 application_attributes,
             )

@@ -363,8 +363,6 @@ def mock_submit_message_to_queue(mocker, request):
         ]
     )
 
-    queue = message_attributes["queue_name"]
-
     application_id = "application_id_test"
 
     mocked_calls = []
@@ -376,5 +374,5 @@ def mock_submit_message_to_queue(mocker, request):
 
     if function_calls_to_mock_marker:
         for mock in mocked_calls:
-            assert mock.called == True
+            assert mock.called == True # noqa
             assert len(mock.call_args[0]) == 2

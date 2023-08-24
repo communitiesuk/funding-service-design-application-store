@@ -347,12 +347,8 @@ def mocked_get_fund(mocker):
 @pytest.fixture(autouse=False)
 def mock_submit_message_to_queue(mocker, request):
 
-    message_attributes_marker = request.node.get_closest_marker("message_attributes")
     function_calls_to_mock_marker = request.node.get_closest_marker(
         "function_calls_to_mock"
-    )
-    message_attributes = (
-        message_attributes_marker.args[0] if message_attributes_marker else None
     )
     function_calls_to_mock = (
         function_calls_to_mock_marker.args[0]
@@ -374,5 +370,5 @@ def mock_submit_message_to_queue(mocker, request):
 
     if function_calls_to_mock_marker:
         for mock in mocked_calls:
-            assert mock.called == True # noqa
+            assert mock.called == True  # noqa
             assert len(mock.call_args[0]) == 2

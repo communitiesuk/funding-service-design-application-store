@@ -19,7 +19,7 @@ _SQS_CLIENT = boto3.client(
     "sqs",
     aws_access_key_id=Config.AWS_SQS_ACCESS_KEY_ID,
     aws_secret_access_key=Config.AWS_SQS_SECRET_ACCESS_KEY,
-    region_name=Config.AWS_SQS_REGION
+    region_name=Config.AWS_SQS_REGION,
     endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
 )
 
@@ -146,18 +146,25 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             for key, value in extra_attributes.items():
                 SQS_CUSTOM_ATTRIBUTES[key] = value
 
-        queue_url = _get_queue_url(_SQS_CLIENT, Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE,)
+        queue_url = _get_queue_url(
+            _SQS_CLIENT,
+            Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE,
+        )
         response = _SQS_CLIENT.send_message(
             QueueUrl=queue_url,
             MessageBody=json.dumps(message),
             MessageAttributes=SQS_CUSTOM_ATTRIBUTES,
         )
         message_id = response["MessageId"]
-        print(f"Message (id: {message_id}) submitted to queue: {Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE}.")
+        print(
+            f"Message (id: {message_id}) submitted to queue:"
+            f" {Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE}."
+        )
         return message_id
     except Exception as e:
         print(
-            f"Error whilst staging onto queue '{Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE}', message with"
+            "Error whilst staging onto queue"
+            f" '{Config.AWS_SQS_APPLICATION_TO_ASSESSMENT_PRIMARY_QUEUE}', message with"
             f" attributes '{str(extra_attributes)}'."
         )
         return str(e), 500, {"x-error": "Error"}

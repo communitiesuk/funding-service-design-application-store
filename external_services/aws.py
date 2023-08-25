@@ -109,6 +109,7 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             QueueUrl=queue_url,
             MessageBody=json.dumps(message),
             MessageAttributes=SQS_CUSTOM_ATTRIBUTES,
+            MessageGroupId="import_applications_group",
         )
         message_id = response["MessageId"]
         print(f"Message (id: {message_id}) submitted to queue: {queue_url}.")

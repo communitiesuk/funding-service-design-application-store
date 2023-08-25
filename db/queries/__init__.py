@@ -14,6 +14,8 @@ from .reporting import get_key_report_field_headers
 from .reporting import get_report_for_applications
 from .updating import update_application_and_related_form
 from .updating import update_form
+from .feedback import add_new_feedback
+from .feedback import get_feedback
 
 __all__ = [
     create_application,
@@ -32,4 +34,6 @@ __all__ = [
     update_application_and_related_form,
     update_form,
     get_fund_id,
+    add_new_feedback,
+    get_feedback,
 ]

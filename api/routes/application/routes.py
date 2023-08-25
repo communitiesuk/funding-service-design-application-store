@@ -14,6 +14,8 @@ from db.queries import get_key_report_field_headers
 from db.queries import get_report_for_applications
 from db.queries import search_applications
 from db.queries import submit_application
+from db.queries import add_new_feedback
+from db.queries import get_feedback
 from db.queries import update_form
 from external_services import get_account
 from external_services import get_fund
@@ -192,3 +194,31 @@ class ApplicationsView(MethodView):
                 f"Error on sending SUBMIT notification for application {application_id}"
             )
             return str(e), 500, {"x-error": "Error"}
+        
+
+    def post_feedback(self):
+        args = request.get_json()
+        application_id = args["application_id"]
+        fund_id = args["fund_id"]
+        round_id = args["round_id"]
+        section_id = args["section_id"]
+        feedback_json = args["feedback_json"]
+        status = args["status"]
+
+        new_feedback = add_new_feedback(
+            application_id=application_id,
+            fund_id=fund_id,
+            round_id=round_id,
+            section_id=section_id,
+            feedback_json=feedback_json,
+            status=status
+        )
+
+        return new_feedback, 201
+
+    def get_feedback_for_section(self, application_id, section_id):
+        try:
+            feedback = get_feedback(application_id, section_id)
+            return feedback.as_dict(), 200
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}, 404

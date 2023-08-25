@@ -2,6 +2,7 @@ import json
 from collections import namedtuple
 from datetime import datetime
 from os import getenv
+from uuid import uuid4
 
 import boto3
 from botocore.exceptions import ClientError
@@ -110,6 +111,7 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             MessageBody=json.dumps(message),
             MessageAttributes=SQS_CUSTOM_ATTRIBUTES,
             MessageGroupId="import_applications_group",
+            MessageDeduplicationId=str(uuid4()),
         )
         message_id = response["MessageId"]
         print(f"Message (id: {message_id}) submitted to queue: {queue_url}.")

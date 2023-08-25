@@ -55,8 +55,8 @@ class DefaultConfig:
             AWS_ACCESS_KEY_ID = s3_credentials["aws_access_key_id"]
             AWS_SECRET_ACCESS_KEY = s3_credentials["aws_secret_access_key"]
             AWS_BUCKET_NAME = s3_credentials["bucket_name"]
-        elif "aws-sqs-queue" in vcap_services:
-            sqs_credentials = vcap_services["aws-s3-bucket"][0]["credentials"]
+        if "aws-sqs-queue" in vcap_services:
+            sqs_credentials = vcap_services["aws-sqs-queue"][0]["credentials"]
             AWS_SQS_REGION = sqs_credentials["aws_region"]
             AWS_SQS_ACCESS_KEY_ID = sqs_credentials["aws_access_key_id"]
             AWS_SQS_SECRET_ACCESS_KEY = sqs_credentials["aws_secret_access_key"]

@@ -118,5 +118,6 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             "Error whilst staging onto queue"
             f" '{queue_url}', message with"
             f" attributes '{str(extra_attributes)}'."
+            f" Error : {str(e)}"
         )
         return str(e), 500, {"x-error": "Error"}

@@ -8,15 +8,17 @@ from db.queries import add_new_forms
 from db.queries import create_application
 from db.queries import export_json_to_csv
 from db.queries import get_application
+from db.queries import get_feedback
 from db.queries import get_fund_id
 from db.queries import get_general_status_applications_report
 from db.queries import get_key_report_field_headers
 from db.queries import get_report_for_applications
 from db.queries import search_applications
 from db.queries import submit_application
-from db.queries import add_new_feedback
-from db.queries import get_feedback
 from db.queries import update_form
+from db.queries import upsert_feedback
+from db.queries.feedback import retrieve_end_of_application_survey_data
+from db.queries.feedback import upsert_end_of_application_survey_data
 from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
@@ -194,7 +196,6 @@ class ApplicationsView(MethodView):
                 f"Error on sending SUBMIT notification for application {application_id}"
             )
             return str(e), 500, {"x-error": "Error"}
-        
 
     def post_feedback(self):
         args = request.get_json()
@@ -205,20 +206,47 @@ class ApplicationsView(MethodView):
         feedback_json = args["feedback_json"]
         status = args["status"]
 
-        new_feedback = add_new_feedback(
+        feedback = upsert_feedback(
             application_id=application_id,
             fund_id=fund_id,
             round_id=round_id,
             section_id=section_id,
             feedback_json=feedback_json,
-            status=status
+            status=status,
         )
 
-        return new_feedback, 201
+        return feedback.as_dict(), 201
 
     def get_feedback_for_section(self, application_id, section_id):
         try:
             feedback = get_feedback(application_id, section_id)
             return feedback.as_dict(), 200
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}, 404
+
+    def post_end_of_application_survey_data(self):
+        args = request.get_json()
+        application_id = args["application_id"]
+        fund_id = args["fund_id"]
+        round_id = args["round_id"]
+        page_number = args["page_number"]
+        data = args["data"]
+
+        survey_data = upsert_end_of_application_survey_data(
+            application_id=application_id,
+            fund_id=fund_id,
+            round_id=round_id,
+            page_number=page_number,
+            data=data,
+        )
+
+        return survey_data.as_dict(), 201
+
+    def get_end_of_application_survey_data(self, application_id, page_number):
+        try:
+            survey_data = retrieve_end_of_application_survey_data(
+                application_id, int(page_number)
+            )
+            return survey_data.as_dict(), 200
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}, 404

@@ -176,3 +176,36 @@ components:
       required:
         - code
         - message
+    PostEndOfApplicationSurveyDataRequest:
+      type: object
+      properties:
+        application_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+        page_number:
+          type: integer
+        data:
+          type: object
+          additionalProperties: true
+    GetEndOfApplicationSurveyDataResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        application_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+        page_number:
+          type: integer
+        data:
+          type: object
+          additionalProperties: true
+        date_submitted:
+          type: string
+          format: date-time

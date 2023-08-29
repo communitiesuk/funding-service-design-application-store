@@ -12,6 +12,7 @@ def update_application_status(application_id: str):
     """
     application = get_application(application_id)
 
+    # todo(tferns) keep applications in progress if feedback hasnt been completed.
     form_statuses = [form.status.name for form in application.forms]
     if "IN_PROGRESS" in form_statuses:
         status = "IN_PROGRESS"

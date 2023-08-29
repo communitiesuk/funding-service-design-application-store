@@ -3,7 +3,7 @@ from external_services import post_data
 from flask import current_app
 
 
-class Notification(object):
+class Notification:
     """
     Class for holding Notification operations
     """

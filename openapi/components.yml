@@ -1,5 +1,35 @@
 components:
   schemas:
+    StatusReport:
+      type: object
+      properties:
+        metrics:
+          type: array
+          items:
+            type: object
+            properties:
+              fund_id:
+                type: string
+              rounds:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    round_id:
+                      type: string
+                    application_statuses:
+                      $ref: '#/components/schemas/ApplicationMetrics'
+    ApplicationMetrics:
+      type: object
+      properties:
+        NOT_STARTED:
+          type: integer
+        IN_PROGRESS:
+          type: integer
+        COMPLETED:
+          type: integer
+        SUBMITTED:
+          type: integer
     Application:
       type: object
       properties:

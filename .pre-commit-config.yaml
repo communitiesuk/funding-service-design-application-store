@@ -24,3 +24,8 @@ repos:
       - id: reorder-python-imports
         name: Reorder Python imports (src, tests)
         args: ["--application-directories", "src"]
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v3.10.1
+    hooks:
+    -   id: pyupgrade
+        args: ["--py39-plus"]

@@ -3,8 +3,6 @@ import string
 from datetime import datetime
 from datetime import timezone
 from itertools import groupby
-from typing import Dict
-from typing import List
 from typing import Optional
 
 from db import db
@@ -25,7 +23,7 @@ from sqlalchemy.orm import noload
 from sqlalchemy.sql.expression import Select
 
 
-def get_application(app_id, include_forms=False, as_json=False) -> Dict | Applications:
+def get_application(app_id, include_forms=False, as_json=False) -> dict | Applications:
 
     stmt: Select = select(Applications).filter(Applications.id == app_id)
 
@@ -47,7 +45,7 @@ def get_application(app_id, include_forms=False, as_json=False) -> Dict | Applic
 
 def get_applications(
     filters=[], include_forms=False, as_json=False
-) -> List[Dict] | List[Applications]:
+) -> list[dict] | list[Applications]:
 
     stmt: Select = select(Applications)
 
@@ -144,25 +142,56 @@ def create_application(account_id, fund_id, round_id, language) -> Applications:
         )
 
 
-def get_all_applications() -> List:
+def get_all_applications() -> list:
     application_list = db.session.query(Applications).all()
     return application_list
 
 
 def get_count_by_status(
-    round_id: Optional[str] = None, fund_id: Optional[str] = None
-) -> Dict[str, int]:
-    query = db.session.query(Applications.status, func.count(Applications.status))
+    round_ids: Optional[list] = [], fund_ids: Optional[list] = []
+) -> dict[str, int]:
+    query = db.session.query(
+        Applications.fund_id,
+        Applications.round_id,
+        Applications.status,
+        func.count(Applications.status),
+    )
 
-    if round_id is not None:
-        query = query.filter_by(round_id=round_id)
-    if fund_id is not None:
-        query = query.filter_by(fund_id=fund_id)
+    if round_ids:
+        query = query.filter(Applications.round_id.in_(round_ids))
+    if fund_ids:
+        query = query.filter(Applications.fund_id.in_(fund_ids))
 
-    status_query = query.group_by(Applications.status).all()
-    statuses_with_counts = {status[0].name: status[1] for status in status_query}
-
-    return {**{s.name: 0 for s in ApplicationStatus}, **statuses_with_counts}
+    grouped_by_fund_round_result = (
+        query.group_by(Applications.fund_id)
+        .group_by(Applications.round_id)
+        .group_by(Applications.status)
+        .all()
+    )
+    results = []
+    unique_funds = {f[0] for f in grouped_by_fund_round_result}.union(fund_ids or [])
+    for fund_id in unique_funds:
+        unique_rounds = {
+            row[1] for row in grouped_by_fund_round_result if row[0] == fund_id
+        }.union(round_ids or [])
+        rounds = []
+        for round_id in unique_rounds:
+            this_round_statuses = {
+                s[2].name: s[3]
+                for s in grouped_by_fund_round_result
+                if s[0] == fund_id and s[1] == round_id
+            }
+            rounds.append(
+                {
+                    "round_id": round_id,
+                    "application_statuses": {
+                        **{s.name: 0 for s in ApplicationStatus},
+                        **this_round_statuses,
+                    },
+                }
+            )
+        results.append({"fund_id": fund_id, "rounds": rounds})
+    return results
 
 
 def search_applications(**params):

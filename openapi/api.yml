@@ -399,3 +399,61 @@ paths:
             type: string
           required: false
           explode: false
+
+  /application/end_of_application_survey_data:
+    post:
+      tags:
+        - survey
+      summary: Post end of application survey data
+      operationId: api.ApplicationsView.post_end_of_application_survey_data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'components.yml#/components/schemas/PostEndOfApplicationSurveyDataRequest'
+      responses:
+        201:
+          description: SUCCESS - Survey data saved
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/GetEndOfApplicationSurveyDataResponse'
+        400:
+          description: ERROR - Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+
+    get:
+      tags:
+        - survey
+      summary: Get end of application survey data
+      operationId: api.ApplicationsView.get_end_of_application_survey_data
+      parameters:
+        - in: query
+          name: application_id
+          required: true
+          schema:
+            type: string
+          description: ID of the application
+        - in: query
+          name: page_number
+          required: true
+          schema:
+            type: integer
+          description: Page number of the survey data
+      responses:
+        200:
+          description: SUCCESS - Survey data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/GetEndOfApplicationSurveyDataResponse'
+        404:
+          description: ERROR - Survey data not found
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'

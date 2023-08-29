@@ -1,15 +1,16 @@
 import uuid
 
 from db import db
-from db.models.application.enums import Status
 from db.models.application.applications import Applications
+from db.models.application.enums import Status
 from flask_sqlalchemy import DefaultMeta
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import UUID
-
+from sqlalchemy.sql import func
 from sqlalchemy_json import NestedMutableJson
 
 BaseModel: DefaultMeta = db.Model
+
 
 class Feedback(BaseModel):
     id = db.Column(
@@ -27,9 +28,9 @@ class Feedback(BaseModel):
     section_id = db.Column("section_id", db.String(), nullable=False)
     feedback_json = db.Column("feedback_json", NestedMutableJson, nullable=False)
     status = db.Column("status", db.Enum(Status), default="NOT_STARTED", nullable=False)
-    date_submitted = db.Column("date_submitted", DateTime())
+    date_submitted = db.Column("date_submitted", DateTime(), server_default=func.now())
 
-    __table_args__ = (db.UniqueConstraint("id", "section_id"),)
+    __table_args__ = (db.UniqueConstraint("application_id", "section_id"),)
 
     def as_dict(self):
         date_submitted = (

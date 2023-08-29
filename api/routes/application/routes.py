@@ -20,6 +20,7 @@ from db.queries import upsert_feedback
 from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.feedback import upsert_end_of_application_survey_data
 from db.queries.reporting.queries import export_application_statuses_to_csv
+from db.queries.statuses import update_application_status
 from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
@@ -222,14 +223,19 @@ class ApplicationsView(MethodView):
             status=status,
         )
 
+        update_application_status(application_id)
+
         return feedback.as_dict(), 201
 
     def get_feedback_for_section(self, application_id, section_id):
-        try:
-            feedback = get_feedback(application_id, section_id)
+        feedback = get_feedback(application_id, section_id)
+        if feedback:
             return feedback.as_dict(), 200
-        except NoResultFound as e:
-            return {"code": 404, "message": str(e)}, 404
+
+        return {
+            "code": 404,
+            "message": f"Feedback not fund for {application_id}, {section_id}",
+        }, 404
 
     def post_end_of_application_survey_data(self):
         args = request.get_json()
@@ -247,13 +253,18 @@ class ApplicationsView(MethodView):
             data=data,
         )
 
+        update_application_status(application_id)
+
         return survey_data.as_dict(), 201
 
     def get_end_of_application_survey_data(self, application_id, page_number):
-        try:
-            survey_data = retrieve_end_of_application_survey_data(
-                application_id, int(page_number)
-            )
+        survey_data = retrieve_end_of_application_survey_data(
+            application_id, int(page_number)
+        )
+        if survey_data:
             return survey_data.as_dict(), 200
-        except NoResultFound as e:
-            return {"code": 404, "message": str(e)}, 404
+
+        return {
+            "code": 404,
+            "message": f"Survey data for {application_id}, {page_number} not found",
+        }, 404

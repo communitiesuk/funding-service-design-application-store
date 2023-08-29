@@ -1,5 +1,9 @@
 from db import db
+from db.queries import get_feedback
 from db.queries.application import get_application
+from db.queries.feedback import retrieve_end_of_application_survey_data
+from external_services import get_round
+from external_services.data import get_application_sections
 
 
 def update_application_status(application_id: str):
@@ -12,13 +16,34 @@ def update_application_status(application_id: str):
     """
     application = get_application(application_id)
 
-    # todo(tferns) keep applications in progress if feedback hasnt been completed.
+    all_feedback_completed = True
+    round_instance = get_round(application.fund_id, application.round_id)
+    if round_instance.requires_feedback:
+        sections = get_application_sections(
+            application.fund_id, application.round_id, application.language.name
+        )
+        sections_feedbacks_completed = all(
+            get_feedback(application_id, str(s["id"]))
+            for s in sections
+            if s.get("requires_feedback")
+        )
+        end_of_feedback_survey_completed = all(
+            retrieve_end_of_application_survey_data(application_id, pn) for pn in "1234"
+        )
+        all_feedback_completed = (
+            sections_feedbacks_completed and end_of_feedback_survey_completed
+        )
+
     form_statuses = [form.status.name for form in application.forms]
     if "IN_PROGRESS" in form_statuses:
         status = "IN_PROGRESS"
-    elif "COMPLETED" in form_statuses and "NOT_STARTED" in form_statuses:
+    elif (
+        "COMPLETED" in form_statuses
+        and "NOT_STARTED" in form_statuses
+        or not all_feedback_completed
+    ):
         status = "IN_PROGRESS"
-    elif "COMPLETED" in form_statuses:
+    elif "COMPLETED" in form_statuses and all_feedback_completed:
         status = "COMPLETED"
     elif "SUBMITTED" in form_statuses:
         status = "SUBMITTED"

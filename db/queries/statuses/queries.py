@@ -18,7 +18,7 @@ def update_application_status(application_id: str):
 
     all_feedback_completed = True
     round_instance = get_round(application.fund_id, application.round_id)
-    if round_instance.requires_feedback:
+    if round_instance and round_instance.requires_feedback:
         sections = get_application_sections(
             application.fund_id, application.round_id, application.language.name
         )

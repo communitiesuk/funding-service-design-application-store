@@ -271,6 +271,7 @@ def mock_get_round(mocker):
     round are retrieved, they match what's expected
     """
     mocker.patch("db.queries.application.queries.get_round", new=generate_mock_round)
+    mocker.patch("db.queries.statuses.queries.get_round", new=generate_mock_round)
     mocker.patch(
         "db.schemas.application.get_round_name",
         return_value="Generated test round",

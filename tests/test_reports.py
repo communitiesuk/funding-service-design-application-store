@@ -119,6 +119,7 @@ def test_get_application_statuses_json_multi_fund(
     client,
     seed_data_multiple_funds_rounds,
     _db,
+    mock_get_round,
 ):
     app = get_row_by_pk(Applications, seed_data_multiple_funds_rounds[0][1][0][1][0])
     app.status = "COMPLETED"
@@ -231,7 +232,9 @@ def test_get_applications_report(
         ]
     }
 )
-def test_get_applications_report_query_param(client, seed_data_multiple_funds_rounds):
+def test_get_applications_report_query_param(
+    client, seed_data_multiple_funds_rounds, mock_get_round
+):
 
     response = client.get(
         "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
@@ -239,6 +242,7 @@ def test_get_applications_report_query_param(client, seed_data_multiple_funds_ro
         + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}",
         follow_redirects=True,
     )
+
     raw_lines = response.data.splitlines()
     assert len(raw_lines) == 3
 

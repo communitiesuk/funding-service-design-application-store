@@ -556,6 +556,7 @@ def test_successful_submitted_application(
     mocker,
     mock_get_fund_data,
     mock_submit_message_to_queue,
+    mock_get_round,
 ):
 
     """

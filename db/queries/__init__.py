@@ -5,6 +5,8 @@ from .application import get_count_by_status
 from .application import get_fund_id
 from .application import search_applications
 from .application import submit_application
+from .feedback import get_feedback
+from .feedback import upsert_feedback
 from .form import add_new_forms
 from .form import get_form
 from .form import get_forms_by_app_id
@@ -32,4 +34,6 @@ __all__ = [
     update_application_and_related_form,
     update_form,
     get_fund_id,
+    upsert_feedback,
+    get_feedback,
 ]

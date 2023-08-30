@@ -154,7 +154,7 @@ class ApplicationsView(MethodView):
             return {"code": 404, "message": str(e)}, 404
 
     def submit(self, application_id):
-        should_send_email = False
+        should_send_email = True
         if request.args.get("dont_send_email") == "true":
             should_send_email = False
 

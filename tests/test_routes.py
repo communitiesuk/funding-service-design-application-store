@@ -546,6 +546,7 @@ def test_successful_submitted_application(
     seed_application_records,
     mocker,
     mock_get_fund_data,
+    mock_get_round,
 ):
 
     """

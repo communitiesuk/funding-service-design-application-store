@@ -12,6 +12,7 @@ class Round:
     title: str
     short_name: str
     contact_email: str
+    requires_feedback: bool = False
     project_name_field_id: Optional[str] = None
 
     @staticmethod
@@ -26,4 +27,5 @@ class Round:
             assessment_deadline=data["assessment_deadline"],
             project_name_field_id=data.get("project_name_field_id", None),
             contact_email=data.get("contact_email", None),
+            requires_feedback=data.get("requires_feedback") or False,
         )

@@ -42,7 +42,7 @@ def get_feedback(application_id, section_id):
         .filter(
             Feedback.application_id == application_id, Feedback.section_id == section_id
         )
-        .one()
+        .one_or_none()
     )
 
 
@@ -82,5 +82,5 @@ def retrieve_end_of_application_survey_data(application_id, page_number):
             EndOfApplicationSurveyFeedback.application_id == application_id,
             EndOfApplicationSurveyFeedback.page_number == page_number,
         )
-        .one()
+        .one_or_none()
     )

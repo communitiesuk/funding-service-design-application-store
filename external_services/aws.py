@@ -86,10 +86,6 @@ def _get_queue_url(sqs_client, queue_name):
 
 
 def submit_message_to_queue(message, extra_attributes: dict = None):
-    print(
-        "Attempting to place message on queue"
-        f" '{Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL}'."
-    )
     try:
         SQS_CUSTOM_ATTRIBUTES = {
             "message_created_at": {
@@ -106,13 +102,23 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
             _SQS_CLIENT,
             getenv("AWS_SQS_QUEUE_NAME", "fsd-queue"),
         )
-        response = _SQS_CLIENT.send_message(
-            QueueUrl=queue_url,
-            MessageBody=json.dumps(message),
-            MessageAttributes=SQS_CUSTOM_ATTRIBUTES,
-            MessageGroupId="import_applications_group",
-            MessageDeduplicationId=str(uuid4()),
-        )
+        print(f"Attempting to place message on queue '{queue_url}'.")
+
+        # TODO: Revisit this part after AWS migration
+        if "docker" in queue_url or "local" in queue_url:  # if running on localstack
+            response = _SQS_CLIENT.send_message(
+                QueueUrl=queue_url,
+                MessageBody=json.dumps(message),
+                MessageAttributes=SQS_CUSTOM_ATTRIBUTES,
+            )
+        else:
+            response = _SQS_CLIENT.send_message(
+                QueueUrl=queue_url,
+                MessageBody=json.dumps(message),
+                MessageAttributes=SQS_CUSTOM_ATTRIBUTES,
+                MessageGroupId="import_applications_group",
+                MessageDeduplicationId=str(uuid4()),
+            )
         message_id = response["MessageId"]
         print(f"Message (id: {message_id}) submitted to queue: {queue_url}.")
         return message_id

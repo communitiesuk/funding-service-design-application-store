@@ -55,11 +55,24 @@ class DefaultConfig:
             AWS_ACCESS_KEY_ID = s3_credentials["aws_access_key_id"]
             AWS_SECRET_ACCESS_KEY = s3_credentials["aws_secret_access_key"]
             AWS_BUCKET_NAME = s3_credentials["bucket_name"]
+        if "aws-sqs-queue" in vcap_services:
+            sqs_credentials = vcap_services["aws-sqs-queue"][0]["credentials"]
+            AWS_SQS_REGION = sqs_credentials["aws_region"]
+            AWS_SQS_ACCESS_KEY_ID = sqs_credentials["aws_access_key_id"]
+            AWS_SQS_SECRET_ACCESS_KEY = sqs_credentials["aws_secret_access_key"]
+            AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = sqs_credentials["primary_queue_url"]
+            AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL = sqs_credentials[
+                "secondary_queue_url"
+            ]
     else:
-        AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-        AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+        AWS_ACCESS_KEY_ID = AWS_SQS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = AWS_SQS_SECRET_ACCESS_KEY = os.environ.get(
+            "AWS_SECRET_ACCESS_KEY"
+        )
         AWS_BUCKET_NAME = os.environ.get("AWS_BUCKET_NAME")
-        AWS_REGION = os.environ.get("AWS_REGION")
+        AWS_REGION = AWS_SQS_REGION = os.environ.get("AWS_REGION")
+        AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = ""
+        AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL = ""
 
     # Account Store Endpoints
     ACCOUNTS_ENDPOINT = "/accounts"

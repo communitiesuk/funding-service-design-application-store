@@ -343,3 +343,33 @@ def mocked_get_fund(mocker):
             rounds=None,
         ),
     )
+
+
+@pytest.fixture(autouse=False)
+def mock_submit_message_to_queue(mocker, request):
+
+    function_calls_to_mock_marker = request.node.get_closest_marker(
+        "function_calls_to_mock"
+    )
+    function_calls_to_mock = (
+        function_calls_to_mock_marker.args[0]
+        if function_calls_to_mock_marker
+        else [
+            "api.routes.application.routes.submit_message_to_queue",
+            "api.routes.queues.routes.submit_message_to_queue",
+        ]
+    )
+
+    application_id = "application_id_test"
+
+    mocked_calls = []
+    for mock_func in function_calls_to_mock:
+        mock = mocker.patch(mock_func, return_value=application_id)
+        mocked_calls.append(mock)
+
+    yield mocked_calls
+
+    if function_calls_to_mock_marker:
+        for mock in mocked_calls:
+            assert mock.called == True  # noqa
+            assert len(mock.call_args[0]) == 2

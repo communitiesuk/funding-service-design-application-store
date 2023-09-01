@@ -24,6 +24,7 @@ from db.queries.statuses import update_application_status
 from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
+from external_services.aws import submit_message_to_queue
 from external_services.exceptions import NotificationError
 from external_services.models.notification import Notification
 from flask import current_app
@@ -172,6 +173,18 @@ class ApplicationsView(MethodView):
                 **application_with_form_json,
                 "fund_name": fund_name,
             }
+            application_attributes = {
+                "application_id": {"StringValue": application_id, "DataType": "String"},
+            }
+
+            # Submit message to queue, in a future state this can trigger the
+            # assessment service to import the application
+            #  (currently assessment is using a CRON timer to pick up messages,
+            # not a webhook for triggers)
+            submit_message_to_queue(
+                application_with_form_json,
+                application_attributes,
+            )
 
             if should_send_email:
                 Notification.send(

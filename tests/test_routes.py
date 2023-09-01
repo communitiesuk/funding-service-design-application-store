@@ -1,6 +1,7 @@
 import json
 
 import pytest
+from config import Config
 from db.exceptions import ApplicationError
 from db.models import Applications
 from db.queries.application import get_all_applications
@@ -538,6 +539,14 @@ def test_put_returns_400_on_submitted_application(
     assert b"Not allowed to edit a submitted application." in response.data
 
 
+@pytest.mark.message_attributes(
+    {
+        "queue_name": Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
+    }
+)
+@pytest.mark.function_calls_to_mock(
+    ["api.routes.application.routes.submit_message_to_queue"]
+)
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_successful_submitted_application(
     client,
@@ -546,6 +555,7 @@ def test_successful_submitted_application(
     seed_application_records,
     mocker,
     mock_get_fund_data,
+    mock_submit_message_to_queue,
     mock_get_round,
 ):
 
@@ -570,3 +580,84 @@ def test_successful_submitted_application(
 
     assert response.status_code == 201
     assert all(k in response.json for k in ("id", "email", "reference"))
+
+
+@pytest.mark.message_attributes(
+    {
+        "queue_name": Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
+    }
+)
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_stage_unsubmitted_application_to_queue_fails(
+    client,
+    mock_successful_submit_notification,
+    _db,
+    seed_application_records,
+    mocker,
+    mock_get_fund_data,
+    mock_submit_message_to_queue,
+):
+
+    """
+    GIVEN We request to stage an unsubmitted application to the assessment queue
+    WHEN an application is unsubmitted
+    THEN a 400 response is received in the correct format
+    """
+    mocker.patch(
+        "db.queries.application.queries.list_files_by_prefix", new=lambda _: []
+    )
+    seed_application_records[0].status = "COMPLETED"
+
+    _db.session.add(seed_application_records[0])
+    _db.session.commit()
+
+    # mock successful notification
+    response = client.post(
+        f"/queue_for_assessment/{seed_application_records[0].id}",
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 400
+    assert "Application must be submitted before it can be assessed" in response.text
+
+
+@pytest.mark.message_attributes(
+    {
+        "queue_name": Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
+    }
+)
+@pytest.mark.function_calls_to_mock(
+    ["api.routes.queues.routes.submit_message_to_queue"]
+)
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_stage_submitted_application_to_queue_fails(
+    client,
+    mock_successful_submit_notification,
+    _db,
+    seed_application_records,
+    mocker,
+    mock_get_fund_data,
+    mock_submit_message_to_queue,
+):
+
+    """
+    GIVEN We request to stage an submitted application to the assessment queue
+    WHEN an application is submitted
+    THEN a 201 response is received in the correct format
+    """
+    mocker.patch(
+        "db.queries.application.queries.list_files_by_prefix", new=lambda _: []
+    )
+    seed_application_records[0].status = "SUBMITTED"
+
+    _db.session.add(seed_application_records[0])
+    _db.session.commit()
+
+    # mock successful notification
+    response = client.post(
+        f"/queue_for_assessment/{seed_application_records[0].id}",
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 201
+    assert "Message queued, message_id is:" in response.text

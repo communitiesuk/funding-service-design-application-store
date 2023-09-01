@@ -267,7 +267,6 @@ paths:
               schema:
                 $ref: 'components.yml#/components/schemas/Error'
 
-
   /applications/reporting/key_application_metrics:
     get:
       tags:
@@ -470,3 +469,40 @@ paths:
             application/json:
               schema:
                 $ref: 'components.yml#/components/schemas/Error'
+
+  /queue_for_assessment/{application_id}:
+    post:
+      tags:
+        - SQS (queues)
+      summary: post an application (if it has the status submitted) to the assessment import queue
+      description: post an application (if it has the status submitted) to assessment import queue
+      operationId: api.QueueView.post_submitted_application_to_assessment
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path
+      responses:
+        200:
+          description: SUCCESS - message sent
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: object
+                  properties:
+                    sent:
+                      type: boolean
+        500:
+          description: ERROR - Application cannot be found.
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 500
+                status: 'error'
+                message: 'Message could not be staged'

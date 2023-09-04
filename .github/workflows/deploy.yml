@@ -27,7 +27,7 @@ on:
 jobs:
   test_and_deploy:
     if: ${{ github.actor != 'dependabot[bot]' && !github.event.inputs.copilot }}
-    uses: communitiesuk/funding-design-service-workflows/.github/workflows/deploy.yml@main
+    uses: communitiesuk/funding-service-design-workflows/.github/workflows/deploy.yml@main
     with:
       app_name: ${{ github.event.repository.name }}
       api: true
@@ -47,7 +47,7 @@ jobs:
   paketo_build:
     permissions:
       packages: write
-    uses: communitiesuk/funding-design-service-workflows/.github/workflows/package.yml@main
+    uses: communitiesuk/funding-service-design-workflows/.github/workflows/package.yml@main
     with:
       version_to_build: $(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
       owner: ${{ github.repository_owner }}
@@ -56,7 +56,7 @@ jobs:
     if: ${{ github.event.inputs.copilot }}
     secrets:
       E2E_PAT: ${{secrets.E2E_PAT}}
-    uses: communitiesuk/funding-design-service-workflows/.github/workflows/pre-deploy.yml@main
+    uses: communitiesuk/funding-service-design-workflows/.github/workflows/pre-deploy.yml@main
     with:
       db_name: fsd_app_store_test
       postgres_unit_testing: true

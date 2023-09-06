@@ -24,7 +24,12 @@ FUND_CONFIG = {
                 "short_code": "R3W1",
                 "id": UsefulConfig.COF_ROUND_3_W1_ID,
                 "project_name_form": "project-information-cof-r3-w1",
-            }
+            },
+            "R3W2": {
+                "short_code": "R3W2",
+                "id": UsefulConfig.COF_ROUND_3_W2_ID,
+                "project_name_form": "project-information-cof-r3-w2",
+            },
         },
     },
     "NSTF": {
@@ -51,8 +56,8 @@ FUND_CONFIG = {
 )
 @click.option(
     "--round_short_code",
-    default="R3W1",
-    type=click.Choice(["R3W1", "R2"]),
+    default="R3W2",
+    type=click.Choice(["R3W2", "R3W1", "R2"]),
     help="Round to seed applications for",
     prompt=True,
 )

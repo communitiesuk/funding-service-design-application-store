@@ -64,6 +64,21 @@
       ]
     },
     {
+      "name": "Seed Applications in application-store",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/seed_db_test_data.py",
+      "console": "integratedTerminal",
+      "host": "localhost",
+      "port": 9091,
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env.development",
+      "env": {
+        "PYTHONPATH":"${workspaceFolder}",
+      },
+      "justMyCode": false,
+    },
+    {
       "name": "Prepare DB Migration",
       "type": "python",
       "request": "launch",

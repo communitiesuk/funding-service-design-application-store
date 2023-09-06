@@ -83,12 +83,7 @@ clickclick==20.10.2
     #   -r requirements.txt
     #   connexion
 colorama==0.4.6
-    # via
-    #   -r requirements.txt
-    #   bandit
-    #   build
-    #   click
-    #   pytest
+    # via -r requirements.txt
 colored==1.4.4
     # via -r requirements.txt
 commonmark==0.9.1
@@ -148,7 +143,7 @@ funding-service-design-utils==2.0.18
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython
-gitpython==3.1.30
+gitpython==3.1.33
     # via bandit
 greenlet==2.0.2
     # via

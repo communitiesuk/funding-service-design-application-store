@@ -9,20 +9,33 @@ from botocore.exceptions import ClientError
 from config import Config
 
 _KEY_PARTS = ("application_id", "form", "path", "component_id", "filename")
-_S3_CLIENT = boto3.client(
-    "s3",
-    aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY,
-    region_name=Config.AWS_REGION,
-    endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
-)
-_SQS_CLIENT = boto3.client(
-    "sqs",
-    aws_access_key_id=Config.AWS_SQS_ACCESS_KEY_ID,
-    aws_secret_access_key=Config.AWS_SQS_SECRET_ACCESS_KEY,
-    region_name=Config.AWS_SQS_REGION,
-    endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
-)
+
+if getenv("PRIMARY_QUEUE_URL", "Primary Queue URL Not Set") == "Primary Queue URL Not Set":
+    _S3_CLIENT = boto3.client(
+        "s3",
+        aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY,
+        region_name=Config.AWS_REGION,
+        endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
+    )
+    _SQS_CLIENT = boto3.client(
+        "sqs",
+        aws_access_key_id=Config.AWS_SQS_ACCESS_KEY_ID,
+        aws_secret_access_key=Config.AWS_SQS_SECRET_ACCESS_KEY,
+        region_name=Config.AWS_SQS_REGION,
+        endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
+    )
+else:
+    _S3_CLIENT = boto3.client(
+        "s3",
+        region_name=Config.AWS_REGION,
+        endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
+    )
+    _SQS_CLIENT = boto3.client(
+        "sqs",
+        region_name=Config.AWS_REGION,
+        endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
+    )
 
 FileData = namedtuple("FileData", _KEY_PARTS)
 

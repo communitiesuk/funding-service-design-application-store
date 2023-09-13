@@ -1,4 +1,5 @@
 from db import db
+from db.models.forms.forms import Forms
 from db.queries import get_feedback
 from db.queries.application import get_application
 from db.queries.feedback import retrieve_end_of_application_survey_data
@@ -53,34 +54,30 @@ def update_application_status(application_id: str):
     application.status = status
 
 
-def update_form_statuses(
-    application_id: str,
-    form_name: str,
+def update_form_status(
+    form_to_update: Forms,
     is_summary_page_submitted: bool = False,
 ):
     """
-    Updates the question statuses of each question if a value is present
+    Updates the status of a whole form based on the statuses of all questions within the form
 
-    Args:
-        application_id: The application id
+    Parameters:
+        form_to_update (`Forms'): Forms object that we want to update.
+        This object is updated by this function so needs to be within the DB context
+        is_summary_page_submit (`bool`): Whether or not this is an update from submitting the summary page
+
     """
-    stored_forms = get_application(
-        application_id, as_json=False, include_forms=True
-    ).forms
 
-    current_form = [
-        stored_form for stored_form in stored_forms if stored_form.name == form_name
-    ][0]
-    status_list = [question["status"] for question in current_form.json]
+    status_list = [question["status"] for question in form_to_update.json]
     if "COMPLETED" not in status_list:
-        current_form.status = "NOT_STARTED"
-    elif "NOT_STARTED" not in status_list and current_form.has_completed:
-        current_form.status = "COMPLETED"
+        form_to_update.status = "NOT_STARTED"
+    elif "NOT_STARTED" not in status_list and form_to_update.has_completed:
+        form_to_update.status = "COMPLETED"
     elif "NOT_STARTED" not in status_list and is_summary_page_submitted:
-        current_form.status = "COMPLETED"
-        current_form.has_completed = True
+        form_to_update.status = "COMPLETED"
+        form_to_update.has_completed = True
     else:
-        current_form.status = "IN_PROGRESS"
+        form_to_update.status = "IN_PROGRESS"
 
 
 def _is_field_answered(field: dict) -> bool:
@@ -171,10 +168,9 @@ def update_question_statuses(stored_form_json: dict):
 
 
 def update_statuses(application_id, form_name, is_summary_page_submitted=False):
-    stored_form_json = get_form(application_id=application_id, form_name=form_name).json
-    update_question_statuses(stored_form_json=stored_form_json)
-    db.session.commit()
-    update_form_statuses(application_id, form_name, is_summary_page_submitted)
+    form_to_update = get_form(application_id=application_id, form_name=form_name)
+    update_question_statuses(stored_form_json=form_to_update.json)
+    update_form_status(form_to_update, is_summary_page_submitted)
     db.session.commit()
     update_application_status(application_id)
     db.session.commit()

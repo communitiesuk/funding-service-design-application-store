@@ -83,7 +83,16 @@ def update_form_statuses(
         current_form.status = "IN_PROGRESS"
 
 
-def _is_field_answered(field):
+def _is_field_answered(field: dict) -> bool:
+    """
+    Determines whether or not an answer has been provided for the supplied field.
+
+    Parameters:
+    field (`dict`): The field we want to find and answer for
+
+    Returns:
+    bool: Whether or not the field has been answered
+    """
     answer_or_not_specified = field.get("answer")
     match answer_or_not_specified:  # noqa
         case "":
@@ -99,15 +108,34 @@ def _is_field_answered(field):
             return True
 
 
-def _determine_answer_status_for_fields(fields_in_question) -> list[bool]:
+def _determine_answer_status_for_fields(fields_in_question: list[dict]) -> list[bool]:
+    """
+    Builds a list of bools representing which fields have been answered in the supplied question
+
+    Parameters:
+    fields_in_question (`list[dict]`): The fields element from a question in the form
+
+    Returns:
+    list: True or False for each field in the question, eg. `[True, True, False]`
+    """
     answer_found_list = [_is_field_answered(field) for field in fields_in_question]
     return answer_found_list
 
 
 def _determine_question_status_from_answers(answer_found_list: list[bool]) -> str:
+    """
+    Determines the status of this question, based on the supplied list of whether each field is answered
+
+    Parameters:
+        answer_found_list (`list[bool]`): Whether or not each field in the question has an answer,
+        eg. `[True, True, False]`
+
+    Returns:
+        str: The status of this question
+    """
 
     # If we found no answers
-    if not answer_found_list or len(answer_found_list) == 0:
+    if not answer_found_list:
         return "NOT_STARTED"
     # If all answers are given
     if all(answer_found_list):
@@ -120,12 +148,14 @@ def _determine_question_status_from_answers(answer_found_list: list[bool]) -> st
         return "NOT_STARTED"
 
 
-def update_question_statuses(stored_form_json):
+def update_question_statuses(stored_form_json: dict):
     """
-    Updates the question statuses of each question if a value is present
+    Updates `status` field in every question in this form object, based on whether or not answers are supplied
 
-    Args:
-        application_id: The application id
+    Parameters:
+        stored_form_json: The json object, within the db context, representing the form to update.
+        This same object will be updated by this function.
+
     """
     for question_page in stored_form_json:
         question_page["status"] = question_page.get("status", "NOT_STARTED")

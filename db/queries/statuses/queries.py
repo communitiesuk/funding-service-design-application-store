@@ -2,6 +2,7 @@ from db import db
 from db.queries import get_feedback
 from db.queries.application import get_application
 from db.queries.feedback import retrieve_end_of_application_survey_data
+from db.queries.form.queries import get_form
 from external_services import get_round
 from external_services.data import get_application_sections
 
@@ -50,7 +51,6 @@ def update_application_status(application_id: str):
     else:
         status = "NOT_STARTED"
     application.status = status
-    db.session.commit()
 
 
 def update_form_statuses(
@@ -81,58 +81,70 @@ def update_form_statuses(
         current_form.has_completed = True
     else:
         current_form.status = "IN_PROGRESS"
-    db.session.commit()
 
 
-def update_question_statuses(application_id: str, form_name: str):
+def _is_field_answered(field):
+    answer_or_not_specified = field.get("answer")
+    match answer_or_not_specified:  # noqa
+        case "":
+            return False
+        case []:  # noqa (E211)
+            return False
+        # optional questions return None (not string)
+        # when submitted with no answer
+        case None:
+            return True
+        # default case when there is an answer
+        case _:
+            return True
+
+
+def _determine_answer_status_for_fields(fields_in_question) -> list[bool]:
+    answer_found_list = [_is_field_answered(field) for field in fields_in_question]
+    return answer_found_list
+
+
+def _determine_question_status_from_answers(answer_found_list: list[bool]) -> str:
+
+    # If we found no answers
+    if not answer_found_list or len(answer_found_list) == 0:
+        return "NOT_STARTED"
+    # If all answers are given
+    if all(answer_found_list):
+        return "COMPLETED"
+    # If some answers are given
+    elif any(answer_found_list):
+        return "IN_PROGRESS"
+    # If no answers are given
+    else:
+        return "NOT_STARTED"
+
+
+def update_question_statuses(stored_form_json):
     """
     Updates the question statuses of each question if a value is present
 
     Args:
         application_id: The application id
     """
-    stored_forms = get_application(
-        application_id, as_json=False, include_forms=True
-    ).forms
+    for question_page in stored_form_json:
+        question_page["status"] = question_page.get("status", "NOT_STARTED")
 
-    for stored_form in stored_forms:
-        if stored_form.name == form_name:
-            for question_page in stored_form.json:
-                question_page["status"] = question_page.get("status", "NOT_STARTED")
-                if question_page["status"] == "SUBMITTED":
-                    break
+        # doesn't look like we ever set a question_page status to be SUBMITTED
+        # if question_page["status"] == "SUBMITTED":
+        #     break
 
-                def is_field_answered(field):
-                    answer_or_not_specified = field.get("answer")
-                    match answer_or_not_specified:  # noqa
-                        case "":
-                            return False
-                        case []:  # noqa (E211)
-                            return False
-                        # optional questions return None (not string)
-                        # when submitted with no answer
-                        case None:
-                            return True
-                        # default case when there is an answer
-                        case _:
-                            return True
-
-                answer_found_list = [
-                    is_field_answered(field) for field in question_page["fields"]
-                ]
-                # If all answers are given
-                if all(answer_found_list):
-                    question_page["status"] = "COMPLETED"
-                # If some answers are given
-                elif not all([not found_answer for found_answer in answer_found_list]):
-                    question_page["status"] = "IN_PROGRESS"
-                # If no answers are given
-                else:
-                    question_page["status"] = "NOT_STARTED"
-    db.session.commit()
+        answer_found_list = _determine_answer_status_for_fields(question_page["fields"])
+        question_page["status"] = _determine_question_status_from_answers(
+            answer_found_list
+        )
 
 
 def update_statuses(application_id, form_name, is_summary_page_submitted=False):
-    update_question_statuses(application_id, form_name)
+    stored_form_json = get_form(application_id=application_id, form_name=form_name).json
+    update_question_statuses(stored_form_json=stored_form_json)
+    db.session.commit()
     update_form_statuses(application_id, form_name, is_summary_page_submitted)
+    db.session.commit()
     update_application_status(application_id)
+    db.session.commit()

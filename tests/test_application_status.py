@@ -1,6 +1,9 @@
+from unittest.mock import MagicMock
+
 import pytest
 from db.queries.statuses.queries import _determine_question_status_from_answers
 from db.queries.statuses.queries import _is_field_answered
+from db.queries.statuses.queries import update_form_status
 from db.queries.statuses.queries import update_question_statuses
 
 
@@ -73,3 +76,50 @@ def test_update_question_statuses(form_json, exp_status):
     update_question_statuses(form_json)
     for form in form_json:
         assert form["status"] == exp_status
+
+
+@pytest.mark.parametrize(
+    "form_json,form_has_completed,is_summary_submit,exp_status,exp_has_completed",
+    [
+        ([{"status": "NOT_STARTED"}], False, False, "NOT_STARTED", False),
+        (
+            [{"status": "IN_PROGRESS"}, {"status": "COMPLETED"}],
+            False,
+            False,
+            "IN_PROGRESS",
+            False,
+        ),
+        (
+            [{"status": "NOT_STARTED"}, {"status": "COMPLETED"}],
+            False,
+            False,
+            "IN_PROGRESS",
+            False,
+        ),
+        (
+            [{"status": "COMPLETED"}, {"status": "COMPLETED"}],
+            False,
+            False,
+            "IN_PROGRESS",
+            False,
+        ),
+        (
+            [{"status": "COMPLETED"}, {"status": "COMPLETED"}],
+            False,
+            True,
+            "COMPLETED",
+            True,
+        ),
+        ([{"status": "NOT_STARTED"}], True, False, "NOT_STARTED", True),
+        ([{"status": "COMPLETED"}], True, False, "COMPLETED", True),
+    ],
+)
+def test_update_form_status(
+    form_json, form_has_completed, is_summary_submit, exp_status, exp_has_completed
+):
+    form_to_update = MagicMock()
+    form_to_update.json = form_json
+    form_to_update.has_completed = form_has_completed
+    update_form_status(form_to_update, is_summary_submit)
+    assert form_to_update.status == exp_status
+    assert form_to_update.has_completed == exp_has_completed

@@ -1,4 +1,5 @@
 from db import db
+from db.models import Applications
 from db.models.forms.forms import Forms
 from db.queries import get_feedback
 from db.queries.application import get_application
@@ -8,41 +9,50 @@ from external_services import get_round
 from external_services.data import get_application_sections
 
 
-def update_application_status(application_id: str):
-    """
-    Updates the application status for an entire application,
-    based on status of individual forms
+def _is_all_feedback_complete(application_id, fund_id, round_id, language: str):
+    sections = get_application_sections(fund_id, round_id, language)
+    sections_feedbacks_completed = all(
+        get_feedback(application_id, str(s["id"]))
+        for s in sections
+        if s.get("requires_feedback")
+    )
+    end_of_feedback_survey_completed = all(
+        retrieve_end_of_application_survey_data(application_id, pn) for pn in "1234"
+    )
+    all_feedback_completed = (
+        sections_feedbacks_completed and end_of_feedback_survey_completed
+    )
+    return all_feedback_completed
 
-    Args:
-        application_id: The application id
+
+def update_application_status(
+    application_with_forms: Applications, round_requires_feedback: bool
+) -> str:
     """
-    application = get_application(application_id)
+    Updates the status of the supplied application based on the status of all
+    forms with that application, and the status of feedback forms (if the round requires feedback)
+
+    Parameters:
+        application_with_forms (`Applications`): Application record to update, with the form jsons populated
+            This object should be within a db context as the function updates it.
+        round_requires_feedback (`bool`): Whether or not this round needs feedback
+
+    """
 
     all_feedback_completed = True
-    round_instance = get_round(application.fund_id, application.round_id)
-    if round_instance and round_instance.requires_feedback:
-        sections = get_application_sections(
-            application.fund_id, application.round_id, application.language.name
-        )
-        sections_feedbacks_completed = all(
-            get_feedback(application_id, str(s["id"]))
-            for s in sections
-            if s.get("requires_feedback")
-        )
-        end_of_feedback_survey_completed = all(
-            retrieve_end_of_application_survey_data(application_id, pn) for pn in "1234"
-        )
-        all_feedback_completed = (
-            sections_feedbacks_completed and end_of_feedback_survey_completed
+    if round_requires_feedback:
+        all_feedback_completed = _is_all_feedback_complete(
+            application_with_forms.id,
+            application_with_forms.fund_id,
+            application_with_forms.round_id,
+            application_with_forms.language.name,
         )
 
-    form_statuses = [form.status.name for form in application.forms]
+    form_statuses = [form.status.name for form in application_with_forms.forms]
     if "IN_PROGRESS" in form_statuses:
         status = "IN_PROGRESS"
-    elif (
-        "COMPLETED" in form_statuses
-        and "NOT_STARTED" in form_statuses
-        or not all_feedback_completed
+    elif "COMPLETED" in form_statuses and (
+        "NOT_STARTED" in form_statuses or not all_feedback_completed
     ):
         status = "IN_PROGRESS"
     elif "COMPLETED" in form_statuses and all_feedback_completed:
@@ -51,7 +61,7 @@ def update_application_status(application_id: str):
         status = "SUBMITTED"
     else:
         status = "NOT_STARTED"
-    application.status = status
+    application_with_forms.status = status
 
 
 def update_form_status(
@@ -172,5 +182,7 @@ def update_statuses(application_id, form_name, is_summary_page_submitted=False):
     update_question_statuses(stored_form_json=form_to_update.json)
     update_form_status(form_to_update, is_summary_page_submitted)
     db.session.commit()
-    update_application_status(application_id)
+    application = get_application(application_id, include_forms=True)
+    round = get_round(application.fund_id, application.round_id)
+    update_application_status(application, round.requires_feedback)
     db.session.commit()

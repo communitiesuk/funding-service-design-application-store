@@ -46,7 +46,12 @@ class DefaultConfig:
         NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
     )
 
-    if "VCAP_SERVICES" in os.environ:
+    if "PRIMARY_QUEUE_URL" in os.environ:
+        AWS_REGION = AWS_SQS_REGION = os.environ.get("AWS_REGION")
+        AWS_BUCKET_NAME = os.environ.get("AWS_BUCKET_NAME")
+        AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = os.environ.get("PRIMARY_QUEUE_URL")
+        AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL = os.environ.get("DEAD_LETTER_QUEUE_URL")
+    elif "VCAP_SERVICES" in os.environ:
         vcap_services = json.loads(os.environ["VCAP_SERVICES"])
 
         if "aws-s3-bucket" in vcap_services:

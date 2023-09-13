@@ -45,9 +45,15 @@ network:
 variables:
   # SENTRY_DSN: "https://8092c54bdc3a4b4ba124dea42b836504@o1432034.ingest.sentry.io/4503918903820288"
   FLASK_ENV: ${COPILOT_ENVIRONMENT_NAME}
-  NOTIFICATION_SERVICE_HOST: http://fsd-notification.${COPILOT_ENVIRONMENT_NAME}.pre-award.internal
-  ACCOUNT_STORE_API_HOST: http://fsd-account-store.${COPILOT_ENVIRONMENT_NAME}.pre-award.internal
-  FUND_STORE_API_HOST: http://fsd-fund-store.${COPILOT_ENVIRONMENT_NAME}.pre-award.internal
+  AWS_BUCKET_NAME:
+    from_cfn: ${COPILOT_APPLICATION_NAME}-${COPILOT_ENVIRONMENT_NAME}-FormUploadsBucket
+  PRIMARY_QUEUE_URL:
+    from_cfn: ${COPILOT_APPLICATION_NAME}-${COPILOT_ENVIRONMENT_NAME}-AssessmentImportQueueURL
+  DEAD_LETTER_QUEUE_URL:
+    from_cfn: ${COPILOT_APPLICATION_NAME}-${COPILOT_ENVIRONMENT_NAME}-DeadLetterQueueURL
+  NOTIFICATION_SERVICE_HOST: http://fsd-notification:8080
+  ACCOUNT_STORE_API_HOST: http://fsd-account-store:8080
+  FUND_STORE_API_HOST: http://fsd-fund-store:8080
 
 # You can override any of the values defined above by environment.
 environments:

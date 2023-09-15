@@ -20,7 +20,7 @@ from db.queries import upsert_feedback
 from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.feedback import upsert_end_of_application_survey_data
 from db.queries.reporting.queries import export_application_statuses_to_csv
-from db.queries.statuses import update_application_status
+from db.queries.statuses import update_statuses
 from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
@@ -236,7 +236,7 @@ class ApplicationsView(MethodView):
             status=status,
         )
 
-        update_application_status(application_id)
+        update_statuses(application_id, form_name=None)
 
         return feedback.as_dict(), 201
 
@@ -266,7 +266,7 @@ class ApplicationsView(MethodView):
             data=data,
         )
 
-        update_application_status(application_id)
+        update_statuses(application_id, form_name=None)
 
         return survey_data.as_dict(), 201
 

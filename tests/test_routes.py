@@ -1,7 +1,6 @@
 import json
 
 import pytest
-from config import Config
 from db.exceptions import ApplicationError
 from db.models import Applications
 from db.queries.application import get_all_applications
@@ -539,11 +538,6 @@ def test_put_returns_400_on_submitted_application(
     assert b"Not allowed to edit a submitted application." in response.data
 
 
-@pytest.mark.message_attributes(
-    {
-        "queue_name": Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
-    }
-)
 @pytest.mark.function_calls_to_mock(
     ["api.routes.application.routes.submit_message_to_queue"]
 )
@@ -582,11 +576,6 @@ def test_successful_submitted_application(
     assert all(k in response.json for k in ("id", "email", "reference"))
 
 
-@pytest.mark.message_attributes(
-    {
-        "queue_name": Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
-    }
-)
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_stage_unsubmitted_application_to_queue_fails(
     client,
@@ -621,11 +610,6 @@ def test_stage_unsubmitted_application_to_queue_fails(
     assert "Application must be submitted before it can be assessed" in response.text
 
 
-@pytest.mark.message_attributes(
-    {
-        "queue_name": Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
-    }
-)
 @pytest.mark.function_calls_to_mock(
     ["api.routes.queues.routes.submit_message_to_queue"]
 )

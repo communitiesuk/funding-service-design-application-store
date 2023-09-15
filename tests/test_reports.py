@@ -246,19 +246,21 @@ def test_get_applications_report_query_param(
     raw_lines = response.data.splitlines()
     assert len(raw_lines) == 3
 
-    line1, line2, line3 = (line.decode("utf-8") for line in response.data.splitlines())
+    lines = [line.decode("utf-8") for line in response.data.splitlines()]
     assert (
-        line1
+        lines[0]
         == "eoi_reference,organisation_name,organisation_type,asset_type,"
         "geography,capital,revenue,organisation_name_nstf"
     )
 
-    field1, field2, _, _, field5, _, _, _ = line2.split(",")
-    assert field1 == "Test Reference Number"
-    assert field2.startswith("Test Org Name ")
-    assert field5 == "W1A 1AA"
+    for line in lines[1:]:
 
-    field1, field2, _, _, field5, _, _, _ = line3.split(",")
-    assert field1 == "Test Reference Number Welsh"
-    assert field2.startswith("Test Org Name 2cy")
-    assert field5 == "CF10 3NQ"
+        field1, field2, _, _, field5, _, _, _ = line.split(",")
+        if field1 == "Test Reference Number":
+            assert field2.startswith("Test Org Name ")
+            assert field5 == "W1A 1AA"
+        elif field1 == "Test Reference Number Welsh":
+            assert field2.startswith("Test Org Name 2cy")
+            assert field5 == "CF10 3NQ"
+        else:
+            assert 1 == 0, "Unexpected value for first column"

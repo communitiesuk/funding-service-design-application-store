@@ -177,17 +177,19 @@ def update_statuses(
     application_id: str, form_name: str, is_summary_page_submitted: bool = False
 ):
     """
-    Updates the status of questions, forms, and the application, based on the state of the supplied form
+    Updates the status of questions, forms, and the application, based on the state of the supplied form. If no form
+    supplied, just updates the status of the application (based on feedback and form status)
 
     Parameters:
         application_id (`str`): ID of the application to update the status
-        form_name (`str`): Name of the form that has been updated, use this form as the basis for the update
+        form_name (`str`): Name of the form that has been updated, uses this form as the basis for the update
         is_summary_page_submitted (`bool`): If this is as a result of submitting from the summary page of a form.
     """
-    form_to_update = get_form(application_id=application_id, form_name=form_name)
-    update_question_statuses(stored_form_json=form_to_update.json)
-    update_form_status(form_to_update, is_summary_page_submitted)
-    db.session.commit()
+    if form_name:
+        form_to_update = get_form(application_id=application_id, form_name=form_name)
+        update_question_statuses(stored_form_json=form_to_update.json)
+        update_form_status(form_to_update, is_summary_page_submitted)
+        db.session.commit()
 
     application = get_application(application_id, include_forms=True)
     round = get_round(application.fund_id, application.round_id)

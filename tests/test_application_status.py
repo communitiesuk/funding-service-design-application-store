@@ -1,12 +1,12 @@
 from unittest.mock import MagicMock
 
 import pytest
-from db.queries.statuses.queries import _determine_question_status_from_answers
+from db.queries.statuses.queries import _determine_question_page_status_from_answers
 from db.queries.statuses.queries import _is_all_feedback_complete
 from db.queries.statuses.queries import _is_field_answered
 from db.queries.statuses.queries import update_application_status
 from db.queries.statuses.queries import update_form_status
-from db.queries.statuses.queries import update_question_statuses
+from db.queries.statuses.queries import update_question_page_statuses
 
 
 @pytest.mark.parametrize(
@@ -23,7 +23,7 @@ from db.queries.statuses.queries import update_question_statuses
     ],
 )
 def test_determine_question_status_from_answers(answer_found_list, exp_status):
-    assert _determine_question_status_from_answers(answer_found_list) == exp_status
+    assert _determine_question_page_status_from_answers(answer_found_list) == exp_status
 
 
 @pytest.mark.parametrize(
@@ -43,7 +43,7 @@ def test_is_field_answered(field_json, exp_result):
 
 def test_update_question_statuses_with_mocks(mocker):
     mock_question_status = mocker.patch(
-        "db.queries.statuses.queries._determine_question_status_from_answers",
+        "db.queries.statuses.queries._determine_question_page_status_from_answers",
         return_value="NOT_STARTED",
     )
     mock_answer_status = mocker.patch(
@@ -52,7 +52,7 @@ def test_update_question_statuses_with_mocks(mocker):
 
     test_json = [{"fields": [], "status": None}, {"fields": [], "status": None}]
 
-    update_question_statuses(test_json)
+    update_question_page_statuses(test_json)
 
     assert test_json[0]["status"] == "NOT_STARTED"
     assert test_json[1]["status"] == "NOT_STARTED"
@@ -75,7 +75,7 @@ def test_update_question_statuses_with_mocks(mocker):
     ],
 )
 def test_update_question_statuses(form_json, exp_status):
-    update_question_statuses(form_json)
+    update_question_page_statuses(form_json)
     for form in form_json:
         assert form["status"] == exp_status
 

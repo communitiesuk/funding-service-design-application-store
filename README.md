@@ -58,7 +58,10 @@ Set the environment variables "DATABASE_URL" to your postgres connection string 
 
 Eg.
 
-`export DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres`
+```
+# pragma: allowlist nextline secret
+export DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres
+```
 
 
 ### Build with Paketo
@@ -204,7 +207,7 @@ To seed applicaitons, we need the completed form json. If you have that, skip to
 1. Get a submitted application into your local DB. You can either do this manually or by running the automated tests against your local docker runner.
 1. Find the `application_id` of that submitted application._
 1. Edit the [tests file](/tests/test_seed_db.py) to un-skip `test_retrieve_test_data` and then set `target_app` to be the `application_id` you just submitted.
-1. Update your unit test config to point at the same DB as the docker runner. Update [pytest.ini](/pytest.ini) so that `D:DATABASE_URL` points at the docker runner application store db: `D:DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5433/application_store`
+1. Update your unit test config to point at the same DB as the docker runner. Update [pytest.ini](/pytest.ini) so that `D:DATABASE_URL` points at the docker runner application store db: `D:DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5433/application_store  # pragma: allowlist secret`
 1. Run the single test `test_retrieve_test_data` - this should output the json of all the completed forms for that application into funding-service-design-store/forms.json.
 1. Copy this file into [seed_data](/tests/seed_data/) and name it `<fund_short_code>_<round_short_code>_all_forms.json`.
 1. *IMPORTANT* Change the config in [pytest.ini](/pytest.ini) back to what it was so you don't accidentally wipe your docker runner DB next time you run tests!

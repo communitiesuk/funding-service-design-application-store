@@ -2,7 +2,6 @@ import csv
 import io
 import re
 from collections.abc import Iterable
-from io import BytesIO
 from typing import Optional
 
 import pandas as pd
@@ -60,18 +59,19 @@ def export_json_to_csv(return_data, headers=None):
 
 
 def export_json_to_excel(return_data: dict):
-    output = BytesIO()
+    output = io.BytesIO()
 
     if not return_data:
-        return output.getvalue()
+        return output
 
-    writer = pd.ExcelWriter(output)
-    for key in return_data.keys():
-        df = pd.DataFrame(return_data[key])
-        df.to_excel(writer, sheet_name=key)
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        for key in return_data.keys():
+            df = pd.DataFrame(return_data[key])
+            df.to_excel(writer, sheet_name=key)
 
-    writer.close()
-    return output.getvalue()
+    # seeking was necessary. Python 3.5.2, Flask 0.12.2
+    output.seek(0)
+    return output
 
 
 def get_general_status_applications_report(

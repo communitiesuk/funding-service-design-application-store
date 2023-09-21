@@ -285,19 +285,19 @@ class ApplicationsView(MethodView):
             "message": f"Survey data for {application_id}, {page_number} not found",
         }, 404
 
-    def get_all_feedbacks_and_survey(self, **params):
+    def get_all_feedbacks_and_survey_report(self, **params):
         fund_id = params.get("fund_id")
         round_id = params.get("round_id")
         status = params.get("status_only")
 
         try:
             return send_file(
-                export_json_to_excel(
+                path_or_file=export_json_to_excel(
                     retrieve_all_feedbacks_and_surveys(fund_id, round_id, status)
                 ),
-                "application/vnd.ms-excel",
+                mimetype="application/vnd.ms-excel",
                 as_attachment=True,
-                download_name=f"fsd_feedback_{str(int(time.time())) }.xlsx",
+                download_name=f"fsd_feedback_{str(int(time.time()))}.xlsx",
             )
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}, 404

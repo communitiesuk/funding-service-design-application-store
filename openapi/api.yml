@@ -477,7 +477,7 @@ paths:
         - survey
       summary: Retrive all section feedbacks & survey
       description: Retrive all section feedbacks & survey
-      operationId: api.ApplicationsView.get_all_feedbacks_and_survey
+      operationId: api.ApplicationsView.get_all_feedbacks_and_survey_report
       responses:
         200:
           description: SUCCESS - Here is the report on requested applicants feedback & survey

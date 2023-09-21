@@ -2,8 +2,11 @@ import pytest
 from pytest import raises
 from scripts.send_application_on_closure import (
     send_incomplete_applications_after_deadline,
-)  # noqa
+)
+from tests.conftest import get_args
 from tests.helpers import test_application_data
+
+# noqa
 
 
 class TestSendAppOnClosure:
@@ -104,6 +107,38 @@ class TestSendAppOnClosure:
             unique_fund_round[0], unique_fund_round[1], True
         )
         assert 1 == result
+
+    @pytest.mark.apps_to_insert([test_application_data[0], test_application_data[0]])
+    @pytest.mark.unique_fund_round(True)
+    def test_send_single_application(
+        self,
+        mocker,
+        client,
+        seed_application_records,
+        unique_fund_round,
+        mocked_get_fund,
+    ):
+        mocker.patch(
+            "scripts.send_application_on_closure.get_fund_round",
+            return_value={
+                "deadline": "2022-12-01 12:00:00",
+                "round_name": "COF R2W2",
+            },
+        )
+        args, _ = get_args(seed_application_records, unique_fund_round, single_app=True)
+        result = send_incomplete_applications_after_deadline(**args)
+        assert 1 == result
+
+        args, _ = get_args(seed_application_records, unique_fund_round)
+        result = send_incomplete_applications_after_deadline(**args)
+        assert 2 == result
+
+        # TODO: To be worked on 25-09-2023
+        # with pytest.raises(ValueError) as error_info:
+        #     send_incomplete_applications_after_deadline(**args_with_error)
+
+        # error_message = "The application_id argument is required if single_application is True"
+        # assert str(error_info.value) == error_message
 
     @pytest.mark.apps_to_insert([test_application_data[0]])
     @pytest.mark.unique_fund_round(True)

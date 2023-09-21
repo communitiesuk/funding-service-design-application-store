@@ -167,20 +167,24 @@ def init_argparse() -> argparse.ArgumentParser:
 def main() -> None:
     parser = init_argparse()
     args = parser.parse_args()
+    single_application = (
+        strtobool(args.single_application)
+        if args.single_application is not None
+        and not isinstance(args.single_application, bool)
+        else args.single_application
+    )
 
-    #  Check if single_application is True and application_id is not provided
-    if args.single_application and args.application_id is None:
-        parser.error(
+    if single_application and args.application_id is None:
+        error_message = (
             "The application_id argument is required if single_application is True"
         )
+        current_app.logger.error(error_message)
+        raise ValueError(error_message)
 
     send_incomplete_applications_after_deadline(
         fund_id=args.fund_id,
         round_id=args.round_id,
-        single_application=strtobool(args.single_application)
-        if args.single_application is not None
-        and not isinstance(args.single_application, bool)
-        else args.single_application,
+        single_application=single_application,
         application_id=args.application_id,
         send_email=strtobool(args.send_email),
     )

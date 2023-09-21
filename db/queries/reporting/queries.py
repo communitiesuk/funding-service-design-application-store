@@ -2,12 +2,13 @@ import csv
 import io
 import re
 from collections.abc import Iterable
+from io import BytesIO
 from typing import Optional
 
+import pandas as pd
 from db.models import Applications
 from db.queries import get_applications
 from db.queries.application import get_count_by_status
-
 
 APPLICATION_STATUS_HEADERS = [
     "fund_id",
@@ -56,6 +57,21 @@ def export_json_to_csv(return_data, headers=None):
     bytes_object = bytes(output.getvalue(), encoding="utf-8")
     bytes_output = io.BytesIO(bytes_object)
     return bytes_output
+
+
+def export_json_to_excel(return_data: dict):
+    output = BytesIO()
+
+    if not return_data:
+        return output.getvalue()
+
+    writer = pd.ExcelWriter(output)
+    for key in return_data.keys():
+        df = pd.DataFrame(return_data[key])
+        df.to_excel(writer, sheet_name=key)
+
+    writer.close()
+    return output.getvalue()
 
 
 def get_general_status_applications_report(

@@ -1,3 +1,4 @@
+import time
 from typing import Optional
 
 from _helpers import get_blank_forms
@@ -7,6 +8,7 @@ from db.models.application.enums import Status
 from db.queries import add_new_forms
 from db.queries import create_application
 from db.queries import export_json_to_csv
+from db.queries import export_json_to_excel
 from db.queries import get_application
 from db.queries import get_feedback
 from db.queries import get_fund_id
@@ -288,4 +290,14 @@ class ApplicationsView(MethodView):
         round_id = params.get("round_id")
         status = params.get("status_only")
 
-        return retrieve_all_feedbacks_and_surveys(fund_id, round_id, status), 200
+        try:
+            return send_file(
+                export_json_to_excel(
+                    retrieve_all_feedbacks_and_surveys(fund_id, round_id, status)
+                ),
+                "application/vnd.ms-excel",
+                as_attachment=True,
+                download_name=f"fsd_feedback_{str(int(time.time())) }.xlsx",
+            )
+        except NoResultFound as e:
+            return {"code": 404, "message": str(e)}, 404

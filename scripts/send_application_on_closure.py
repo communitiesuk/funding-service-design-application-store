@@ -3,7 +3,6 @@ import argparse
 import sys
 from datetime import datetime
 
-from distutils.util import strtobool
 
 sys.path.insert(1, ".")
 
@@ -17,24 +16,29 @@ from external_services.data import get_fund  # noqa: E402
 from flask import current_app  # noqa: E402
 
 
-def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=False):
-
+def send_incomplete_applications_after_deadline(
+    fund_id, round_id, single_application, send_email, application_id=None
+):
     """
-    Gets a list of unsubmitted applications, then retrieves form and user
-    data for each. Once all data is retrieved, uses the notification service
-    to email the account id for each application. If send_emails is false,
-    does not make calls to the notification service - useful for testing.
+    Gets a list of unsubmitted applications and retrieves form and user
+    data for each. Then, it uses the notification service to email the account
+    ID for each application. If send_emails is set to False, no notification
+    service calls will be made (useful for testing).
 
-    Behaviour on errors is different depending on the value
-    of send_emails.
+    Note:
+    - By default, Flag send_email and single_application are both set to False.
+      Just add the Flag to the cammand line, it will set the value to True automatically.
+    - To enable email notifications, include the --send_email flag in the command.
+    - To process a single application, include the --single_application flag in
+      the command, and also provide the --application_id parameter.
 
-    If send_emails == true:
-        When an error is encountered (eg. the account_id doesn't exist
-        in the account store), the whole process stops and no further emails
-        are sent.
-    If send_emails == false:
-        When an error occurs, the process continues to the next application
-        but logs the error for investigation. No emails are sent.
+    Args:
+    - fund_id (str): The ID of the fund.
+    - round_id (str): The ID of the funding round.
+    - single_application (bool): add Flag --single_application to the command line.
+    - send_email (bool): add Falg --send_email to the command line.
+    - application_id (str, optional): The single application_id to be processed
+      when single_application is Flagged.
     """
 
     current_date_time = (
@@ -43,13 +47,15 @@ def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=F
 
     fund_rounds = get_fund_round(fund_id, round_id)
     if current_date_time > fund_rounds.get("deadline"):
+        fund_data = get_fund(fund_id)
         search_params = {
             "status_only": ["NOT_STARTED", "IN_PROGRESS", "COMPLETED"],
             "fund_id": fund_id,
             "round_id": round_id,
+            "application_id": application_id if single_application else None,
         }
         matching_applications = search_applications(**search_params)
-        fund_data = get_fund(fund_id)
+
         applications_to_send = []
         for application in matching_applications:
             application = {**application, "fund_name": fund_data.name}
@@ -67,13 +73,13 @@ def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=F
                         "Unable to retrieve account id"
                         f" ({application.get('account_id')}) for "
                         + f"application id {application.get('id')}",
-                        send_emails,
+                        send_email,
                     )
             except Exception:
                 handle_error(
                     "Unable to retrieve forms for "
                     + f"application id {application.get('id')}",
-                    send_emails,
+                    send_email,
                 )
 
         current_app.logger.info(
@@ -81,22 +87,21 @@ def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=F
             f" statuses. Retrieved all data for {len(applications_to_send)} of"
             " them."
         )
-        if send_emails:
+        if send_email:
+            total_applications = len(applications_to_send)
             current_app.logger.info(
-                "Send emails set to true, will now send"
-                f" {len(applications_to_send)} emails."
+                "Send email set to true, will now send"
+                f" {total_applications} {'emails' if total_applications > 1 else 'email'}."
             )
-            count = 0
-            if len(applications_to_send) > 0:
-                for application in applications_to_send:
-                    count += 1
+            if total_applications > 0:
+                for count, application in enumerate(applications_to_send, start=1):
                     email = {
                         "email": application.get("account_email")
                         for application in application.values()
                     }
                     current_app.logger.info(
                         f"Sending application {count} of"
-                        f" {len(applications_to_send)} to {email.get('email')}"
+                        f" {total_applications} to {email.get('email')}"
                     )
                     application["contact_help_email"] = fund_rounds.get("contact_email")
                     Notification.send(
@@ -104,19 +109,22 @@ def send_incomplete_applications_after_deadline(fund_id, round_id, send_emails=F
                         to_email=email.get("email"),
                         content=application,
                     )
-                current_app.logger.info(f"Sent {count} emails")
+                current_app.logger.info(
+                    f"Sent {count} {'emails' if count > 1 else 'email'}"
+                )
                 return count
             else:
-                current_app.logger.info("There are no applications to be sent.")
+                current_app.logger.warning("There are no applications to be sent.")
                 return 0
         else:
-            current_app.logger.info(
-                "Send emails set to false, will not send"
-                f" {len(applications_to_send)} emails."
+            count = len(applications_to_send)
+            current_app.logger.warning(
+                "Send email set to false, will not send"
+                f" {count} {'emails' if count > 1 else 'email'}."
             )
             return len(applications_to_send)
     else:
-        current_app.logger.info("Current round is active")
+        current_app.logger.warning("Current round is active")
         return -1
 
 
@@ -138,9 +146,19 @@ def init_argparse() -> argparse.ArgumentParser:
     parser.add_argument("--fund_id", help="Provide fund id of a fund", required=True)
     parser.add_argument("--round_id", help="Provide round id of a fund", required=True)
     parser.add_argument(
-        "--send_emails",
-        help="Whether to actually send emails: True or False",
-        required=True,
+        "--single_application",
+        help="Whether to send just single application",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--application_id",
+        help="Provide application id if single_application arg is flagged",
+        required="--single_application" in sys.argv,
+    )
+    parser.add_argument(
+        "--send_email",
+        help="Whether to actually send email",
+        action="store_true",
     )
     return parser
 
@@ -151,7 +169,9 @@ def main() -> None:
     send_incomplete_applications_after_deadline(
         fund_id=args.fund_id,
         round_id=args.round_id,
-        send_emails=strtobool(args.send_emails),
+        single_application=args.single_application,
+        application_id=args.application_id,
+        send_email=args.send_email,
     )
 
 

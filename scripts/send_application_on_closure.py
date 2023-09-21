@@ -3,6 +3,8 @@ import argparse
 import sys
 from datetime import datetime
 
+from distutils.util import strtobool
+
 
 sys.path.insert(1, ".")
 
@@ -17,28 +19,26 @@ from flask import current_app  # noqa: E402
 
 
 def send_incomplete_applications_after_deadline(
-    fund_id, round_id, single_application, send_email, application_id=None
+    fund_id,
+    round_id,
+    single_application=False,
+    application_id=None,
+    send_email=False,
 ):
     """
-    Gets a list of unsubmitted applications and retrieves form and user
-    data for each. Then, it uses the notification service to email the account
-    ID for each application. If send_emails is set to False, no notification
-    service calls will be made (useful for testing).
+    Retrieves a list of unsubmitted applications and associated form and user data
+    for each. Then, it uses the notification service to email the account ID for each application.
 
     Note:
-    - By default, Flag send_email and single_application are both set to False.
-      Just add the Flag to the cammand line, it will set the value to True automatically.
-    - To enable email notifications, include the --send_email flag in the command.
-    - To process a single application, include the --single_application flag in
-      the command, and also provide the --application_id parameter.
+    - To enable email notifications, set `send_email` to True.
+    - To process a single application, set `single_application` to True and provide the `application_id`.
 
     Args:
     - fund_id (str): The ID of the fund.
     - round_id (str): The ID of the funding round.
-    - single_application (bool): add Flag --single_application to the command line.
-    - send_email (bool): add Falg --send_email to the command line.
-    - application_id (str, optional): The single application_id to be processed
-      when single_application is Flagged.
+    - single_application (bool, optional): Set to True if processing an individual application.
+    - send_email (bool): Set to True or False to determine whether to send an email.
+    - application_id (str, required if `single_application` is True): The application_id to process.
     """
 
     current_date_time = (
@@ -147,18 +147,19 @@ def init_argparse() -> argparse.ArgumentParser:
     parser.add_argument("--round_id", help="Provide round id of a fund", required=True)
     parser.add_argument(
         "--single_application",
-        help="Whether to send just single application",
-        action="store_true",
+        help="Whether to send just single application: True or False",
+        required=False,
     )
+
     parser.add_argument(
         "--application_id",
-        help="Provide application id if single_application arg is flagged",
-        required="--single_application" in sys.argv,
+        help="Provide application id if single_application is True",
+        required=False,
     )
     parser.add_argument(
         "--send_email",
-        help="Whether to actually send email",
-        action="store_true",
+        help="Whether to actually send email: True or False",
+        required=True,
     )
     return parser
 
@@ -166,12 +167,22 @@ def init_argparse() -> argparse.ArgumentParser:
 def main() -> None:
     parser = init_argparse()
     args = parser.parse_args()
+
+    #  Check if single_application is True and application_id is not provided
+    if args.single_application and args.application_id is None:
+        parser.error(
+            "The application_id argument is required if single_application is True"
+        )
+
     send_incomplete_applications_after_deadline(
         fund_id=args.fund_id,
         round_id=args.round_id,
-        single_application=args.single_application,
+        single_application=strtobool(args.single_application)
+        if args.single_application is not None
+        and not isinstance(args.single_application, bool)
+        else args.single_application,
         application_id=args.application_id,
-        send_email=args.send_email,
+        send_email=strtobool(args.send_email),
     )
 
 

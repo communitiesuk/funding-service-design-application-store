@@ -35,7 +35,9 @@ class TestSendAppOnClosure:
 
         with raises(LookupError):
             send_incomplete_applications_after_deadline(
-                unique_fund_round[0], unique_fund_round[1], True
+                fund_id=unique_fund_round[0],
+                round_id=unique_fund_round[1],
+                send_email=True,
             )
 
         result = send_incomplete_applications_after_deadline(
@@ -186,8 +188,10 @@ class TestSendAppOnClosure:
         )
         # When send emails is true we should get an exception
         with raises(LookupError):
-            result = send_incomplete_applications_after_deadline(
-                unique_fund_round[0], unique_fund_round[1], True
+            send_incomplete_applications_after_deadline(
+                fund_id=unique_fund_round[0],
+                round_id=unique_fund_round[1],
+                send_email=True,
             )
 
         # When send emails is false it should return how many were ok to send

@@ -81,147 +81,48 @@ def test_update_question_statuses(form_json, exp_status):
 
 
 @pytest.mark.parametrize(
-    "form_json,form_has_completed,is_summary_submit,round_mark_as_complete_enabled,"
-    " mark_as_complete, exp_status,exp_has_completed",
+    "form_json,form_has_completed,is_summary_submit,exp_status,exp_has_completed",
     [
-        (  # Previously marked as complete, want to mark as not complete
-            [
-                {"status": "COMPLETED", "question": "abc"},
-                {"status": "COMPLETED", "question": "abc"},
-            ],
-            True,
-            True,
-            True,
+        ([{"status": "NOT_STARTED"}], False, False, "NOT_STARTED", False),
+        (
+            [{"status": "IN_PROGRESS"}, {"status": "COMPLETED"}],
+            False,
             False,
             "IN_PROGRESS",
             False,
         ),
-        (  # Marking as complete for the first time
-            [
-                {"status": "COMPLETED", "question": "abc"},
-                {"status": "COMPLETED", "question": "abc"},
-            ],
+        (
+            [{"status": "NOT_STARTED"}, {"status": "COMPLETED"}],
             False,
-            True,
-            True,
+            False,
+            "IN_PROGRESS",
+            False,
+        ),
+        (
+            [{"status": "COMPLETED"}, {"status": "COMPLETED"}],
+            False,
+            False,
+            "IN_PROGRESS",
+            False,
+        ),
+        (
+            [{"status": "COMPLETED"}, {"status": "COMPLETED"}],
+            False,
             True,
             "COMPLETED",
             True,
         ),
-        (  # Not on summary page, not marking as complete
-            [
-                {"status": "COMPLETED", "question": "abc"},
-                {"status": "COMPLETED", "question": "abc"},
-            ],
-            False,
-            True,
-            True,
-            False,
-            "IN_PROGRESS",
-            False,
-        ),
-        (
-            [{"status": "NOT_STARTED", "question": "abc"}],
-            False,
-            False,
-            False,
-            None,
-            "NOT_STARTED",
-            False,
-        ),
-        (
-            [
-                {"status": "IN_PROGRESS", "question": "abc"},
-                {"status": "COMPLETED", "question": "abc"},
-            ],
-            False,
-            False,
-            False,
-            None,
-            "IN_PROGRESS",
-            False,
-        ),
-        (
-            [
-                {"status": "NOT_STARTED", "question": "abc"},
-                {"status": "COMPLETED", "question": "abc"},
-            ],
-            False,
-            False,
-            False,
-            None,
-            "IN_PROGRESS",
-            False,
-        ),
-        (
-            [
-                {"status": "COMPLETED", "question": "abc"},
-                {"status": "COMPLETED", "question": "abc"},
-            ],
-            False,
-            False,
-            False,
-            None,
-            "IN_PROGRESS",
-            False,
-        ),
-        (
-            [
-                {"status": "COMPLETED", "question": "abc"},
-                {"status": "COMPLETED", "question": "abc"},
-            ],
-            False,
-            True,
-            False,
-            None,
-            "COMPLETED",
-            True,
-        ),
-        (
-            [{"status": "NOT_STARTED", "question": "abc"}],
-            True,
-            False,
-            False,
-            None,
-            "NOT_STARTED",
-            True,
-        ),
-        (
-            [{"status": "COMPLETED", "question": "abc"}],
-            True,
-            False,
-            False,
-            None,
-            "COMPLETED",
-            True,
-        ),
+        ([{"status": "NOT_STARTED"}], True, False, "NOT_STARTED", True),
+        ([{"status": "COMPLETED"}], True, False, "COMPLETED", True),
     ],
 )
 def test_update_form_status(
-    form_json,
-    form_has_completed,
-    is_summary_submit,
-    round_mark_as_complete_enabled,
-    mark_as_complete,
-    exp_status,
-    exp_has_completed,
+    form_json, form_has_completed, is_summary_submit, exp_status, exp_has_completed
 ):
     form_to_update = MagicMock()
     form_to_update.json = form_json
     form_to_update.has_completed = form_has_completed
-
-    # If a round doesn't use mark_as_complete, the question is not in the json
-    if mark_as_complete is not None:
-        form_to_update.json.append(
-            {
-                "status": "COMPLETED",
-                "question": "MarkAsComplete",
-                "fields": [{"answer": mark_as_complete}],
-            },
-        )
-    update_form_status(
-        form_to_update, round_mark_as_complete_enabled, is_summary_submit
-    )
+    update_form_status(form_to_update, is_summary_submit)
     assert form_to_update.status == exp_status
     assert form_to_update.has_completed == exp_has_completed
 

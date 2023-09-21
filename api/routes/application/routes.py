@@ -17,6 +17,7 @@ from db.queries import search_applications
 from db.queries import submit_application
 from db.queries import update_form
 from db.queries import upsert_feedback
+from db.queries.feedback import retrieve_all_feedbacks_and_surveys
 from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.feedback import upsert_end_of_application_survey_data
 from db.queries.reporting.queries import export_application_statuses_to_csv
@@ -281,3 +282,10 @@ class ApplicationsView(MethodView):
             "code": 404,
             "message": f"Survey data for {application_id}, {page_number} not found",
         }, 404
+
+    def get_all_feedbacks_and_survey(self, **params):
+        fund_id = params.get("fund_id")
+        round_id = params.get("round_id")
+        status = params.get("status_only")
+
+        return retrieve_all_feedbacks_and_surveys(fund_id, round_id, status), 200

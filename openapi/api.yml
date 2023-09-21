@@ -470,6 +470,44 @@ paths:
               schema:
                 $ref: 'components.yml#/components/schemas/Error'
 
+  /applications/all_feedbacks_and_survey:
+    get:
+      tags:
+        - feedback
+        - survey
+      summary: Retrive all section feedbacks & survey
+      description: Retrive all section feedbacks & survey
+      operationId: api.ApplicationsView.get_all_feedbacks_and_survey
+      responses:
+        200:
+          description: SUCCESS - A dict of applicants feedback & survey
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - in: query
+          name: fund_id
+          style: form
+          schema:
+            type: string
+          required: true
+          explode: false
+        - in: query
+          name: round_id
+          style: form
+          schema:
+            type: string
+          required: true
+          explode: false
+        - in: query
+          name: status_only
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+
   /queue_for_assessment/{application_id}:
     post:
       tags:

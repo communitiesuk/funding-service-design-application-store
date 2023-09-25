@@ -10,7 +10,7 @@ from fsd_utils.config.commonconfig import CommonConfig
 @configclass
 class UnitTestingConfig(DefaultConfig):
     #  Application Config
-    SECRET_KEY = "dev"
+    SECRET_KEY = "dev"  # pragma: allowlist secret
     SESSION_COOKIE_NAME = CommonConfig.SESSION_COOKIE_NAME
     FLASK_ENV = "unit_test"
     FUND_STORE_API_HOST = DefaultConfig.TEST_FUND_STORE_API_HOST
@@ -21,7 +21,7 @@ class UnitTestingConfig(DefaultConfig):
     # Database
     SQLALCHEMY_DATABASE_URI = environ.get(
         "DATABASE_URL",
-        "postgresql://postgres:postgres@localhost:5432/fsd_app_store_test",
+        "postgresql://postgres:postgres@localhost:5432/fsd_app_store_test",  # pragma: allowlist secret
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

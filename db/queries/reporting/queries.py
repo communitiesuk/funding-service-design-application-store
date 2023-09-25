@@ -69,7 +69,7 @@ def export_json_to_excel(return_data: dict):
             df = pd.DataFrame(return_data[key])
             df.to_excel(writer, sheet_name=key)
 
-    # seeking was necessary. Python 3.5.2, Flask 0.12.2
+    # seeking is necessary
     output.seek(0)
     return output
 

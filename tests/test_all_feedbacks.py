@@ -76,6 +76,17 @@ def test_retrieve_all_feedbacks_and_surveys(
     assert "sections_feedback" in result
     assert "end_of_application_survey_data" in result
 
+    # check contents
+    assert result["sections_feedback"][0]["section"] == app_sections[0]["title"]
+    assert (
+        result["sections_feedback"][0]["comment"]
+        == applications[0].feedbacks[0].feedback_json["comment"]
+    )
+    assert (
+        result["sections_feedback"][0]["rating"]
+        == applications[0].feedbacks[0].feedback_json["rating"]
+    )
+
 
 @pytest.mark.parametrize(
     "app_sections,applications",

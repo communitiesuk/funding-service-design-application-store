@@ -9,6 +9,9 @@ slugify
 python-dateutil
 invoke>=2.0.0
 colored
+jsonpath-rw-ext
+pandas
+openpyxl
 
 #-----------------------------------
 #   Database

@@ -470,6 +470,48 @@ paths:
               schema:
                 $ref: 'components.yml#/components/schemas/Error'
 
+  /applications/get_all_feedbacks_and_survey_report:
+    get:
+      tags:
+        - feedback
+        - survey
+      summary: Retrive all section feedbacks & survey
+      description: Retrive all section feedbacks & survey
+      operationId: api.ApplicationsView.get_all_feedbacks_and_survey_report
+      responses:
+        200:
+          description: SUCCESS - Here is the report on requested applicants feedback & survey
+          content:
+            application/vnd.ms-excel: {}
+        404:
+          description: ERROR - Could not get report
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+      parameters:
+        - in: query
+          name: fund_id
+          style: form
+          schema:
+            type: string
+          required: true
+          explode: false
+        - in: query
+          name: round_id
+          style: form
+          schema:
+            type: string
+          required: true
+          explode: false
+        - in: query
+          name: status_only
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+
   /queue_for_assessment/{application_id}:
     post:
       tags:

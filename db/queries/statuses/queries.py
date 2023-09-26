@@ -66,6 +66,7 @@ def update_application_status(
 
 def update_form_status(
     form_to_update: Forms,
+    round_mark_as_complete_enabled: bool,
     is_summary_page_submitted: bool = False,
 ):
     """
@@ -78,14 +79,46 @@ def update_form_status(
 
     """
 
-    status_list = [question_page["status"] for question_page in form_to_update.json]
+    if round_mark_as_complete_enabled:
+        mark_as_complete_question = next(
+            (
+                question_page
+                for question_page in form_to_update.json
+                if question_page["question"] == "MarkAsComplete"
+            ),
+            None,
+        )
+        is_marked_as_complete = (
+            mark_as_complete_question["fields"][0]["answer"]
+            if mark_as_complete_question
+            else False
+        )
+    else:
+        is_marked_as_complete = False
+
+    status_list = [
+        question_page["status"]
+        for question_page in form_to_update.json
+        if question_page["question"] != "MarkAsComplete"
+    ]
     if "COMPLETED" not in status_list:
+        # If no single question page is complete
         form_to_update.status = "NOT_STARTED"
-    elif "NOT_STARTED" not in status_list and form_to_update.has_completed:
-        form_to_update.status = "COMPLETED"
     elif "NOT_STARTED" not in status_list and is_summary_page_submitted:
+        # If every question page has answers and this is submit on summary page
+        if round_mark_as_complete_enabled:
+            if is_marked_as_complete:
+                form_to_update.status = "COMPLETED"
+                form_to_update.has_completed = True
+            else:
+                form_to_update.status = "IN_PROGRESS"
+                form_to_update.has_completed = False
+        else:
+            form_to_update.status = "COMPLETED"
+            form_to_update.has_completed = True
+    elif "NOT_STARTED" not in status_list and form_to_update.has_completed:
+        # All question pages have answers and form has previously completed
         form_to_update.status = "COMPLETED"
-        form_to_update.has_completed = True
     else:
         form_to_update.status = "IN_PROGRESS"
 
@@ -188,13 +221,15 @@ def update_statuses(
         form_name (`str`): Name of the form that has been updated, uses this form as the basis for the update
         is_summary_page_submitted (`bool`): If this is as a result of submitting from the summary page of a form.
     """
+    application = get_application(application_id, include_forms=True)
+    round = get_round(application.fund_id, application.round_id)
     if form_name:
         form_to_update = get_form(application_id=application_id, form_name=form_name)
         update_question_page_statuses(stored_form_json=form_to_update.json)
-        update_form_status(form_to_update, is_summary_page_submitted)
+        update_form_status(
+            form_to_update, round.mark_as_complete_enabled, is_summary_page_submitted
+        )
         db.session.commit()
 
-    application = get_application(application_id, include_forms=True)
-    round = get_round(application.fund_id, application.round_id)
     update_application_status(application, round.requires_feedback)
     db.session.commit()

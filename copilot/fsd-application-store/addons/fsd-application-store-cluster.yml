@@ -20,6 +20,9 @@ Mappings:
     All:
       "DBMinCapacity": 0.5 # AllowedValues: from 0.5 through 128
       "DBMaxCapacity": 8   # AllowedValues: from 0.5 through 128
+  BastionMap:
+    test:
+      "SecurityGroup": "sg-0cf75a004dbade7b8"
 
 Resources:
   fsdapplicationstoreclusterDBSubnetGroup:
@@ -52,6 +55,11 @@ Resources:
           IpProtocol: tcp
           Description: !Sub 'From the Aurora Security Group of the workload ${Name}.'
           SourceSecurityGroupId: !Ref fsdapplicationstoreclusterSecurityGroup
+        - ToPort: 5432
+          FromPort: 5432
+          IpProtocol: tcp
+          Description: !Sub 'From the Bastion Security Group.'
+          SourceSecurityGroupId: !FindInMap [BastionMap, !Ref Env, 'SecurityGroup']
       VpcId:
         Fn::ImportValue:
           !Sub '${App}-${Env}-VpcId'

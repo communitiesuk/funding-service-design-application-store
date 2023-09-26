@@ -11,6 +11,7 @@ from .form import add_new_forms
 from .form import get_form
 from .form import get_forms_by_app_id
 from .reporting import export_json_to_csv
+from .reporting import export_json_to_excel
 from .reporting import get_general_status_applications_report
 from .reporting import get_key_report_field_headers
 from .reporting import get_report_for_applications
@@ -28,6 +29,7 @@ __all__ = [
     get_form,
     get_forms_by_app_id,
     export_json_to_csv,
+    export_json_to_excel,
     get_general_status_applications_report,
     get_key_report_field_headers,
     get_report_for_applications,

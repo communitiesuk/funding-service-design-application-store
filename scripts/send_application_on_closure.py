@@ -148,7 +148,7 @@ def init_argparse() -> argparse.ArgumentParser:
     parser.add_argument(
         "--single_application",
         help="Whether to send just single application: True or False",
-        required=False,
+        required=True,
     )
 
     parser.add_argument(

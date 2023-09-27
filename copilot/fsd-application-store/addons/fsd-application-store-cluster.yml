@@ -20,6 +20,9 @@ Mappings:
     All:
       "DBMinCapacity": 0.5 # AllowedValues: from 0.5 through 128
       "DBMaxCapacity": 8   # AllowedValues: from 0.5 through 128
+  BastionMap:
+    test:
+      "SecurityGroup": "sg-0cf75a004dbade7b8"
 
 Resources:
   fsdapplicationstoreclusterDBSubnetGroup:
@@ -52,6 +55,11 @@ Resources:
           IpProtocol: tcp
           Description: !Sub 'From the Aurora Security Group of the workload ${Name}.'
           SourceSecurityGroupId: !Ref fsdapplicationstoreclusterSecurityGroup
+        - ToPort: 5432
+          FromPort: 5432
+          IpProtocol: tcp
+          Description: !Sub 'From the Bastion Security Group.'
+          SourceSecurityGroupId: !FindInMap [BastionMap, !Ref Env, 'SecurityGroup']
       VpcId:
         Fn::ImportValue:
           !Sub '${App}-${Env}-VpcId'
@@ -85,9 +93,9 @@ Resources:
     Type: 'AWS::RDS::DBCluster'
     Properties:
       MasterUsername:
-        !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:username}}" ]]
+        !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:username}}" ]]  # pragma: allowlist secret
       MasterUserPassword:
-        !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:password}}" ]]
+        !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:password}}" ]]  # pragma: allowlist secret
       DatabaseName: !Ref fsdapplicationstoreclusterDBName
       Engine: 'aurora-postgresql'
       EngineVersion: '14.4'
@@ -126,11 +134,11 @@ Outputs:
     Value:
       !Sub
       - "postgres://${USERNAME}:${PASSWORD}@${HOSTNAME}:${PORT}/${DBNAME}"
-      - USERNAME: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:username}}" ]]
-        PASSWORD: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:password}}" ]]
-        HOSTNAME: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:host}}" ]]
-        PORT: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:port}}" ]]
-        DBNAME: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:dbname}}" ]]
+      - USERNAME: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:username}}" ]]  # pragma: allowlist secret
+        PASSWORD: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:password}}" ]]  # pragma: allowlist secret
+        HOSTNAME: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:host}}" ]]  # pragma: allowlist secret
+        PORT: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:port}}" ]]  # pragma: allowlist secret
+        DBNAME: !Join [ "",  [ '{{resolve:secretsmanager:', !Ref fsdapplicationstoreclusterAuroraSecret, ":SecretString:dbname}}" ]]  # pragma: allowlist secret
 
   fsdapplicationstoreclusterSecret: # injected as FSDAPPLICATIONSTORECLUSTER_SECRET environment variable by Copilot.
     Description: "The JSON secret that holds the database username and password. Fields are 'host', 'port', 'dbname', 'username', 'password', 'dbClusterIdentifier' and 'engine'"

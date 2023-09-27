@@ -133,13 +133,6 @@ class TestSendAppOnClosure:
         result = send_incomplete_applications_after_deadline(**args)
         assert 2 == result
 
-        # TODO: To be worked on 25-09-2023
-        # with pytest.raises(ValueError) as error_info:
-        #     send_incomplete_applications_after_deadline(**args_with_error)
-
-        # error_message = "The application_id argument is required if single_application is True"
-        # assert str(error_info.value) == error_message
-
     @pytest.mark.apps_to_insert([test_application_data[0]])
     @pytest.mark.unique_fund_round(True)
     def test_send_apps_one_to_send_in_progress(

@@ -125,11 +125,11 @@ class TestSendAppOnClosure:
                 "round_name": "COF R2W2",
             },
         )
-        args, _ = get_args(seed_application_records, unique_fund_round, single_app=True)
+        args = get_args(seed_application_records, unique_fund_round, single_app=True)
         result = send_incomplete_applications_after_deadline(**args)
         assert 1 == result
 
-        args, _ = get_args(seed_application_records, unique_fund_round)
+        args = get_args(seed_application_records, unique_fund_round, single_app=False)
         result = send_incomplete_applications_after_deadline(**args)
         assert 2 == result
 

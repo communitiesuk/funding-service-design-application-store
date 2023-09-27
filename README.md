@@ -140,57 +140,6 @@ of any pep8 errors during commits.
 In deploy.yml, there are three environment variables called users, spawn-rate and run-time. These are used
 to override the locust config if the performance tests need to run with different configs for application store.
 
-# Scripts
-## send_applications_on_closure
-- Sends the contents of all unsubmitted applications in a particular round to the applicant for their records.
-- Sends the contents of single unsubmitted application in a particular round to the applicant for their records
-if --single_application is set to True.
-
-  ### Run locally
-  - Example without --single_application and application_id
-
-    `python -m scripts.send_application_on_closure --fund_id 47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id e85ad42f-73f5-4e1b-a1eb-6bc5d7f3d762 --send_email False`
-
-  - Example with --single_application and application_id
-
-    `python -m scripts.send_application_on_closure --fund_id 47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id e85ad42f-73f5-4e1b-a1eb-6bc5d7f3d762 --single_application True --application_id 2ad3c0e5-ad9b-4dfb-ab95-95a758f73cba --send_email False`
-
-   ### Run with docker
-   - Example without --single_application and application_id
-
-     `docker exec -ti $(docker ps -qf "name=application-store") scripts/send_application_on_closure.py --fund_id 47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id 6af19a5e-9cae-4f00-9194-cf10d2d7c8a7 --send_email False`
-
-   - Example with --single_application and application_id
-
-     `docker exec -ti $(docker ps -qf "name=application-store") scripts/send_application_on_closure.py --fund_id 47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id 6af19a5e-9cae-4f00-9194-cf10d2d7c8a7  --single_application True --application_id 2ad3c0e5-ad9b-4dfb-ab95-95a758f73cba --send_email False`
-
-   ### Run on Cloud Foundry
-
-   - Example without --single_application and application_id
-
-      `cf run-task funding-service-design-application-store-test --command "python -m scripts.send_application_on_closure --fund_id 47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id 6af19a5e-9cae-4f00-9194-cf10d2d7c8a7 --send_email False`
-
-    - Example with --single_application and application_id
-
-      `cf run-task funding-service-design-application-store-test --command "python -m scripts.send_application_on_closure --fund_id 47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id 6af19a5e-9cae-4f00-9194-cf10d2d7c8a7 --single_application True --application_id 2ad3c0e5-ad9b-4dfb-ab95-95a758f73cba --send_email False`
-
-
-### Execution
-
-#### PaaS
-
-Execute the script as a task (example is for COF R2W3)
-`cf run-task funding-service-design-application-store-dev --command "./scripts/send_application_on_closure.py --fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id=5cf439bf-ef6f-431e-92c5-a1d90a4dd32f --send_emails=True" --name unsubmitted_emails`
-
-View logs
-`cf logs funding-service-design-application-store-dev --recent | grep unsubmitted_emails`
-
-#### Local
-Run the full service via the docker runner, then find the container ID of the application-store:
-`docker ps`
-Then copy that container id and execute as below:
-`funding-service-design-application-store % docker exec -it <app-store container id> scripts/send_application_on_closure.py --fund_id=47aef2f5-3fcb-4d45-acb5-f0152b5f03c4 --round_id=5cf439bf-ef6f-431e-92c5-a1d90a4dd32f --send_emails=True`
-
 ### Useful Queries
 Show count of applications by status for each round
 `select fund_id, round_id, status, count(status) from applications group by fund_id, status, round_id;`
@@ -215,7 +164,6 @@ copilot init \
 ```
 
 This will initalise this service, using the current created image
-
 
 # Seeding Test Data
 You can seed test data to use in the running application (separate to unit test data seeding). The seeding process needs a running fund-store to retrieve fund/round form section config, so it runs within the docker container for application-store within the docker runner.

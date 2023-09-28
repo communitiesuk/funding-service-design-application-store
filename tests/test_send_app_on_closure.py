@@ -2,8 +2,11 @@ import pytest
 from pytest import raises
 from scripts.send_application_on_closure import (
     send_incomplete_applications_after_deadline,
-)  # noqa
+)
+from tests.conftest import get_args
 from tests.helpers import test_application_data
+
+# noqa
 
 
 class TestSendAppOnClosure:
@@ -35,7 +38,9 @@ class TestSendAppOnClosure:
 
         with raises(LookupError):
             send_incomplete_applications_after_deadline(
-                unique_fund_round[0], unique_fund_round[1], True
+                fund_id=unique_fund_round[0],
+                round_id=unique_fund_round[1],
+                send_email=True,
             )
 
         result = send_incomplete_applications_after_deadline(
@@ -102,6 +107,31 @@ class TestSendAppOnClosure:
             unique_fund_round[0], unique_fund_round[1], True
         )
         assert 1 == result
+
+    @pytest.mark.apps_to_insert([test_application_data[0], test_application_data[0]])
+    @pytest.mark.unique_fund_round(True)
+    def test_send_single_application(
+        self,
+        mocker,
+        client,
+        seed_application_records,
+        unique_fund_round,
+        mocked_get_fund,
+    ):
+        mocker.patch(
+            "scripts.send_application_on_closure.get_fund_round",
+            return_value={
+                "deadline": "2022-12-01 12:00:00",
+                "round_name": "COF R2W2",
+            },
+        )
+        args = get_args(seed_application_records, unique_fund_round, single_app=True)
+        result = send_incomplete_applications_after_deadline(**args)
+        assert 1 == result
+
+        args = get_args(seed_application_records, unique_fund_round, single_app=False)
+        result = send_incomplete_applications_after_deadline(**args)
+        assert 2 == result
 
     @pytest.mark.apps_to_insert([test_application_data[0]])
     @pytest.mark.unique_fund_round(True)
@@ -186,8 +216,10 @@ class TestSendAppOnClosure:
         )
         # When send emails is true we should get an exception
         with raises(LookupError):
-            result = send_incomplete_applications_after_deadline(
-                unique_fund_round[0], unique_fund_round[1], True
+            send_incomplete_applications_after_deadline(
+                fund_id=unique_fund_round[0],
+                round_id=unique_fund_round[1],
+                send_email=True,
             )
 
         # When send emails is false it should return how many were ok to send

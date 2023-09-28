@@ -40,6 +40,20 @@ def unique_fund_round(mock_get_fund, mock_get_round):
     return (str(uuid4()), str(uuid4()))
 
 
+def get_args(seed_application_records, unique_fund_round, single_app):
+    application_ids = [
+        str(application).split()[-1][:-1] for application in seed_application_records
+    ]
+    args = {
+        "fund_id": unique_fund_round[0],
+        "round_id": unique_fund_round[1],
+        "single_application": True,
+        "application_id": application_ids[0] if single_app else None,
+        "send_email": False,
+    }
+    return args
+
+
 def create_app_with_blank_forms(app_to_create: dict) -> Applications:
     """
     Creates a new application record in the database using the supplied

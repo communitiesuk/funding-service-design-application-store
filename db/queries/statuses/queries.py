@@ -7,55 +7,66 @@ from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.form.queries import get_form
 from external_services import get_round
 from external_services.data import get_application_sections
+from external_services.models.round import FeedbackSurveyConfig
 
 
-def _is_all_feedback_complete(application_id, fund_id, round_id, language: str):
+def _is_all_sections_feedback_complete(
+    application_id, fund_id, round_id, language: str
+):
     sections = get_application_sections(fund_id, round_id, language)
-    sections_feedbacks_completed = all(
+    all_feedback_completed = all(
         get_feedback(application_id, str(s["id"]))
         for s in sections
         if s.get("requires_feedback")
     )
-    end_of_feedback_survey_completed = all(
-        retrieve_end_of_application_survey_data(application_id, pn) for pn in "1234"
-    )
-    all_feedback_completed = (
-        sections_feedbacks_completed and end_of_feedback_survey_completed
-    )
     return all_feedback_completed
 
 
+def _is_feedback_survey_complete(application_id):
+    is_survey_completed = all(
+        retrieve_end_of_application_survey_data(application_id, pn) for pn in "1234"
+    )
+    return is_survey_completed
+
+
 def update_application_status(
-    application_with_forms: Applications, round_requires_feedback: bool
+    application_with_forms: Applications, feedback_survey_config: FeedbackSurveyConfig
 ) -> str:
     """
     Updates the status of the supplied application based on the status of all
-    forms with that application, and the status of feedback forms (if the round requires feedback)
+    forms with that application, and the status of all sections feedback and
+    survey status (if the round requires feedback)
 
     Parameters:
         application_with_forms (`Applications`): Application record to update, with the form jsons populated
             This object should be within a db context as the function updates it.
-        round_requires_feedback (`bool`): Whether or not this round needs feedback
+        feedback_survey_config (`FeedbackSurveyConfig`): feedback_survey_config of the round
 
     """
 
-    all_feedback_completed = True
-    if round_requires_feedback:
-        all_feedback_completed = _is_all_feedback_complete(
+    all_feedback_and_survey_completed = True
+    if (
+        feedback_survey_config.requires_section_feedback
+        and feedback_survey_config.requires_survey
+    ):
+        all_feedback_and_survey_completed = _is_all_sections_feedback_complete(
             application_with_forms.id,
             application_with_forms.fund_id,
             application_with_forms.round_id,
             application_with_forms.language.name,
+        ) and (
+            feedback_survey_config.isSurveyOptional
+            or _is_feedback_survey_complete(application_with_forms.id)
         )
 
     form_statuses = [form.status.name for form in application_with_forms.forms]
     if "IN_PROGRESS" in form_statuses:
         status = "IN_PROGRESS"
     elif "COMPLETED" in form_statuses and (
-        "NOT_STARTED" in form_statuses or not all_feedback_completed
+        "NOT_STARTED" in form_statuses or not all_feedback_and_survey_completed
     ):
         status = "IN_PROGRESS"
-    elif "COMPLETED" in form_statuses and all_feedback_completed:
+    elif "COMPLETED" in form_statuses and all_feedback_and_survey_completed:
         status = "COMPLETED"
     elif "SUBMITTED" in form_statuses:
         status = "SUBMITTED"
@@ -231,5 +242,5 @@ def update_statuses(
         )
         db.session.commit()
 
-    update_application_status(application, round.requires_feedback)
+    update_application_status(application, round.feedback_survey_config)
     db.session.commit()

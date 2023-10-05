@@ -2,11 +2,13 @@ from unittest.mock import MagicMock
 
 import pytest
 from db.queries.statuses.queries import _determine_question_page_status_from_answers
-from db.queries.statuses.queries import _is_all_feedback_complete
+from db.queries.statuses.queries import _is_all_sections_feedback_complete
+from db.queries.statuses.queries import _is_feedback_survey_complete
 from db.queries.statuses.queries import _is_field_answered
 from db.queries.statuses.queries import update_application_status
 from db.queries.statuses.queries import update_form_status
 from db.queries.statuses.queries import update_question_page_statuses
+from external_services.models.round import FeedbackSurveyConfig
 
 
 @pytest.mark.parametrize(
@@ -227,13 +229,12 @@ def test_update_form_status(
 
 
 @pytest.mark.parametrize(
-    "app_sections,feedback_for_sections,end_survey_data,exp_result",
+    "app_sections,feedback_for_sections,exp_result",
     [
         (
             [
                 [{"requires_feedback": True, "id": 0}],
                 [None],
-                [None, None, None, None],
                 False,
             ]
         ),
@@ -244,7 +245,6 @@ def test_update_form_status(
                     {"requires_feedback": True, "id": 1},
                 ],
                 [None, True],
-                [None, None, None, None],
                 False,
             ]
         ),
@@ -255,8 +255,7 @@ def test_update_form_status(
                     {"requires_feedback": True, "id": 1},
                 ],
                 [True, True],
-                [True, None, None, None],
-                False,
+                True,
             ]
         ),
         (
@@ -266,14 +265,13 @@ def test_update_form_status(
                     {"requires_feedback": True, "id": 1},
                 ],
                 [True, True],
-                [True, True, True, True],
                 True,
             ]
         ),
     ],
 )
-def test_is_all_feedback_complete(
-    mocker, app_sections, feedback_for_sections, end_survey_data, exp_result
+def test_is_all_sections_feedback_complete(
+    mocker, app_sections, feedback_for_sections, exp_result
 ):
     mocker.patch(
         "db.queries.statuses.queries.get_application_sections",
@@ -283,37 +281,178 @@ def test_is_all_feedback_complete(
         "db.queries.statuses.queries.get_feedback",
         new=lambda application_id, section_id: feedback_for_sections[int(section_id)],
     )
-    mocker.patch(
-        "db.queries.statuses.queries.retrieve_end_of_application_survey_data",
-        new=lambda application_id, page_number: end_survey_data[int(page_number) - 1],
-    )
-    result = _is_all_feedback_complete("123", "123", "123", "en")
+    result = _is_all_sections_feedback_complete("123", "123", "123", "en")
     assert result == exp_result
 
 
 @pytest.mark.parametrize(
-    "form_statuses,feedback_complete,round_requires_feedback,exp_status",
+    "end_survey_data,exp_result",
     [
-        (["NOT_STARTED"], False, False, "NOT_STARTED"),
-        (["NOT_STARTED"], False, True, "NOT_STARTED"),
-        (["NOT_STARTED"], True, True, "NOT_STARTED"),
-        (["NOT_STARTED", "COMPLETED"], False, False, "IN_PROGRESS"),
-        (["NOT_STARTED", "COMPLETED"], False, True, "IN_PROGRESS"),
-        (["NOT_STARTED", "COMPLETED"], True, True, "IN_PROGRESS"),
-        (["COMPLETED", "COMPLETED"], True, True, "COMPLETED"),
-        (["COMPLETED", "COMPLETED"], False, True, "IN_PROGRESS"),
-        (["COMPLETED", "COMPLETED"], False, False, "COMPLETED"),
-        (["SUBMITTED"], True, True, "SUBMITTED"),
-        (["SUBMITTED"], False, True, "SUBMITTED"),
+        (
+            [
+                [True, None, None, None],
+                False,
+            ]
+        ),
+        (
+            [
+                [True, True, True, True],
+                True,
+            ]
+        ),
+    ],
+)
+def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
+    mocker.patch(
+        "db.queries.statuses.queries.retrieve_end_of_application_survey_data",
+        new=lambda application_id, page_number: end_survey_data[int(page_number) - 1],
+    )
+    result = _is_feedback_survey_complete("123")
+    assert result == exp_result
+
+
+@pytest.mark.parametrize(
+    "form_statuses,feedback_complete,survey_complete,feedback_survey_config,exp_status",
+    [
+        (
+            ["NOT_STARTED"],
+            False,
+            False,
+            FeedbackSurveyConfig(
+                requires_survey=False,
+                isSurveyOptional=False,
+                requires_section_feedback=False,
+            ),
+            "NOT_STARTED",
+        ),
+        (
+            ["NOT_STARTED"],
+            False,
+            False,
+            FeedbackSurveyConfig(
+                requires_survey=True,
+                isSurveyOptional=False,
+                requires_section_feedback=True,
+            ),
+            "NOT_STARTED",
+        ),
+        (
+            ["NOT_STARTED"],
+            True,
+            True,
+            FeedbackSurveyConfig(
+                requires_survey=True,
+                isSurveyOptional=False,
+                requires_section_feedback=True,
+            ),
+            "NOT_STARTED",
+        ),
+        (
+            ["NOT_STARTED", "COMPLETED"],
+            False,
+            False,
+            FeedbackSurveyConfig(
+                requires_survey=False,
+                isSurveyOptional=False,
+                requires_section_feedback=False,
+            ),
+            "IN_PROGRESS",
+        ),
+        (
+            ["NOT_STARTED", "COMPLETED"],
+            False,
+            False,
+            FeedbackSurveyConfig(
+                requires_survey=True,
+                isSurveyOptional=False,
+                requires_section_feedback=True,
+            ),
+            "IN_PROGRESS",
+        ),
+        (
+            ["NOT_STARTED", "COMPLETED"],
+            True,
+            True,
+            FeedbackSurveyConfig(
+                requires_survey=True,
+                isSurveyOptional=False,
+                requires_section_feedback=True,
+            ),
+            "IN_PROGRESS",
+        ),
+        (
+            ["COMPLETED", "COMPLETED"],
+            True,
+            True,
+            FeedbackSurveyConfig(
+                requires_survey=True,
+                isSurveyOptional=False,
+                requires_section_feedback=True,
+            ),
+            "COMPLETED",
+        ),
+        (
+            ["COMPLETED", "COMPLETED"],
+            False,
+            False,
+            FeedbackSurveyConfig(
+                requires_survey=True,
+                isSurveyOptional=False,
+                requires_section_feedback=True,
+            ),
+            "IN_PROGRESS",
+        ),
+        (
+            ["COMPLETED", "COMPLETED"],
+            False,
+            False,
+            FeedbackSurveyConfig(
+                requires_survey=False,
+                isSurveyOptional=False,
+                requires_section_feedback=False,
+            ),
+            "COMPLETED",
+        ),
+        (
+            ["SUBMITTED"],
+            True,
+            True,
+            FeedbackSurveyConfig(
+                requires_survey=True,
+                isSurveyOptional=False,
+                requires_section_feedback=True,
+            ),
+            "SUBMITTED",
+        ),
+        (
+            ["SUBMITTED"],
+            False,
+            False,
+            FeedbackSurveyConfig(
+                requires_survey=True,
+                isSurveyOptional=False,
+                requires_section_feedback=True,
+            ),
+            "SUBMITTED",
+        ),
     ],
 )
 def test_update_application_status(
-    mocker, form_statuses, feedback_complete, round_requires_feedback, exp_status
+    mocker,
+    form_statuses,
+    feedback_complete,
+    survey_complete,
+    feedback_survey_config,
+    exp_status,
 ):
 
     mock_fb = mocker.patch(
-        "db.queries.statuses.queries._is_all_feedback_complete",
+        "db.queries.statuses.queries._is_all_sections_feedback_complete",
         return_value=feedback_complete,
+    )
+    mocker.patch(
+        "db.queries.statuses.queries._is_feedback_survey_complete",
+        return_value=survey_complete,
     )
     app_with_forms = MagicMock()
     app_with_forms.forms = []
@@ -321,7 +460,7 @@ def test_update_application_status(
         form = MagicMock()
         form.status.name = status
         app_with_forms.forms.append(form)
-    update_application_status(app_with_forms, round_requires_feedback)
+    update_application_status(app_with_forms, feedback_survey_config)
     assert app_with_forms.status == exp_status
-    if round_requires_feedback:
+    if feedback_survey_config.requires_section_feedback:
         mock_fb.assert_called_once()

@@ -5,9 +5,10 @@ from typing import Optional
 
 @dataclass
 class FeedbackSurveyConfig:
-    requires_survey: bool = False
-    isSurveyOptional: bool = True
-    requires_section_feedback: bool = False
+    has_feedback_survey: bool = False
+    is_feedback_survey_optional: bool = True
+    has_section_feedback: bool = False
+    is_section_feedback_optional: bool = True
 
 
 @dataclass

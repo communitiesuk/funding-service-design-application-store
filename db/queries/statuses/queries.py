@@ -45,17 +45,20 @@ def update_application_status(
     """
 
     all_feedback_and_survey_completed = True
-    if (
-        feedback_survey_config.requires_section_feedback
-        and feedback_survey_config.requires_survey
-    ):
-        all_feedback_and_survey_completed = _is_all_sections_feedback_complete(
-            application_with_forms.id,
-            application_with_forms.fund_id,
-            application_with_forms.round_id,
-            application_with_forms.language.name,
-        ) and (
-            feedback_survey_config.isSurveyOptional
+    if feedback_survey_config.has_section_feedback:
+        all_feedback_and_survey_completed = (
+            feedback_survey_config.is_section_feedback_optional
+            or _is_all_sections_feedback_complete(
+                application_with_forms.id,
+                application_with_forms.fund_id,
+                application_with_forms.round_id,
+                application_with_forms.language.name,
+            )
+        )
+
+    if feedback_survey_config.has_feedback_survey:
+        all_feedback_and_survey_completed = all_feedback_and_survey_completed and (
+            feedback_survey_config.is_feedback_survey_optional
             or _is_feedback_survey_complete(application_with_forms.id)
         )
 

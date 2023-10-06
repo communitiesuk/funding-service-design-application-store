@@ -446,6 +446,18 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ),
             "SUBMITTED",
         ),
+        (
+            ["COMPLETED"],
+            True,
+            True,
+            FeedbackSurveyConfig(
+                has_feedback_survey=True,
+                is_feedback_survey_optional=False,
+                has_section_feedback=True,
+                is_section_feedback_optional=False,
+            ),
+            "COMPLETED",
+        ),
     ],
 )
 def test_update_application_status(

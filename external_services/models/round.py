@@ -11,10 +11,14 @@ class FeedbackSurveyConfig:
     is_section_feedback_optional: bool = True
 
     @staticmethod
-    def from_json(cls, d: dict):
+    def from_json(d: dict):
         # Filter unknown fields from JSON dictionary
-        return cls(
-            **{k: v for k, v in d.items() if k in inspect.signature(cls).parameters}
+        return FeedbackSurveyConfig(
+            **{
+                k: v
+                for k, v in d.items()
+                if k in inspect.signature(FeedbackSurveyConfig).parameters
+            }
         )
 
 

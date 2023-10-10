@@ -1,10 +1,11 @@
 import csv
 import io
-import re
-from collections.abc import Iterable
+from typing import Any
 from typing import Optional
 
 import pandas as pd
+from config.key_report_mappings.mappings import ROUND_ID_TO_KEY_REPORT_MAPPING
+from config.key_report_mappings.model import MappingItem
 from db.models import Applications
 from db.queries import get_applications
 from db.queries.application import get_count_by_status
@@ -80,61 +81,9 @@ def get_general_status_applications_report(
     return get_count_by_status(round_id, fund_id)
 
 
-KEY_REPORT_MAPPING = [
-    {
-        "form_name": "organisation-information",
-        "form_name_cy": "gwybodaeth-am-y-sefydliad",
-        "key": "WWWWxy",
-        "return_field": "eoi_reference",
-    },
-    {
-        "form_name": "organisation-information",
-        "form_name_cy": "gwybodaeth-am-y-sefydliad",
-        "key": "YdtlQZ",
-        "return_field": "organisation_name",
-    },
-    {
-        "form_name": "organisation-information",
-        "form_name_cy": "gwybodaeth-am-y-sefydliad",
-        "key": "lajFtB",
-        "return_field": "organisation_type",
-    },
-    {
-        "form_name": "asset-information",
-        "form_name_cy": "gwybodaeth-am-yr-ased",
-        "key": "yaQoxU",
-        "return_field": "asset_type",
-    },
-    {
-        "form_name": "project-information",
-        "form_name_cy": "gwybodaeth-am-y-prosiect",
-        "key": "yEmHpp",
-        "return_field": "geography",
-    },
-    {
-        "form_name": "funding-required",
-        "form_name_cy": "cyllid-sydd-ei-angen",
-        "key": "JzWvhj",
-        "return_field": "capital",
-    },
-    {
-        "form_name": "funding-required",
-        "form_name_cy": "cyllid-sydd-ei-angen",
-        "key": "jLIgoi",
-        "return_field": "revenue",
-    },
-    {
-        "form_name": "organisation-information-ns",
-        "key": "opFJRm",
-        "return_field": "organisation_name_nstf",
-    },
-]
-
-
-def get_key_report_field_headers(
-    mapping: Iterable[dict] = KEY_REPORT_MAPPING,
-) -> Iterable[str]:
-    return [field["return_field"] for field in KEY_REPORT_MAPPING]
+def get_key_report_field_headers(round_id: str) -> list[str]:
+    mapping: list[MappingItem] = ROUND_ID_TO_KEY_REPORT_MAPPING[round_id]
+    return [field.return_field for field in mapping]
 
 
 def get_report_for_applications(
@@ -159,43 +108,43 @@ def get_report_for_applications(
         as_json=True,
     )
 
-    return_json_list = []
+    return_json_list: list[dict[str, Any]] = []
+    mapping: list[MappingItem] = ROUND_ID_TO_KEY_REPORT_MAPPING[round_id]
     for application in applications:
-        return_json = {field: None for field in get_key_report_field_headers()}
-
-        report_config_forms = [
-            report_config.get("form_name_cy")
-            if application["language"] == "cy"
-            else report_config.get("form_name")
-            for report_config in KEY_REPORT_MAPPING
-        ]
-
-        report_config_keys = [
-            report_config.get("key") for report_config in KEY_REPORT_MAPPING
-        ]
-
-        for application_form in application["forms"]:
-            # does form exist in form reporting config
-            if application_form.get("name") in report_config_forms:
-                for question in application_form["questions"]:
-                    # does forms field_id exist in
-                    # form reporting config
-                    for field in question["fields"]:
-                        if field.get("key") in report_config_keys:
-                            return_field = [
-                                report_config.get("return_field")
-                                for report_config in KEY_REPORT_MAPPING
-                                if report_config.get("key") == field.get("key")
-                            ][0]
-                            if field.get("key") == "yEmHpp" and field.get("answer"):
-                                postcode = re.search(
-                                    "([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]?"
-                                    " ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr]"
-                                    " ?0[Aa]{2})",  # noqa
-                                    field.get("answer"),
-                                )
-                                return_json[return_field] = postcode.group()
-                            else:
-                                return_json[return_field] = field.get("answer")
+        return_json = map_application_key_fields(application, mapping, round_id)
         return_json_list.append(return_json)
     return return_json_list
+
+
+def map_application_key_fields(
+    application: dict[str, Any], mapping: list[MappingItem], round_id: str
+) -> dict[str, Any]:
+    return_json: dict[str, Any] = {
+        field: None for field in get_key_report_field_headers(round_id)
+    }
+    language: str = application["language"]
+    report_config_forms: list[str] = [
+        report_config.get_form_name(language) for report_config in mapping
+    ]
+    report_config_keys: list[str] = [report_config.key for report_config in mapping]
+
+    for application_form in application["forms"]:
+        # skip any forms that are not in the report config
+        if application_form.get("name") not in report_config_forms:
+            continue
+
+        for field in (f for q in application_form["questions"] for f in q["fields"]):
+            # skip any fields that are not in the report config
+            if field.get("key") not in report_config_keys:
+                continue
+
+            for report_config in mapping:
+                if report_config.key == field.get("key"):
+                    return_field = report_config.return_field
+                    break
+            else:  # else in a for loop is executed if the loop does not break
+                continue
+
+            return_json[return_field] = report_config.format_answer(field)
+
+    return return_json

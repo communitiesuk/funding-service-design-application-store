@@ -304,10 +304,10 @@ def test_extract_postcode(input_str, expected_output):
 
 
 @pytest.mark.parametrize(
-    "mapping, application, expected_output",
+    "key_report_mapping, application, expected_output",
     [
         (
-            COF_R2_KEY_REPORT_MAPPING.mapping,
+            COF_R2_KEY_REPORT_MAPPING,
             {
                 "language": "en",
                 "forms": [
@@ -348,8 +348,8 @@ def test_extract_postcode(input_str, expected_output):
                         "questions": [
                             {
                                 "fields": [
-                                    {"key": "JzWvhj", "answer": "50000"},
-                                    {"key": "jLIgoi", "answer": "10000"},
+                                    {"key": "JzWvhj", "answer": 50000},
+                                    {"key": "jLIgoi", "answer": 10000},
                                 ]
                             }
                         ],
@@ -372,16 +372,66 @@ def test_extract_postcode(input_str, expected_output):
                 "organisation_type": "Non-Profit",
                 "asset_type": "Building",
                 "geography": "GIR 0AA",
-                "capital": "50000",
-                "revenue": "10000",
+                "capital": 50000,
+                "revenue": 10000,
                 "organisation_name_nstf": "OrgName NSTF",
             },
         ),
         (
-            COF_R3W2_KEY_REPORT_MAPPING.mapping,
+            COF_R3W2_KEY_REPORT_MAPPING,
             {
                 "language": "en",
-                "forms": [],
+                "forms": [
+                    {
+                        "name": "organisation-information-cof-r3-w2",
+                        "questions": [
+                            {
+                                "fields": [
+                                    {"key": "WWWWxy", "answer": "Ref1234"},
+                                    {"key": "YdtlQZ", "answer": "OrgName"},
+                                    {"key": "lajFtB", "answer": "Non-Profit"},
+                                ]
+                            }
+                        ],
+                    },
+                    {
+                        "name": "asset-information-cof-r3-w2",
+                        "questions": [
+                            {
+                                "fields": [
+                                    {"key": "oXGwlA", "answer": "Building"},
+                                ]
+                            }
+                        ],
+                    },
+                    {
+                        "name": "project-information-cof-r3-w2",
+                        "questions": [
+                            {
+                                "fields": [
+                                    {"key": "EfdliG", "answer": "GIR 0AA"},
+                                ]
+                            }
+                        ],
+                    },
+                    {
+                        "name": "funding-required-cof-r3-w2",
+                        "questions": [
+                            {
+                                "fields": [
+                                    {"key": "ABROnB", "answer": 50000},
+                                    {
+                                        "key": "tSKhQQ",
+                                        "answer": [
+                                            {"UyaAHw": 5000},
+                                            {"UyaAHw": 5000},
+                                        ],
+                                    },
+                                ]
+                            }
+                        ],
+                    },
+                ],
             },
             {
                 "eoi_reference": "Ref1234",
@@ -389,13 +439,14 @@ def test_extract_postcode(input_str, expected_output):
                 "organisation_type": "Non-Profit",
                 "asset_type": "Building",
                 "geography": "GIR 0AA",
-                "capital": "50000",
-                "revenue": "10000",
-                "organisation_name_nstf": "OrgName NSTF",
+                "capital": 50000,
+                "revenue": 10000,
             },
         ),
     ],
 )
-def test_map_application_key_fields(mapping, application, expected_output):
-    result = map_application_key_fields(application, mapping)
+def test_map_application_key_fields(key_report_mapping, application, expected_output):
+    result = map_application_key_fields(
+        application, key_report_mapping.mapping, key_report_mapping.round_id
+    )
     assert result == expected_output

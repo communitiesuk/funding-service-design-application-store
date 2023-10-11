@@ -1,6 +1,6 @@
+from config.key_report_mappings.model import extract_postcode
 from config.key_report_mappings.model import KeyReportMapping
 from config.key_report_mappings.model import MappingItem
-from config.key_report_mappings.model import PostcodeMappingItem
 
 COF_R2_KEY_REPORT_MAPPING = KeyReportMapping(
     round_id="c603d114-5364-4474-a0c4-c41cbf4d3bbd",
@@ -29,11 +29,12 @@ COF_R2_KEY_REPORT_MAPPING = KeyReportMapping(
             key="yaQoxU",
             return_field="asset_type",
         ),
-        PostcodeMappingItem(
+        MappingItem(
             form_name="project-information",
             form_name_cy="gwybodaeth-am-y-prosiect",
             key="yEmHpp",
             return_field="geography",
+            formatter=extract_postcode,
         ),
         MappingItem(
             form_name="funding-required",

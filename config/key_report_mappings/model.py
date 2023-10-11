@@ -1,5 +1,7 @@
 import re
 from dataclasses import dataclass
+from typing import Any
+from typing import Callable
 
 
 @dataclass
@@ -8,6 +10,7 @@ class MappingItem:
     return_field: str
     form_name: str
     form_name_cy: str | None = None
+    formatter: Callable[[Any], Any] = None
 
     def get_form_name(self, language: str = "en"):
         if language == "cy":
@@ -15,24 +18,9 @@ class MappingItem:
         return self.form_name
 
     def format_answer(self, field: dict) -> str:
-        return field.get("answer")  # no formatting required by default
-
-
-@dataclass
-class PostcodeMappingItem(MappingItem):
-    def format_answer(self, field: dict) -> str:
-        if answer := field.get("answer"):
-            return extract_postcode(answer)
-        return super().format_answer(field)
-
-
-@dataclass
-class MultiInputChildSum(MappingItem):
-    child_key: str | None = None
-
-    def format_answer(self, field: dict) -> int:
-        list_of_child_dicts: list[dict] = field.get("answer")
-        return sum([x[self.child_key] for x in list_of_child_dicts])
+        if (answer := field.get("answer")) and self.formatter:
+            return self.formatter(answer)
+        return answer  # no formatting required by default
 
 
 @dataclass

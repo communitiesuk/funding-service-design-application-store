@@ -13,3 +13,5 @@ class TestConfig(DefaultConfig):
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL").replace(
         "postgres://", "postgresql://"
     )
+
+    ASSESSMENT_FRONTEND_URL = "fsd:fsd@assessment.test.gids.dev"

@@ -5,6 +5,8 @@ from typing import Optional
 
 import pandas as pd
 from config.key_report_mappings.mappings import ROUND_ID_TO_KEY_REPORT_MAPPING
+from config.key_report_mappings.model import ApplicationColumnMappingItem
+from config.key_report_mappings.model import FormMappingItem
 from config.key_report_mappings.model import MappingItem
 from db.models import Applications
 from db.queries import get_applications
@@ -123,11 +125,16 @@ def map_application_key_fields(
         field: None for field in get_key_report_field_headers(round_id)
     }
     language: str = application["language"]
-    report_config_forms: list[str] = [
-        report_config.get_form_name(language) for report_config in mapping
-    ]
-    report_config_keys: list[str] = [report_config.key for report_config in mapping]
 
+    form_mapping_items = [item for item in mapping if isinstance(item, FormMappingItem)]
+    report_config_forms: list[str] = [
+        report_config.get_form_name(language) for report_config in form_mapping_items
+    ]
+    report_config_keys: list[str] = [
+        report_config.key for report_config in form_mapping_items
+    ]
+
+    form_mapping_items = [item for item in mapping if isinstance(item, FormMappingItem)]
     for application_form in application["forms"]:
         # skip any forms that are not in the report config
         if application_form.get("name") not in report_config_forms:
@@ -138,13 +145,21 @@ def map_application_key_fields(
             if field.get("key") not in report_config_keys:
                 continue
 
-            for report_config in mapping:
-                if report_config.key == field.get("key"):
-                    return_field = report_config.return_field
-                    break
-            else:  # else in a for loop is executed if the loop does not break
-                continue
+            for mapping_item in form_mapping_items:
+                if mapping_item.key == field.get("key"):
+                    return_json[mapping_item.return_field] = mapping_item.format_answer(
+                        field
+                    )
 
-            return_json[return_field] = report_config.format_answer(field)
+    application_column_mapping_items = [
+        item for item in mapping if isinstance(item, ApplicationColumnMappingItem)
+    ]
+    for mapping_item in application_column_mapping_items:
+        return_json[mapping_item.return_field] = mapping_item.format_answer(
+            application.get(mapping_item.column_name)
+        )
 
-    return return_json
+    return_fields_ordered = [item.return_field for item in mapping]
+    sorted_result_json = {k: return_json.get(k) for k in return_fields_ordered}
+
+    return sorted_result_json

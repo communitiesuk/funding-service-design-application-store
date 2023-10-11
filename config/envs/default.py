@@ -93,3 +93,5 @@ class DefaultConfig:
 
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    ASSESSMENT_FRONTEND_URL = "assessment.access-funding.levellingup.gov.uk"

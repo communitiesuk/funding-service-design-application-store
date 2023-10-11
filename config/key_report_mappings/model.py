@@ -6,11 +6,15 @@ from typing import Callable
 
 @dataclass
 class MappingItem:
-    key: str
     return_field: str
-    form_name: str
-    form_name_cy: str | None = None
     formatter: Callable[[Any], Any] = None
+
+
+@dataclass
+class FormMappingItem(MappingItem):
+    key: str | None = None
+    form_name: str | None = None
+    form_name_cy: str | None = None
 
     def get_form_name(self, language: str = "en"):
         if language == "cy":
@@ -21,6 +25,16 @@ class MappingItem:
         if (answer := field.get("answer")) and self.formatter:
             return self.formatter(answer)
         return answer  # no formatting required by default
+
+
+@dataclass
+class ApplicationColumnMappingItem(MappingItem):
+    column_name: str | None = None
+
+    def format_answer(self, data: Any) -> str:
+        if data and self.formatter:
+            return self.formatter(data)
+        return data
 
 
 @dataclass

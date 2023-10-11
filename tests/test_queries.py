@@ -1,5 +1,4 @@
 import pytest
-from config import Config
 from config.key_report_mappings.cof_r2_key_report_mapping import (
     COF_R2_KEY_REPORT_MAPPING,
 )
@@ -450,9 +449,7 @@ def test_extract_postcode(input_str, expected_output):
                 "capital": 50000,
                 "project_name": "A name",
                 "ref": "ref123",
-                "link": (
-                    f"https://{Config.ASSESSMENT_FRONTEND_URL}/assess/application/id123"
-                ),
+                "link": "id123",
                 "revenue": 10000,
             },
         ),

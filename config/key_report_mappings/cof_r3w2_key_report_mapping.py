@@ -1,4 +1,3 @@
-from config import Config
 from config.key_report_mappings.model import ApplicationColumnMappingItem
 from config.key_report_mappings.model import extract_postcode
 from config.key_report_mappings.model import FormMappingItem
@@ -64,7 +63,6 @@ COF_R3W2_KEY_REPORT_MAPPING = KeyReportMapping(
         ApplicationColumnMappingItem(
             column_name="id",
             return_field="link",
-            formatter=lambda app_id: f"https://{Config.ASSESSMENT_FRONTEND_URL}/assess/application/{app_id}",
         ),
         # ApplicationColumnMappingItem(    # think we'd need to add a concept for grabbing email by account id    # noqa
         #     column_name="email",         # however that data belongs in the account-store                       # noqa

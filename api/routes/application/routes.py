@@ -131,7 +131,7 @@ class ApplicationsView(MethodView):
                     get_report_for_applications(
                         status=status, round_id=round_id, fund_id=fund_id
                     ),
-                    get_key_report_field_headers(),
+                    get_key_report_field_headers(round_id),
                 ),
                 "text/csv",
                 as_attachment=True,

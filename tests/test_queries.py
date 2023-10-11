@@ -1,4 +1,5 @@
 import pytest
+from config import Config
 from config.key_report_mappings.cof_r2_key_report_mapping import (
     COF_R2_KEY_REPORT_MAPPING,
 )
@@ -6,6 +7,7 @@ from config.key_report_mappings.cof_r3w2_key_report_mapping import (
     COF_R3W2_KEY_REPORT_MAPPING,
 )
 from config.key_report_mappings.model import extract_postcode
+from config.key_report_mappings.model import KeyReportMapping
 from db.models import Applications
 from db.models import Forms
 from db.queries.application import process_files
@@ -400,6 +402,7 @@ def test_extract_postcode(input_str, expected_output):
                             {
                                 "fields": [
                                     {"key": "oXGwlA", "answer": "Building"},
+                                    {"key": "aJGyCR", "answer": "Other"},
                                 ]
                             }
                         ],
@@ -410,6 +413,7 @@ def test_extract_postcode(input_str, expected_output):
                             {
                                 "fields": [
                                     {"key": "EfdliG", "answer": "GIR 0AA"},
+                                    {"key": "apGjFS", "answer": "A name"},
                                 ]
                             }
                         ],
@@ -432,20 +436,31 @@ def test_extract_postcode(input_str, expected_output):
                         ],
                     },
                 ],
+                "asset_type_other": "Other",
+                "reference": "ref123",
+                "id": "id123",
             },
             {
                 "eoi_reference": "Ref1234",
                 "organisation_name": "OrgName",
                 "organisation_type": "Non-Profit",
                 "asset_type": "Building",
+                "asset_type_other": "Other",
                 "geography": "GIR 0AA",
                 "capital": 50000,
+                "project_name": "A name",
+                "ref": "ref123",
+                "link": (
+                    f"https://{Config.ASSESSMENT_FRONTEND_URL}/assess/application/id123"
+                ),
                 "revenue": 10000,
             },
         ),
     ],
 )
-def test_map_application_key_fields(key_report_mapping, application, expected_output):
+def test_map_application_key_fields(
+    key_report_mapping: KeyReportMapping, application, expected_output
+):
     result = map_application_key_fields(
         application, key_report_mapping.mapping, key_report_mapping.round_id
     )

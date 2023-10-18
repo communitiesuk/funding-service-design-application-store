@@ -114,7 +114,9 @@ def retrieve_all_feedbacks_and_surveys(fund_id, round_id, status):
         filters.append(Applications.round_id == round_id)
     if status:
         filters.append(Applications.status == status)
-    applications = get_applications(filters=filters, include_forms=True)
+    applications: list[Applications] = get_applications(
+        filters=filters, include_forms=True
+    )
 
     # get section id & names map
     application_sections = get_application_sections(fund_id, round_id, language="en")
@@ -126,6 +128,8 @@ def retrieve_all_feedbacks_and_surveys(fund_id, round_id, status):
     eoas_serialiser = EndOfApplicationSurveyFeedbackSchema()
     for application in applications:
 
+        applicant_email = None
+        applicant_organisation = None
         # extract applicant email & organisation
         for form in application.forms:
             form_dict = serialiser.dump(form)

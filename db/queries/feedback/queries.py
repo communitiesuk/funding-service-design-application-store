@@ -1,13 +1,15 @@
 from datetime import datetime
 
 import jsonpath_rw_ext
+from config.key_report_mappings.mappings import get_report_mapping_for_round
 from db import db
 from db.models import Applications
 from db.models import Feedback
 from db.models.feedback import EndOfApplicationSurveyFeedback
 from db.queries.application.queries import get_applications
+from db.queries.reporting.queries import map_application_key_fields
+from db.schemas.application import ApplicationSchema
 from db.schemas.end_of_application_survey import EndOfApplicationSurveyFeedbackSchema
-from db.schemas.form import FormsRunnerSchema
 from external_services.data import get_application_sections
 
 
@@ -116,35 +118,30 @@ def retrieve_all_feedbacks_and_surveys(fund_id, round_id, status):
         filters.append(Applications.status == status)
     applications = get_applications(filters=filters, include_forms=True)
 
+    mapping_report = get_report_mapping_for_round(round_id)
+
     # get section id & names map
     application_sections = get_application_sections(fund_id, round_id, language="en")
     for section in application_sections:
         section_names[str(section["id"])] = section["title"]
 
     # extract section feedbacks & end of survey feedbacks for all applications
-    serialiser = FormsRunnerSchema()
     eoas_serialiser = EndOfApplicationSurveyFeedbackSchema()
+    applicant_serialiser = ApplicationSchema()
+
     for application in applications:
 
         # extract applicant email & organisation
-        for form in application.forms:
-            form_dict = serialiser.dump(form)
-            try:
-                if "applicant-information" in form.name:
-                    applicant_email = get_answer_value(
-                        form_dict, "title", "Lead contact email address"
-                    )
-            except Exception as e:
-                print(f"Coudn't extract applicant email.  Exception :{e}")
-                applicant_email = ""
-            try:
-                if "organisation-information" in form.name:
-                    applicant_organisation = get_answer_value(
-                        form_dict, "title", "Organisation name"
-                    )
-            except Exception as e:
-                print(f"Coudn't extract applicant organisation.  Exception :{e}")
-                applicant_organisation = ""
+        try:
+            result = map_application_key_fields(
+                applicant_serialiser.dump(application), mapping_report.mapping, round_id
+            )
+            applicant_email = result["applicant_email"]
+            applicant_organisation = result["organisation_name"]
+        except Exception as e:
+            print(f"Coudn't extract applicant email & organisation.  Exception :{e}")
+            applicant_email = ""
+            applicant_organisation = ""
 
         # extract sections feedback
         for feedback in application.feedbacks:

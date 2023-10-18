@@ -7,6 +7,12 @@ COF_R3W2_KEY_REPORT_MAPPING = KeyReportMapping(
     round_id="6af19a5e-9cae-4f00-9194-cf10d2d7c8a7",
     mapping=[
         FormMappingItem(
+            form_name="applicant-information-cof-r3-w2",
+            form_name_cy="gwybodaeth-am-yr-ymgeisydd-cof-r3-w2",
+            key="NlHSBg",
+            return_field="applicant_email",
+        ),
+        FormMappingItem(
             form_name="organisation-information-cof-r3-w2",
             form_name_cy="gwybodaeth-am-y-sefydliad-cof-r3-w2",
             key="WWWWxy",

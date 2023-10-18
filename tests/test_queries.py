@@ -384,6 +384,16 @@ def test_extract_postcode(input_str, expected_output):
                 "language": "en",
                 "forms": [
                     {
+                        "name": "applicant-information-cof-r3-w2",
+                        "questions": [
+                            {
+                                "fields": [
+                                    {"key": "NlHSBg", "answer": "test@test.com"},
+                                ]
+                            }
+                        ],
+                    },
+                    {
                         "name": "organisation-information-cof-r3-w2",
                         "questions": [
                             {
@@ -441,6 +451,7 @@ def test_extract_postcode(input_str, expected_output):
             },
             {
                 "eoi_reference": "Ref1234",
+                "applicant_email": "test@test.com",
                 "organisation_name": "OrgName",
                 "organisation_type": "Non-Profit",
                 "asset_type": "Building",

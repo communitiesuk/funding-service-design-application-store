@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import jsonpath_rw_ext
 from config.key_report_mappings.mappings import get_report_mapping_for_round
 from db import db
 from db.models import Applications
@@ -11,6 +10,7 @@ from db.queries.reporting.queries import map_application_key_fields
 from db.schemas.application import ApplicationSchema
 from db.schemas.end_of_application_survey import EndOfApplicationSurveyFeedbackSchema
 from external_services.data import get_application_sections
+from flask import current_app
 
 
 def upsert_feedback(
@@ -95,15 +95,6 @@ def retrieve_end_of_application_survey_data(application_id, page_number):
 
 
 def retrieve_all_feedbacks_and_surveys(fund_id, round_id, status):
-    def get_answer_value(form, search_key, search_value):
-        return (
-            jsonpath_rw_ext.parse(
-                f"$.questions[*].fields[?(@.{search_key} == '{search_value}')]"
-            )
-            .find(form)[0]
-            .value["answer"]
-        )
-
     filters = []
     section_names = {}
     sections_feedback = []
@@ -139,7 +130,9 @@ def retrieve_all_feedbacks_and_surveys(fund_id, round_id, status):
             applicant_email = result["applicant_email"]
             applicant_organisation = result["organisation_name"]
         except Exception as e:
-            print(f"Coudn't extract applicant email & organisation.  Exception :{e}")
+            current_app.logger.error(
+                f"Coudn't extract applicant email & organisation.  Exception :{e}"
+            )
             applicant_email = ""
             applicant_organisation = ""
 

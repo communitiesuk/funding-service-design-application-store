@@ -43,7 +43,7 @@ network:
 #
 # Pass environment variables as key value pairs.
 variables:
-  # SENTRY_DSN: "https://8092c54bdc3a4b4ba124dea42b836504@o1432034.ingest.sentry.io/4503918903820288"
+  SENTRY_DSN: "https://03a44153f57249e9b49f0e27ea4b2c00@o1432034.ingest.sentry.io/4503918840971264"
   FLASK_ENV: ${COPILOT_ENVIRONMENT_NAME}
   AWS_BUCKET_NAME:
     from_cfn: ${COPILOT_APPLICATION_NAME}-${COPILOT_ENVIRONMENT_NAME}-FormUploadsBucket

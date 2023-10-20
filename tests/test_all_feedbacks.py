@@ -1,4 +1,7 @@
 import pytest
+from config.key_report_mappings.cof_r3w2_key_report_mapping import (
+    COF_R3W2_KEY_REPORT_MAPPING,
+)
 from db.models import Applications
 from db.models import EndOfApplicationSurveyFeedback
 from db.models import Feedback
@@ -13,7 +16,30 @@ app_sections = [
 applications = [
     Applications(
         id="app_1",
-        forms=[Forms()],
+        forms=[
+            Forms(
+                name="applicant-information-cof-r3-w2",
+                json=[
+                    {
+                        "questions": "Lead contact details",
+                        "fields": [{"key": "NlHSBg", "answer": "test@test.com"}],
+                    }
+                ],
+            ),
+            Forms(
+                name="organisation-information-cof-r3-w2",
+                json=[
+                    {
+                        "questions": "organisation information",
+                        "fields": [
+                            {"key": "WWWWxy", "answer": "Ref1234"},
+                            {"key": "YdtlQZ", "answer": "OrgName"},
+                            {"key": "lajFtB", "answer": "Non-Profit"},
+                        ],
+                    }
+                ],
+            ),
+        ],
         feedbacks=[
             Feedback(
                 section_id="62",
@@ -48,20 +74,13 @@ applications = [
 
 
 @pytest.mark.parametrize(
-    "app_sections,applications",
+    "app_sections,applications,report_mapping",
     [
-        (
-            [
-                app_sections,
-                applications,
-            ]
-        ),
+        ([app_sections, applications, COF_R3W2_KEY_REPORT_MAPPING]),
     ],
 )
 def test_retrieve_all_feedbacks_and_surveys(
-    mocker,
-    app_sections,
-    applications,
+    mocker, app_sections, applications, report_mapping
 ):
     mocker.patch(
         "db.queries.feedback.queries.get_application_sections",
@@ -70,6 +89,10 @@ def test_retrieve_all_feedbacks_and_surveys(
     mocker.patch(
         "db.queries.feedback.queries.get_applications",
         return_value=applications,
+    )
+    mocker.patch(
+        "db.queries.feedback.queries.get_report_mapping_for_round",
+        return_value=report_mapping,
     )
 
     result = retrieve_all_feedbacks_and_surveys("test_fund", "test_round", "SUBMITTED")

@@ -50,7 +50,7 @@ variables:
   PRIMARY_QUEUE_URL:
     from_cfn: ${COPILOT_APPLICATION_NAME}-${COPILOT_ENVIRONMENT_NAME}-AssessmentImportQueueURL
   DEAD_LETTER_QUEUE_URL:
-    from_cfn: ${COPILOT_APPLICATION_NAME}-${COPILOT_ENVIRONMENT_NAME}-DeadLetterQueueURL
+    from_cfn: ${COPILOT_APPLICATION_NAME}-${COPILOT_ENVIRONMENT_NAME}-AssessmentImportDeadLetterQueueURL
   NOTIFICATION_SERVICE_HOST: http://fsd-notification:8080
   ACCOUNT_STORE_API_HOST: http://fsd-account-store:8080
   FUND_STORE_API_HOST: http://fsd-fund-store:8080

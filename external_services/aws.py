@@ -116,7 +116,7 @@ def submit_message_to_queue(message, extra_attributes: dict = None):
 
         queue_url = Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL or _get_queue_url(
             _SQS_CLIENT,
-            getenv("AWS_SQS_QUEUE_NAME", "fsd-queue"),
+            getenv("AWS_SQS_ASSESSMENT_IMPORT_QUEUE_NAME", "fsd-queue"),
         )
         print(f"Attempting to place message on queue '{queue_url}'.")
 

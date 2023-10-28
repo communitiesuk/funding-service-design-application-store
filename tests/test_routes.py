@@ -539,7 +539,7 @@ def test_put_returns_400_on_submitted_application(
 
 
 @pytest.mark.function_calls_to_mock(
-    ["api.routes.application.routes.submit_message_to_queue"]
+    ["api.routes.application.routes._SQS_CLIENT.submit_single_message"]
 )
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_successful_submitted_application(
@@ -611,7 +611,7 @@ def test_stage_unsubmitted_application_to_queue_fails(
 
 
 @pytest.mark.function_calls_to_mock(
-    ["api.routes.queues.routes.submit_message_to_queue"]
+    ["api.routes.queues.routes._SQS_CLIENT.submit_single_message"]
 )
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_stage_submitted_application_to_queue_fails(

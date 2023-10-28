@@ -83,8 +83,10 @@ flask-sqlalchemy==3.0.3
     #   funding-service-design-utils
 flipper-client==1.3.1
     # via funding-service-design-utils
-funding-service-design-utils==2.0.18
-    # via -r requirements.in
+# TODO: update fsd-utils version after below branch is merged
+# funding-service-design-utils==2.0.29
+#     # via -r requirements.txt
+git+https://github.com/communitiesuk/funding-service-design-utils.git@add-init-file-sqs
 greenlet==2.0.2
     # via sqlalchemy
 gunicorn==20.1.0
@@ -131,6 +133,7 @@ markupsafe==2.1.1
     # via
     #   jinja2
     #   mako
+    #   sentry-sdk
     #   werkzeug
 marshmallow==3.19.0
     # via marshmallow-sqlalchemy
@@ -220,7 +223,7 @@ s3transfer==0.6.0
     # via boto3
 semver==2.13.0
     # via prance
-sentry-sdk[flask]==1.16.0
+sentry-sdk[flask]==1.32.0
     # via funding-service-design-utils
 six==1.16.0
     # via

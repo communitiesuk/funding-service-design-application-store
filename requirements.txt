@@ -83,10 +83,8 @@ flask-sqlalchemy==3.0.3
     #   funding-service-design-utils
 flipper-client==1.3.1
     # via funding-service-design-utils
-# TODO: update fsd-utils version after below branch is merged
-# funding-service-design-utils==2.0.29
-#     # via -r requirements.txt
-git+https://github.com/communitiesuk/funding-service-design-utils.git@add-init-file-sqs
+funding-service-design-utils==2.0.30
+    # via -r requirements.txt
 greenlet==2.0.2
     # via sqlalchemy
 gunicorn==20.1.0

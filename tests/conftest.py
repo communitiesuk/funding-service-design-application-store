@@ -361,7 +361,6 @@ def mocked_get_fund(mocker):
 
 @pytest.fixture(autouse=False)
 def mock_submit_message_to_queue(mocker, request):
-
     function_calls_to_mock_marker = request.node.get_closest_marker(
         "function_calls_to_mock"
     )

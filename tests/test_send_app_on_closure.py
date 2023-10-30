@@ -27,7 +27,6 @@ class TestSendAppOnClosure:
         unique_fund_round,
         mocked_get_fund,
     ):
-
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
@@ -94,7 +93,6 @@ class TestSendAppOnClosure:
         unique_fund_round,
         mocked_get_fund,
     ):
-
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
@@ -144,7 +142,6 @@ class TestSendAppOnClosure:
         unique_fund_round,
         mocked_get_fund,
     ):
-
         seed_application_records[0].status = "IN_PROGRESS"
         _db.session.add(seed_application_records[0])
         _db.session.commit()
@@ -172,7 +169,6 @@ class TestSendAppOnClosure:
         unique_fund_round,
         mocked_get_fund,
     ):
-
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
@@ -206,7 +202,6 @@ class TestSendAppOnClosure:
         unique_fund_round,
         mocked_get_fund,
     ):
-
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={

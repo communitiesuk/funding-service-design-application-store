@@ -7,7 +7,6 @@ from fsd_utils import configclass
 
 @configclass
 class TestConfig(DefaultConfig):
-
     # Add any test specific config here
 
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL").replace(

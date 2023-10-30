@@ -9,7 +9,6 @@ from flask import current_app
 
 
 def post_data(endpoint: str, json_payload: Optional[dict] = None) -> dict:
-
     if Config.USE_LOCAL_DATA:
         current_app.logger.info(f"Posting to local dummy endpoint: {endpoint}")
         response = post_local_data(endpoint)

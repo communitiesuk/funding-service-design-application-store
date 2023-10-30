@@ -19,7 +19,6 @@ from tests.helpers import test_question_data
 def test_create_application_is_successful(
     client, unique_fund_round, mock_get_application_display_config
 ):
-
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -510,7 +509,6 @@ def test_complete_form(client, seed_application_records):
 def test_put_returns_400_on_submitted_application(
     client, _db, seed_application_records
 ):
-
     """
     GIVEN We have a functioning Application Store API
     WHEN A there is an application with a status of SUBMITTED
@@ -552,7 +550,6 @@ def test_successful_submitted_application(
     mock_submit_message_to_queue,
     mock_get_round,
 ):
-
     """
     GIVEN We have a functioning Application Store API
     WHEN an application is submitted
@@ -586,7 +583,6 @@ def test_stage_unsubmitted_application_to_queue_fails(
     mock_get_fund_data,
     mock_submit_message_to_queue,
 ):
-
     """
     GIVEN We request to stage an unsubmitted application to the assessment queue
     WHEN an application is unsubmitted
@@ -623,7 +619,6 @@ def test_stage_submitted_application_to_queue_fails(
     mock_get_fund_data,
     mock_submit_message_to_queue,
 ):
-
     """
     GIVEN We request to stage an submitted application to the assessment queue
     WHEN an application is submitted

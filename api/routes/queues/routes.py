@@ -1,6 +1,9 @@
 # from config import Config
+from uuid import uuid4
+
+from config import Config
 from db.queries import get_application
-from external_services.aws import submit_message_to_queue
+from external_services.aws import _SQS_CLIENT
 from flask.views import MethodView
 
 # from flask import request
@@ -22,9 +25,16 @@ class QueueView(MethodView):
             # trigger the assessment service to import the application
             #  (currently assessment is using a CRON timer to pick up messages,
             # not a webhook for triggers)
-            message_submitted_id = submit_message_to_queue(
-                application_with_form_json,
-                application_attributes,
+
+            # TODO: (FS-3703) Revisit this part after AWS migration
+            # 'MessageGroupId' & 'MessageDeduplicationId' are mandatary parameters to be provided on PAAS,
+            # while they are not acceptable parameters on localstack queue
+            message_submitted_id = _SQS_CLIENT.submit_single_message(
+                queue_url=Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
+                message=application_with_form_json,
+                extra_attributes=application_attributes,
+                message_group_id="import_applications_group",
+                message_deduplication_id=str(uuid4()),
             )
 
             return f"Message queued, message_id is: {message_submitted_id}.", 201

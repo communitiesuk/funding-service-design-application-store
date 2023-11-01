@@ -76,8 +76,12 @@ class DefaultConfig:
         )
         AWS_BUCKET_NAME = os.environ.get("AWS_BUCKET_NAME")
         AWS_REGION = AWS_SQS_REGION = os.environ.get("AWS_REGION")
-        AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = ""
-        AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL = ""
+        AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = os.environ.get(
+            "AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL"
+        )
+        AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL = os.environ.get(
+            "AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL"
+        )
 
     # Account Store Endpoints
     ACCOUNTS_ENDPOINT = "/accounts"

@@ -3,18 +3,6 @@ name: Deploy to Gov PaaS
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description:  Which AWS Account to use
-        type: choice
-        required: true
-        options:
-        - test
-        - uat
-      copilot:
-        description: Whether to deploy to AWS?
-        type: boolean
-        required: false
-        default: false
       deploy_to_dev:
         required: false
         default: false
@@ -26,7 +14,7 @@ on:
 
 jobs:
   test_and_deploy:
-    if: ${{ github.actor != 'dependabot[bot]' && !github.event.inputs.copilot }}
+    if: ${{ github.actor != 'dependabot[bot]' }}
     uses: communitiesuk/funding-service-design-workflows/.github/workflows/deploy.yml@main
     with:
       app_name: ${{ github.event.repository.name }}
@@ -44,61 +32,3 @@ jobs:
       CF_USER: ${{secrets.CF_USERNAME}}
       CF_PASSWORD: ${{secrets.CF_PASSWORD}}
       E2E_PAT: ${{secrets.E2E_PAT}}
-  paketo_build:
-    permissions:
-      packages: write
-    uses: communitiesuk/funding-service-design-workflows/.github/workflows/package.yml@main
-    with:
-      version_to_build: $(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-      owner: ${{ github.repository_owner }}
-      application: funding-service-design-application-store
-  pre_deploy_tests:
-    if: ${{ github.event.inputs.copilot }}
-    secrets:
-      E2E_PAT: ${{secrets.E2E_PAT}}
-    uses: communitiesuk/funding-service-design-workflows/.github/workflows/pre-deploy.yml@main
-    with:
-      db_name: fsd_app_store_test
-      postgres_unit_testing: true
-  copilot_build:
-    if: ${{ github.event.inputs.copilot }}
-    needs: [pre_deploy_tests, paketo_build]
-    concurrency: deploy-${{ inputs.environment || 'test' }}
-    permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read  # This is required for actions/checkout
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'test' }}
-    steps:
-    - name: Git clone the repository
-      uses: actions/checkout@v3
-
-    - name: Get current date
-      id: currentdatetime
-      run: echo "datetime=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
-
-    - name: configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GithubCopilotDeploy
-        role-session-name: APPLICATION_STORE_COPILOT_${{ steps.currentdatetime.outputs.datetime }}
-        aws-region: eu-west-2
-
-    - name: Install AWS Copilot CLI
-      run: |
-        curl -Lo aws-copilot https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux && chmod +x aws-copilot && sudo mv aws-copilot /usr/local/bin/copilot
-
-    - name: Inject Git SHA into manifest
-      run: |
-        yq -i '.variables.GITHUB_SHA = "${{ github.sha }}"'  copilot/fsd-application-store/manifest.yml
-
-    - name: Inject replacement image into manifest
-      run: |
-        yq -i '.image.location = "ghcr.io/communitiesuk/funding-service-design-application-store:${{ github.ref_name == 'main' && 'latest' || github.ref_name }}"'  copilot/fsd-application-store/manifest.yml
-
-    - name: Run database migrations
-      run: scripts/migration-task-script.py ${{ inputs.environment || 'test' }}
-
-    - name: Copilot deploy
-      run: |
-        copilot deploy --env ${{ inputs.environment || 'test' }}

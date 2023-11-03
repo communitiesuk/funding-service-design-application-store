@@ -263,7 +263,8 @@
                 "name": "Added value to the community",
                 "value": 0.10
             }
-        ]
+      ],
+    "project_name_field_id":"KAgrBz"
   },
   "fund_store/funds/fund-b/rounds/summer": {
     "fund_id": "funding-service-design",

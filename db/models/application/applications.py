@@ -35,12 +35,12 @@ class Applications(BaseModel):
         nullable=True,
     )
     started_at = Column("started_at", DateTime(), server_default=func.now())
-    status = Column(
-        "status", ENUM(Status), default="NOT_STARTED", nullable=False
-    )
+    status = Column("status", ENUM(Status), default="NOT_STARTED", nullable=False)
     date_submitted = Column("date_submitted", DateTime())
     last_edited = Column("last_edited", DateTime(), server_default=func.now())
     forms = relationship("Forms")
+    feedbacks = relationship("Feedback")
+    end_of_application_survey = relationship("EndOfApplicationSurveyFeedback")
 
     __table_args__ = (
         db.UniqueConstraint("fund_id", "round_id", "key", name="_reference"),

@@ -1,0 +1,1314 @@
+[
+    {
+        "status": "COMPLETED",
+        "name": "current-services-ns",
+        "questions": [
+            {
+                "category": "xigWzk",
+                "question": "Have you provided a night shelter or emergency accommodation on or after 1 April 2019?",
+                "fields": [
+                    {
+                        "key": "QOlbCV",
+                        "title": "Have you provided a night shelter or emergency accommodation on or after 1 April 2019?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "Night shelter or emergency accommodation",
+                "fields": [
+                    {
+                        "key": "affVbH",
+                        "title": "Is the night shelter or emergency accommodation communal?",
+                        "type": "list",
+                        "answer": true
+                    },
+                    {
+                        "key": "ttEOXi",
+                        "title": "Is the night shelter or emergency accommodation single room accommodation?",
+                        "type": "list",
+                        "answer": true
+                    },
+                    {
+                        "key": "dSdeYa",
+                        "title": "How many bed spaces did the night shelter or emergency accommodation provide from 1 April 2022 to 31 March 2023?",
+                        "type": "text",
+                        "answer": "323"
+                    },
+                    {
+                        "key": "gXvnZA",
+                        "title": "Is the night shelter or emergency accommodation used for SWEP (severe weather emergency protocol)?",
+                        "type": "list",
+                        "answer": false
+                    },
+                    {
+                        "key": "vStFMu",
+                        "title": "Do you accept referrals from the local authority or other agencies for available bed spaces?",
+                        "type": "list",
+                        "answer": false
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "How many nights did the night shelter or emergency accommodation open from 1 April 2022 to 31 March 2023?",
+                "fields": [
+                    {
+                        "key": "YyMRdP",
+                        "title": "How many nights did the night shelter or emergency accommodation open from 1 April 2022 to 31 March 2023?",
+                        "type": "text",
+                        "answer": "7"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "Do you currently provide day provision?",
+                "fields": [
+                    {
+                        "key": "STfdvD",
+                        "title": "Do you currently provide day provision?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "When did you start providing day provision?",
+                "fields": [
+                    {
+                        "key": "bCXNtj",
+                        "title": "When did you start providing day provision?",
+                        "type": "monthYear",
+                        "answer": "2023-06"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "Which day provision services are you currently providing?",
+                "fields": [
+                    {
+                        "key": "ULPcAU",
+                        "title": "Which day provision services are you currently providing?",
+                        "type": "list",
+                        "answer": [
+                            "other"
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "Which other day provision do you currently provide?",
+                "fields": [
+                    {
+                        "key": "zwQHCl",
+                        "title": "Which other day provision do you currently provide?",
+                        "type": "freeText",
+                        "answer": "<p>Test Current Services NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "Do you currently provide any other services?",
+                "fields": [
+                    {
+                        "key": "GBfYfn",
+                        "title": "Do you currently provide any other services?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "What other services are you currently providing?",
+                "fields": [
+                    {
+                        "key": "wViAiU",
+                        "title": "What other services are you currently providing?",
+                        "type": "freeText",
+                        "answer": "<p>Test Current Services NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "Do you currently provide specialist support?",
+                "fields": [
+                    {
+                        "key": "umAyqH",
+                        "title": "Do you currently provide specialist support?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "xigWzk",
+                "question": "Who do you currently provide targeted specialist support to?",
+                "fields": [
+                    {
+                        "key": "JCUQcR",
+                        "title": "Who do you currently provide targeted specialist support to?",
+                        "type": "list",
+                        "answer": [
+                            "women"
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "objectives-and-activities-ns",
+        "questions": [
+            {
+                "category": "VCtwUB",
+                "question": "Give a brief summary of your project, including what you hope to achieve",
+                "fields": [
+                    {
+                        "key": "pWFwci",
+                        "title": "Give a brief summary of your project, including what you hope to achieve",
+                        "type": "freeText",
+                        "answer": "<p>Test Objectives and Activities NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "VCtwUB",
+                "question": "Objectives and activities",
+                "fields": [
+                    {
+                        "key": "kRxOHF",
+                        "title": "Proposal milestones",
+                        "type": "multiInput",
+                        "answer": [
+                            {
+                                "FbWEBY": "Test Objectives and Activities NS Form",
+                                "RXrpzV": "Test Objectives and Activities NS Form"
+                            }
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "staff-and-volunteers-ns",
+        "questions": [
+            {
+                "category": "ibsaRz",
+                "question": "Employed staff and volunteers at your organisation",
+                "fields": [
+                    {
+                        "key": "bcJWbJ",
+                        "title": "How many staff members are currently employed in your organisation?",
+                        "type": "text",
+                        "answer": "44"
+                    },
+                    {
+                        "key": "pwPYdF",
+                        "title": "How many volunteers are actively involved in your organisation?",
+                        "type": "text",
+                        "answer": "39"
+                    },
+                    {
+                        "key": "VXKVmM",
+                        "title": "What percentage of your employed staff work part-time?",
+                        "type": "text",
+                        "answer": "10%"
+                    },
+                    {
+                        "key": "wOUNbF",
+                        "title": "For part-time employees, what is their average full-time equivalency (FTE)?",
+                        "type": "text",
+                        "answer": "0.6"
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "name-your-application-ns",
+        "questions": [
+            {
+                "category": "pCEnjo",
+                "question": "Name your application",
+                "fields": [
+                    {
+                        "key": "YVsPtE",
+                        "title": "Application name",
+                        "type": "text",
+                        "answer": "NS E2E Automated Application"
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "project-milestones-ns",
+        "questions": [
+            {
+                "category": "KdUbsr",
+                "question": "Proposal milestones",
+                "fields": [
+                    {
+                        "key": "sXlkAm",
+                        "title": "Milestones",
+                        "type": "multiInput",
+                        "answer": [
+                            {
+                                "fFIuPP": "Test Project Milestones NS Form",
+                                "PrulfI": {
+                                    "PrulfI__month": 6,
+                                    "PrulfI__year": 2023
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "working-in-partnership-ns",
+        "questions": [
+            {
+                "category": "TsNdVD",
+                "question": "Describe your important local partners and how they will support your proposal",
+                "fields": [
+                    {
+                        "key": "qMRHPz",
+                        "title": "Describe your important local partners and how they will support your proposal",
+                        "type": "freeText",
+                        "answer": "<p>Test Working In Partnership NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "applicant-information-ns",
+        "questions": [
+            {
+                "category": "ZbxIUV",
+                "question": "Lead contact details",
+                "fields": [
+                    {
+                        "key": "fUMWcd",
+                        "title": "Name of lead contact",
+                        "type": "text",
+                        "answer": "Test Applicant Information Form"
+                    },
+                    {
+                        "key": "lZVkeg",
+                        "title": "Lead contact job title",
+                        "type": "text",
+                        "answer": "Test Applicant Information Form"
+                    },
+                    {
+                        "key": "CDEwxp",
+                        "title": "Lead contact email address",
+                        "type": "text",
+                        "answer": "test@test.com"
+                    },
+                    {
+                        "key": "DvBqCJ",
+                        "title": "Lead contact telephone number",
+                        "type": "text",
+                        "answer": "0000000000"
+                    },
+                    {
+                        "key": "ayzqnK",
+                        "title": "Is the lead contact the same person as the authorised signatory?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "risk-and-deliverability-ns",
+        "questions": [
+            {
+                "category": "JOYYbl",
+                "question": "Risks to the proposal",
+                "fields": [
+                    {
+                        "key": "xDpgOK",
+                        "title": "Risk",
+                        "type": "multiInput",
+                        "answer": [
+                            {
+                                "dmKRCF": "Test Risk And Deliverability NS Form",
+                                "GVoNOE": "high",
+                                "SRHsAx": "Test Risk And Deliverability NS Form"
+                            }
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "joint-applications-ns",
+        "questions": [
+            {
+                "category": "uFLqwl",
+                "question": "Is your application a joint bid in partnership with other organisations?",
+                "fields": [
+                    {
+                        "key": "jsUbAI",
+                        "title": "Is your application a joint bid in partnership with other organisations?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "uFLqwl",
+                "question": "Partner organisation details",
+                "fields": [
+                    {
+                        "key": "oxMLrb",
+                        "title": "Your partner organisations",
+                        "type": "multiInput",
+                        "answer": [
+                            {
+                                "EFlBMr": "Test Joint Applications NS Form",
+                                "JFEJVf": "Test Joint Applications NS Form"
+                            }
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "proposal-sustainability-ns",
+        "questions": [
+            {
+                "category": "LZWArS",
+                "question": "How will this funding support the longer-term sustainability of your proposal beyond the funding period?",
+                "fields": [
+                    {
+                        "key": "PEMJEy",
+                        "title": "How will this funding support the longer-term sustainability of your proposal beyond the funding period?",
+                        "type": "freeText",
+                        "answer": "<p>Test Proposal Sustainability NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "organisation-information-ns",
+        "questions": [
+            {
+                "category": "VoIhVi",
+                "question": "Organisation details",
+                "fields": [
+                    {
+                        "key": "opFJRm",
+                        "title": "Organisation name",
+                        "type": "text",
+                        "answer": "Test organisation name"
+                    },
+                    {
+                        "key": "mhYQzL",
+                        "title": "Organisation address",
+                        "type": "text",
+                        "answer": "Test Organisation Information NS Form, null, Test Organisation Information NS Form, null, TE1 2NR"
+                    },
+                    {
+                        "key": "AVShTf",
+                        "title": "Which region of England do you work in?",
+                        "type": "text",
+                        "answer": "Test Organisation Information NS Form"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "VoIhVi",
+                "question": "What is your organisation's main purpose?",
+                "fields": [
+                    {
+                        "key": "BwbIlM",
+                        "title": "What is your organisation's main purpose?",
+                        "type": "freeText",
+                        "answer": "<p><strong>Test Organisation Information NS Form Formatting</strong></p>\r\n<ul>\r\n<li><strong>Test Organisation Information NS Form Formatting</strong></li>\r\n<li>&nbsp;</li>\r\n</ul>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "VoIhVi",
+                "question": "What are your organisation\u2019s charitable objects?",
+                "fields": [
+                    {
+                        "key": "RxbebZ",
+                        "title": "What are your organisation\u2019s charitable objects?",
+                        "type": "freeText",
+                        "answer": "<ol>\r\n<li>Test Organisation Information NS Form Formatting</li>\r\n<li>&nbsp;</li>\r\n</ol>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "VoIhVi",
+                "question": "What is your organisation's annual turnover?",
+                "fields": [
+                    {
+                        "key": "YauUjZ",
+                        "title": "Annual turnover for 1 April 2022 to 31 March 2023",
+                        "type": "text",
+                        "answer": "444"
+                    },
+                    {
+                        "key": "zuCRBk",
+                        "title": "Annual turnover for 1 April 2021 to 31 March 2022",
+                        "type": "text",
+                        "answer": "235"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "VoIhVi",
+                "question": "Which membership organisations are you a member of?",
+                "fields": [
+                    {
+                        "key": "NENGMj",
+                        "title": "Which membership organisations are you a member of?",
+                        "type": "list",
+                        "answer": "both"
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "organisation-type-ns",
+        "questions": [
+            {
+                "category": "qaFvvN",
+                "question": "How is your organisation classified?",
+                "fields": [
+                    {
+                        "key": "ChXWIQ",
+                        "title": "How is your organisation classified?",
+                        "type": "list",
+                        "answer": [
+                            "none"
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "qaFvvN",
+                "question": "How is your organisation classified?",
+                "fields": [
+                    {
+                        "key": "ETJaFn",
+                        "title": "How is your organisation classified?",
+                        "type": "text",
+                        "answer": "::Test Organisation Type Form;;"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "qaFvvN",
+                "question": "Names of trustees or committee members",
+                "fields": [
+                    {
+                        "key": "ILVEOG",
+                        "title": "Your trustees or committee members",
+                        "type": "multiInput",
+                        "answer": [
+                            {
+                                "mrCotx": "::Test Organisation Type Form;;"
+                            }
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "qaFvvN",
+                "question": "How long has your organisation been operating?",
+                "fields": [
+                    {
+                        "key": "TgBzyM",
+                        "title": "How long has your organisation been operating?",
+                        "type": "list",
+                        "answer": "more-than-2-years-but-less-than-3"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "qaFvvN",
+                "question": "Upload your organisation's annual accounts that you have available",
+                "fields": [
+                    {
+                        "key": "sVlFcN",
+                        "title": "Upload your organisation's annual accounts that you have available",
+                        "type": "text",
+                        "answer": "sample.txt"
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "local-need-and-support-ns",
+        "questions": [
+            {
+                "category": "vzkeMY",
+                "question": "Tell us why your proposal is needed in your area",
+                "fields": [
+                    {
+                        "key": "nMfGTS",
+                        "title": "Tell us why your proposal is needed in your area",
+                        "type": "freeText",
+                        "answer": "<p>Test Local Need And Support NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "vzkeMY",
+                "question": "Local authority support",
+                "fields": [
+                    {
+                        "key": "nURkuc",
+                        "title": "What is the name of the local authority where your proposal will be based?",
+                        "type": "text",
+                        "answer": "Test Local Need And Support NS Form"
+                    },
+                    {
+                        "key": "lFTgWk",
+                        "title": "Do you have the local authority's support and endorsement for your proposal?",
+                        "type": "list",
+                        "answer": false
+                    },
+                    {
+                        "key": "mIGfuL",
+                        "title": "Upload letter of endorsement from your local authority (optional)",
+                        "type": "text",
+                        "answer": null
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "proposed-services-ns",
+        "questions": [
+            {
+                "category": "gIqXgO",
+                "question": "Tell us how your proposal will transform your existing services",
+                "fields": [
+                    {
+                        "key": "lOliDH",
+                        "title": "Tell us how your proposal will transform your existing services",
+                        "type": "freeText",
+                        "answer": "<p>Test Proposed Services NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "Do you plan to use this funding to make any changes to the existing night shelter or emergency accommodation?",
+                "fields": [
+                    {
+                        "key": "dWxxdq",
+                        "title": "Do you plan to use this funding to make any changes to the existing night shelter or emergency accommodation?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "How many single rooms will you provide with the funding?",
+                "fields": [
+                    {
+                        "key": "UEndmh",
+                        "title": "How many single rooms will you provide with the funding?",
+                        "type": "text",
+                        "answer": "123"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "Do you plan to use this funding to make any changes to the existing day provision?",
+                "fields": [
+                    {
+                        "key": "jzzBDS",
+                        "title": "Do you plan to use this funding to make any changes to the existing day provision?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "Which additional day provision will your proposal provide?",
+                "fields": [
+                    {
+                        "key": "bGCkPI",
+                        "title": "Which additional day provision will your proposal provide?",
+                        "type": "list",
+                        "answer": [
+                            "other"
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "Which other additional day provision will your proposal provide?",
+                "fields": [
+                    {
+                        "key": "brLcqY",
+                        "title": "Which other additional day provision will your proposal provide?",
+                        "type": "freeText",
+                        "answer": "<p>Test Proposed Services NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "Will you provide any other additional services?",
+                "fields": [
+                    {
+                        "key": "bCQWFN",
+                        "title": "Will you provide any other additional services?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "Which other services will you use the funding to provide?",
+                "fields": [
+                    {
+                        "key": "kPvpzG",
+                        "title": "Which other services will you use the funding to provide?",
+                        "type": "freeText",
+                        "answer": "<p>Test Proposed Services NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "Will your proposal provide additional specialist support?",
+                "fields": [
+                    {
+                        "key": "xYNpHc",
+                        "title": "Will your proposal provide additional specialist support?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "Who will your proposal provide targeted specialist support to?",
+                "fields": [
+                    {
+                        "key": "RKPpEV",
+                        "title": "Who will your proposal provide targeted specialist support to?",
+                        "type": "list",
+                        "answer": [
+                            "disabled-people",
+                            "other"
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "gIqXgO",
+                "question": "Who will your proposal provide specialist support to?",
+                "fields": [
+                    {
+                        "key": "HTGgzg",
+                        "title": "Who will your proposal provide specialist support to?",
+                        "type": "freeText",
+                        "answer": "<p>Test Proposed Services NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "outputs-and-outcomes-ns",
+        "questions": [
+            {
+                "category": "VeHFTz",
+                "question": "Who your proposal will support",
+                "fields": [
+                    {
+                        "key": "cYEiGS",
+                        "title": "How many people will the proposal support with the funding in 2023 to 2024?",
+                        "type": "text",
+                        "answer": "5"
+                    },
+                    {
+                        "key": "ZZisap",
+                        "title": "How many people will the proposal support with the funding in 2024 to 2025?",
+                        "type": "text",
+                        "answer": "10"
+                    },
+                    {
+                        "key": "ZJCVjE",
+                        "title": "How many people with restricted eligibility will the proposal support in 2023 to 2024?",
+                        "type": "text",
+                        "answer": "15"
+                    },
+                    {
+                        "key": "dboegN",
+                        "title": "How many people with restricted eligibility will the proposal support in 2024 to 2025?",
+                        "type": "text",
+                        "answer": "20"
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "funding-required-ns",
+        "questions": [
+            {
+                "category": "LABTna",
+                "question": "What funding are you applying for?",
+                "fields": [
+                    {
+                        "key": "NxVqXd",
+                        "title": "What funding are you applying for?",
+                        "type": "list",
+                        "answer": "both-revenue-and-capital"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "LABTna",
+                "question": "How much funding are you applying for?",
+                "fields": [
+                    {
+                        "key": "GRWtfV",
+                        "title": "Both revenue and capital",
+                        "type": "text",
+                        "answer": "33"
+                    },
+                    {
+                        "key": "zvPzXN",
+                        "title": "Revenue for 1 April 2024 to 31 March 2025",
+                        "type": "text",
+                        "answer": "55"
+                    },
+                    {
+                        "key": "QUCvFy",
+                        "title": "Capital for 1 April 2023 to 31 March 2024",
+                        "type": "text",
+                        "answer": "93"
+                    },
+                    {
+                        "key": "pppiYl",
+                        "title": "Capital for 1 April 2024 to 31 March 2025",
+                        "type": "text",
+                        "answer": "39"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "LABTna",
+                "question": "Revenue funding",
+                "fields": [
+                    {
+                        "key": "mCbbyN",
+                        "title": "Revenue costs",
+                        "type": "multiInput",
+                        "answer": [
+                            {
+                                "dpDFgB": "Test Funding Required NS Form",
+                                "iZdZrr": 40,
+                                "leIxEX": "1 April 2023 to 31 March 2024",
+                                "TrTaZQ": "Test Funding Required NS Form"
+                            }
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "LABTna",
+                "question": "Capital funding",
+                "fields": [
+                    {
+                        "key": "XsAoTv",
+                        "title": "Capital costs",
+                        "type": "multiInput",
+                        "answer": [
+                            {
+                                "cpFthG": "Test Funding Required NS Form",
+                                "JtBjFp": 50,
+                                "mmwzGc": "1 April 2024 to 31 March 2025",
+                                "pMffVz": null
+                            }
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "declarations-ns",
+        "questions": [
+            {
+                "category": "gkTvmJ",
+                "question": "Agree to the final confirmations",
+                "fields": [
+                    {
+                        "key": "kOTdzu",
+                        "title": "Confirm you have a bank account set up and associated with the organisation you are applying on behalf of",
+                        "type": "list",
+                        "answer": false
+                    },
+                    {
+                        "key": "NBcyAe",
+                        "title": "Confirm that the information you've provided in this application is accurate to the best of your knowledge on the date of submission",
+                        "type": "list",
+                        "answer": true
+                    },
+                    {
+                        "key": "OKtDsH",
+                        "title": "Confirm you have a safeguarding, data protection and health and safety policy",
+                        "type": "list",
+                        "answer": false
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "building-works-ns",
+        "questions": [
+            {
+                "category": "EDNaie",
+                "question": "Will you use the funding to conduct building works?",
+                "fields": [
+                    {
+                        "key": "lifPop",
+                        "title": "Will you use the funding to conduct building works?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Number of new single room units (optional)",
+                "fields": [
+                    {
+                        "key": "fmcTtE",
+                        "title": "Number of new single room units (optional)",
+                        "type": "text",
+                        "answer": "344"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Do you need planning approval for your proposal?",
+                "fields": [
+                    {
+                        "key": "xGnWEW",
+                        "title": "Do you need planning approval for your proposal?",
+                        "type": "list",
+                        "answer": "yes"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Have you made an application for planning permission?",
+                "fields": [
+                    {
+                        "key": "KhISvR",
+                        "title": "Have you made an application for planning permission?",
+                        "type": "list",
+                        "answer": false
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Have you received any pre-application planning advice?",
+                "fields": [
+                    {
+                        "key": "YFPgTB",
+                        "title": "Have you received any pre-application planning advice?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Give a brief summary of the advice you received",
+                "fields": [
+                    {
+                        "key": "mADkNz",
+                        "title": "Give a brief summary of the advice you received",
+                        "type": "freeText",
+                        "answer": "<p>Test Building Works NS Form</p>"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Will you procure a construction contract for the building works?",
+                "fields": [
+                    {
+                        "key": "AYDIPX",
+                        "title": "Will you procure a construction contract for the building works?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Will you use any professional advisors for the proposal?",
+                "fields": [
+                    {
+                        "key": "nyusrL",
+                        "title": "Will you use any professional advisors for the proposal?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Details of professional advisors",
+                "fields": [
+                    {
+                        "key": "SQEpBt",
+                        "title": "Details of professional advisors",
+                        "type": "multiInput",
+                        "answer": [
+                            {
+                                "cbYcqS": "Test Building Works NS Form",
+                                "muRwiL": "Test Building Works NS Form"
+                            }
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Will you be hiring contractors to complete the building works?",
+                "fields": [
+                    {
+                        "key": "rYAgMN",
+                        "title": "Will you be hiring contractors to complete the building works?",
+                        "type": "list",
+                        "answer": false
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Do you have a cost estimate for the building works?",
+                "fields": [
+                    {
+                        "key": "wUFaUF",
+                        "title": "Do you have a cost estimate for the building works?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Upload cost estimate",
+                "fields": [
+                    {
+                        "key": "NOMwBb",
+                        "title": "Upload cost estimate",
+                        "type": "text",
+                        "answer": "sample.txt"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Do you have a condition survey?",
+                "fields": [
+                    {
+                        "key": "ZmYhgR",
+                        "title": "Do you have a condition survey?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Upload a condition survey",
+                "fields": [
+                    {
+                        "key": "aTxAPP",
+                        "title": "Upload a condition survey",
+                        "type": "text",
+                        "answer": "sample.txt"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Do you have a buildings and contents insurance certificate?",
+                "fields": [
+                    {
+                        "key": "SdwIUb",
+                        "title": "Do you have a buildings and contents insurance certificate?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Upload buildings and contents insurance certificate",
+                "fields": [
+                    {
+                        "key": "NlDVCg",
+                        "title": "Upload buildings and contents insurance certificate",
+                        "type": "text",
+                        "answer": "sample.txt"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Do you own the premises?",
+                "fields": [
+                    {
+                        "key": "RXIYZY",
+                        "title": "Do you own the premises?",
+                        "type": "list",
+                        "answer": false
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Upload the land owner's consent",
+                "fields": [
+                    {
+                        "key": "rMvZDG",
+                        "title": "Upload the land owner's consent",
+                        "type": "text",
+                        "answer": "sample.txt"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "How long is left on the lease agreement?",
+                "fields": [
+                    {
+                        "key": "muhnok",
+                        "title": "How long is left on the lease agreement?",
+                        "type": "list",
+                        "answer": "less-than-4-years"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Upload correspondence from your landlord to show that lease renewal discussions have started",
+                "fields": [
+                    {
+                        "key": "GLOpmu",
+                        "title": "Upload correspondence from your landlord to show that lease renewal discussions have started",
+                        "type": "text",
+                        "answer": "sample.txt"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Upload heads of terms outlining new lease agreement",
+                "fields": [
+                    {
+                        "key": "kQJIbS",
+                        "title": "Upload heads of terms outlining new lease agreement",
+                        "type": "text",
+                        "answer": "sample.txt"
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Is the building listed?",
+                "fields": [
+                    {
+                        "key": "skBfqS",
+                        "title": "Is the building listed?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "EDNaie",
+                "question": "Upload listed building consent",
+                "fields": [
+                    {
+                        "key": "abdbzq",
+                        "title": "Upload listed building consent",
+                        "type": "text",
+                        "answer": "sample.txt"
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    },
+    {
+        "status": "COMPLETED",
+        "name": "match-funding-ns",
+        "questions": [
+            {
+                "category": "qXObyw",
+                "question": "Will you use match funding for this proposal?",
+                "fields": [
+                    {
+                        "key": "nxpXlE",
+                        "title": "Will you use match funding for this proposal?",
+                        "type": "list",
+                        "answer": true
+                    }
+                ],
+                "status": "COMPLETED"
+            },
+            {
+                "category": "qXObyw",
+                "question": "Match funding",
+                "fields": [
+                    {
+                        "key": "uuyBff",
+                        "title": "Match funding",
+                        "type": "multiInput",
+                        "answer": [
+                            {
+                                "AfAKxk": "Test Match Funding NS Form",
+                                "CrcLtW": 1234,
+                                "ndySbC": "1 April 2023 to 31 March 2024",
+                                "pATWyM": "Capital",
+                                "sIFBGc": true
+                            }
+                        ]
+                    }
+                ],
+                "status": "COMPLETED"
+            }
+        ]
+    }
+]

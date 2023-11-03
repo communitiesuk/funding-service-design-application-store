@@ -47,9 +47,7 @@ def application_deadline_reminder(fund_id: str, round_id: str):
         unique_application_email_addresses = list(unique.values())
 
     if len(unique_application_email_addresses) > 0:
-        for count, application in enumerate(
-            unique_application_email_addresses
-        ):
+        for count, application in enumerate(unique_application_email_addresses):
 
             email = {
                 "email": applicant.get("account_email")
@@ -71,19 +69,13 @@ def application_deadline_reminder(fund_id: str, round_id: str):
                 current_app.logger.error(e.message)
 
     else:
-        current_app.logger.info(
-            "Currently, there are no non-submitted applications"
-        )
+        current_app.logger.info("Currently, there are no non-submitted applications")
 
 
 def init_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--fund_id", help="Provide fund id of a fund", required=True
-    )
-    parser.add_argument(
-        "--round_id", help="Provide round id of a fund", required=True
-    )
+    parser.add_argument("--fund_id", help="Provide fund id of a fund", required=True)
+    parser.add_argument("--round_id", help="Provide round id of a fund", required=True)
     return parser
 
 

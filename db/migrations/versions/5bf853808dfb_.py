@@ -47,9 +47,7 @@ def upgrade():
         sa.Column("last_edited", sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_applications")),
         sa.UniqueConstraint("fund_id", "round_id", "key", name="_reference"),
-        sa.UniqueConstraint(
-            "reference", name=op.f("uq_applications_reference")
-        ),
+        sa.UniqueConstraint("reference", name=op.f("uq_applications_reference")),
     )
     op.create_table(
         "forms",

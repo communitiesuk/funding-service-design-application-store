@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 from typing import Optional
 
 from external_services.models.round import Round
@@ -12,7 +11,8 @@ class Fund:
     identifier: str
     short_name: str
     description: str
-    rounds: Optional[List[Round]] = None
+    welsh_available: bool
+    rounds: Optional[list[Round]] = None
 
     @staticmethod
     def from_json(data: dict):
@@ -22,6 +22,7 @@ class Fund:
                 identifier=data["id"],
                 short_name=data["short_name"],
                 description=data["description"],
+                welsh_available=data["welsh_available"],
             )
         except AttributeError as e:
             current_app.logger.error("Empty data passed to Fund.from_json")

@@ -16,22 +16,16 @@ def add_new_forms(forms, application_id):
 
 
 def get_forms_by_app_id(application_id, as_json=True):
-    forms = (
-        db.session.query(Forms)
-        .filter(Forms.application_id == application_id)
-        .all()
-    )
+    forms = db.session.query(Forms).filter(Forms.application_id == application_id).all()
     if as_json:
         return [form.as_json() for form in forms]
     else:
         return forms
 
 
-def get_form(application_id, form_name):
+def get_form(application_id, form_name) -> Forms:
     return (
         db.session.query(Forms)
-        .filter(
-            Forms.application_id == application_id, Forms.name == form_name
-        )
+        .filter(Forms.application_id == application_id, Forms.name == form_name)
         .one()
     )

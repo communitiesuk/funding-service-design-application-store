@@ -1,6 +1,7 @@
 name: Tag-zip release
 permissions:
   contents: write
+  packages: write
 on:
   pull_request:
     types:
@@ -27,3 +28,12 @@ jobs:
     uses: communitiesuk/funding-service-design-workflows/.github/workflows/tag-to-release.yml@main
     with:
       build_static_assets: false
+  paketo_build:
+    needs: tag-to-release
+    permissions:
+      packages: write
+    uses: communitiesuk/funding-service-design-workflows/.github/workflows/package.yml@main
+    with:
+      version_to_build: ${{ needs.tag-to-release.outputs.new_tag }}
+      owner: ${{ github.repository_owner }}
+      application: funding-service-design-application-store

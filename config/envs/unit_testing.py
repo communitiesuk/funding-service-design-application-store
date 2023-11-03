@@ -3,14 +3,14 @@
 from os import environ
 
 from config.envs.default import DefaultConfig
-from fsd_utils import CommonConfig
 from fsd_utils import configclass
+from fsd_utils.config.commonconfig import CommonConfig
 
 
 @configclass
 class UnitTestingConfig(DefaultConfig):
     #  Application Config
-    SECRET_KEY = "dev"
+    SECRET_KEY = "dev"  # pragma: allowlist secret
     SESSION_COOKIE_NAME = CommonConfig.SESSION_COOKIE_NAME
     FLASK_ENV = "unit_test"
     FUND_STORE_API_HOST = DefaultConfig.TEST_FUND_STORE_API_HOST
@@ -21,30 +21,12 @@ class UnitTestingConfig(DefaultConfig):
     # Database
     SQLALCHEMY_DATABASE_URI = environ.get(
         "DATABASE_URL",
-        "postgresql://postgres:postgres@localhost:5432/postgres",
+        "postgresql://postgres:postgres@localhost:5432/fsd_app_store_test",  # pragma: allowlist secret
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    FUND_ROUND_FORMS = {
-        "fund-a:spring": CommonConfig.FORMS_CONFIG_FOR_FUND_ROUND,
-        "fund-b:spring": CommonConfig.FORMS_CONFIG_FOR_FUND_ROUND,
-        "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4:c603d114-5364-4474-a0c4-c41cbf4d3bbd": CommonConfig.FORMS_CONFIG_FOR_FUND_ROUND,  # noqa
-        "fund-b:summer": CommonConfig.FORMS_CONFIG_FOR_FUND_ROUND,
-        "funding-service-design:spring": CommonConfig.FORMS_CONFIG_FOR_FUND_ROUND,  # noqa
-        "funding-service-design:summer": CommonConfig.FORMS_CONFIG_FOR_FUND_ROUND,  # noqa
-    }
-
+    AWS_SQS_SECRET_ACCESS_KEY = ""
+    AWS_SQS_ACCESS_KEY_ID = ""
     USE_LOCAL_DATA = True
-
-    COF_FUND_ID = CommonConfig.COF_FUND_ID
-    COF_ROUND_2_ID = CommonConfig.COF_ROUND_2_ID
-
-    # ---------------
-    #  Form Config
-    # ---------------
-
-    FORMS_CONFIG_FOR_FUND_ROUND = {
-        f"{COF_FUND_ID}:{COF_ROUND_2_ID}": CommonConfig.COF_R2_ORDERED_FORMS_CONFIG,  # noqa
-        "fund-b:summer": CommonConfig.COF_R2_ORDERED_FORMS_CONFIG,
-        "funding-service-design:spring": CommonConfig.COF_R2_ORDERED_FORMS_CONFIG,  # noqa
-    }
+    AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = "fsd-queue-test"
+    AWS_SQS_REGION = "eu-west-2"

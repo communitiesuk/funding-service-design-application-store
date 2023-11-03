@@ -1,5 +1,35 @@
 components:
   schemas:
+    StatusReport:
+      type: object
+      properties:
+        metrics:
+          type: array
+          items:
+            type: object
+            properties:
+              fund_id:
+                type: string
+              rounds:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    round_id:
+                      type: string
+                    application_statuses:
+                      $ref: '#/components/schemas/ApplicationMetrics'
+    ApplicationMetrics:
+      type: object
+      properties:
+        NOT_STARTED:
+          type: integer
+        IN_PROGRESS:
+          type: integer
+        COMPLETED:
+          type: integer
+        SUBMITTED:
+          type: integer
     Application:
       type: object
       properties:
@@ -129,6 +159,43 @@ components:
           items:
             oneOf:
               - type: object
+    Feedback:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        application_id:
+          type: string
+          format: uuid
+        fund_id:
+          type: string
+        round_id:
+          type: string
+        section_id:
+          type: string
+        feedback_json:
+          type: object
+        status:
+          type: string
+        date_submitted:
+          type: string
+          format: date-time
+    PostFeedback:
+      type: object
+      properties:
+        application_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+        section_id:
+          type: string
+        feedback_json:
+          type: object
+        status:
+          type: string
     Error:
       type: object
       properties:
@@ -139,3 +206,36 @@ components:
       required:
         - code
         - message
+    PostEndOfApplicationSurveyDataRequest:
+      type: object
+      properties:
+        application_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+        page_number:
+          type: integer
+        data:
+          type: object
+          additionalProperties: true
+    GetEndOfApplicationSurveyDataResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        application_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+        page_number:
+          type: integer
+        data:
+          type: object
+          additionalProperties: true
+        date_submitted:
+          type: string
+          format: date-time

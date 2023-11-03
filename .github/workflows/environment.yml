@@ -18,7 +18,7 @@ jobs:
     environment: ${{ inputs.workspace }}
     steps:
     - name: Git clone the repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Get current date
       id: currentdatetime

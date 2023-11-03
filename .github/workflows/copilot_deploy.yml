@@ -108,4 +108,4 @@ jobs:
       with:
         run_performance_tests: ${{ inputs.run_performance_tests }}
         run_e2e_tests: ${{ inputs.run_e2e_tests }}
-        app_name: application
+        app_name: frontend

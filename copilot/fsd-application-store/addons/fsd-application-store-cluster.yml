@@ -21,8 +21,12 @@ Mappings:
       "DBMinCapacity": 0.5 # AllowedValues: from 0.5 through 128
       "DBMaxCapacity": 8   # AllowedValues: from 0.5 through 128
   BastionMap:
+    dev:
+      "SecurityGroup": "sg-0b6c7aabb95bf14a9"
     test:
       "SecurityGroup": "sg-0cf75a004dbade7b8"
+    uat:
+      "SecurityGroup": "sg-04017abfef2079894"
 
 Resources:
   fsdapplicationstoreclusterDBSubnetGroup:

@@ -236,7 +236,7 @@ marshmallow==3.19.0
     # via
     #   -r requirements.txt
     #   marshmallow-sqlalchemy
-marshmallow-sqlalchemy==0.28.1
+marshmallow-sqlalchemy==0.29.0
     # via -r requirements.txt
 mypy-extensions==0.4.3
     # via black
@@ -314,6 +314,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   pyjwt
 pyparsing==3.0.9
     # via
     #   -r requirements.txt
@@ -405,6 +406,7 @@ sentry-sdk[flask]==1.32.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   sentry-sdk
 six==1.16.0
     # via
     #   -r requirements.txt

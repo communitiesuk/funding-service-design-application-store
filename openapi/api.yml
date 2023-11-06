@@ -548,3 +548,46 @@ paths:
                 code: 500
                 status: 'error'
                 message: 'Message could not be staged'
+
+  /queue_healthcheck:
+    get:
+      tags:
+        - SQS (queues)
+      summary: Check the health status of one or all queues
+      description: Returns the health status of the specified queue, or all queues if no specific queue is requested.
+      operationId: api.QueueView.health_check
+      parameters:
+        - name: queue_prefix
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The prefix of the queue(s) to check. If omitted, all queues will be checked.
+      responses:
+        200:
+          description: SUCCESS - Health status of the queue(s).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+              examples:
+                single_queue_health:
+                  value:
+                    "queue_name_1": true
+                all_queues_health:
+                  value:
+                    "queue_name_1": true
+                    "queue_name_2": false
+                    "queue_name_3": true
+        500:
+          description: ERROR - Could not check the health status of the queue(s).
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 500
+                status: 'error'
+                message: 'Failed to retrieve queue health status'

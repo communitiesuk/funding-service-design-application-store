@@ -1,10 +1,12 @@
 # from config import Config
+import contextlib
 from uuid import uuid4
 
 from config import Config
 from db.queries import get_application
 from external_services.aws import _SQS_CLIENT
 from flask.views import MethodView
+
 
 # from flask import request
 
@@ -43,3 +45,28 @@ class QueueView(MethodView):
                 "code": 400,
                 "message": "Application must be submitted before it can be assessed",
             }, 400
+
+    def health_check(self, queue_prefix: str = None) -> dict[str, bool]:
+        queue_name_to_status_dict = {
+            q: False for q in _SQS_CLIENT.get_queues(prefix=queue_prefix)
+        }
+        for queue_name in queue_name_to_status_dict.keys():
+            # normally against bare except, but this is for health check
+            with contextlib.suppress(Exception):
+                queue_url = _SQS_CLIENT.get_queue_url(queue_name)
+                message_id = _SQS_CLIENT.submit_single_message(
+                    queue_url=queue_url,
+                    message={},  # empty body for health check
+                    message_group_id="health_check",
+                )
+                if messages := _SQS_CLIENT.receive_messages(queue_url, max_number=1):
+                    if message := next(
+                        (m for m in messages if m["MessageId"] == message_id), None
+                    ):
+                        delete_resp = _SQS_CLIENT.delete_messages(
+                            queue_url, [message["ReceiptHandle"]]
+                        )
+                        queue_name_to_status_dict[queue_name] = (
+                            len(delete_resp.get("Successful") or []) == 1
+                        )
+        return queue_name_to_status_dict

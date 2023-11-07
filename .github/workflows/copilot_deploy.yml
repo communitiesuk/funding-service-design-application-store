@@ -111,7 +111,7 @@ jobs:
         copilot svc deploy --env ${{ matrix.value }} --app pre-award
 
   post_deploy_tests:
-      needs: test_copilot_deploy
+      needs: copilot_environments_deploy
       secrets:
         E2E_PAT: ${{secrets.E2E_PAT}}
       uses: communitiesuk/funding-service-design-workflows/.github/workflows/post-deploy.yml@main

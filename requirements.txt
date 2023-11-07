@@ -133,7 +133,7 @@ markupsafe==2.1.1
     #   werkzeug
 marshmallow==3.19.0
     # via marshmallow-sqlalchemy
-marshmallow-sqlalchemy==0.28.1
+marshmallow-sqlalchemy==0.29.0
     # via -r requirements.in
 numpy==1.26.0
     # via pandas
@@ -233,7 +233,7 @@ slugify==0.0.1
     # via -r requirements.in
 soupsieve==2.4.1
     # via beautifulsoup4
-sqlalchemy==1.4.44
+sqlalchemy==2.0.23
     # via
     #   -r requirements.in
     #   alembic
@@ -252,7 +252,9 @@ swagger-ui-bundle==0.0.9
 thrift==0.16.0
     # via flipper-client
 typing-extensions==4.4.0
-    # via jsonschema-spec
+    # via
+    #   jsonschema-spec
+    #   sqlalchemy
 tzdata==2023.3
     # via pandas
 urllib3==1.26.12

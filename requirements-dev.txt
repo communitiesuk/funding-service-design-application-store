@@ -232,7 +232,7 @@ marshmallow==3.19.0
     # via
     #   -r requirements.txt
     #   marshmallow-sqlalchemy
-marshmallow-sqlalchemy==0.28.1
+marshmallow-sqlalchemy==0.29.0
     # via -r requirements.txt
 mypy-extensions==0.4.3
     # via black
@@ -418,7 +418,7 @@ soupsieve==2.4.1
     # via
     #   -r requirements.txt
     #   beautifulsoup4
-sqlalchemy==1.4.44
+sqlalchemy==2.0.23
     # via
     #   -r requirements.txt
     #   alembic
@@ -452,6 +452,7 @@ typing-extensions==4.4.0
     # via
     #   -r requirements.txt
     #   jsonschema-spec
+    #   sqlalchemy
 tzdata==2023.3
     # via
     #   -r requirements.txt

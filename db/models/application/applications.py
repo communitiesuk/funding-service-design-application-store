@@ -3,7 +3,7 @@ import uuid
 from db import db
 from db.models.application.enums import Language
 from db.models.application.enums import Status
-from flask_sqlalchemy import DefaultMeta
+from flask_sqlalchemy.model import DefaultMeta
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import ENUM

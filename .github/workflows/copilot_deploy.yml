@@ -132,4 +132,3 @@ jobs:
         run_e2e_tests: ${{ inputs.run_e2e_tests }}
         app_name: frontend
         environment: ${{ inputs.environment == '' && 'test' || inputs.environment }}
-

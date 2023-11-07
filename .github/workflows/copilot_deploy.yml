@@ -50,62 +50,69 @@ jobs:
       # Note - no db-name, so defaults to postgres_db
       postgres_unit_testing: true
 
-  dev_copilot_deploy:
-    if: inputs.environment == 'dev' || inputs.environment == ''
-    needs: [pre_deploy_tests, paketo_build]
-    concurrency: deploy-dev
-    secrets:
-      AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
-    uses: ./.github/workflows/environment.yml
-    permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read  # This is required for actions/checkout
-    with:
-      workspace: 'dev'
+  copilot_environments_workflow_setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.copilot_env_matrix.outputs.env_list }}
+    steps:
+      - id: copilot_env_matrix
+        run: |
+          if [ "${{ inputs.environment }}" != '' ]; then
+            echo "env_list=[\"${{ inputs.environment }}\"]" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" == 'refs/heads/main' ]; then
+            echo "env_list=[\"dev\", \"test\", \"uat\", \"production\"]" >> $GITHUB_OUTPUT
+          else
+            echo "env_list=[\"dev\", \"test\"]" >> $GITHUB_OUTPUT
+          fi
 
-  test_copilot_deploy:
-    if: inputs.environment == 'test' || inputs.environment == ''
-    needs: [pre_deploy_tests, paketo_build]
-    concurrency: deploy-test
-    secrets:
-      AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
-    uses: ./.github/workflows/environment.yml
+  copilot_environments_deploy:
+    concurrency: application-store-environment-deploy
     permissions:
       id-token: write # This is required for requesting the JWT
       contents: read  # This is required for actions/checkout
-    with:
-      workspace: 'test'
+    needs: [ pre_deploy_tests, paketo_build, copilot_environments_workflow_setup ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        value: ${{ fromJSON(needs.copilot_environments_workflow_setup.outputs.matrix) }}
+    environment: ${{ matrix.value }}
+    steps:
+    - name: Git clone the repository
+      uses: actions/checkout@v4
 
-  # Allow the capability to override UAT with another branch, but ideally uat and production should be in sync as much as possible
-  uat_copilot_deploy:
-    if: inputs.environment == 'uat' || inputs.environment == ''
-    needs: [pre_deploy_tests, paketo_build]
-    concurrency: deploy-uat
-    secrets:
-      AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
-    uses: ./.github/workflows/environment.yml
-    permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read  # This is required for actions/checkout
-    with:
-      workspace: 'uat'
+    - name: Get current date
+      shell: bash
+      id: currentdatetime
+      run: echo "datetime=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
-  # Only run this if the branch being deployed is main
-  production_copilot_deploy:
-    if: (inputs.environment == 'production' || inputs.environment == '') && github.ref == 'refs/heads/main'
-    needs: [pre_deploy_tests, paketo_build]
-    concurrency: deploy-production
-    secrets:
-      AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
-    uses: ./.github/workflows/environment.yml
-    permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read  # This is required for actions/checkout
-    with:
-      workspace: 'production'
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GithubCopilotDeploy
+        role-session-name: NOTIFICATION_${{ matrix.value }}_COPILOT_${{ steps.currentdatetime.outputs.datetime }}
+        aws-region: eu-west-2
+
+    - name: Install AWS Copilot CLI
+      shell: bash
+      run: |
+        curl -Lo aws-copilot https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux && chmod +x aws-copilot && sudo mv aws-copilot /usr/local/bin/copilot
+
+    - name: Inject Git SHA into manifest
+      run: |
+        yq -i '.variables.GITHUB_SHA = "${{ github.sha }}"'  copilot/fsd-application-store/manifest.yml
+
+    - name: Inject replacement image into manifest
+      run: |
+        yq -i '.image.location = "ghcr.io/communitiesuk/funding-service-design-application-store:${{ github.ref_name == 'main' && 'latest' || github.ref_name }}"'  copilot/fsd-application-store/manifest.yml
+
+    - name: Copilot ${{ matrix.value }} deploy
+      id: deploy_build
+      run: |
+        copilot svc deploy --env ${{ matrix.value }} --app pre-award
 
   post_deploy_tests:
-      needs: test_copilot_deploy
+      needs: copilot_environments_deploy
+      if: inputs.environment == 'test' || inputs.environment == 'dev' || inputs.environment == ''
       secrets:
         E2E_PAT: ${{secrets.E2E_PAT}}
       uses: communitiesuk/funding-service-design-workflows/.github/workflows/post-deploy.yml@main

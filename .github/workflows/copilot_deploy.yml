@@ -38,9 +38,9 @@ jobs:
   tag_version:
     runs-on: ubuntu-latest
     outputs:
-      version_to_tag: ${{ steps.notification_tagging.outputs.tag_value }}
+      version_to_tag: ${{ steps.application_store_tagging.outputs.tag_value }}
     steps:
-      - id: notification_tagging
+      - id: application_store_tagging
         run: |
           echo "tag_value=$(echo '${{ github.ref }}' | sed -e 's,.*/\(.*\),\1,')" >> $GITHUB_OUTPUT
 
@@ -76,16 +76,21 @@ jobs:
             echo "env_list=[\"dev\", \"test\"]" >> $GITHUB_OUTPUT
           fi
 
-  copilot_environments_deploy:
-    concurrency: application-store-environment-deploy
+  copilot_env_deploy:
+    concurrency:
+      group: '${{ github.workflow }} @ ${{ github.ref }}'
+      cancel-in-progress: false
     permissions:
       id-token: write # This is required for requesting the JWT
       contents: read  # This is required for actions/checkout
     needs: [ tag_version, pre_deploy_tests, paketo_build, copilot_environments_workflow_setup ]
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
+      max-parallel: 1
       matrix:
         value: ${{ fromJSON(needs.copilot_environments_workflow_setup.outputs.matrix) }}
+      fail-fast: false
     environment: ${{ matrix.value }}
     steps:
     - name: Git clone the repository
@@ -100,7 +105,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GithubCopilotDeploy
-        role-session-name: NOTIFICATION_${{ matrix.value }}_COPILOT_${{ steps.currentdatetime.outputs.datetime }}
+        role-session-name: APPLICATION_STORE_${{ matrix.value }}_COPILOT_${{ steps.currentdatetime.outputs.datetime }}
         aws-region: eu-west-2
 
     - name: Install AWS Copilot CLI
@@ -122,13 +127,13 @@ jobs:
         copilot svc deploy --env ${{ matrix.value }} --app pre-award
 
   post_deploy_tests:
-      needs: copilot_environments_deploy
+      needs: copilot_env_deploy
       if: inputs.environment == 'test' || inputs.environment == 'dev' || inputs.environment == ''
       secrets:
         E2E_PAT: ${{secrets.E2E_PAT}}
       uses: communitiesuk/funding-service-design-workflows/.github/workflows/post-deploy.yml@main
       with:
-        run_performance_tests: ${{ inputs.run_performance_tests }}
-        run_e2e_tests: ${{ inputs.run_e2e_tests }}
+        run_performance_tests: ${{ inputs.run_performance_tests || false }}
+        run_e2e_tests: ${{ inputs.run_e2e_tests || true }}
         app_name: frontend
         environment: ${{ inputs.environment == '' && 'test' || inputs.environment }}

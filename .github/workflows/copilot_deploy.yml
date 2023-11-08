@@ -32,14 +32,25 @@ on:
       - 'requirements-dev.txt'
       - 'requirements.in'
       - 'requirements.txt'
+      - '.github/workflows/copilot_deploy.yml'
 
 jobs:
+  tag_version:
+    runs-on: ubuntu-latest
+    outputs:
+      version_to_tag: ${{ steps.notification_tagging.outputs.tag_value }}
+    steps:
+      - id: notification_tagging
+        run: |
+          echo "tag_value=$(echo '${{ github.ref }}' | sed -e 's,.*/\(.*\),\1,')" >> $GITHUB_OUTPUT
+
   paketo_build:
+    needs: [ tag_version ]
     permissions:
       packages: write
     uses: communitiesuk/funding-service-design-workflows/.github/workflows/package.yml@main
     with:
-      version_to_build: $(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+      version_to_build: ${{ needs.tag_version.outputs.version_to_tag }}
       owner: ${{ github.repository_owner }}
       application: funding-service-design-application-store
   pre_deploy_tests:
@@ -70,7 +81,7 @@ jobs:
     permissions:
       id-token: write # This is required for requesting the JWT
       contents: read  # This is required for actions/checkout
-    needs: [ pre_deploy_tests, paketo_build, copilot_environments_workflow_setup ]
+    needs: [ tag_version, pre_deploy_tests, paketo_build, copilot_environments_workflow_setup ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -103,7 +114,7 @@ jobs:
 
     - name: Inject replacement image into manifest
       run: |
-        yq -i '.image.location = "ghcr.io/communitiesuk/funding-service-design-application-store:${{ github.ref_name == 'main' && 'latest' || github.ref_name }}"'  copilot/fsd-application-store/manifest.yml
+        yq -i '.image.location = "ghcr.io/communitiesuk/funding-service-design-application-store:${{ github.ref_name == 'main' && 'latest' || needs.tag_version.outputs.version_to_tag }}"'  copilot/fsd-application-store/manifest.yml
 
     - name: Copilot ${{ matrix.value }} deploy
       id: deploy_build
@@ -120,3 +131,4 @@ jobs:
         run_performance_tests: ${{ inputs.run_performance_tests }}
         run_e2e_tests: ${{ inputs.run_e2e_tests }}
         app_name: frontend
+        environment: ${{ inputs.environment == '' && 'test' || inputs.environment }}

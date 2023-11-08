@@ -106,7 +106,9 @@ jobs:
       with:
         role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/GithubCopilotDeploy
         role-session-name: APPLICATION_STORE_${{ matrix.value }}_COPILOT_${{ steps.currentdatetime.outputs.datetime }}
-        aws-region: eu-west-2NOTIFICATION_
+        aws-region: eu-west-2
+
+    - name: Install AWS Copilot CLI
       shell: bash
       run: |
         curl -Lo aws-copilot https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux && chmod +x aws-copilot && sudo mv aws-copilot /usr/local/bin/copilot

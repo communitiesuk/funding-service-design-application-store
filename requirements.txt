@@ -227,7 +227,6 @@ six==1.16.0
     #   prance
     #   python-consul
     #   python-dateutil
-    #   sqlalchemy-json
     #   thrift
 slugify==0.0.1
     # via -r requirements.in
@@ -241,7 +240,7 @@ sqlalchemy==2.0.23
     #   marshmallow-sqlalchemy
     #   sqlalchemy-json
     #   sqlalchemy-utils
-sqlalchemy-json==0.5.0
+sqlalchemy-json==0.7.0
     # via -r requirements.in
 sqlalchemy-utils==0.41.1
     # via

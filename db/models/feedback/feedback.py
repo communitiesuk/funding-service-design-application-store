@@ -3,7 +3,7 @@ import uuid
 from db import db
 from db.models.application.applications import Applications
 from db.models.application.enums import Status
-from flask_sqlalchemy import DefaultMeta
+from flask_sqlalchemy.model import DefaultMeta
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func

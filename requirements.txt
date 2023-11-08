@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-alembic==1.8.1
+alembic==1.12.1
     # via flask-migrate
 aniso8601==9.0.1
     # via flask-restx
@@ -68,7 +68,7 @@ flask==2.2.2
     #   sentry-sdk
 flask-babel==2.0.0
     # via funding-service-design-utils
-flask-migrate==4.0.0
+flask-migrate==4.0.5
     # via
     #   -r requirements.in
     #   funding-service-design-utils
@@ -253,6 +253,7 @@ thrift==0.16.0
     # via flipper-client
 typing-extensions==4.4.0
     # via
+    #   alembic
     #   jsonschema-spec
     #   sqlalchemy
 tzdata==2023.3

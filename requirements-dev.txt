@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements-dev.in
 #
-alembic==1.8.1
+alembic==1.12.1
     # via
     #   -r requirements.txt
     #   flask-migrate
@@ -132,7 +132,7 @@ flask-babel==2.0.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-flask-migrate==4.0.0
+flask-migrate==4.0.5
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
@@ -451,6 +451,7 @@ tomli==2.0.1
 typing-extensions==4.4.0
     # via
     #   -r requirements.txt
+    #   alembic
     #   jsonschema-spec
     #   sqlalchemy
 tzdata==2023.3

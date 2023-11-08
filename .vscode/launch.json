@@ -27,6 +27,7 @@
       "module": "flask",
       "envFile": "${workspaceFolder}/.env.development",
       "args": ["run", "--no-debugger"],
+      "pythonArgs": ["-W always::DeprecationWarning"],
       "jinja": true,
       "justMyCode": true
     },

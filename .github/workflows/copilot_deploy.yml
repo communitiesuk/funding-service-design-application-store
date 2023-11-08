@@ -38,9 +38,9 @@ jobs:
   tag_version:
     runs-on: ubuntu-latest
     outputs:
-      version_to_tag: ${{ steps.notification_tagging.outputs.tag_value }}
+      version_to_tag: ${{ steps.application_store_tagging.outputs.tag_value }}
     steps:
-      - id: notification_tagging
+      - id: application_store_tagging
         run: |
           echo "tag_value=$(echo '${{ github.ref }}' | sed -e 's,.*/\(.*\),\1,')" >> $GITHUB_OUTPUT
 

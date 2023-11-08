@@ -155,7 +155,7 @@ funding-service-design-utils==2.0.30
     # via -r requirements.txt
 gitdb==4.0.9
     # via gitpython
-gitpython==3.1.30
+gitpython==3.1.37
     # via bandit
 greenlet==2.0.2
     # via
@@ -314,6 +314,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   pyjwt
 pyparsing==3.0.9
     # via
     #   -r requirements.txt
@@ -405,6 +406,7 @@ sentry-sdk[flask]==1.32.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   sentry-sdk
 six==1.16.0
     # via
     #   -r requirements.txt

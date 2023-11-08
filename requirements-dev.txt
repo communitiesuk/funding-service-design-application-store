@@ -310,6 +310,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   pyjwt
 pyparsing==3.0.9
     # via
     #   -r requirements.txt
@@ -401,6 +402,7 @@ sentry-sdk[flask]==1.32.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   sentry-sdk
 six==1.16.0
     # via
     #   -r requirements.txt
@@ -457,7 +459,7 @@ tzdata==2023.3
     # via
     #   -r requirements.txt
     #   pandas
-urllib3==1.26.12
+urllib3==1.26.18
     # via
     #   -r requirements.txt
     #   botocore

@@ -168,7 +168,9 @@ pyee==6.0.0
 pygments==2.14.0
     # via rich
 pyjwt[crypto]==2.6.0
-    # via funding-service-design-utils
+    # via
+    #   funding-service-design-utils
+    #   pyjwt
 pyparsing==3.0.9
     # via packaging
 pyrsistent==0.19.2
@@ -220,7 +222,9 @@ s3transfer==0.6.0
 semver==2.13.0
     # via prance
 sentry-sdk[flask]==1.32.0
-    # via funding-service-design-utils
+    # via
+    #   funding-service-design-utils
+    #   sentry-sdk
 six==1.16.0
     # via
     #   jsonpath-rw

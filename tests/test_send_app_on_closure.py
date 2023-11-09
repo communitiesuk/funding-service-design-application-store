@@ -30,7 +30,7 @@ class TestSendAppOnClosure:
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
-                "deadline": "2022-12-01 12:00:00",
+                "deadline": "2022-12-01T12:00:00",
                 "round_name": "COF R2W2",
             },
         )
@@ -62,7 +62,7 @@ class TestSendAppOnClosure:
 
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
-            return_value={"deadline": "2022-01-01 12:00:00"},
+            return_value={"deadline": "2022-01-01T12:00:00"},
         )
 
         result = send_incomplete_applications_after_deadline(fund_id, round_id, True)
@@ -75,7 +75,7 @@ class TestSendAppOnClosure:
     ):
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
-            return_value={"deadline": "2022-01-01 12:00:00"},
+            return_value={"deadline": "2022-01-01T12:00:00"},
         )
 
         result = send_incomplete_applications_after_deadline(
@@ -96,7 +96,7 @@ class TestSendAppOnClosure:
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
-                "deadline": "2022-12-01 12:00:00",
+                "deadline": "2022-12-01T12:00:00",
                 "round_name": "COF R2W2",
             },
         )
@@ -119,7 +119,7 @@ class TestSendAppOnClosure:
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
-                "deadline": "2022-12-01 12:00:00",
+                "deadline": "2022-12-01T12:00:00",
                 "round_name": "COF R2W2",
             },
         )
@@ -149,7 +149,7 @@ class TestSendAppOnClosure:
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
-                "deadline": "2022-12-01 12:00:00",
+                "deadline": "2022-12-01T12:00:00",
                 "round_name": "COF R2W2",
             },
         )
@@ -172,7 +172,7 @@ class TestSendAppOnClosure:
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
-                "deadline": "2022-12-01 12:00:00",
+                "deadline": "2022-12-01T12:00:00",
                 "round_name": "COF R2W2",
             },
         )
@@ -205,7 +205,7 @@ class TestSendAppOnClosure:
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={
-                "deadline": "2022-12-01 12:00:00",
+                "deadline": "2022-12-01T12:00:00",
                 "round_name": "COF R2W2",
             },
         )
@@ -229,7 +229,7 @@ class TestSendAppOnClosure:
 
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
-            return_value={"deadline": "2025-01-01 12:00:00"},
+            return_value={"deadline": "2025-01-01T12:00:00"},
         )
 
         result = send_incomplete_applications_after_deadline(fund_id, round_id)

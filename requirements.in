@@ -1,6 +1,6 @@
 connexion
 flask_restx
-funding-service-design-utils>=2.0.18,<2.1.0
+funding-service-design-utils>=2.0.32,<2.1.0
 openapi-spec-validator
 prance
 requests
@@ -16,10 +16,10 @@ openpyxl
 #-----------------------------------
 #   Database
 #-----------------------------------
-SQLAlchemy
+SQLAlchemy>=2.0.23
 Flask-SQLAlchemy>=3.0.3
-Flask-Migrate
-sqlalchemy-utils
-sqlalchemy_json
+Flask-Migrate>=4.0.5
+sqlalchemy-utils>=0.41.1
+sqlalchemy_json>=0.7.0
 psycopg2-binary==2.9.6
-marshmallow-sqlalchemy
+marshmallow-sqlalchemy>=0.29.0

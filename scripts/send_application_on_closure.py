@@ -5,7 +5,6 @@ from datetime import datetime
 
 from distutils.util import strtobool
 
-
 sys.path.insert(1, ".")
 
 import external_services  # noqa: E402
@@ -41,12 +40,9 @@ def send_incomplete_applications_after_deadline(
     - application_id (str, required if `single_application` is True): The application_id to process.
     """
 
-    current_date_time = (
-        datetime.now().replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
-    )
-
     fund_rounds = get_fund_round(fund_id, round_id)
-    if current_date_time > fund_rounds.get("deadline"):
+    deadline = datetime.strptime(fund_rounds.get("deadline"), "%Y-%m-%dT%H:%M:%S")
+    if datetime.now() > deadline:
         fund_data = get_fund(fund_id)
         search_params = {
             "status_only": ["NOT_STARTED", "IN_PROGRESS", "COMPLETED"],

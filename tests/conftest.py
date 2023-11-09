@@ -368,8 +368,8 @@ def mock_submit_message_to_queue(mocker, request):
         function_calls_to_mock_marker.args[0]
         if function_calls_to_mock_marker
         else [
-            "api.routes.application.routes.submit_message_to_queue",
-            "api.routes.queues.routes.submit_message_to_queue",
+            "api.routes.application.routes._SQS_CLIENT.submit_single_message",
+            "api.routes.queues.routes._SQS_CLIENT.submit_single_message",
         ]
     )
 
@@ -385,4 +385,4 @@ def mock_submit_message_to_queue(mocker, request):
     if function_calls_to_mock_marker:
         for mock in mocked_calls:
             assert mock.called == True  # noqa
-            assert len(mock.call_args[0]) == 2
+            assert len(mock.call_args[1]) == 5

@@ -7,7 +7,6 @@ from fsd_utils import configclass
 
 @configclass
 class ProductionConfig(DefaultConfig):
-
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL").replace(
         "postgres://", "postgresql://"
     )

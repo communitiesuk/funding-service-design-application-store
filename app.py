@@ -10,7 +10,6 @@ from openapi.utils import get_bundled_specs
 
 
 def create_app() -> Flask:
-
     init_sentry()
 
     connexion_options = {

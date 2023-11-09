@@ -468,7 +468,6 @@ def test_update_application_status(
     feedback_survey_config,
     exp_status,
 ):
-
     mock_fb = mocker.patch(
         "db.queries.statuses.queries._is_all_sections_feedback_complete",
         return_value=feedback_complete,

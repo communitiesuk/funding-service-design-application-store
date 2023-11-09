@@ -121,7 +121,6 @@ def retrieve_all_feedbacks_and_surveys(fund_id, round_id, status):
     applicant_serialiser = ApplicationSchema()
 
     for application in applications:
-
         # extract applicant email & organisation
         try:
             result = map_application_key_fields(

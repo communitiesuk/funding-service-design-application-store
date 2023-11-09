@@ -128,7 +128,6 @@ def test_api_get_all_feedbacks_and_survey_report(
     app_sections,
     applications,
 ):
-
     mocker.patch(
         "db.queries.feedback.queries.get_application_sections",
         return_value=app_sections,

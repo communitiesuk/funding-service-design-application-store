@@ -46,7 +46,7 @@ def export_application_statuses_to_csv(return_data):
 
 def export_json_to_csv(return_data, headers=None):
     output = io.StringIO()
-    if type(return_data) == list:
+    if isinstance(return_data, list):
         if not headers:
             headers = return_data[0].keys()
         w = csv.DictWriter(output, headers)

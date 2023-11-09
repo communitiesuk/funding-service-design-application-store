@@ -167,7 +167,7 @@ pycparser==2.21
     # via cffi
 pyee==6.0.0
     # via flipper-client
-pygments==2.14.0
+pygments==2.15.0
     # via rich
 pyjwt[crypto]==2.6.0
     # via

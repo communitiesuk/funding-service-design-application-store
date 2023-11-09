@@ -306,7 +306,7 @@ pyee==6.0.0
     # via
     #   -r requirements.txt
     #   flipper-client
-pygments==2.14.0
+pygments==2.15.0
     # via
     #   -r requirements.txt
     #   rich

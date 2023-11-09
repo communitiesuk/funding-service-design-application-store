@@ -217,7 +217,7 @@ def search_applications(**params):
     if status_only:
         if " " in status_only:
             status_only = status_only.replace(" ", "_")
-        if type(status_only) == list:
+        if isinstance(status_only, list):
             filters.append(Applications.status.in_(status_only))
         else:
             filters.append(Applications.status == status_only)

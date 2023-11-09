@@ -280,7 +280,7 @@ pbr==5.11.1
     #   stevedore
 pep517==0.13.0
     # via build
-pip-tools==6.13.0
+pip-tools==7.3.0
     # via -r requirements-dev.in
 platformdirs==2.5.4
     # via
@@ -452,6 +452,7 @@ tomli==2.0.1
     #   black
     #   build
     #   pep517
+    #   pip-tools
     #   pytest
 typing-extensions==4.4.0
     # via

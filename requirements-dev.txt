@@ -157,6 +157,10 @@ gitdb==4.0.9
     # via gitpython
 gitpython==3.1.37
     # via bandit
+greenlet==3.0.1
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt
@@ -302,7 +306,7 @@ pyee==6.0.0
     # via
     #   -r requirements.txt
     #   flipper-client
-pygments==2.14.0
+pygments==2.15.0
     # via
     #   -r requirements.txt
     #   rich

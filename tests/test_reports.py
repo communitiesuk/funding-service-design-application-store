@@ -235,7 +235,6 @@ def test_get_applications_report(
 def test_get_applications_report_query_param(
     client, seed_data_multiple_funds_rounds, mock_get_round
 ):
-
     response = client.get(
         "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
         + f"fund_id={seed_data_multiple_funds_rounds[0].fund_id}&round_id="
@@ -254,7 +253,6 @@ def test_get_applications_report_query_param(
     )
 
     for line in lines[1:]:
-
         field1, field2, _, _, field5, _, _, _ = line.split(",")
         if field1 == "Test Reference Number":
             assert field2.startswith("Test Org Name ")

@@ -12,7 +12,6 @@ from fsd_utils import configclass
 
 @configclass
 class DefaultConfig:
-
     #  Application Config
     SECRET_KEY = environ.get("SECRET_KEY") or "dev"
     SESSION_COOKIE_NAME = environ.get("SESSION_COOKIE_NAME", "session_cookie")

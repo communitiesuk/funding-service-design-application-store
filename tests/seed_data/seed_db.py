@@ -55,7 +55,6 @@ def seed_submitted_application(fund_config, round_config, account_id, language):
 
 
 def _seed_application(fund_id, round_id, account_id, language) -> Applications:
-
     app: Applications = create_application(account_id, fund_id, round_id, language)
     empty_forms = get_blank_forms(fund_id, round_id, language)
     add_new_forms(forms=empty_forms, application_id=app.id)

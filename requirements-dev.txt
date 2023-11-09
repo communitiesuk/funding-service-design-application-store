@@ -157,6 +157,10 @@ gitdb==4.0.9
     # via gitpython
 gitpython==3.1.37
     # via bandit
+greenlet==3.0.1
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt
@@ -366,7 +370,7 @@ pyyaml==6.0
     #   jsonschema-spec
     #   openapi-spec-validator
     #   pre-commit
-redis==4.5.2
+redis==4.5.4
     # via
     #   -r requirements.txt
     #   flask-redis

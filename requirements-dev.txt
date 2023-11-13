@@ -265,7 +265,7 @@ packaging==21.3
     #   marshmallow-sqlalchemy
     #   prance
     #   pytest
-pandas==2.1.1
+pandas==2.1.3
     # via -r requirements.txt
 pathable==0.4.3
     # via

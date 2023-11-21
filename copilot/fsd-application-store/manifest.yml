@@ -31,7 +31,7 @@ memory: 512
 platform: linux/x86_64
 
 # Number of tasks that should be running in your service.
-count: 1
+count: 2
 
 # Enable running commands in your container.
 exec: true

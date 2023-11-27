@@ -23,9 +23,9 @@ image:
 
 # Valid values: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
 # Number of CPU units for the task.
-cpu: 256
+cpu: 512
 # Amount of memory in MiB used by the task.
-memory: 512
+memory: 1024
 
 # See https://aws.github.io/copilot-cli/docs/manifest/lb-web-service/#platform
 platform: linux/x86_64

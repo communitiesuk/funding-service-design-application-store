@@ -210,7 +210,7 @@ jobs:
       environment: dev
 
   test_deploy:
-    if: ${{ needs.copilot_environments_workflow_setup.outputs.post_matrix != '' && toJson(fromJson(needs.copilot_environments_workflow_setup.outputs.post_matrix)) != '[]' }}
+    if: ${{ needs.copilot_environments_workflow_setup.outputs.pre_matrix != '' && toJson(fromJson(needs.copilot_environments_workflow_setup.outputs.pre_matrix)) != '[]' }}
     concurrency:
       group: 'fsd-preaward-copilot-test'
       cancel-in-progress: false

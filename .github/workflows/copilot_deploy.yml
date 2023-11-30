@@ -144,7 +144,7 @@ jobs:
   dev_deploy:
     if: ${{ needs.copilot_environments_workflow_setup.outputs.pre_matrix != '' && toJson(fromJson(needs.copilot_environments_workflow_setup.outputs.pre_matrix)) != '[]' }}
     concurrency:
-      group: 'fsd-preaward-copilot-sandbox-dev'
+      group: 'fsd-preaward-copilot-dev'
       cancel-in-progress: false
     permissions:
       id-token: write # This is required for requesting the JWT

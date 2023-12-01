@@ -27,6 +27,8 @@ Mappings:
       "SecurityGroup": "sg-0cf75a004dbade7b8"
     uat:
       "SecurityGroup": "sg-04017abfef2079894"
+    prod:
+      "SecurityGroup": "sg-08cecea8f9b8a4ec9"
 
 Resources:
   fsdapplicationstoreclusterDBSubnetGroup:

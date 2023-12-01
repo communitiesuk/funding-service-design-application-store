@@ -23,15 +23,15 @@ image:
 
 # Valid values: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
 # Number of CPU units for the task.
-cpu: 256
+cpu: 512
 # Amount of memory in MiB used by the task.
-memory: 512
+memory: 1024
 
 # See https://aws.github.io/copilot-cli/docs/manifest/lb-web-service/#platform
 platform: linux/x86_64
 
 # Number of tasks that should be running in your service.
-count: 1
+count: 2
 
 # Enable running commands in your container.
 exec: true
@@ -43,7 +43,7 @@ network:
 #
 # Pass environment variables as key value pairs.
 variables:
-  # SENTRY_DSN: "https://8092c54bdc3a4b4ba124dea42b836504@o1432034.ingest.sentry.io/4503918903820288"
+  SENTRY_DSN: "https://03a44153f57249e9b49f0e27ea4b2c00@o1432034.ingest.sentry.io/4503918840971264"
   FLASK_ENV: ${COPILOT_ENVIRONMENT_NAME}
   AWS_BUCKET_NAME:
     from_cfn: ${COPILOT_APPLICATION_NAME}-${COPILOT_ENVIRONMENT_NAME}-FormUploadsBucket
@@ -58,8 +58,31 @@ variables:
 
 # You can override any of the values defined above by environment.
 environments:
-  # production:
-  #   count: 2
   test:
     deployment:
       rolling: 'recreate'
+  uat:
+    count:
+      range: 2-4
+      cooldown:
+        in: 60s
+        out: 30s
+      cpu_percentage:
+        value: 70
+      memory_percentage:
+        value: 80
+      requests: 30
+      response_time: 2s
+  prod:
+    count:
+      range: 2-4
+      cooldown:
+        in: 60s
+        out: 30s
+      cpu_percentage:
+        value: 70
+      memory_percentage:
+        value: 80
+      requests: 30
+    variables:
+      FLASK_ENV: production

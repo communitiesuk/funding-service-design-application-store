@@ -73,7 +73,7 @@ environments:
         value: 80
       requests: 30
       response_time: 2s
-  production:
+  prod:
     count:
       range: 2-4
       cooldown:
@@ -84,3 +84,5 @@ environments:
       memory_percentage:
         value: 80
       requests: 30
+    variables:
+      FLASK_ENV: production

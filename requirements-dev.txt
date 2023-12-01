@@ -94,11 +94,11 @@ commonmark==0.9.1
     #   rich
 connexion==2.14.1
     # via -r requirements.txt
-cryptography==41.0.4
+cryptography==41.0.6
     # via
     #   -r requirements.txt
     #   pyjwt
-debugpy==1.6.7
+debugpy==1.8.0
     # via -r requirements-dev.in
 decorator==5.1.1
     # via

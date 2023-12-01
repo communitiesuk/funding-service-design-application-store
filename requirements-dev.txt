@@ -18,12 +18,12 @@ async-timeout==4.0.3
     # via
     #   -r requirements.txt
     #   redis
-attrs==22.1.0
+attrs==23.1.0
     # via
     #   -r requirements.txt
     #   jsonschema
-    #   openapi-schema-validator
     #   pytest
+    #   referencing
 babel==2.11.0
     # via
     #   -r requirements.txt
@@ -94,11 +94,11 @@ commonmark==0.9.1
     #   rich
 connexion==2.14.1
     # via -r requirements.txt
-cryptography==41.0.4
+cryptography==41.0.6
     # via
     #   -r requirements.txt
     #   pyjwt
-debugpy==1.6.7
+debugpy==1.8.0
     # via -r requirements-dev.in
 decorator==5.1.1
     # via
@@ -171,10 +171,6 @@ idna==3.4
     # via
     #   -r requirements.txt
     #   requests
-importlib-resources==5.10.0
-    # via
-    #   -r requirements.txt
-    #   openapi-spec-validator
 inflection==0.5.1
     # via
     #   -r requirements.txt
@@ -205,18 +201,22 @@ jsonpath-rw==1.4.0
     #   jsonpath-rw-ext
 jsonpath-rw-ext==1.2.2
     # via -r requirements.txt
-jsonschema==4.17.1
+jsonschema==4.19.2
     # via
     #   -r requirements.txt
     #   connexion
     #   flask-restx
-    #   jsonschema-spec
     #   openapi-schema-validator
     #   openapi-spec-validator
-jsonschema-spec==0.1.2
+jsonschema-path==0.3.1
     # via
     #   -r requirements.txt
     #   openapi-spec-validator
+jsonschema-specifications==2023.7.1
+    # via
+    #   -r requirements.txt
+    #   jsonschema
+    #   openapi-schema-validator
 lazy-object-proxy==1.8.0
     # via
     #   -r requirements.txt
@@ -246,11 +246,11 @@ numpy==1.26.0
     # via
     #   -r requirements.txt
     #   pandas
-openapi-schema-validator==0.3.4
+openapi-schema-validator==0.6.2
     # via
     #   -r requirements.txt
     #   openapi-spec-validator
-openapi-spec-validator==0.5.1
+openapi-spec-validator==0.7.1
     # via -r requirements.txt
 openpyxl==3.1.2
     # via -r requirements.txt
@@ -270,7 +270,7 @@ pandas==2.1.3
 pathable==0.4.3
     # via
     #   -r requirements.txt
-    #   jsonschema-spec
+    #   jsonschema-path
 pathspec==0.10.2
     # via black
 pbr==5.11.1
@@ -319,10 +319,6 @@ pyparsing==3.0.9
     # via
     #   -r requirements.txt
     #   packaging
-pyrsistent==0.19.2
-    # via
-    #   -r requirements.txt
-    #   jsonschema
 pytest==7.2.0
     # via
     #   -r requirements-dev.in
@@ -367,25 +363,40 @@ pyyaml==6.0
     #   clickclick
     #   connexion
     #   funding-service-design-utils
-    #   jsonschema-spec
-    #   openapi-spec-validator
+    #   jsonschema-path
     #   pre-commit
 redis==4.5.4
     # via
     #   -r requirements.txt
     #   flask-redis
     #   flipper-client
+referencing==0.30.2
+    # via
+    #   -r requirements.txt
+    #   jsonschema
+    #   jsonschema-path
+    #   jsonschema-specifications
 requests==2.31.0
     # via
     #   -r requirements.txt
     #   connexion
     #   funding-service-design-utils
+    #   jsonschema-path
     #   prance
     #   python-consul
+rfc3339-validator==0.1.4
+    # via
+    #   -r requirements.txt
+    #   openapi-schema-validator
 rich==12.6.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+rpds-py==0.12.0
+    # via
+    #   -r requirements.txt
+    #   jsonschema
+    #   referencing
 ruamel-yaml==0.17.21
     # via
     #   -r requirements.txt
@@ -414,6 +425,7 @@ six==1.16.0
     #   prance
     #   python-consul
     #   python-dateutil
+    #   rfc3339-validator
     #   thrift
 slugify==0.0.1
     # via -r requirements.txt
@@ -458,7 +470,6 @@ typing-extensions==4.4.0
     # via
     #   -r requirements.txt
     #   alembic
-    #   jsonschema-spec
     #   sqlalchemy
 tzdata==2023.3
     # via

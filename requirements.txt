@@ -38,7 +38,7 @@ chardet==4.0.0
     # via prance
 charset-normalizer==2.1.1
     # via requests
-click==8.1.3
+click==8.1.7
     # via
     #   clickclick
     #   flask

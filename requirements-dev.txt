@@ -86,7 +86,7 @@ clickclick==20.10.2
     # via
     #   -r requirements.txt
     #   connexion
-colored==1.4.4
+colored==2.2.3
     # via -r requirements.txt
 commonmark==0.9.1
     # via

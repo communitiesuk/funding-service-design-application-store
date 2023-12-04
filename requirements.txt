@@ -44,7 +44,7 @@ click==8.1.7
     #   flask
 clickclick==20.10.2
     # via connexion
-colored==1.4.4
+colored==2.2.3
     # via -r requirements.in
 commonmark==0.9.1
     # via rich

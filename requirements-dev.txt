@@ -292,7 +292,7 @@ ply==3.11
     # via
     #   -r requirements.txt
     #   jsonpath-rw
-prance==0.22.11.4.0
+prance==23.6.21.0
     # via -r requirements.txt
 pre-commit==2.20.0
     # via -r requirements-dev.in
@@ -409,10 +409,6 @@ s3transfer==0.6.0
     # via
     #   -r requirements.txt
     #   boto3
-semver==2.13.0
-    # via
-    #   -r requirements.txt
-    #   prance
 sentry-sdk[flask]==1.32.0
     # via
     #   -r requirements.txt

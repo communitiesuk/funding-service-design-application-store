@@ -3,6 +3,7 @@ import uuid
 from db import db
 from db.models.application.applications import Applications
 from db.models.application.enums import Status
+from flask import current_app
 from flask_sqlalchemy.model import DefaultMeta
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import UUID
@@ -33,9 +34,16 @@ class Feedback(BaseModel):
     __table_args__ = (db.UniqueConstraint("application_id", "section_id"),)
 
     def as_dict(self):
+        current_app.logger.info(f"In as_dict for feedback with id {self.id}")
+        current_app.logger.info(f"Date submitted is {self.date_submitted}")
+        if self.date_submitted:
+            current_app.logger.info(
+                f"ISO format of date submitted: {self.date_submitted.isoformat()}"
+            )
         date_submitted = (
             self.date_submitted.isoformat() if self.date_submitted else "null"
         )
+        current_app.logger.info("Done with date_submitted, returning as_dict")
         return {
             "id": str(self.id),
             "application_id": self.application_id,

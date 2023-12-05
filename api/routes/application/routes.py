@@ -252,6 +252,7 @@ class ApplicationsView(MethodView):
         current_app.logger.info("Done upserting feedback, about to update statuses")
 
         update_statuses(application_id, form_name=None)
+        current_app.logger.info("Done with update_statuses, returning")
 
         return feedback.as_dict(), 201
 

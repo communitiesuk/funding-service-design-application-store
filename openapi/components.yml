@@ -180,7 +180,6 @@ components:
           type: string
         date_submitted:
           type: string
-          format: date-time
     PostFeedback:
       type: object
       properties:
@@ -238,4 +237,3 @@ components:
           additionalProperties: true
         date_submitted:
           type: string
-          format: date-time

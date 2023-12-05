@@ -44,7 +44,7 @@ class Feedback(BaseModel):
             self.date_submitted.isoformat() if self.date_submitted else "null"
         )
         current_app.logger.info("Done with date_submitted, returning as_dict")
-        return {
+        to_return = {
             "id": str(self.id),
             "application_id": self.application_id,
             "fund_id": self.fund_id,
@@ -54,3 +54,5 @@ class Feedback(BaseModel):
             "status": self.status.name,
             "date_submitted": date_submitted,
         }
+        current_app.logger.info(f"Returning {to_return}")
+        return to_return

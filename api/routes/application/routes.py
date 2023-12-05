@@ -253,8 +253,9 @@ class ApplicationsView(MethodView):
 
         update_statuses(application_id, form_name=None)
         current_app.logger.info("Done with update_statuses, returning")
-
-        return feedback.as_dict(), 201
+        to_return = feedback.as_dict()
+        current_app.logger.info(f"Got back dict from feedback: {to_return}")
+        return to_return, 201
 
     def get_feedback_for_section(self, application_id, section_id):
         feedback = get_feedback(application_id, section_id)

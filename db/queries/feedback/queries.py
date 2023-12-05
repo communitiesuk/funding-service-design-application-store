@@ -23,13 +23,21 @@ def upsert_feedback(
         section_id=section_id,
     ).first()
 
+    current_app.logger.info(
+        f"Searched for existing feedback, result: {existing_feedback}"
+    )
+
     if existing_feedback:
+        current_app.logger.info("Found feedback, updating")
         existing_feedback.feedback_json = feedback_json
         existing_feedback.status = status
         existing_feedback.date_submitted = datetime.now()
         db.session.commit()
+
+        current_app.logger.info("Update complete and committed")
         return existing_feedback
     else:
+        current_app.logger.info("No existing feedback, creating new")
         new_feedback_row = Feedback(
             application_id=application_id,
             fund_id=fund_id,
@@ -39,8 +47,10 @@ def upsert_feedback(
             status=status,
             date_submitted=datetime.now(),
         )
+        current_app.logger.info("Adding new feedback")
         db.session.add(new_feedback_row)
         db.session.commit()
+        current_app.logger.info("New feedback added and committed")
         return new_feedback_row
 
 

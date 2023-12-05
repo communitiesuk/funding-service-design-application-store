@@ -230,6 +230,7 @@ class ApplicationsView(MethodView):
             return str(e), 500, {"x-error": "Error"}
 
     def post_feedback(self):
+        current_app.logger.info("In post_feedback")
         args = request.get_json()
         application_id = args["application_id"]
         fund_id = args["fund_id"]
@@ -237,6 +238,8 @@ class ApplicationsView(MethodView):
         section_id = args["section_id"]
         feedback_json = args["feedback_json"]
         status = args["status"]
+
+        current_app.logger.info(f"Received post feedback: {args}")
 
         feedback = upsert_feedback(
             application_id=application_id,
@@ -246,6 +249,7 @@ class ApplicationsView(MethodView):
             feedback_json=feedback_json,
             status=status,
         )
+        current_app.logger.info("Done upserting feedback, about to update statuses")
 
         update_statuses(application_id, form_name=None)
 

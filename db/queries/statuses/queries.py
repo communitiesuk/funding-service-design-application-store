@@ -8,6 +8,7 @@ from db.queries.form.queries import get_form
 from external_services import get_round
 from external_services.data import get_application_sections
 from external_services.models.round import FeedbackSurveyConfig
+from flask import current_app
 
 
 def _is_all_sections_feedback_complete(
@@ -236,14 +237,28 @@ def update_statuses(
         is_summary_page_submitted (`bool`): If this is as a result of submitting from the summary page of a form.
     """
     application = get_application(application_id, include_forms=True)
+    current_app.logger.info(f"Retrieved application {application.id}")
     round = get_round(application.fund_id, application.round_id)
+    current_app.logger.info(f"Got round {round.short_name}")
+
+    current_app.logger.info(f"Form name is {form_name}")
     if form_name:
         form_to_update = get_form(application_id=application_id, form_name=form_name)
+        current_app.logger.info(
+            f"Got form {form_to_update.name}: {form_to_update.status}"
+        )
+        current_app.logger.info("Updating question page statuses")
         update_question_page_statuses(stored_form_json=form_to_update.json)
+        current_app.logger.info("Updating form status")
         update_form_status(
             form_to_update, round.mark_as_complete_enabled, is_summary_page_submitted
         )
+        current_app.logger.info("About to commit")
         db.session.commit()
+        current_app.logger.info("Committed form and page status updates")
 
+    current_app.logger.info("Updating application status")
     update_application_status(application, round.feedback_survey_config)
+    current_app.logger.info("About to commit")
     db.session.commit()
+    current_app.logger.info("Done commit")

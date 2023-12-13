@@ -135,6 +135,30 @@ Resources:
       SecretId: !Ref fsdapplicationstoreclusterAuroraSecret
       TargetId: !Ref fsdapplicationstoreclusterDBCluster
       TargetType: AWS::RDS::DBCluster
+
+  FormRunnerFormUploadsBucketAccessPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: S3FormUploadBucketActions
+            Effect: Allow
+            Action:
+              - s3:Get*
+              - s3:List*
+              - s3:Describe*
+              - s3:PutObject
+              - s3:PutObjectACL
+              - s3:DeleteObject
+              - s3:ReplicateObject
+            Resource:
+              - Fn::ImportValue: !Sub ${App}-${Env}-FormUploadsBucketARN
+              - !Sub
+                - "${FullBucketARN}/*"
+                - FullBucketARN:
+                    Fn::ImportValue: !Sub "${App}-${Env}-FormUploadsBucketARN"
+
 Outputs:
   DatabaseUrl:
     Description: "The URL of this database."
@@ -153,3 +177,6 @@ Outputs:
   fsdapplicationstoreclusterSecurityGroup:
     Description: "The security group to attach to the workload."
     Value: !Ref fsdapplicationstoreclusterSecurityGroup
+  FormRunnerFormUploadsBucketAccessPolicyArn:
+    Description: "The ARN of the ManagedPolicy to attach to the task role."
+    Value: !Ref FormRunnerFormUploadsBucketAccessPolicy

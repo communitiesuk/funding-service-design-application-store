@@ -2,8 +2,6 @@
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 
-[![Deploy to Gov PaaS](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/deploy.yml/badge.svg)](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/deploy.yml)
-
 [![CodeQL](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml)
 
 This is a Flask API that provides access to the Funding Service Design Application Store. The frontend repository for
@@ -112,11 +110,6 @@ A local dev server will be created on
     http://127.0.0.1:5000/
 
 This is configurable in .flaskenv
-
-# Pipelines
-
-* Deploy to Gov PaaS - This is a simple pipeline to demonstrate capabilities. Builds, tests and deploys a simple python
-  application to the PaaS for evaluation in Dev and Test Only.
 
 # Testing
 

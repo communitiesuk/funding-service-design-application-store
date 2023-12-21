@@ -30,6 +30,7 @@ def application_deadline_reminder(fund_id: str, round_id: str):
     not_submitted_applications = search_applications(**status)
 
     all_applications = []
+    unique = {}
     for application in not_submitted_applications:
         application["round_name"] = fund_round.get("title")
         account = external_services.get_account(
@@ -39,10 +40,10 @@ def application_deadline_reminder(fund_id: str, round_id: str):
         application["deadline_date"] = fund_deadline_string
         all_applications.append({"application": application})
         # Only one email per account_email
-        unique = {}
+
         for application in all_applications:
             unique[application["application"]["account_email"]] = application
-        unique_application_email_addresses = list(unique.values())
+    unique_application_email_addresses = list(unique.values())
 
     if len(unique_application_email_addresses) > 0:
         for count, application in enumerate(unique_application_email_addresses):

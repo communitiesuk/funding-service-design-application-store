@@ -93,6 +93,9 @@ class DefaultConfig:
     FUND_ROUND_APPLICATION_SECTIONS_ENDPOINT = (
         "/funds/{fund_id}/rounds/{round_id}/sections/application?language={language}"
     )
+    FUND_ROUND_APPLICATION_REMINDER_STATUS = (
+        "/funds/{round_id}/application_reminder_status?status=true"
+    )
 
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False

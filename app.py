@@ -1,4 +1,5 @@
 import connexion
+from apscheduler.schedulers.background import BackgroundScheduler
 from connexion.resolver import MethodViewResolver
 from flask import Flask
 from fsd_utils import init_sentry
@@ -7,6 +8,7 @@ from fsd_utils.healthchecks.checkers import FlaskRunningChecker
 from fsd_utils.healthchecks.healthcheck import Healthcheck
 from fsd_utils.logging import logging
 from openapi.utils import get_bundled_specs
+from scripts.send_application_reminder import application_deadline_reminder
 
 
 def create_app() -> Flask:
@@ -41,7 +43,19 @@ def create_app() -> Flask:
     health.add_check(FlaskRunningChecker())
     health.add_check(DbChecker(db))
 
-    return flask_app
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(
+        func=application_deadline_reminder,
+        trigger="interval",
+        hours=1,  # Change the time of the scedule as required
+        args=(flask_app,),
+    )
+    scheduler.start()
+
+    try:
+        return flask_app
+    except Exception:
+        return scheduler.shutdown()
 
 
 app = create_app()

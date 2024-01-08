@@ -23,7 +23,6 @@ def application_deadline_reminder(flask_app):
         )
 
         for fund in funds:
-            # wrap this block in a separate function ========
             fund_id = fund.get("id")
             round_info = external_services.get_data(
                 Config.FUND_STORE_API_HOST
@@ -33,19 +32,29 @@ def application_deadline_reminder(flask_app):
             uk_timezone = pytz.timezone("Europe/London")
             current_datetime = datetime.now(uk_timezone).replace(tzinfo=None)
             for round in round_info:
-                round_deadline = round.get("deadline")
-                reminder_date = round.get("reminder_date")
+                round_deadline_str = round.get("deadline")
+                reminder_date_str = round.get("reminder_date")
+
+                if not reminder_date_str:
+                    continue
+
                 application_reminder_sent = round.get("application_reminder_sent")
-                current_datetime_str = current_datetime.strftime("%Y-%m-%dT%H:%M:%S")
+
+                # Convert the string dates to datetime objects
+                round_deadline = datetime.strptime(
+                    round_deadline_str, "%Y-%m-%dT%H:%M:%S"
+                )
+                reminder_date = datetime.strptime(
+                    reminder_date_str, "%Y-%m-%dT%H:%M:%S"
+                )
+
                 if (
-                    reminder_date
-                    and application_reminder_sent is False
-                    and round_deadline > current_datetime_str > reminder_date
+                    not application_reminder_sent
+                    and reminder_date < current_datetime < round_deadline
                 ):
                     round_id = round.get("id")
                     fund_id = round.get("fumd_id")
                     round_name = round.get("title")
-                    # ========== return round_id, funcd_id, round_name
                     status = {
                         "status_only": ["IN_PROGRESS", "NOT_STARTED", "COMPLETED"],
                         "fund_id": fund_id,

@@ -15,19 +15,19 @@ if (
         "s3",
         aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=Config.AWS_SECRET_ACCESS_KEY,
-        region_name=Config.AWS_REGION,
+        region_name="eu-west-2",
         endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
     )
     _SQS_CLIENT = SQSClient(
         aws_access_key_id=Config.AWS_SQS_ACCESS_KEY_ID,
         aws_secret_access_key=Config.AWS_SQS_SECRET_ACCESS_KEY,
-        region_name=Config.AWS_SQS_REGION,
+        region_name="eu-west-2",
         endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
     )
 else:
     _S3_CLIENT = boto3.client(
         "s3",
-        region_name=Config.AWS_REGION,
+        region_name="eu-west-2",
         endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
     )
     _SQS_CLIENT = SQSClient(

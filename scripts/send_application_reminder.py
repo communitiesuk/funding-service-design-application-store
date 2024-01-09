@@ -53,8 +53,14 @@ def application_deadline_reminder(flask_app):
                     and reminder_date < current_datetime < round_deadline
                 ):
                     round_id = round.get("id")
-                    fund_id = round.get("fumd_id")
                     round_name = round.get("title")
+                    contact_email = round.get("contact_email")
+                    fund_info = external_services.get_data(
+                        Config.FUND_STORE_API_HOST
+                        + Config.FUND_ENDPOINT.format(fund_id=fund_id)
+                    )
+                    fund_name = fund_info.get("name")
+
                     status = {
                         "status_only": ["IN_PROGRESS", "NOT_STARTED", "COMPLETED"],
                         "fund_id": fund_id,
@@ -67,11 +73,13 @@ def application_deadline_reminder(flask_app):
                     unique = {}
                     for application in not_submitted_applications:
                         application["round_name"] = round_name
+                        application["fund_name"] = fund_name
+                        application["contact_help_email"] = contact_email
                         account = external_services.get_account(
                             account_id=application.get("account_id")
                         )
                         application["account_email"] = account.email
-                        application["deadline_date"] = "2024-01-31T11:59:00"
+                        application["deadline_date"] = round_deadline_str
                         all_applications.append({"application": application})
                         # Only one email per account_email
 

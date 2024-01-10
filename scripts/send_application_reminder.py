@@ -36,6 +36,9 @@ def application_deadline_reminder(flask_app):
                 reminder_date_str = round.get("reminder_date")
 
                 if not reminder_date_str:
+                    current_app.logger.info(
+                        f"No reminder date is set for {round.get('id')}"
+                    )
                     continue
 
                 application_reminder_sent = round.get("application_reminder_sent")
@@ -55,6 +58,16 @@ def application_deadline_reminder(flask_app):
                     round_id = round.get("id")
                     round_name = round.get("title")
                     contact_email = round.get("contact_email")
+                    try:
+                        current_app.logger.info(
+                            "Fetching contact email name from the round data"
+                            f" {round_name}"
+                        )
+                    except Exception as e:
+                        current_app.logger.error(
+                            "Couldnt find the contact email information in round"
+                            f" {round_id}. Error {e}"
+                        )
                     fund_info = external_services.get_data(
                         Config.FUND_STORE_API_HOST
                         + Config.FUND_ENDPOINT.format(fund_id=fund_id)
@@ -66,6 +79,12 @@ def application_deadline_reminder(flask_app):
                         "fund_id": fund_id,
                         "round_id": round_id,
                     }
+                    try:
+                        current_app.logger.info(
+                            f"Fetching fund name from the fund store{ fund_name}."
+                        )
+                    except Exception as e:
+                        current_app.logger.error(f"Couldnt find{fund_info}. Error {e}")
 
                     not_submitted_applications = search_applications(**status)
 

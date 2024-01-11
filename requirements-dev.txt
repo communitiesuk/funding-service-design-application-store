@@ -319,6 +319,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   pyjwt
 pyparsing==3.0.9
     # via
     #   -r requirements.txt
@@ -419,6 +420,7 @@ sentry-sdk[flask]==1.32.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   sentry-sdk
 six==1.16.0
     # via
     #   -r requirements.txt
@@ -482,7 +484,7 @@ urllib3==1.26.18
     #   sentry-sdk
 virtualenv==20.16.7
     # via pre-commit
-werkzeug==2.2.3
+werkzeug==2.3.8
     # via
     #   -r requirements.txt
     #   connexion

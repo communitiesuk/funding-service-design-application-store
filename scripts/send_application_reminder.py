@@ -104,8 +104,9 @@ def application_deadline_reminder(flask_app):
                             }
 
                             current_app.logger.info(
-                                f"Sending application {count+1} of"
-                                f" {len(all_applications)} to {email.get('email')}"
+                                "Sending un-submitted application reminder"
+                                f" {count+1} of {len(unique_email_account)} to"
+                                f" {email.get('email')}"
                             )
 
                             try:

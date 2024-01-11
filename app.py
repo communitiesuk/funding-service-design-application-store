@@ -47,7 +47,7 @@ def create_app() -> Flask:
     scheduler.add_job(
         func=application_deadline_reminder,
         trigger="interval",
-        seconds=120,  # Change the time of the scedule as required
+        hours=1,  # Change the time of the scedule as required
         args=(flask_app,),
     )
     scheduler.start()

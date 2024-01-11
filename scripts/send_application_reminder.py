@@ -37,7 +37,7 @@ def application_deadline_reminder(flask_app):
 
                 if not reminder_date_str:
                     current_app.logger.info(
-                        f"No reminder date is set for {round.get('id')}"
+                        f"No reminder is set for the round {round.get('title')}"
                     )
                     continue
 
@@ -57,40 +57,22 @@ def application_deadline_reminder(flask_app):
                 ):
                     round_id = round.get("id")
                     round_name = round.get("title")
-
-                    try:
-                        contact_email = round.get("contact_email")
-                        current_app.logger.info(
-                            "Fetching contact email name from the round data"
-                            f" {contact_email}"
-                        )
-                    except Exception as e:
-                        current_app.logger.error(
-                            "Couldnt find the contact email information in round"
-                            f" {round_id}. Error {e}"
-                        )
+                    contact_email = round.get("contact_email")
                     fund_info = external_services.get_data(
                         Config.FUND_STORE_API_HOST
                         + Config.FUND_ENDPOINT.format(fund_id=fund_id)
                     )
+                    fund_name = fund_info.get("name")
 
                     status = {
                         "status_only": ["IN_PROGRESS", "NOT_STARTED", "COMPLETED"],
                         "fund_id": fund_id,
                         "round_id": round_id,
                     }
-                    try:
-                        fund_name = fund_info.get("name")
-                        current_app.logger.info(
-                            f"Fetching fund name from the fund store{fund_name}."
-                        )
-                    except Exception as e:
-                        current_app.logger.error(f"Couldnt find{fund_info}. Error {e}")
 
                     not_submitted_applications = search_applications(**status)
 
                     all_applications = []
-                    unique = {}
                     for application in not_submitted_applications:
                         application["round_name"] = round_name
                         application["fund_name"] = fund_name
@@ -101,13 +83,16 @@ def application_deadline_reminder(flask_app):
                         application["account_email"] = account.email
                         application["deadline_date"] = round_deadline_str
                         all_applications.append({"application": application})
-                        # Only one email per account_email
 
-                        for application in all_applications:
-                            unique[
-                                application["application"]["account_email"]
-                            ] = application
-                    unique_application_email_addresses = list(unique.values())
+                    # Only one email per account_email
+                    unique_email_account = {}
+                    for application in all_applications:
+                        unique_email_account[
+                            application["application"]["account_email"]
+                        ] = application
+                    unique_application_email_addresses = list(
+                        unique_email_account.values()
+                    )
 
                     if len(unique_application_email_addresses) > 0:
                         for count, application in enumerate(

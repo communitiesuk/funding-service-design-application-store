@@ -36,6 +36,9 @@ def application_deadline_reminder(flask_app):
                 reminder_date_str = round.get("reminder_date")
 
                 if not reminder_date_str:
+                    current_app.logger.info(
+                        f"No reminder is set for the round {round.get('title')}"
+                    )
                     continue
 
                 application_reminder_sent = round.get("application_reminder_sent")
@@ -70,7 +73,6 @@ def application_deadline_reminder(flask_app):
                     not_submitted_applications = search_applications(**status)
 
                     all_applications = []
-                    unique = {}
                     for application in not_submitted_applications:
                         application["round_name"] = round_name
                         application["fund_name"] = fund_name
@@ -81,13 +83,16 @@ def application_deadline_reminder(flask_app):
                         application["account_email"] = account.email
                         application["deadline_date"] = round_deadline_str
                         all_applications.append({"application": application})
-                        # Only one email per account_email
 
-                        for application in all_applications:
-                            unique[
-                                application["application"]["account_email"]
-                            ] = application
-                    unique_application_email_addresses = list(unique.values())
+                    # Only one email per account_email
+                    unique_email_account = {}
+                    for application in all_applications:
+                        unique_email_account[
+                            application["application"]["account_email"]
+                        ] = application
+                    unique_application_email_addresses = list(
+                        unique_email_account.values()
+                    )
 
                     if len(unique_application_email_addresses) > 0:
                         for count, application in enumerate(
@@ -99,8 +104,9 @@ def application_deadline_reminder(flask_app):
                             }
 
                             current_app.logger.info(
-                                f"Sending application {count+1} of"
-                                f" {len(all_applications)} to {email.get('email')}"
+                                "Sending un-submitted application reminder"
+                                f" {count+1} of {len(unique_email_account)} to"
+                                f" {email.get('email')}"
                             )
 
                             try:

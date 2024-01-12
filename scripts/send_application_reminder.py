@@ -18,6 +18,8 @@ import pytz  # noqa: E402
 
 def application_deadline_reminder(flask_app):
     with flask_app.app_context():
+        uk_timezone = pytz.timezone("Europe/London")
+        current_datetime = datetime.now(uk_timezone).replace(tzinfo=None)
         funds = external_services.get_data(
             Config.FUND_STORE_API_HOST + Config.FUNDS_ENDPOINT
         )
@@ -29,8 +31,6 @@ def application_deadline_reminder(flask_app):
                 + Config.FUND_ROUNDS_ENDPOINT.format(fund_id=fund_id)
             )
 
-            uk_timezone = pytz.timezone("Europe/London")
-            current_datetime = datetime.now(uk_timezone).replace(tzinfo=None)
             for round in round_info:
                 round_deadline_str = round.get("deadline")
                 reminder_date_str = round.get("reminder_date")
@@ -96,17 +96,15 @@ def application_deadline_reminder(flask_app):
 
                     if len(unique_application_email_addresses) > 0:
                         for count, application in enumerate(
-                            unique_application_email_addresses
+                            unique_application_email_addresses, start=1
                         ):
                             email = {
-                                "email": applicant.get("account_email")
-                                for applicant in application.values()
+                                "email": application["application"]["account_email"]
                             }
 
                             current_app.logger.info(
-                                "Sending un-submitted application reminder"
-                                f" {count+1} of {len(unique_email_account)} to"
-                                f" {email.get('email')}"
+                                "Sending reminder"
+                                f" {count} of {len(unique_email_account)}"
                             )
 
                             try:
@@ -115,19 +113,30 @@ def application_deadline_reminder(flask_app):
                                     to_email=email.get("email"),
                                     content=application,
                                 )
+                                if len(unique_application_email_addresses) == count:
+                                    try:
+                                        application_reminder_endpoint = (
+                                            Config.FUND_STORE_API_HOST
+                                            + Config.FUND_ROUND_APPLICATION_REMINDER_STATUS.format(
+                                                round_id=round_id
+                                            )
+                                        )
+                                        response = requests.put(
+                                            application_reminder_endpoint
+                                        )
+                                        if response.status_code == 200:
+                                            current_app.logger.info(
+                                                "The application reminder has been"
+                                                " sent successfully for round_id"
+                                                f" {round_id}"
+                                            )
+                                    except Exception as e:
+                                        current_app.logger.info(
+                                            "There was an issue updating the"
+                                            " application_reminder_sent column in the"
+                                            f" Round store for {round_id}. Errro {e}"
+                                        )
 
-                                application_reminder_endpoint = (
-                                    Config.FUND_STORE_API_HOST
-                                    + Config.FUND_ROUND_APPLICATION_REMINDER_STATUS.format(
-                                        round_id=round_id
-                                    )
-                                )
-                                response = requests.put(application_reminder_endpoint)
-                                if response.status_code == 200:
-                                    current_app.logger.info(
-                                        "The application reminder has been"
-                                        f" sent successfully for round_id {round_id}"
-                                    )
                             except NotificationError as e:
                                 current_app.logger.error(e.message)
 

@@ -1,5 +1,8 @@
 from collections import defaultdict
 
+from config.key_report_mappings.cof_key_report_mapping import (
+    COF_KEY_REPORT_MAPPING,
+)
 from config.key_report_mappings.cof_r2_key_report_mapping import (
     COF_R2_KEY_REPORT_MAPPING,
 )
@@ -16,6 +19,7 @@ from config.key_report_mappings.dpif_r2_key_report_mapping import (
 MAPPINGS = (
     COF_R2_KEY_REPORT_MAPPING,
     COF_R3W2_KEY_REPORT_MAPPING,
+    COF_KEY_REPORT_MAPPING,
     CYP_R1_KEY_REPORT_MAPPING,
     DPIF_R2_KEY_REPORT_MAPPING,
 )
@@ -32,6 +36,10 @@ def get_report_mapping_for_round(round_id):
         return COF_R2_KEY_REPORT_MAPPING
     elif round_id == COF_R3W2_KEY_REPORT_MAPPING.round_id:
         return COF_R3W2_KEY_REPORT_MAPPING
+    elif (
+        round_id == COF_KEY_REPORT_MAPPING.round_id
+    ):  # TODO: see if we can make it so this if isnt just round based (If it doesnt change across rounds).
+        return COF_KEY_REPORT_MAPPING
     elif round_id == CYP_R1_KEY_REPORT_MAPPING.round_id:
         return CYP_R1_KEY_REPORT_MAPPING
     elif round_id == DPIF_R2_KEY_REPORT_MAPPING.round_id:

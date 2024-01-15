@@ -17,7 +17,7 @@ This service depends on the following:
 
 # Testing
 [Testing in Python repos](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-db-development.md)
-
+Further information on the test data used for transactional tests is contained [here](./tests/README.md)
 
 # IDE Setup
 [Python IDE Setup](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-ide-setup.md)

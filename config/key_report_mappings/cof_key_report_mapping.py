@@ -69,11 +69,7 @@ COF_KEY_REPORT_MAPPING = KeyReportMapping(
         ApplicationColumnMappingItem(
             column_name="id",
             return_field="link",
-        ),
-        # ApplicationColumnMappingItem(    # think we'd need to add a concept for grabbing email by account id    # noqa
-        #     column_name="email",         # however that data belongs in the account-store                       # noqa
-        #     return_field="account_id"                                                                           # noqa
-        # ),                                                                                                      # noqa
+        ),  # noqa
         FormMappingItem(
             form_name="project-information-cof",
             form_name_cy="gwybodaeth-am-y-prosiect-cof",

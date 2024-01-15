@@ -38,7 +38,7 @@ def get_report_mapping_for_round(round_id):
         return COF_R3W2_KEY_REPORT_MAPPING
     elif (
         round_id == COF_KEY_REPORT_MAPPING.round_id
-    ):  # TODO: see if we can make it so this if isnt just round based (If it doesnt change across rounds).
+    ):  # TODO: see if we can make it so this if statement isnt just round based (If it doesnt change across rounds).
         return COF_KEY_REPORT_MAPPING
     elif round_id == CYP_R1_KEY_REPORT_MAPPING.round_id:
         return CYP_R1_KEY_REPORT_MAPPING

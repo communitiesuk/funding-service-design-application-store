@@ -1,167 +1,55 @@
-# Funding service design application store.
+# Funding service design application store
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 
 [![CodeQL](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/communitiesuk/funding-service-design-application-store/actions/workflows/codeql-analysis.yml)
 
-This is a Flask API that provides access to the Funding Service Design Application Store. The frontend repository for
-this data store is [here](https://github.com/communitiesuk/funding-service-design-frontend).
+This service provides an API for accessing the Access Funding Application Store.
 
-## Prerequisites
+[Developer setup guide](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-setup.md)
 
-- python ^= 3.10
-
-# Getting started
-
-## [Linked external services](docs/external_services.md)
-
-## Installation
-
-Clone the repository
-
-### Create a Virtual environment
-
-    python3 -m venv .venv
-
-### Enter the virtual environment
-
-...either macOS using bash:
-
-    source .venv/bin/activate
-
-...or if on Windows using Command Prompt:
-
-    .venv\Scripts\activate.bat
-
-
-### Install dependencies
-
-requirements-dev.txt and requirements.txt are updated using [pip-tools pip-compile](https://github.com/jazzband/pip-tools)
-To update requirements please manually add the dependencies in the .in files (not the requirements.txt files)
-Then run (in the following order):
-
-    pip-compile requirements.in
-
-    pip-compile requirements-dev.in
-
-From the top-level directory enter the command to install pip and the dependencies of the project
-
-    python3 -m pip install --upgrade pip && pip install -r requirements-dev.txt
-
-### Postgres
-
-You will need to set up a local postgres server to run and test this repo.
-
-Set the environment variables "DATABASE_URL" to your postgres connection string before running `flask` or `pytest`.
-
-Eg.
-
-```
-# pragma: allowlist nextline secret
-export DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres
-```
-
-
-### Build with Paketo
-
-[Pack](https://buildpacks.io/docs/tools/pack/cli/pack_build/)
-
-[Paketo buildpacks](https://paketo.io/)
-
-```pack build <name your image> --builder paketobuildpacks/builder:base```
-
-Example:
-
-```
-[~/work/repos/funding-service-design-application-store] pack build paketo-demofsd-app --builder paketobuildpacks/builder:base
-***
-Successfully built image paketo-demofsd-app
-```
-
-You can then use that image with docker to run a container
-
-```
-docker run -d -p 8080:8080 --env PORT=8080 --env FLASK_ENV=dev [envs] paketo-demofsd-app
-```
-
-`envs` needs to include values for each of:
-NOTIFICATION_SERVICE_HOST
-ACCOUNT_STORE_API_HOST
-FUND_STORE_API_HOST
-SENTRY_DSN
-GITHUB_SHA
-DATABASE_URL
-
-```
-docker ps -a
-CONTAINER ID   IMAGE                       COMMAND                  CREATED          STATUS                    PORTS                    NAMES
-42633142c619   paketo-demofsd-app          "/cnb/process/web"       8 seconds ago    Up 7 seconds              0.0.0.0:8080->8080/tcp   peaceful_knuth
-```
-
-
-## How to use
-
-Enter the virtual environment as described above, then run:
-
-    flask run
-
-A local dev server will be created on
-
-    http://127.0.0.1:5000/
-
-This is configurable in .flaskenv
+This service depends on the following:
+- [Fund store](https://github.com/communitiesuk/funding-service-design-fund-store)
+- [Notification](https://github.com/communitiesuk/funding-service-design-notification)
+- [Account Store](https://github.com/communitiesuk/funding-service-design-account-store)
+- [Simple Queue Service](#simple-queue-service)
+- [Postgres database](#database)
 
 # Testing
+[Testing in Python repos](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-db-development.md)
+Further information on the test data used for transactional tests is contained [here](./tests/README.md)
 
-To run all unit tests run 'pytest'
+# IDE Setup
+[Python IDE Setup](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-ide-setup.md)
 
-## Performance Testing
 
-Performance tests are stored in a separate repository which is then run in the pipeline. If you want to run the
-performance tests yourself follow the steps in the README for the performance test repo
-located [here](https://github.com/communitiesuk/funding-service-design-performance-tests/blob/main/README.md)
+# Simple Queue Service
+As part of the application submission workflow, we use a [FIFO AWS SQS](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html) to automate our application export to assessment.
 
-# Extras
+We export the application as a 'fat' payload. This includes all application data (including metadata/attributes), this ensure assessment does not need to call application_store for additional information.
 
-This repo comes with a .pre-commit-config.yaml, if you wish to use this do the following while in your virtual
-enviroment:
+We can simulate an SQS locally when using our docker runner instance. Our docker runner uses localstack to simulate these  AWS services, see [here](https://github.com/communitiesuk/funding-service-design-docker-runner/tree/main/docker-localstack).
 
-    pip install pre-commit black
+If messages are not consumed and deleted they will be move to the Dead-Letter_Queue, here we can inspect the message for faults and retry.
 
-    pre-commit install
+The SQS queues have a number of confiuration options, we are using the AWS SDK for Python (Boto3), see docs [here](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html).
 
-Once the above is done you will have autoformatting and pep8 compliance built into your workflow. You will be notified
-of any pep8 errors during commits.
+There is an API endpoint on this service to send a submitted application to assessment:
 
-In deploy.yml, there are three environment variables called users, spawn-rate and run-time. These are used
-to override the locust config if the performance tests need to run with different configs for application store.
+    ```
+    /queue/{queue_name}/{application_id}
+    ```
 
-### Useful Queries
+# Database
+General instructions for local db development are available here: [Local database development](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-db-development.md)
+
+## Useful Queries
 Show count of applications by status for each round
 `select fund_id, round_id, status, count(status) from applications group by fund_id, status, round_id;`
 Total to be sent, by fund/round
 `select fund_id, round_id, count(id) from applications where status not in ('SUBMITTED') group by fund_id, round_id;`
 
-## Copilot Initialisation
-
-Copilot is the deployment of the infrastructure configuration, which is all stored under the copilot folder. The manifest files have been pre-generated by running through various initialisation steps that create the manifest files by prompting a series of questions, but do not _deploy_ the infrastructure.
-
-For each AWS account, these commands will need to be run _once_ to initialise the environment:
-
-`copilot app init pre-award` - this links the pre-award app with the current service, and associates the next commands with the service. Essentially, this provides context for the service to run under
-
-```
-copilot init \
-    --name fsd-application-store \
-    --app pre-award \
-    --type 'Backend Service' \
-    --image 'ghcr.io/communitiesuk/funding-service-design-application-store:latest' \
-    --port 80
-```
-
-This will initalise this service, using the current created image
-
-# Seeding Test Data
+## Seeding Test Data
 You can seed test data to use in the running application (separate to unit test data seeding). The seeding process needs a running fund-store to retrieve fund/round form section config, so it runs within the docker container for application-store within the docker runner.
 To run the seeding script:
 1. Make sure your local docker-runner is running
@@ -169,13 +57,13 @@ To run the seeding script:
 1. Use docker exec to get into that container: `docker exec -it <container_id> bash`
 1. Execute the script: `python scripts/seed_db_test_data.py`. You will be prompted for inputs: fund, round, account_id (the UUID not email address), the status of the seeded applications and how many to create.
 
-## Testing the seeding process
+### Testing the seeding process
 Unit tests exist in [test_seed_db](/tests/test_seed_db.py). They are marked as skipped as they require a running fund-store to retrieve form config (no point in duplicating this for tests) so they won't run in the pipeline but are fine locally. If your local fund store runs on a non-standard port etc, edit the `local_fund_store` fixture in that tests file. If you want to run the tests, just comment out the skip marker.
 
-## Adding a new fund/round to the seeding process
+### Adding a new fund/round to the seeding process
 To seed applicaitons, we need the completed form json. If you have that, skip to the end of part 1 and put that form json into the required file.
 
-### Part 1 - get the form json
+#### Part 1 - get the form json
 1. Get a submitted application into your local DB. You can either do this manually or by running the automated tests against your local docker runner.
 1. Find the `application_id` of that submitted application._
 1. Edit the [tests file](/tests/test_seed_db.py) to un-skip `test_retrieve_test_data` and then set `target_app` to be the `application_id` you just submitted.
@@ -184,7 +72,25 @@ To seed applicaitons, we need the completed form json. If you have that, skip to
 1. Copy this file into [seed_data](/tests/seed_data/) and name it `<fund_short_code>_<round_short_code>_all_forms.json`.
 1. *IMPORTANT* Change the config in [pytest.ini](/pytest.ini) back to what it was so you don't accidentally wipe your docker runner DB next time you run tests!
 
-### Part 2 - update seeding config
+#### Part 2 - update seeding config
 1. In [seed_db](/tests/seed_data/seed_db.py) there is a constant called `FUND_CONFIG` - update this following the existing structure for your new fund/round (if it's a new round on an existing fund, just add it as another key to `rounds` item in that fund). You will need to know the name of the form that contains the field used to the name the application/project.
 1. In the same file, update the `click.option` choice values for fund/round as required, to allow your new options.
 1. Test it - update the unit tests to use this new config and check it works.
+
+# Builds and Deploys
+Details on how our pipelines work and the release process is available [here](https://dluhcdigital.atlassian.net/wiki/spaces/FS/pages/73695505/How+do+we+deploy+our+code+to+prod)
+## Paketo
+Paketo is used to build the docker image which gets deployed to our test and production environments. Details available [here](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-paketo.md)
+
+When running the docker image generated with paketo, `envs` needs to contain a value for each of the following:
+- `NOTIFICATION_SERVICE_HOST`
+- `ACCOUNT_STORE_API_HOST`
+- `FUND_STORE_API_HOST`
+- `SENTRY_DSN`
+- `GITHUB_SHA`
+- `DATABASE_URL`
+
+## Copilot
+Copilot is used for infrastructure deployment. Instructions are available [here](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-copilot.md), with the following values for the application store:
+- service-name: fsd-application-store
+- image-name: funding-service-design-application-store

@@ -58,8 +58,10 @@ class Applications(BaseModel):
             "language": self.language.name if self.language else "en",
             "reference": self.reference,
             "project_name": self.project_name or None,
-            "started_at": self.started_at.isoformat(),
-            "status": self.status.name,
-            "last_edited": (self.last_edited or self.started_at).isoformat(),
+            "started_at": self.started_at.isoformat() if self.started_at else None,
+            "status": self.status.name if self.status else None,
+            "last_edited": self.last_edited.isoformat()
+            if self.last_edited
+            else (self.started_at.isoformat() if self.started_at else None),
             "date_submitted": date_submitted,
         }

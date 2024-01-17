@@ -1,4 +1,7 @@
 import json
+from unittest.mock import ANY
+from unittest.mock import MagicMock
+from uuid import uuid4
 
 import pytest
 from db.exceptions import ApplicationError
@@ -6,6 +9,7 @@ from db.models import Applications
 from db.queries.application import get_all_applications
 from db.schemas import ApplicationSchema
 from external_services.models.fund import Fund
+from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
 from tests.helpers import get_row_by_pk
@@ -25,7 +29,6 @@ def test_create_application_is_successful(
     THEN applications are created with the correct parameters
     """
 
-    # Post one Fund A application and check length
     application_data_a1 = {
         "account_id": "usera",
         "fund_id": unique_fund_round[0],
@@ -46,31 +49,59 @@ def test_create_application_is_successful(
     count_fund_applications(client, unique_fund_round[0], 2)
 
 
-@pytest.mark.unique_fund_round(True)
-def test_create_application_welsh_not_available(
-    client, unique_fund_round, mocker, mock_get_application_display_config
+@pytest.mark.parametrize(
+    "requested_language,fund_supports_welsh,exp_language",
+    [
+        ("en", True, "en"),
+        ("en", False, "en"),
+        ("cy", True, "cy"),
+        ("cy", False, "en"),
+    ],
+)
+def test_create_application_language_choice(
+    mocker, client, fund_supports_welsh, requested_language, exp_language
 ):
-    mocker.patch(
-        "db.queries.application.queries.get_fund",
-        return_value=Fund(
-            "Generated test fund no welsh",
-            unique_fund_round[0],
-            "TEST",
-            "Testing fund",
-            False,
-            [],
-        ),
+    mock_fund = Fund(
+        "Generated test fund no welsh",
+        str(uuid4()),
+        "TEST",
+        "Testing fund",
+        fund_supports_welsh,
+        [],
     )
+    mocker.patch("api.routes.application.routes.get_fund", return_value=mock_fund)
+    blank_forms_mock = mocker.patch(
+        "api.routes.application.routes.get_blank_forms",
+        return_value=MagicMock(),
+    )
+    test_application = Applications(**application_expected_data[2])
+    create_application_mock = mocker.patch(
+        "api.routes.application.routes.create_application",
+        return_value=test_application,
+    )
+    mocker.patch("api.routes.application.routes.add_new_forms")
 
-    # Post one Fund A application and check length
+    # Post one application and check it's created in the expected language
     application_data_a1 = {
         "account_id": "usera",
-        "fund_id": unique_fund_round[0],
-        "round_id": unique_fund_round[0],
-        "language": "cy",
+        "fund_id": "",
+        "round_id": "",
+        "language": requested_language,
     }
     response = post_data(client, "/applications", application_data_a1)
-    assert response.json["language"] == "en"
+    assert response.status_code == 201
+
+    blank_forms_mock.assert_called_once_with(
+        fund_id=ANY,
+        round_id=ANY,
+        language=exp_language,
+    )
+    create_application_mock.assert_called_once_with(
+        account_id="usera",
+        fund_id=ANY,
+        round_id=ANY,
+        language=exp_language,
+    )
 
 
 def test_create_application_creates_formatted_reference(

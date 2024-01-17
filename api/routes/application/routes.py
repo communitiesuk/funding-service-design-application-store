@@ -59,7 +59,12 @@ class ApplicationsView(MethodView):
         round_id = args["round_id"]
         fund_id = args["fund_id"]
         language = args["language"]
-        empty_forms = get_blank_forms(fund_id, round_id, language)
+        fund = get_fund(fund_id=fund_id)
+        if language == "cy" and not fund.welsh_available:
+            language = "en"
+        empty_forms = get_blank_forms(
+            fund_id=fund_id, round_id=round_id, language=language
+        )
         application = create_application(
             account_id=account_id,
             fund_id=fund_id,

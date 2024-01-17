@@ -250,6 +250,7 @@ def mock_get_fund(mocker):
     Used with unique_fund_round to ensure when the fund and
     round are retrieved, they match what's expected
     """
+    mocker.patch("api.routes.application.routes.get_fund", new=generate_mock_fund)
     mocker.patch("db.queries.application.queries.get_fund", new=generate_mock_fund)
 
 

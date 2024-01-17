@@ -1,3 +1,6 @@
+from unittest.mock import ANY
+from uuid import uuid4
+
 import pytest
 from config.key_report_mappings.cof_r2_key_report_mapping import (
     COF_R2_KEY_REPORT_MAPPING,
@@ -9,10 +12,52 @@ from config.key_report_mappings.model import extract_postcode
 from config.key_report_mappings.model import KeyReportMapping
 from db.models import Applications
 from db.models import Forms
+from db.queries.application import create_application
 from db.queries.application import process_files
 from db.queries.reporting.queries import export_application_statuses_to_csv
 from db.queries.reporting.queries import map_application_key_fields
 from external_services.aws import FileData
+from external_services.models.fund import Fund
+
+
+@pytest.mark.parametrize(
+    "requested_language,fund_supports_welsh,exp_language",
+    [
+        ("en", True, "en"),
+        ("en", False, "en"),
+        ("cy", True, "cy"),
+        ("cy", False, "en"),
+    ],
+)
+def test_create_application_language_choice(
+    mocker, fund_supports_welsh, requested_language, exp_language
+):
+    mock_fund = Fund(
+        "Generated test fund no welsh",
+        str(uuid4()),
+        "TEST",
+        "Testing fund",
+        fund_supports_welsh,
+        [],
+    )
+    mocker.patch("db.queries.application.queries.get_fund", return_value=mock_fund)
+    mock_create_app_try = mocker.patch(
+        "db.queries.application.queries._create_application_try",
+        return_value="new application",
+    )
+
+    create_application(
+        account_id="test", fund_id="", round_id="", language=requested_language
+    )
+    mock_create_app_try.assert_called_once_with(
+        account_id="test",
+        fund_id=ANY,
+        round_id=ANY,
+        key=ANY,
+        language=exp_language,
+        reference=ANY,
+        attempt=0,
+    )
 
 
 @pytest.mark.parametrize(

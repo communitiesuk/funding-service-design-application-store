@@ -2,8 +2,10 @@ import json
 import os
 import re
 import urllib
+from datetime import datetime
 
 from config import Config
+from db.models.application.enums import Language
 from deepdiff import DeepDiff
 
 
@@ -159,7 +161,7 @@ test_application_data = [
         "account_id": "usera",
         "fund_id": "47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
-        "language": "en",
+        "language": Language.en,
     },
     {
         "account_id": "userb",
@@ -171,7 +173,7 @@ test_application_data = [
         "account_id": "userc",
         "fund_id": "funding-service-design",
         "round_id": "spring",
-        "language": "cy",
+        "language": Language.cy,
     },
 ]
 
@@ -297,11 +299,11 @@ test_question_data_cy = [
 
 application_expected_data = [
     {
-        "status": "NOT_STARTED",
         "project_name": "project_name not set",
-        "date_submitted": "null",
-        "started_at": "2022-05-20 14:47:12",
+        "date_submitted": None,
+        "started_at": datetime.fromisoformat("2022-05-20 14:47:12"),
         "last_edited": None,
+        "status": None,
         **application_data,
     }
     for application_data in test_application_data

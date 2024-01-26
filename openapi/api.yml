@@ -61,7 +61,7 @@ paths:
             items:
               type: string
           required: false
-          explode: false
+          explode: true
         # - filtering applications
         - in: query
           name: order_by

@@ -1,5 +1,5 @@
 from .application import ApplicationSchema
-from .form import FormsRunnerSchema
 from .eligibility import EligibilitySchema
+from .form import FormsRunnerSchema
 
 __all__ = ["ApplicationSchema", "FormsRunnerSchema", "EligibilitySchema"]

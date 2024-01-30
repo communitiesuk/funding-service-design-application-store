@@ -23,7 +23,9 @@ class Eligibility(BaseModel):
     form_id = Column("form_id", db.String(), nullable=False)
     answers = Column("answers", NestedMutableJson)
     eligible = Column("eligible", db.Boolean(), nullable=True)
-    application_id = db.Column("application_id", db.ForeignKey(Applications.id), nullable=False)
+    application_id = db.Column(
+        "application_id", db.ForeignKey(Applications.id), nullable=False
+    )
     date_submitted = db.Column("date_submitted", DateTime())
 
     def as_dict(self):
@@ -39,4 +41,3 @@ class Eligibility(BaseModel):
             "application_id": self.application_id,
             "date_submitted": date_submitted,
         }
-

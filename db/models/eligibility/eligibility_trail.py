@@ -12,7 +12,5 @@ BaseModel: DefaultMeta = db.Model
 
 class EligibilityUpdate(BaseModel):
     id = Column("id", UUID(as_uuid=True), default=uuid4, primary_key=True)
-    date_created = Column(
-        "date_created", db.DateTime(), server_default=func.now()
-    )
+    date_created = Column("date_created", db.DateTime(), server_default=func.now())
     eligible = Column("eligible", db.Boolean())

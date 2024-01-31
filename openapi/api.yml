@@ -57,9 +57,11 @@ paths:
           name: status_only
           style: form
           schema:
-            type: string
+            type: array
+            items:
+              type: string
           required: false
-          explode: false
+          explode: true
         # - filtering applications
         - in: query
           name: order_by

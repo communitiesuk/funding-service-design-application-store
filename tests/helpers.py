@@ -328,9 +328,7 @@ def key_list_to_regex(
 ):
     exclude_regex_path_strings = [rf"root\[\d+\]\['{key}'\]" for key in exclude_keys]
 
-    exclude_regex_path_strings_nested = [
-        rf"root\[\d+\]\['{key}'\]\[\d+\]" for key in exclude_keys
-    ]
+    exclude_regex_path_strings_nested = [rf"root\[\d+\]\['{key}'\]\[\d+\]" for key in exclude_keys]
 
     regex_paths = exclude_regex_path_strings + exclude_regex_path_strings_nested
     return [re.compile(regex_string) for regex_string in regex_paths]

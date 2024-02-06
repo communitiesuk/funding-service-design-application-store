@@ -48,9 +48,7 @@ class ApplicationsView(MethodView):
         matching_applications = search_applications(**kwargs)
         order_by = kwargs.get("order_by", None)
         order_rev = kwargs.get("order_rev", None)
-        sorted_applications = order_applications(
-            matching_applications, order_by, order_rev
-        )
+        sorted_applications = order_applications(matching_applications, order_by, order_rev)
         return sorted_applications, 200, response_headers
 
     def post(self):
@@ -62,9 +60,7 @@ class ApplicationsView(MethodView):
         fund = get_fund(fund_id=fund_id)
         if language == "cy" and not fund.welsh_available:
             language = "en"
-        empty_forms = get_blank_forms(
-            fund_id=fund_id, round_id=round_id, language=language
-        )
+        empty_forms = get_blank_forms(fund_id=fund_id, round_id=round_id, language=language)
         application = create_application(
             account_id=account_id,
             fund_id=fund_id,
@@ -76,14 +72,10 @@ class ApplicationsView(MethodView):
 
     def get_by_id(self, application_id):
         try:
-            return_dict = get_application(
-                application_id, as_json=True, include_forms=True
-            )
+            return_dict = get_application(application_id, as_json=True, include_forms=True)
             return return_dict, 200
         except ValueError as e:
-            current_app.logger.error(
-                "Value error getting application ID: {application_id}"
-            )
+            current_app.logger.error("Value error getting application ID: {application_id}")
             raise e
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}, 404
@@ -91,9 +83,7 @@ class ApplicationsView(MethodView):
     def get_key_application_data_report(self, application_id):
         try:
             return send_file(
-                export_json_to_csv(
-                    get_report_for_applications(application_ids=[application_id])
-                ),
+                export_json_to_csv(get_report_for_applications(application_ids=[application_id])),
                 "text/csv",
                 as_attachment=True,
                 download_name="required_data.csv",
@@ -134,9 +124,7 @@ class ApplicationsView(MethodView):
         try:
             return send_file(
                 export_json_to_csv(
-                    get_report_for_applications(
-                        status=status, round_id=round_id, fund_id=fund_id
-                    ),
+                    get_report_for_applications(status=status, round_id=round_id, fund_id=fund_id),
                     get_key_report_field_headers(round_id),
                 ),
                 "text/csv",
@@ -152,9 +140,7 @@ class ApplicationsView(MethodView):
             "application_id": request_json["metadata"]["application_id"],
             "form_name": request_json["metadata"].get("form_name"),
             "question_json": request_json["questions"],
-            "is_summary_page_submit": request_json["metadata"].get(
-                "isSummaryPageSubmit", False
-            ),
+            "is_summary_page_submit": request_json["metadata"].get("isSummaryPageSubmit", False),
         }
         try:
             updated_form = update_form(**form_dict)
@@ -174,9 +160,7 @@ class ApplicationsView(MethodView):
             application = submit_application(application_id)
             account = get_account(account_id=application.account_id)
             round_data = get_round(fund_id, application.round_id)
-            application_with_form_json = get_application(
-                application_id, as_json=True, include_forms=True
-            )
+            application_with_form_json = get_application(application_id, as_json=True, include_forms=True)
 
             application_with_form_json_and_fund_name = {
                 **application_with_form_json,
@@ -215,20 +199,16 @@ class ApplicationsView(MethodView):
             }, 201
         except KeyError as e:
             current_app.logger.exception(
-                "Key error on processing application submission"
-                f"for application: '{application_id}'"
+                f"Key error on processing application submissionfor application: '{application_id}'"
             )
             return str(e), 500, {"x-error": "key error"}
         except NotificationError as e:
             current_app.logger.exception(
-                "Notification error on sending SUBMIT notification for"
-                f" application {application_id}"
+                f"Notification error on sending SUBMIT notification for application {application_id}"
             )
             return str(e), 500, {"x-error": "notification error"}
         except Exception as e:
-            current_app.logger.exception(
-                f"Error on sending SUBMIT notification for application {application_id}"
-            )
+            current_app.logger.exception(f"Error on sending SUBMIT notification for application {application_id}")
             return str(e), 500, {"x-error": "Error"}
 
     def post_feedback(self):
@@ -284,9 +264,7 @@ class ApplicationsView(MethodView):
         return survey_data.as_dict(), 201
 
     def get_end_of_application_survey_data(self, application_id, page_number):
-        survey_data = retrieve_end_of_application_survey_data(
-            application_id, int(page_number)
-        )
+        survey_data = retrieve_end_of_application_survey_data(application_id, int(page_number))
         if survey_data:
             return survey_data.as_dict(), 200
 
@@ -302,9 +280,7 @@ class ApplicationsView(MethodView):
 
         try:
             return send_file(
-                path_or_file=export_json_to_excel(
-                    retrieve_all_feedbacks_and_surveys(fund_id, round_id, status)
-                ),
+                path_or_file=export_json_to_excel(retrieve_all_feedbacks_and_surveys(fund_id, round_id, status)),
                 mimetype="application/vnd.ms-excel",
                 as_attachment=True,
                 download_name=f"fsd_feedback_{str(int(time.time()))}.xlsx",

@@ -11,9 +11,7 @@ from flask.views import MethodView
 
 class QueueView(MethodView):
     def post_submitted_application_to_assessment(self, application_id=None):
-        application_with_form_json = get_application(
-            application_id, as_json=True, include_forms=True
-        )
+        application_with_form_json = get_application(application_id, as_json=True, include_forms=True)
         # check to see if application has status submitted
         if application_with_form_json["status"] == "SUBMITTED":
             application_attributes = {

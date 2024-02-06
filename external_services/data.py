@@ -27,14 +27,10 @@ def get_data(endpoint: str, params: Optional[dict] = None):
     """
 
     if Config.USE_LOCAL_DATA:
-        current_app.logger.info(
-            f"Fetching local data from '{endpoint}'" + f" with params {params}."
-        )
+        current_app.logger.info(f"Fetching local data from '{endpoint}'" + f" with params {params}.")
         data = get_local_data(endpoint, params)
     else:
-        current_app.logger.info(
-            f"Fetching data from '{endpoint}'" + f" with params {params}."
-        )
+        current_app.logger.info(f"Fetching data from '{endpoint}'" + f" with params {params}.")
         data = get_remote_data(endpoint, params)
     if data is None:
         current_app.logger.error(f"Data request failed, unable to recover: {endpoint}")
@@ -55,10 +51,7 @@ def get_remote_data(endpoint, params: Optional[dict] = None):
         data = response.json()
         return data
     else:
-        current_app.logger.warn(
-            "GET remote data call was unsuccessful with status code:"
-            f" {response.status_code}."
-        )
+        current_app.logger.warn(f"GET remote data call was unsuccessful with status code: {response.status_code}.")
         return None
 
 
@@ -68,9 +61,7 @@ def get_local_data(endpoint: str, params: Optional[dict] = None):
         params = {k: v for k, v in params.items() if v is not None}
         query_string = urlencode(params)
         endpoint = endpoint + "?" + query_string
-    api_data_json = os.path.join(
-        Config.FLASK_ROOT, "tests", "api_data", "get_endpoint_data.json"
-    )
+    api_data_json = os.path.join(Config.FLASK_ROOT, "tests", "api_data", "get_endpoint_data.json")
     with open(api_data_json) as json_file:
         api_data = json.load(json_file)
     if endpoint in api_data:
@@ -83,9 +74,9 @@ def get_local_data(endpoint: str, params: Optional[dict] = None):
 
 
 def get_application_sections(fund_id, round_id, language):
-    endpoint = (
-        Config.FUND_STORE_API_HOST + Config.FUND_ROUND_APPLICATION_SECTIONS_ENDPOINT
-    ).format(fund_id=fund_id, round_id=round_id, language=language)
+    endpoint = (Config.FUND_STORE_API_HOST + Config.FUND_ROUND_APPLICATION_SECTIONS_ENDPOINT).format(
+        fund_id=fund_id, round_id=round_id, language=language
+    )
     response = get_remote_data(endpoint)
     return response
 
@@ -111,9 +102,7 @@ def get_fund(fund_id: str) -> Fund | None:
 
 
 def get_rounds(fund_id: str) -> Fund | list:
-    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ROUNDS_ENDPOINT.format(
-        fund_id=fund_id
-    )
+    endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ROUNDS_ENDPOINT.format(fund_id=fund_id)
     response = get_data(endpoint)
     rounds = []
     if response and len(response) > 0:
@@ -126,17 +115,13 @@ def get_round(fund_id: str, round_id: str) -> Round | None:
     """
     Gets round from round store api using round_id if given.
     """
-    round_endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ROUND_ENDPOINT.format(
-        fund_id=fund_id, round_id=round_id
-    )
+    round_endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     round_response = get_data(round_endpoint)
     if round_response and "id" in round_response:
         return Round.from_json(round_response)
 
 
-def get_account(
-    email: Optional[str] = None, account_id: Optional[str] = None
-) -> Account | None:
+def get_account(email: Optional[str] = None, account_id: Optional[str] = None) -> Account | None:
     """
     Get an account from the account store using either
     an email address or account_id.
@@ -167,8 +152,7 @@ def get_account(
 @functools.lru_cache(maxsize=1)
 def get_round_name(fund_id, round_id):
     response = get_data(
-        Config.FUND_STORE_API_HOST
-        + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
+        Config.FUND_STORE_API_HOST + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
     if response:
         return response.get("title")

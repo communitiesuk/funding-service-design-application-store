@@ -79,9 +79,7 @@ applications = [
         ([app_sections, applications, COF_R3W2_KEY_REPORT_MAPPING]),
     ],
 )
-def test_retrieve_all_feedbacks_and_surveys(
-    mocker, app_sections, applications, report_mapping
-):
+def test_retrieve_all_feedbacks_and_surveys(mocker, app_sections, applications, report_mapping):
     mocker.patch(
         "db.queries.feedback.queries.get_application_sections",
         return_value=app_sections,
@@ -101,14 +99,8 @@ def test_retrieve_all_feedbacks_and_surveys(
 
     # check contents
     assert result["sections_feedback"][0]["section"] == app_sections[0]["title"]
-    assert (
-        result["sections_feedback"][0]["comment"]
-        == applications[0].feedbacks[0].feedback_json["comment"]
-    )
-    assert (
-        result["sections_feedback"][0]["rating"]
-        == applications[0].feedbacks[0].feedback_json["rating"]
-    )
+    assert result["sections_feedback"][0]["comment"] == applications[0].feedbacks[0].feedback_json["comment"]
+    assert result["sections_feedback"][0]["rating"] == applications[0].feedbacks[0].feedback_json["rating"]
 
 
 @pytest.mark.parametrize(

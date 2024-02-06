@@ -28,8 +28,7 @@ except subprocess.CalledProcessError as e:
 # Remove final line break and append arguments
 try:
     subprocess.run(
-        args=command_with_image_removed[:-1]
-        + f" \\\n--follow \\\n--command '{command_to_run}'",
+        args=command_with_image_removed[:-1] + f" \\\n--follow \\\n--command '{command_to_run}'",
         shell=True,
         check=True,
     )

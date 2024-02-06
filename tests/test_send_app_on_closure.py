@@ -42,9 +42,7 @@ class TestSendAppOnClosure:
                 send_email=True,
             )
 
-        result = send_incomplete_applications_after_deadline(
-            unique_fund_round[0], unique_fund_round[1], False
-        )
+        result = send_incomplete_applications_after_deadline(unique_fund_round[0], unique_fund_round[1], False)
         assert result == 0
 
     @pytest.mark.apps_to_insert([])
@@ -70,17 +68,13 @@ class TestSendAppOnClosure:
 
     @pytest.mark.apps_to_insert([test_application_data[0]])
     @pytest.mark.unique_fund_round(True)
-    def test_send_apps_send_emails_is_false(
-        self, mocker, seed_application_records, unique_fund_round, mocked_get_fund
-    ):
+    def test_send_apps_send_emails_is_false(self, mocker, seed_application_records, unique_fund_round, mocked_get_fund):
         mocker.patch(
             "scripts.send_application_on_closure.get_fund_round",
             return_value={"deadline": "2022-01-01T12:00:00"},
         )
 
-        result = send_incomplete_applications_after_deadline(
-            unique_fund_round[0], unique_fund_round[1], False
-        )
+        result = send_incomplete_applications_after_deadline(unique_fund_round[0], unique_fund_round[1], False)
         assert 1 == result
 
     @pytest.mark.apps_to_insert([test_application_data[0]])
@@ -101,9 +95,7 @@ class TestSendAppOnClosure:
             },
         )
 
-        result = send_incomplete_applications_after_deadline(
-            unique_fund_round[0], unique_fund_round[1], True
-        )
+        result = send_incomplete_applications_after_deadline(unique_fund_round[0], unique_fund_round[1], True)
         assert 1 == result
 
     @pytest.mark.apps_to_insert([test_application_data[0], test_application_data[0]])
@@ -154,9 +146,7 @@ class TestSendAppOnClosure:
             },
         )
 
-        result = send_incomplete_applications_after_deadline(
-            unique_fund_round[0], unique_fund_round[1], True
-        )
+        result = send_incomplete_applications_after_deadline(unique_fund_round[0], unique_fund_round[1], True)
         assert 1 == result, "Unexpected result number"
 
     @pytest.mark.apps_to_insert([test_application_data[0], test_application_data[0]])
@@ -177,9 +167,7 @@ class TestSendAppOnClosure:
             },
         )
 
-        result = send_incomplete_applications_after_deadline(
-            unique_fund_round[0], unique_fund_round[1], True
-        )
+        result = send_incomplete_applications_after_deadline(unique_fund_round[0], unique_fund_round[1], True)
         assert 2 == result, "Unexpected result number"
 
     @pytest.mark.apps_to_insert(
@@ -218,9 +206,7 @@ class TestSendAppOnClosure:
             )
 
         # When send emails is false it should return how many were ok to send
-        result = send_incomplete_applications_after_deadline(
-            unique_fund_round[0], unique_fund_round[1], False
-        )
+        result = send_incomplete_applications_after_deadline(unique_fund_round[0], unique_fund_round[1], False)
         assert 1 == result, "Unexpected result number"
 
     def test_send_apps_before_deadline(self, mocker, app, mocked_get_fund):

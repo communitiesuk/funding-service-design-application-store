@@ -59,22 +59,18 @@ def send_incomplete_applications_after_deadline(
                 application["forms"] = get_forms_by_app_id(application.get("id"))
                 application["round_name"] = fund_rounds.get("title")
                 try:
-                    account_id = external_services.get_account(
-                        account_id=application.get("account_id")
-                    )
+                    account_id = external_services.get_account(account_id=application.get("account_id"))
                     application["account_email"] = account_id.email
                     applications_to_send.append({"application": application})
                 except Exception:
                     handle_error(
-                        "Unable to retrieve account id"
-                        f" ({application.get('account_id')}) for "
+                        f"Unable to retrieve account id ({application.get('account_id')}) for "
                         + f"application id {application.get('id')}",
                         send_email,
                     )
             except Exception:
                 handle_error(
-                    "Unable to retrieve forms for "
-                    + f"application id {application.get('id')}",
+                    "Unable to retrieve forms for " + f"application id {application.get('id')}",
                     send_email,
                 )
 
@@ -91,13 +87,9 @@ def send_incomplete_applications_after_deadline(
             )
             if total_applications > 0:
                 for count, application in enumerate(applications_to_send, start=1):
-                    email = {
-                        "email": application.get("account_email")
-                        for application in application.values()
-                    }
+                    email = {"email": application.get("account_email") for application in application.values()}
                     current_app.logger.info(
-                        f"Sending application {count} of"
-                        f" {total_applications} to {email.get('email')}"
+                        f"Sending application {count} of {total_applications} to {email.get('email')}"
                     )
                     application["contact_help_email"] = fund_rounds.get("contact_email")
                     Notification.send(
@@ -105,9 +97,7 @@ def send_incomplete_applications_after_deadline(
                         to_email=email.get("email"),
                         content=application,
                     )
-                current_app.logger.info(
-                    f"Sent {count} {'emails' if count > 1 else 'email'}"
-                )
+                current_app.logger.info(f"Sent {count} {'emails' if count > 1 else 'email'}")
                 return count
             else:
                 current_app.logger.warning("There are no applications to be sent.")
@@ -115,8 +105,7 @@ def send_incomplete_applications_after_deadline(
         else:
             count = len(applications_to_send)
             current_app.logger.warning(
-                "Send email set to false, will not send"
-                f" {count} {'emails' if count > 1 else 'email'}."
+                f"Send email set to false, will not send {count} {'emails' if count > 1 else 'email'}."
             )
             return len(applications_to_send)
     else:
@@ -132,8 +121,7 @@ def handle_error(msg, throw_on_error):
 
 def get_fund_round(fund_id, round_id):
     return external_services.get_data(
-        Config.FUND_STORE_API_HOST
-        + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
+        Config.FUND_STORE_API_HOST + Config.FUND_ROUND_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
     )
 
 
@@ -165,15 +153,12 @@ def main() -> None:
     args = parser.parse_args()
     single_application = (
         strtobool(args.single_application)
-        if args.single_application is not None
-        and not isinstance(args.single_application, bool)
+        if args.single_application is not None and not isinstance(args.single_application, bool)
         else args.single_application
     )
 
     if single_application and args.application_id is None:
-        error_message = (
-            "The application_id argument is required if single_application is True"
-        )
+        error_message = "The application_id argument is required if single_application is True"
         current_app.logger.error(error_message)
         raise ValueError(error_message)
 

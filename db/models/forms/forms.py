@@ -20,9 +20,7 @@ class Forms(BaseModel):
         primary_key=True,
         nullable=False,
     )
-    application_id = db.Column(
-        "application_id", db.ForeignKey(Applications.id), nullable=False
-    )
+    application_id = db.Column("application_id", db.ForeignKey(Applications.id), nullable=False)
     json = db.Column("json", NestedMutableJson)
     status = db.Column("status", db.Enum(Status), default="NOT_STARTED", nullable=False)
     name = db.Column("name", db.String(), nullable=False)

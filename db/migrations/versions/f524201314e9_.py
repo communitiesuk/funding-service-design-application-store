@@ -35,16 +35,10 @@ def upgrade():
         sa.ForeignKeyConstraint(
             ["application_id"],
             ["applications.id"],
-            name=op.f(
-                "fk_end_of_application_survey_feedback_application_id_applications"
-            ),
+            name=op.f("fk_end_of_application_survey_feedback_application_id_applications"),
         ),
-        sa.PrimaryKeyConstraint(
-            "id", name=op.f("pk_end_of_application_survey_feedback")
-        ),
-        sa.UniqueConstraint(
-            "application_id", "page_number", name="_unique_application_page"
-        ),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_end_of_application_survey_feedback")),
+        sa.UniqueConstraint("application_id", "page_number", name="_unique_application_page"),
     )
     # ### end Alembic commands ###
 

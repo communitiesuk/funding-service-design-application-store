@@ -42,9 +42,7 @@ def get_application(app_id, include_forms=False, as_json=False) -> dict | Applic
         return row
 
 
-def get_applications(
-    filters=None, include_forms=False, as_json=False
-) -> list[dict] | list[Applications]:
+def get_applications(filters=None, include_forms=False, as_json=False) -> list[dict] | list[Applications]:
     if filters is None:
         filters = []
     stmt: Select = select(Applications)
@@ -78,9 +76,7 @@ def random_key_generator(length: int = 6):
         yield key
 
 
-def _create_application_try(
-    account_id, fund_id, round_id, key, language, reference, attempt
-) -> Applications:
+def _create_application_try(account_id, fund_id, round_id, key, language, reference, attempt) -> Applications:
     try:
         new_application_row = Applications(
             account_id=account_id,
@@ -136,10 +132,7 @@ def create_application(account_id, fund_id, round_id, language) -> Applications:
             )
         return new_application
     else:
-        raise ApplicationError(
-            f"Failed to create application. Fund round {round_id} for fund"
-            f" {fund_id} not found"
-        )
+        raise ApplicationError(f"Failed to create application. Fund round {round_id} for fund {fund_id} not found")
 
 
 def get_all_applications() -> list:
@@ -147,9 +140,7 @@ def get_all_applications() -> list:
     return application_list
 
 
-def get_count_by_status(
-    round_ids: Optional[list] = [], fund_ids: Optional[list] = []
-) -> dict[str, int]:
+def get_count_by_status(round_ids: Optional[list] = [], fund_ids: Optional[list] = []) -> dict[str, int]:
     query = db.session.query(
         Applications.fund_id,
         Applications.round_id,
@@ -163,23 +154,16 @@ def get_count_by_status(
         query = query.filter(Applications.fund_id.in_(fund_ids))
 
     grouped_by_fund_round_result = (
-        query.group_by(Applications.fund_id)
-        .group_by(Applications.round_id)
-        .group_by(Applications.status)
-        .all()
+        query.group_by(Applications.fund_id).group_by(Applications.round_id).group_by(Applications.status).all()
     )
     results = []
     unique_funds = {f[0] for f in grouped_by_fund_round_result}.union(fund_ids or [])
     for fund_id in unique_funds:
-        unique_rounds = {
-            row[1] for row in grouped_by_fund_round_result if row[0] == fund_id
-        }.union(round_ids or [])
+        unique_rounds = {row[1] for row in grouped_by_fund_round_result if row[0] == fund_id}.union(round_ids or [])
         rounds = []
         for round_id in unique_rounds:
             this_round_statuses = {
-                s[2].name: s[3]
-                for s in grouped_by_fund_round_result
-                if s[0] == fund_id and s[1] == round_id
+                s[2].name: s[3] for s in grouped_by_fund_round_result if s[0] == fund_id and s[1] == round_id
             }
             rounds.append(
                 {
@@ -228,9 +212,7 @@ def search_applications(**params):
 
 
 def submit_application(application_id) -> Applications:
-    current_app.logger.info(
-        f"Processing database submission for application_id: '{application_id}."
-    )
+    current_app.logger.info(f"Processing database submission for application_id: '{application_id}.")
     application = get_application(application_id)
     application.date_submitted = datetime.now(timezone.utc).isoformat()
 
@@ -243,10 +225,7 @@ def submit_application(application_id) -> Applications:
 
 
 def process_files(application: Applications, all_files: list[FileData]) -> Applications:
-    comp_id_to_files = {
-        comp_id: list(files)
-        for comp_id, files in groupby(all_files, key=lambda x: x.component_id)
-    }
+    comp_id_to_files = {comp_id: list(files) for comp_id, files in groupby(all_files, key=lambda x: x.component_id)}
     for form in application.forms:
         for component in form.json:
             for field in component["fields"]:
@@ -257,9 +236,7 @@ def process_files(application: Applications, all_files: list[FileData]) -> Appli
 
 
 def update_project_name(form_name, question_json, application) -> None:
-    if form_name.startswith("project-information") or form_name.startswith(
-        "gwybodaeth-am-y-prosiect"
-    ):
+    if form_name.startswith("project-information") or form_name.startswith("gwybodaeth-am-y-prosiect"):
         for question in question_json:
             for field in question["fields"]:
                 # field id for project name in json
@@ -274,9 +251,7 @@ def update_project_name(form_name, question_json, application) -> None:
 def get_fund_id(application_id):
     """Function takes an application_id and returns the fund_id of that application."""
     try:
-        application = (
-            db.session.query(Applications).filter_by(id=application_id).first()
-        )
+        application = db.session.query(Applications).filter_by(id=application_id).first()
         if application:
             return application.fund_id
         else:

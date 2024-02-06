@@ -27,14 +27,10 @@ class DefaultConfig:
     USE_LOCAL_DATA = strtobool(environ.get("USE_LOCAL_DATA", "False"))
 
     FUND_STORE_API_HOST = environ.get("FUND_STORE_API_HOST", TEST_FUND_STORE_API_HOST)
-    ACCOUNT_STORE_API_HOST = environ.get(
-        "ACCOUNT_STORE_API_HOST", TEST_ACCOUNT_STORE_API_HOST
-    )
+    ACCOUNT_STORE_API_HOST = environ.get("ACCOUNT_STORE_API_HOST", TEST_ACCOUNT_STORE_API_HOST)
 
     # Notification Service
-    NOTIFICATION_SERVICE_HOST = environ.get(
-        "NOTIFICATION_SERVICE_HOST", TEST_NOTIFICATION_SERVICE_HOST
-    )
+    NOTIFICATION_SERVICE_HOST = environ.get("NOTIFICATION_SERVICE_HOST", TEST_NOTIFICATION_SERVICE_HOST)
 
     SEND_ENDPOINT = "/send"
     NOTIFY_TEMPLATE_SUBMIT_APPLICATION = "APPLICATION_RECORD_OF_SUBMISSION"
@@ -65,22 +61,14 @@ class DefaultConfig:
             AWS_SQS_ACCESS_KEY_ID = sqs_credentials["aws_access_key_id"]
             AWS_SQS_SECRET_ACCESS_KEY = sqs_credentials["aws_secret_access_key"]
             AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = sqs_credentials["primary_queue_url"]
-            AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL = sqs_credentials[
-                "secondary_queue_url"
-            ]
+            AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL = sqs_credentials["secondary_queue_url"]
     else:
         AWS_ACCESS_KEY_ID = AWS_SQS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-        AWS_SECRET_ACCESS_KEY = AWS_SQS_SECRET_ACCESS_KEY = os.environ.get(
-            "AWS_SECRET_ACCESS_KEY"
-        )
+        AWS_SECRET_ACCESS_KEY = AWS_SQS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
         AWS_BUCKET_NAME = os.environ.get("AWS_BUCKET_NAME")
         AWS_REGION = AWS_SQS_REGION = os.environ.get("AWS_REGION")
-        AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = os.environ.get(
-            "AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL"
-        )
-        AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL = os.environ.get(
-            "AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL"
-        )
+        AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = os.environ.get("AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL")
+        AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL = os.environ.get("AWS_SQS_IMPORT_APP_SECONDARY_QUEUE_URL")
 
     # Account Store Endpoints
     ACCOUNTS_ENDPOINT = "/accounts"
@@ -93,9 +81,7 @@ class DefaultConfig:
     FUND_ROUND_APPLICATION_SECTIONS_ENDPOINT = (
         "/funds/{fund_id}/rounds/{round_id}/sections/application?language={language}"
     )
-    FUND_ROUND_APPLICATION_REMINDER_STATUS = (
-        "/funds/{round_id}/application_reminder_status?status=true"
-    )
+    FUND_ROUND_APPLICATION_REMINDER_STATUS = "/funds/{round_id}/application_reminder_status?status=true"
 
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False

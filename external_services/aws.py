@@ -7,10 +7,7 @@ from fsd_utils.services.aws import SQSClient
 
 _KEY_PARTS = ("application_id", "form", "path", "component_id", "filename")
 
-if (
-    getenv("PRIMARY_QUEUE_URL", "Primary Queue URL Not Set")
-    == "Primary Queue URL Not Set"
-):
+if getenv("PRIMARY_QUEUE_URL", "Primary Queue URL Not Set") == "Primary Queue URL Not Set":
     _S3_CLIENT = boto3.client(
         "s3",
         aws_access_key_id=Config.AWS_ACCESS_KEY_ID,

@@ -42,14 +42,10 @@ class Applications(BaseModel):
     feedbacks = relationship("Feedback")
     end_of_application_survey = relationship("EndOfApplicationSurveyFeedback")
 
-    __table_args__ = (
-        db.UniqueConstraint("fund_id", "round_id", "key", name="_reference"),
-    )
+    __table_args__ = (db.UniqueConstraint("fund_id", "round_id", "key", name="_reference"),)
 
     def as_dict(self):
-        date_submitted = (
-            self.date_submitted.isoformat() if self.date_submitted else "null"
-        )
+        date_submitted = self.date_submitted.isoformat() if self.date_submitted else "null"
         return {
             "id": str(self.id),
             "account_id": self.account_id,

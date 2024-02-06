@@ -74,9 +74,7 @@ FUND_CONFIG = {
     help="Target status for seeded applications",
     prompt=True,
 )
-@click.option(
-    "--count", default=1, help="Number of applications to create", prompt=True
-)
+@click.option("--count", default=1, help="Number of applications to create", prompt=True)
 def seed_applications(fund_short_code, round_short_code, account_id, status, count):
     language = "en"
 

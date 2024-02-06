@@ -24,8 +24,4 @@ def get_forms_by_app_id(application_id, as_json=True):
 
 
 def get_form(application_id, form_name) -> Forms:
-    return (
-        db.session.query(Forms)
-        .filter(Forms.application_id == application_id, Forms.name == form_name)
-        .one()
-    )
+    return db.session.query(Forms).filter(Forms.application_id == application_id, Forms.name == form_name).one()

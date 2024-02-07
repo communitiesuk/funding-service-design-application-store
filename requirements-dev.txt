@@ -471,7 +471,7 @@ sqlalchemy-utils==0.41.1
     #   funding-service-design-utils
 stevedore==4.1.1
     # via bandit
-swagger-ui-bundle==0.0.9
+swagger-ui-bundle==1.1.0
     # via -r requirements.txt
 thrift==0.16.0
     # via

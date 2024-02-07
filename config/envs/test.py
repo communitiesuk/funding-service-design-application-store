@@ -9,6 +9,4 @@ from fsd_utils import configclass
 class TestConfig(DefaultConfig):
     # Add any test specific config here
 
-    SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL").replace(
-        "postgres://", "postgresql://"
-    )
+    SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL").replace("postgres://", "postgresql://")

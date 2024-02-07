@@ -29,9 +29,7 @@ from external_services.models.fund import Fund
         ("cy", False, "en"),
     ],
 )
-def test_create_application_language_choice(
-    mocker, fund_supports_welsh, requested_language, exp_language
-):
+def test_create_application_language_choice(mocker, fund_supports_welsh, requested_language, exp_language):
     mock_fund = Fund(
         "Generated test fund no welsh",
         str(uuid4()),
@@ -46,9 +44,7 @@ def test_create_application_language_choice(
         return_value="new application",
     )
 
-    create_application(
-        account_id="test", fund_id="", round_id="", language=requested_language
-    )
+    create_application(account_id="test", fund_id="", round_id="", language=requested_language)
     mock_create_app_try.assert_called_once_with(
         account_id="test",
         fund_id=ANY,
@@ -64,33 +60,9 @@ def test_create_application_language_choice(
     "application, all_application_files, expected",
     [
         pytest.param(
-            Applications(
-                forms=[
-                    Forms(
-                        json=[
-                            {
-                                "fields": [
-                                    {"key": "not_a_file_component", "answer": None}
-                                ]
-                            }
-                        ]
-                    )
-                ]
-            ),
+            Applications(forms=[Forms(json=[{"fields": [{"key": "not_a_file_component", "answer": None}]}])]),
             [FileData("app1", "form1", "path1", "component1", "file1.docx")],
-            Applications(
-                forms=[
-                    Forms(
-                        json=[
-                            {
-                                "fields": [
-                                    {"key": "not_a_file_component", "answer": None}
-                                ]
-                            }
-                        ]
-                    )
-                ]
-            ),
+            Applications(forms=[Forms(json=[{"fields": [{"key": "not_a_file_component", "answer": None}]}])]),
             id="Irrelevant components are ignored",
         ),
         pytest.param(
@@ -106,44 +78,20 @@ def test_create_application_language_choice(
             ],
             Applications(
                 forms=[
-                    Forms(
-                        json=[
-                            {"fields": [{"key": "component1", "answer": "file1.docx"}]}
-                        ]
-                    ),
-                    Forms(
-                        json=[
-                            {"fields": [{"key": "component2", "answer": "file2.docx"}]}
-                        ]
-                    ),
+                    Forms(json=[{"fields": [{"key": "component1", "answer": "file1.docx"}]}]),
+                    Forms(json=[{"fields": [{"key": "component2", "answer": "file2.docx"}]}]),
                 ]
             ),
             id="Multiple forms all work as expected",
         ),
         pytest.param(
-            Applications(
-                forms=[
-                    Forms(json=[{"fields": [{"key": "component1", "answer": None}]}])
-                ]
-            ),
+            Applications(forms=[Forms(json=[{"fields": [{"key": "component1", "answer": None}]}])]),
             [FileData("app1", "form1", "path1", "component1", "file1.docx")],
-            Applications(
-                forms=[
-                    Forms(
-                        json=[
-                            {"fields": [{"key": "component1", "answer": "file1.docx"}]}
-                        ]
-                    )
-                ]
-            ),
+            Applications(forms=[Forms(json=[{"fields": [{"key": "component1", "answer": "file1.docx"}]}])]),
             id="Single file available for a component",
         ),
         pytest.param(
-            Applications(
-                forms=[
-                    Forms(json=[{"fields": [{"key": "component1", "answer": None}]}])
-                ]
-            ),
+            Applications(forms=[Forms(json=[{"fields": [{"key": "component1", "answer": None}]}])]),
             [
                 FileData("app1", "form1", "path1", "component1", "file1.docx"),
                 FileData("app1", "form1", "path2", "component1", "file2.pdf"),
@@ -317,10 +265,7 @@ def test_application_status_csv(data, lines_exp):
     result = export_application_statuses_to_csv(data)
     assert result
     lines = result.readlines()
-    assert (
-        lines[0].decode().strip()
-        == "fund_id,round_id,NOT_STARTED,IN_PROGRESS,COMPLETED,SUBMITTED"
-    )
+    assert lines[0].decode().strip() == "fund_id,round_id,NOT_STARTED,IN_PROGRESS,COMPLETED,SUBMITTED"
     idx = 1
     for line in lines_exp:
         assert lines[idx].decode().strip() == line
@@ -511,10 +456,6 @@ def test_extract_postcode(input_str, expected_output):
         ),
     ],
 )
-def test_map_application_key_fields(
-    key_report_mapping: KeyReportMapping, application, expected_output
-):
-    result = map_application_key_fields(
-        application, key_report_mapping.mapping, key_report_mapping.round_id
-    )
+def test_map_application_key_fields(key_report_mapping: KeyReportMapping, application, expected_output):
+    result = map_application_key_fields(application, key_report_mapping.mapping, key_report_mapping.round_id)
     assert result == expected_output

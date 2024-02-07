@@ -90,6 +90,12 @@ clickclick==20.10.2
     # via
     #   -r requirements.txt
     #   connexion
+colorama==0.4.6
+    # via
+    #   bandit
+    #   build
+    #   click
+    #   pytest
 colored==1.4.4
     # via -r requirements.txt
 commonmark==0.9.1
@@ -118,6 +124,10 @@ et-xmlfile==1.1.0
     #   openpyxl
 filelock==3.8.0
     # via virtualenv
+flake8==7.0.0
+    # via flake8-pyproject
+flake8-pyproject==1.2.3
+    # via -r requirements-dev.in
 flask==2.2.5
     # via
     #   -r requirements.txt
@@ -243,6 +253,8 @@ marshmallow==3.19.0
     #   marshmallow-sqlalchemy
 marshmallow-sqlalchemy==0.29.0
     # via -r requirements.txt
+mccabe==0.7.0
+    # via flake8
 mypy-extensions==1.0.0
     # via black
 nodeenv==1.7.0
@@ -303,6 +315,8 @@ pre-commit==2.20.0
     # via -r requirements-dev.in
 psycopg2-binary==2.9.6
     # via -r requirements.txt
+pycodestyle==2.11.1
+    # via flake8
 pycparser==2.21
     # via
     #   -r requirements.txt
@@ -311,6 +325,8 @@ pyee==6.0.0
     # via
     #   -r requirements.txt
     #   flipper-client
+pyflakes==3.2.0
+    # via flake8
 pygments==2.15.0
     # via
     #   -r requirements.txt
@@ -319,6 +335,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   pyjwt
 pyparsing==3.0.9
     # via
     #   -r requirements.txt
@@ -419,6 +436,7 @@ sentry-sdk[flask]==1.32.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   sentry-sdk
 six==1.16.0
     # via
     #   -r requirements.txt
@@ -470,6 +488,7 @@ tzdata==2023.3
     # via
     #   -r requirements.txt
     #   pandas
+    #   tzlocal
 tzlocal==5.2
     # via
     #   -r requirements.txt

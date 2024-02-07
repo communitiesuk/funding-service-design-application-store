@@ -45,9 +45,7 @@ def upgrade():
             name=op.f("fk_feedback_application_id_applications"),
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_feedback")),
-        sa.UniqueConstraint(
-            "application_id", "section_id", name=op.f("uq_feedback_application_id")
-        ),
+        sa.UniqueConstraint("application_id", "section_id", name=op.f("uq_feedback_application_id")),
     )
     # ### end Alembic commands ###
 

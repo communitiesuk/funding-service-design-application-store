@@ -10,22 +10,16 @@ from external_services.data import get_application_sections
 from external_services.models.round import FeedbackSurveyConfig
 
 
-def _is_all_sections_feedback_complete(
-    application_id, fund_id, round_id, language: str
-):
+def _is_all_sections_feedback_complete(application_id, fund_id, round_id, language: str):
     sections = get_application_sections(fund_id, round_id, language)
     all_feedback_completed = all(
-        get_feedback(application_id, str(s["id"]))
-        for s in sections
-        if s.get("requires_feedback")
+        get_feedback(application_id, str(s["id"])) for s in sections if s.get("requires_feedback")
     )
     return all_feedback_completed
 
 
 def _is_feedback_survey_complete(application_id):
-    is_survey_completed = all(
-        retrieve_end_of_application_survey_data(application_id, pn) for pn in "1234"
-    )
+    is_survey_completed = all(retrieve_end_of_application_survey_data(application_id, pn) for pn in "1234")
     return is_survey_completed
 
 
@@ -65,9 +59,7 @@ def update_application_status(
     form_statuses = [form.status.name for form in application_with_forms.forms]
     if "IN_PROGRESS" in form_statuses:
         status = "IN_PROGRESS"
-    elif "COMPLETED" in form_statuses and (
-        "NOT_STARTED" in form_statuses or not all_feedback_and_survey_completed
-    ):
+    elif "COMPLETED" in form_statuses and ("NOT_STARTED" in form_statuses or not all_feedback_and_survey_completed):
         status = "IN_PROGRESS"
     elif "COMPLETED" in form_statuses and all_feedback_and_survey_completed:
         status = "COMPLETED"
@@ -95,18 +87,10 @@ def update_form_status(
 
     if round_mark_as_complete_enabled:
         mark_as_complete_question = next(
-            (
-                question_page
-                for question_page in form_to_update.json
-                if question_page["question"] == "MarkAsComplete"
-            ),
+            (question_page for question_page in form_to_update.json if question_page["question"] == "MarkAsComplete"),
             None,
         )
-        is_marked_as_complete = (
-            mark_as_complete_question["fields"][0]["answer"]
-            if mark_as_complete_question
-            else False
-        )
+        is_marked_as_complete = mark_as_complete_question["fields"][0]["answer"] if mark_as_complete_question else False
     else:
         is_marked_as_complete = False
 
@@ -218,14 +202,10 @@ def update_question_page_statuses(stored_form_json: dict):
         question_page["status"] = question_page.get("status", "NOT_STARTED")
 
         answer_found_list = _determine_answer_status_for_fields(question_page["fields"])
-        question_page["status"] = _determine_question_page_status_from_answers(
-            answer_found_list
-        )
+        question_page["status"] = _determine_question_page_status_from_answers(answer_found_list)
 
 
-def update_statuses(
-    application_id: str, form_name: str, is_summary_page_submitted: bool = False
-):
+def update_statuses(application_id: str, form_name: str, is_summary_page_submitted: bool = False):
     """
     Updates the status of questions, forms, and the application, based on the state of the supplied form. If no form
     supplied, just updates the status of the application (based on feedback and form status)
@@ -240,9 +220,7 @@ def update_statuses(
     if form_name:
         form_to_update = get_form(application_id=application_id, form_name=form_name)
         update_question_page_statuses(stored_form_json=form_to_update.json)
-        update_form_status(
-            form_to_update, round.mark_as_complete_enabled, is_summary_page_submitted
-        )
+        update_form_status(form_to_update, round.mark_as_complete_enabled, is_summary_page_submitted)
         db.session.commit()
 
     update_application_status(application, round.feedback_survey_config)

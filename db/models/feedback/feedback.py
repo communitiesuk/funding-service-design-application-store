@@ -20,9 +20,7 @@ class Feedback(BaseModel):
         primary_key=True,
         nullable=False,
     )
-    application_id = db.Column(
-        "application_id", db.ForeignKey(Applications.id), nullable=False
-    )
+    application_id = db.Column("application_id", db.ForeignKey(Applications.id), nullable=False)
     fund_id = db.Column("fund_id", db.String(), nullable=False)
     round_id = db.Column("round_id", db.String(), nullable=False)
     section_id = db.Column("section_id", db.String(), nullable=False)
@@ -33,9 +31,7 @@ class Feedback(BaseModel):
     __table_args__ = (db.UniqueConstraint("application_id", "section_id"),)
 
     def as_dict(self):
-        date_submitted = (
-            self.date_submitted.isoformat() if self.date_submitted else "null"
-        )
+        date_submitted = self.date_submitted.isoformat() if self.date_submitted else "null"
         return {
             "id": str(self.id),
             "application_id": self.application_id,

@@ -14,18 +14,9 @@ def test_get_application_statuses_csv(client, seed_application_records, _db):
 
     lines = response.data.decode("utf-8").split("\r\n")
     assert lines[0] == "fund_id,round_id,NOT_STARTED,IN_PROGRESS,COMPLETED,SUBMITTED"
-    assert (
-        f"{test_application_data[0]['fund_id']},{test_application_data[0]['round_id']},1,0,0,0"
-        in lines
-    )
-    assert (
-        f"{test_application_data[1]['fund_id']},{test_application_data[1]['round_id']},1,0,0,0"
-        in lines
-    )
-    assert (
-        f"{test_application_data[2]['fund_id']},{test_application_data[2]['round_id']},1,0,0,0"
-        in lines
-    )
+    assert f"{test_application_data[0]['fund_id']},{test_application_data[0]['round_id']},1,0,0,0" in lines
+    assert f"{test_application_data[1]['fund_id']},{test_application_data[1]['round_id']},1,0,0,0" in lines
+    assert f"{test_application_data[2]['fund_id']},{test_application_data[2]['round_id']},1,0,0,0" in lines
 
     app = get_row_by_pk(Applications, seed_application_records[0].id)
     app.status = "IN_PROGRESS"
@@ -39,18 +30,9 @@ def test_get_application_statuses_csv(client, seed_application_records, _db):
 
     lines = response.data.decode("utf-8").split("\r\n")
     assert lines[0] == "fund_id,round_id,NOT_STARTED,IN_PROGRESS,COMPLETED,SUBMITTED"
-    assert (
-        f"{test_application_data[0]['fund_id']},{test_application_data[0]['round_id']},0,1,0,0"
-        in lines
-    )
-    assert (
-        f"{test_application_data[1]['fund_id']},{test_application_data[1]['round_id']},1,0,0,0"
-        in lines
-    )
-    assert (
-        f"{test_application_data[2]['fund_id']},{test_application_data[2]['round_id']},1,0,0,0"
-        in lines
-    )
+    assert f"{test_application_data[0]['fund_id']},{test_application_data[0]['round_id']},0,1,0,0" in lines
+    assert f"{test_application_data[1]['fund_id']},{test_application_data[1]['round_id']},1,0,0,0" in lines
+    assert f"{test_application_data[2]['fund_id']},{test_application_data[2]['round_id']},1,0,0,0" in lines
 
 
 user_lang = {
@@ -98,8 +80,7 @@ user_lang_cy = {
     }
 )
 @pytest.mark.parametrize(
-    "fund_idx, round_idx, exp_not_started, exp_in_progress, exp_submitted,"
-    " exp_completed",
+    "fund_idx, round_idx, exp_not_started, exp_in_progress, exp_submitted, exp_completed",
     [
         ([0, 1], [], 0, 5, 0, 1),
         ([0], [], 0, 3, 0, 1),
@@ -139,26 +120,16 @@ def test_get_application_statuses_json_multi_fund(
     assert result
     funds = result["metrics"]
     for fund_id in fund_ids:
-        assert (
-            len([fund["fund_id"] for fund in funds if fund["fund_id"] == fund_id]) == 1
-        )
+        assert len([fund["fund_id"] for fund in funds if fund["fund_id"] == fund_id]) == 1
         total_ip = 0
         total_ns = 0
         total_c = 0
         total_s = 0
         for f in funds:
-            total_ns += sum(
-                [r["application_statuses"]["NOT_STARTED"] for r in f["rounds"]]
-            )
-            total_ip += sum(
-                [r["application_statuses"]["IN_PROGRESS"] for r in f["rounds"]]
-            )
-            total_c += sum(
-                [r["application_statuses"]["COMPLETED"] for r in f["rounds"]]
-            )
-            total_s += sum(
-                [r["application_statuses"]["SUBMITTED"] for r in f["rounds"]]
-            )
+            total_ns += sum([r["application_statuses"]["NOT_STARTED"] for r in f["rounds"]])
+            total_ip += sum([r["application_statuses"]["IN_PROGRESS"] for r in f["rounds"]])
+            total_c += sum([r["application_statuses"]["COMPLETED"] for r in f["rounds"]])
+            total_s += sum([r["application_statuses"]["SUBMITTED"] for r in f["rounds"]])
         assert total_ns == exp_not_started
         assert total_ip == exp_in_progress
         assert total_c == exp_completed
@@ -232,9 +203,7 @@ def test_get_applications_report(
         ]
     }
 )
-def test_get_applications_report_query_param(
-    client, seed_data_multiple_funds_rounds, mock_get_round
-):
+def test_get_applications_report_query_param(client, seed_data_multiple_funds_rounds, mock_get_round):
     response = client.get(
         "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
         + f"fund_id={seed_data_multiple_funds_rounds[0].fund_id}&round_id="

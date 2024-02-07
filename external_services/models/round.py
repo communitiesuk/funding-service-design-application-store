@@ -14,11 +14,7 @@ class FeedbackSurveyConfig:
     def from_json(d: dict):
         # Filter unknown fields from JSON dictionary
         return FeedbackSurveyConfig(
-            **{
-                k: v
-                for k, v in d.items()
-                if k in inspect.signature(FeedbackSurveyConfig).parameters
-            }
+            **{k: v for k, v in d.items() if k in inspect.signature(FeedbackSurveyConfig).parameters}
         )
 
 
@@ -38,9 +34,7 @@ class Round:
 
     def __post_init__(self):
         if isinstance(self.feedback_survey_config, dict):
-            self.feedback_survey_config = FeedbackSurveyConfig.from_json(
-                self.feedback_survey_config
-            )
+            self.feedback_survey_config = FeedbackSurveyConfig.from_json(self.feedback_survey_config)
         elif self.feedback_survey_config is None:
             self.feedback_survey_config = FeedbackSurveyConfig()
 
@@ -56,7 +50,6 @@ class Round:
             assessment_deadline=data["assessment_deadline"],
             project_name_field_id=data.get("project_name_field_id", None),
             contact_email=data.get("contact_email", None),
-            feedback_survey_config=data.get("feedback_survey_config")
-            or FeedbackSurveyConfig(),
+            feedback_survey_config=data.get("feedback_survey_config") or FeedbackSurveyConfig(),
             mark_as_complete_enabled=data.get("mark_as_complete_enabled") or False,
         )

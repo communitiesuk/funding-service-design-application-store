@@ -23,15 +23,11 @@ class Eligibility(BaseModel):
     form_id = Column("form_id", db.String(), nullable=False)
     answers = Column("answers", NestedMutableJson)
     eligible = Column("eligible", db.Boolean(), nullable=True)
-    application_id = db.Column(
-        "application_id", db.ForeignKey(Applications.id), nullable=False
-    )
+    application_id = db.Column("application_id", db.ForeignKey(Applications.id), nullable=False)
     date_submitted = db.Column("date_submitted", DateTime())
 
     def as_dict(self):
-        date_submitted = (
-            self.date_submitted.isoformat() if self.date_submitted else "null"
-        )
+        date_submitted = self.date_submitted.isoformat() if self.date_submitted else "null"
 
         return {
             "id": str(self.id),

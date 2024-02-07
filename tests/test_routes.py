@@ -20,9 +20,7 @@ from tests.helpers import test_question_data
 
 
 @pytest.mark.unique_fund_round(True)
-def test_create_application_is_successful(
-    client, unique_fund_round, mock_get_application_display_config
-):
+def test_create_application_is_successful(client, unique_fund_round, mock_get_application_display_config):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -58,9 +56,7 @@ def test_create_application_is_successful(
         ("cy", False, "en"),
     ],
 )
-def test_create_application_language_choice(
-    mocker, client, fund_supports_welsh, requested_language, exp_language
-):
+def test_create_application_language_choice(mocker, client, fund_supports_welsh, requested_language, exp_language):
     mock_fund = Fund(
         "Generated test fund no welsh",
         str(uuid4()),
@@ -104,9 +100,7 @@ def test_create_application_language_choice(
     )
 
 
-def test_create_application_creates_formatted_reference(
-    client, clear_test_data, mock_get_application_display_config
-):
+def test_create_application_creates_formatted_reference(client, clear_test_data, mock_get_application_display_config):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -163,9 +157,7 @@ def test_create_application_creates_unique_reference(
             content_type="application/json",
             follow_redirects=True,
         )
-    assert str(ex_info.value).startswith(
-        "Max (10) tries exceeded for create application with application key ABCDEF"
-    )
+    assert str(ex_info.value).startswith("Max (10) tries exceeded for create application with application key ABCDEF")
 
 
 @pytest.mark.apps_to_insert(test_application_data)
@@ -181,17 +173,13 @@ def test_get_all_applications(client):
         client,
         "/applications",
         expected_data,
-        exclude_regex_paths=key_list_to_regex(
-            ["round_name", "date_submitted", "last_edited"]
-        ),
+        exclude_regex_paths=key_list_to_regex(["round_name", "date_submitted", "last_edited"]),
     )
 
 
 @pytest.mark.apps_to_insert([{"account_id": "unique_user", "language": "en"}])
 @pytest.mark.unique_fund_round(True)
-def test_get_applications_of_account_id(
-    client, seed_application_records, unique_fund_round
-):
+def test_get_applications_of_account_id(client, seed_application_records, unique_fund_round):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications of account_id
@@ -235,19 +223,14 @@ def test_update_section_of_application(client, seed_application_records):
         follow_redirects=True,
     )
     assert 201 == response.status_code
-    answer_found_list = [
-        field["answer"] not in [None, ""]
-        for field in response.json["questions"][0]["fields"]
-    ]
+    answer_found_list = [field["answer"] not in [None, ""] for field in response.json["questions"][0]["fields"]]
     section_status = response.json["status"]
     assert all(answer_found_list)
     assert section_status == "IN_PROGRESS"
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_section_of_application_with_optional_field(
-    client, seed_application_records
-):
+def test_update_section_of_application_with_optional_field(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -290,9 +273,7 @@ def test_update_section_of_application_with_optional_field(
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_section_of_application_with_incomplete_answers(
-    client, seed_application_records
-):
+def test_update_section_of_application_with_incomplete_answers(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -338,9 +319,7 @@ def test_get_application_by_application_id(client, seed_application_records):
         client,
         f"/applications/{id}",
         expected_data,
-        exclude_regex_paths=key_list_to_regex(
-            ["reference", "started_at", "project_name", "forms"]
-        ),
+        exclude_regex_paths=key_list_to_regex(["reference", "started_at", "project_name", "forms"]),
         # Lists are annoying to deal with in deepdiff
         # especially when they contain dicts...so in this
         # instance we ignore them rather then write some
@@ -353,9 +332,7 @@ def test_get_application_by_application_id(client, seed_application_records):
     # element 1 has no lang set
     [test_application_data[1]]
 )
-def test_get_application_by_application_id_when_db_record_has_no_language_set(
-    client, seed_application_records
-):
+def test_get_application_by_application_id_when_db_record_has_no_language_set(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN a GET /applications/<application_id> request is sent for an
@@ -383,9 +360,7 @@ def testHealthcheckRoute(client):
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_section_of_application_changes_last_edited_field(
-    client, seed_application_records
-):
+def test_update_section_of_application_changes_last_edited_field(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -443,9 +418,7 @@ def test_update_section_of_application_changes_last_edited_field(
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_section_of_application_does_not_change_last_edited_field(
-    client, seed_application_records
-):
+def test_update_section_of_application_does_not_change_last_edited_field(client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -504,9 +477,7 @@ def test_update_project_name_of_application(client, seed_application_records):
         json=section_put,
         follow_redirects=True,
     )
-    updated_project_name = get_row_by_pk(
-        Applications, seed_application_records[0].id
-    ).project_name
+    updated_project_name = get_row_by_pk(Applications, seed_application_records[0].id).project_name
     assert updated_project_name == new_project_name
     assert updated_project_name != old_project_name
 
@@ -537,9 +508,7 @@ def test_complete_form(client, seed_application_records):
 
 
 @pytest.mark.apps_to_insert([test_application_data[2]])
-def test_put_returns_400_on_submitted_application(
-    client, _db, seed_application_records
-):
+def test_put_returns_400_on_submitted_application(client, _db, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A there is an application with a status of SUBMITTED
@@ -567,9 +536,7 @@ def test_put_returns_400_on_submitted_application(
     assert b"Not allowed to edit a submitted application." in response.data
 
 
-@pytest.mark.function_calls_to_mock(
-    ["api.routes.application.routes._SQS_CLIENT.submit_single_message"]
-)
+@pytest.mark.function_calls_to_mock(["api.routes.application.routes._SQS_CLIENT.submit_single_message"])
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_successful_submitted_application(
     client,
@@ -586,9 +553,7 @@ def test_successful_submitted_application(
     WHEN an application is submitted
     THEN a 201 response is received in the correct format
     """
-    mocker.patch(
-        "db.queries.application.queries.list_files_by_prefix", new=lambda _: []
-    )
+    mocker.patch("db.queries.application.queries.list_files_by_prefix", new=lambda _: [])
     seed_application_records[0].status = "SUBMITTED"
 
     _db.session.add(seed_application_records[0])
@@ -619,9 +584,7 @@ def test_stage_unsubmitted_application_to_queue_fails(
     WHEN an application is unsubmitted
     THEN a 400 response is received in the correct format
     """
-    mocker.patch(
-        "db.queries.application.queries.list_files_by_prefix", new=lambda _: []
-    )
+    mocker.patch("db.queries.application.queries.list_files_by_prefix", new=lambda _: [])
     seed_application_records[0].status = "COMPLETED"
 
     _db.session.add(seed_application_records[0])
@@ -637,9 +600,7 @@ def test_stage_unsubmitted_application_to_queue_fails(
     assert "Application must be submitted before it can be assessed" in response.text
 
 
-@pytest.mark.function_calls_to_mock(
-    ["api.routes.queues.routes._SQS_CLIENT.submit_single_message"]
-)
+@pytest.mark.function_calls_to_mock(["api.routes.queues.routes._SQS_CLIENT.submit_single_message"])
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_stage_submitted_application_to_queue_fails(
     client,
@@ -655,9 +616,7 @@ def test_stage_submitted_application_to_queue_fails(
     WHEN an application is submitted
     THEN a 201 response is received in the correct format
     """
-    mocker.patch(
-        "db.queries.application.queries.list_files_by_prefix", new=lambda _: []
-    )
+    mocker.patch("db.queries.application.queries.list_files_by_prefix", new=lambda _: [])
     seed_application_records[0].status = "SUBMITTED"
 
     _db.session.add(seed_application_records[0])

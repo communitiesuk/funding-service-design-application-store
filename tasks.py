@@ -32,10 +32,9 @@ def virtualenv(c):
         # we want to be sure that we are going to use python/pip from the venv
         which_python = Path(c.run("which python", hide=True).stdout.strip())
         expected_python = c.virtual_env / "bin" / "python"
-        assert which_python.samefile(expected_python), (
-            f"expected `which python` to return {expected_python}, instead got"
-            f" {which_python}\nPATH={os.environ['PATH']}"
-        )
+        assert which_python.samefile(
+            expected_python
+        ), f"expected `which python` to return {expected_python}, instead got {which_python}\nPATH={os.environ['PATH']}"
 
 
 @task

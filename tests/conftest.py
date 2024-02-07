@@ -41,9 +41,7 @@ def unique_fund_round(mock_get_fund, mock_get_round):
 
 
 def get_args(seed_application_records, unique_fund_round, single_app):
-    application_ids = [
-        str(application).split()[-1][:-1] for application in seed_application_records
-    ]
+    application_ids = [str(application).split()[-1][:-1] for application in seed_application_records]
     args = {
         "fund_id": unique_fund_round[0],
         "round_id": unique_fund_round[1],
@@ -64,27 +62,15 @@ def create_app_with_blank_forms(app_to_create: dict) -> Applications:
     """
     app = create_application(**app_to_create)
     add_new_forms(
-        [
-            "datganiadau"
-            if (app.language and app.language.name == "cy")
-            else "declarations"
-        ],
+        ["datganiadau" if (app.language and app.language.name == "cy") else "declarations"],
         app.id,
     )
     add_new_forms(
-        [
-            "gwybodaeth-am-y-prosiect"
-            if (app.language and app.language.name == "cy")
-            else "project-information"
-        ],
+        ["gwybodaeth-am-y-prosiect" if (app.language and app.language.name == "cy") else "project-information"],
         app.id,
     )
     add_new_forms(
-        [
-            "gwybodaeth-am-y-sefydliad"
-            if (app.language and app.language.name == "cy")
-            else "organisation-information"
-        ],
+        ["gwybodaeth-am-y-sefydliad" if (app.language and app.language.name == "cy") else "organisation-information"],
         app.id,
     )
     return app
@@ -170,9 +156,7 @@ def add_org_data_for_reports(application, unique_append, client):
         },
     ]
     # Make the org names unique
-    sections_put[0]["questions"][1]["fields"][0][
-        "answer"
-    ] = f"Test Org Name {unique_append}"
+    sections_put[0]["questions"][1]["fields"][0]["answer"] = f"Test Org Name {unique_append}"
 
     for section in sections_put:
         client.put(
@@ -183,9 +167,7 @@ def add_org_data_for_reports(application, unique_append, client):
 
 
 @pytest.fixture(scope="function")
-def seed_data_multiple_funds_rounds(
-    request, mocker, app, clear_test_data, enable_preserve_test_data, client
-):
+def seed_data_multiple_funds_rounds(request, mocker, app, clear_test_data, enable_preserve_test_data, client):
     """
     Alternative to seed_application_records above that allows you to specify
     a set of funds/rounds and how many applications per round to allow
@@ -270,9 +252,7 @@ def generate_mock_round(fund_id: str, round_id: str) -> Round:
         short_name="TEST",
         opens=datetime.strptime("2023-01-01 12:00:00", "%Y-%m-%d %H:%M:%S"),
         deadline=datetime.strptime("2023-01-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
-        assessment_deadline=datetime.strptime(
-            "2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"
-        ),
+        assessment_deadline=datetime.strptime("2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
         project_name_field_id="TestFieldId",
         contact_email="test@outlook.com",
     )
@@ -362,9 +342,7 @@ def mocked_get_fund(mocker):
 
 @pytest.fixture(autouse=False)
 def mock_submit_message_to_queue(mocker, request):
-    function_calls_to_mock_marker = request.node.get_closest_marker(
-        "function_calls_to_mock"
-    )
+    function_calls_to_mock_marker = request.node.get_closest_marker("function_calls_to_mock")
     function_calls_to_mock = (
         function_calls_to_mock_marker.args[0]
         if function_calls_to_mock_marker

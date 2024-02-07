@@ -1,0 +1,13 @@
+[package]
+name = "funding-service-design-application-store"
+version = "0.1.1"
+description = "The funding service design application store for the DLUHC."
+authors = ["Version One", "HM Government, Department of Levelling Up, Housing and Communities"]
+license = "MIT License"
+
+[tool.black]
+line-length = 120
+
+[tool.flake8]
+max-line-length = 120
+count = true

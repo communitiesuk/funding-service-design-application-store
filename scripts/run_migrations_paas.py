@@ -9,9 +9,7 @@ instance_index = json.loads(environ.get("VCAP_APPLICATION"))["instance_index"]
 if instance_index != 0:
     sys.exit(0)
 
-environ["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL").replace(
-    "postgres://", "postgresql://"
-)
+environ["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL").replace("postgres://", "postgresql://")
 
 result = subprocess.run(["flask", "db", "upgrade"])
 sys.exit(result.returncode)

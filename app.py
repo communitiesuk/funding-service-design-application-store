@@ -15,9 +15,7 @@ def create_app() -> Flask:
     connexion_options = {
         "swagger_url": "/",
     }
-    connexion_app = connexion.FlaskApp(
-        __name__, specification_dir="openapi/", options=connexion_options
-    )
+    connexion_app = connexion.FlaskApp(__name__, specification_dir="openapi/", options=connexion_options)
     connexion_app.add_api(
         get_bundled_specs("/openapi/api.yml"),
         validate_responses=True,

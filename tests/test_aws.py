@@ -5,12 +5,8 @@ from external_services.aws import list_files_by_prefix
 # You can use this for testing the function if doing tdd.
 @pytest.mark.skip()
 def test_list_files_tdd():
-    bucket_name = (  # this is form-uploads-dev
-        "paas-s3-broker-prod-lon-443b9fc2-55ff-4c2f-9ac3-d3ebfb18ef5a"
-    )
-    prefix = (  # this was just a mock application id I used for testing.
-        "my-application-id/"
-    )
+    bucket_name = "paas-s3-broker-prod-lon-443b9fc2-55ff-4c2f-9ac3-d3ebfb18ef5a"  # this is form-uploads-dev
+    prefix = "my-application-id/"  # this was just a mock application id I used for testing.
 
     files = list_files_by_prefix(bucket_name, prefix)
     assert len(files) != 0
@@ -27,9 +23,7 @@ def test_list_files_by_prefix_multiple_files(mocker):
         "Contents": [
             {"Key": f"{prefix}form/path/component_id/filename1"},
             {"Key": f"{prefix}form/path/component_id/filename2"},
-            {
-                "Key": f"{prefix}wrong_path_somehow/filename2"
-            },  # ignored, not enough key parts (this won't happen)
+            {"Key": f"{prefix}wrong_path_somehow/filename2"},  # ignored, not enough key parts (this won't happen)
         ]
     }
     mocker.patch(

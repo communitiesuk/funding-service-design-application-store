@@ -48,9 +48,7 @@ def test_update_question_statuses_with_mocks(mocker):
         "db.queries.statuses.queries._determine_question_page_status_from_answers",
         return_value="NOT_STARTED",
     )
-    mock_answer_status = mocker.patch(
-        "db.queries.statuses.queries._determine_answer_status_for_fields"
-    )
+    mock_answer_status = mocker.patch("db.queries.statuses.queries._determine_answer_status_for_fields")
 
     test_json = [{"fields": [], "status": None}, {"fields": [], "status": None}]
 
@@ -221,9 +219,7 @@ def test_update_form_status(
                 "fields": [{"answer": mark_as_complete}],
             },
         )
-    update_form_status(
-        form_to_update, round_mark_as_complete_enabled, is_summary_submit
-    )
+    update_form_status(form_to_update, round_mark_as_complete_enabled, is_summary_submit)
     assert form_to_update.status == exp_status
     assert form_to_update.has_completed == exp_has_completed
 
@@ -270,9 +266,7 @@ def test_update_form_status(
         ),
     ],
 )
-def test_is_all_sections_feedback_complete(
-    mocker, app_sections, feedback_for_sections, exp_result
-):
+def test_is_all_sections_feedback_complete(mocker, app_sections, feedback_for_sections, exp_result):
     mocker.patch(
         "db.queries.statuses.queries.get_application_sections",
         return_value=app_sections,

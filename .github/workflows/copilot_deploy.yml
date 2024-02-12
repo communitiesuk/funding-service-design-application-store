@@ -103,6 +103,7 @@ jobs:
       run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || false }}
       run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || false }}
       environment: dev
+      app_name: application-store
 
   test_deploy:
     needs: [ dev_deploy, post_dev_deploy_tests, paketo_build, setup ]
@@ -131,6 +132,7 @@ jobs:
       run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || true }}
       run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || true }}
       environment: test
+      app_name: application-store
 
   uat_deploy:
     needs: [ dev_deploy, post_dev_deploy_tests, test_deploy, post_test_deploy_tests, paketo_build, setup ]
@@ -159,6 +161,7 @@ jobs:
       run_e2e_tests_assessment: ${{ inputs.run_e2e_tests_assessment || true }}
       run_e2e_tests_application: ${{ inputs.run_e2e_tests_application || true }}
       environment: uat
+      app_name: application-store
 
   prod_deploy:
     needs: [ dev_deploy, post_dev_deploy_tests, test_deploy, post_test_deploy_tests, uat_deploy, post_uat_deploy_tests, paketo_build, setup ]

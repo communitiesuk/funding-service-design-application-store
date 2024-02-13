@@ -293,7 +293,7 @@ def mock_successful_submit_notification(mocker):
     # mock the function in the file it is invoked (not where it is declared)
     mocker.patch(
         "api.routes.application.routes.Notification.send",
-        lambda template, email, application: Response(200),
+        lambda template, email, full_name, application: Response(200),
     )
 
 

@@ -28,6 +28,7 @@ from db.queries.statuses import update_statuses
 from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
+from external_services import get_round_eoi_schema
 from external_services.aws import _SQS_CLIENT
 from external_services.exceptions import NotificationError
 from external_services.models.notification import Notification
@@ -35,6 +36,8 @@ from flask import current_app
 from flask import request
 from flask import send_file
 from flask.views import MethodView
+from fsd_utils import Eoi_Decision
+from fsd_utils import evaluate_eoi_response
 from fsd_utils.config.notify_constants import NotifyConstants
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -183,19 +186,47 @@ class ApplicationsView(MethodView):
                 message_deduplication_id=str(uuid4()),  # ensures message uniqueness
             )
 
-            if should_send_email:
-                Notification.send(
-                    Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION,
-                    account.email,
-                    {
+            if fund_data.short_name in ("COF-EOI",):
+                eoi_results = self.get_application_eoi_response(application_with_form_json)
+                eoi_decision = eoi_results["decision"]
+                if Eoi_Decision(eoi_decision) == Eoi_Decision.PASS:
+                    notify_template = Config.NOTIFY_TEMPLATE_EOI_PASS
+                    contents = {
                         NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
                         NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
-                    },
+                        "caveats": eoi_results["caveats"],
+                    }
+                elif Eoi_Decision(eoi_decision) == Eoi_Decision.PASS_WITH_CAVEATS:
+                    notify_template = Config.NOTIFY_TEMPLATE_EOI_PASS_W_CAVEATS
+                    contents = {
+                        NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
+                        NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
+                        "caveats": eoi_results["caveats"],
+                    }
+                else:
+                    notify_template = None
+                    contents = None
+                    should_send_email = False
+            else:
+                notify_template = Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION
+                eoi_decision = None
+                contents = {
+                    NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
+                    NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
+                }
+
+            if should_send_email:
+                Notification.send(
+                    notify_template,
+                    account.email,
+                    account.full_name,
+                    contents,
                 )
             return {
                 "id": application_id,
                 "reference": application_with_form_json["reference"],
                 "email": account.email,
+                "eoi_decision": eoi_decision,
             }, 201
         except KeyError as e:
             current_app.logger.exception(
@@ -287,3 +318,8 @@ class ApplicationsView(MethodView):
             )
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}, 404
+
+    def get_application_eoi_response(self, application):
+        eoi_schema = get_round_eoi_schema(application["fund_id"], application["round_id"])
+        result = evaluate_eoi_response(eoi_schema, application["forms"])
+        return result

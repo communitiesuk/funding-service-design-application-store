@@ -566,7 +566,7 @@ def test_successful_submitted_application(
     )
 
     assert response.status_code == 201
-    assert all(k in response.json for k in ("id", "email", "reference"))
+    assert all(k in response.json for k in ("id", "email", "reference", "eoi_decision"))
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])

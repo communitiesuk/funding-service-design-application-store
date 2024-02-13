@@ -9,7 +9,7 @@ class Notification:
     """
 
     @staticmethod
-    def send(template_type: str, to_email: str, content: dict):
+    def send(template_type: str, to_email: str, full_name: str, content: dict):
         """
         Sends a notification using the Gov.UK Notify Service
 
@@ -25,6 +25,7 @@ class Notification:
         json_payload = {
             "type": template_type,
             "to": to_email,
+            "full_name": full_name,
             "content": content,
         }
         current_app.logger.info(

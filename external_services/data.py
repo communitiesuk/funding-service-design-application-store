@@ -156,3 +156,10 @@ def get_round_name(fund_id, round_id):
     )
     if response:
         return response.get("title")
+
+
+def get_round_eoi_schema(fund_id, round_id, language=None):
+    language = {"language": language}
+    round_request_url = Config.FUND_ROUND_EOI_SCHEMA_ENDPOINT.format(fund_id=fund_id, round_id=round_id)
+    round_response = get_data(round_request_url, language)
+    return round_response

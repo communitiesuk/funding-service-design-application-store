@@ -194,14 +194,14 @@ class ApplicationsView(MethodView):
                     contents = {
                         NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
                         NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
-                        "caveats": eoi_results["caveats"],
+                        NotifyConstants.APPLICATION_CAVEATS: eoi_results["caveats"],
                     }
                 elif Eoi_Decision(eoi_decision) == Eoi_Decision.PASS_WITH_CAVEATS:
                     notify_template = Config.NOTIFY_TEMPLATE_EOI_PASS_W_CAVEATS
                     contents = {
                         NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
                         NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
-                        "caveats": eoi_results["caveats"],
+                        NotifyConstants.APPLICATION_CAVEATS: eoi_results["caveats"],
                     }
                 else:
                     notify_template = None

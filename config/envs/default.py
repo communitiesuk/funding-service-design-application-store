@@ -40,6 +40,8 @@ class DefaultConfig:
         "NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER",
         NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,
     )
+    NOTIFY_TEMPLATE_EOI_PASS = "Full pass"
+    NOTIFY_TEMPLATE_EOI_PASS_W_CAVEATS = "Pass with caveats"
 
     if "PRIMARY_QUEUE_URL" in os.environ:
         AWS_REGION = AWS_SQS_REGION = os.environ.get("AWS_REGION")
@@ -82,6 +84,7 @@ class DefaultConfig:
         "/funds/{fund_id}/rounds/{round_id}/sections/application?language={language}"
     )
     FUND_ROUND_APPLICATION_REMINDER_STATUS = "/funds/{round_id}/application_reminder_status?status=true"
+    FUND_ROUND_EOI_SCHEMA_ENDPOINT = FUND_STORE_API_HOST + "/funds/{fund_id}/rounds/{round_id}/eoi_decision_schema"
 
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False

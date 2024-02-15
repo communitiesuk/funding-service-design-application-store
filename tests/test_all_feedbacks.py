@@ -76,7 +76,7 @@ applications = [
 @pytest.mark.parametrize(
     "app_sections,applications,report_mapping",
     [
-        ([app_sections, applications, COF_R3W2_KEY_REPORT_MAPPING]),
+        ([app_sections, applications, COF_R3W2_KEY_REPORT_MAPPING.mapping]),
     ],
 )
 def test_retrieve_all_feedbacks_and_surveys(mocker, app_sections, applications, report_mapping):

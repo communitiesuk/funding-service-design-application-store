@@ -186,26 +186,21 @@ class ApplicationsView(MethodView):
                 message_deduplication_id=str(uuid4()),  # ensures message uniqueness
             )
 
-            if fund_data.short_name in ("COF-EOI",):
+            if fund_data.short_name in ("COF-EOI",):  # check if it's an EOI fund
                 eoi_results = self.get_application_eoi_response(application_with_form_json)
                 eoi_decision = eoi_results["decision"]
-                if Eoi_Decision(eoi_decision) == Eoi_Decision.PASS:
+                contents = {
+                    NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
+                    NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
+                    NotifyConstants.APPLICATION_CAVEATS: eoi_results["caveats"],
+                }
+                if Eoi_Decision(eoi_decision) == Eoi_Decision.PASS:  # EOI Full pass
                     notify_template = Config.NOTIFY_TEMPLATE_EOI_PASS
-                    contents = {
-                        NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
-                        NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
-                        NotifyConstants.APPLICATION_CAVEATS: eoi_results["caveats"],
-                    }
-                elif Eoi_Decision(eoi_decision) == Eoi_Decision.PASS_WITH_CAVEATS:
+
+                elif Eoi_Decision(eoi_decision) == Eoi_Decision.PASS_WITH_CAVEATS:  # EOI Pass with caveats
                     notify_template = Config.NOTIFY_TEMPLATE_EOI_PASS_W_CAVEATS
-                    contents = {
-                        NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
-                        NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
-                        NotifyConstants.APPLICATION_CAVEATS: eoi_results["caveats"],
-                    }
                 else:
                     notify_template = None
-                    contents = None
                     should_send_email = False
             else:
                 notify_template = Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION

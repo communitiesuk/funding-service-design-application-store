@@ -119,8 +119,8 @@ def retrieve_all_feedbacks_and_surveys(fund_id, round_id, status):
         try:
             result = map_application_key_fields(
                 applicant_serialiser.dump(application),
-                mapping_report.mapping,
-                mapping_report.round_id,
+                mapping_report,
+                round_id,
             )
             applicant_email = result["applicant_email"]
             applicant_organisation = result["organisation_name"]

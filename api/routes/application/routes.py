@@ -5,6 +5,7 @@ from uuid import uuid4
 from _helpers import get_blank_forms
 from _helpers import order_applications
 from config import Config
+from config.key_report_mappings.mappings import ROUND_ID_TO_KEY_REPORT_MAPPING
 from db.models.application.enums import Status
 from db.queries import add_new_forms
 from db.queries import create_application
@@ -24,6 +25,7 @@ from db.queries.feedback import retrieve_all_feedbacks_and_surveys
 from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.feedback import upsert_end_of_application_survey_data
 from db.queries.reporting.queries import export_application_statuses_to_csv
+from db.queries.reporting.queries import map_application_key_fields
 from db.queries.statuses import update_statuses
 from external_services import get_account
 from external_services import get_fund
@@ -187,6 +189,15 @@ class ApplicationsView(MethodView):
             )
 
             if fund_data.short_name in ("COF-EOI",):  # check if it's an EOI fund
+                full_name = (
+                    account.full_name
+                    if account.full_name
+                    else map_application_key_fields(
+                        application_with_form_json,
+                        ROUND_ID_TO_KEY_REPORT_MAPPING[application.round_id],
+                        application.round_id,
+                    ).get("lead_contact_name", "")
+                )
                 eoi_results = self.get_application_eoi_response(application_with_form_json)
                 eoi_decision = eoi_results["decision"]
                 contents = {
@@ -205,6 +216,7 @@ class ApplicationsView(MethodView):
             else:
                 notify_template = Config.NOTIFY_TEMPLATE_SUBMIT_APPLICATION
                 eoi_decision = None
+                full_name = account.full_name
                 contents = {
                     NotifyConstants.APPLICATION_FIELD: application_with_form_json_and_fund_name,
                     NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
@@ -214,7 +226,7 @@ class ApplicationsView(MethodView):
                 Notification.send(
                     notify_template,
                     account.email,
-                    account.full_name,
+                    full_name,
                     contents,
                 )
             return {

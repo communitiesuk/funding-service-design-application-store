@@ -226,7 +226,7 @@ class ApplicationsView(MethodView):
                 Notification.send(
                     notify_template,
                     account.email,
-                    full_name.capitalize(),
+                    full_name.title(),
                     contents,
                 )
             return {

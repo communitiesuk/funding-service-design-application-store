@@ -31,5 +31,10 @@ COF_EOI_KEY_REPORT_MAPPING = KeyReportMapping(
             key="fZAMFv",
             return_field="capital",
         ),
+        FormMappingItem(
+            form_name="development-support-provider",
+            key="NQoGIm",
+            return_field="applicant_email",
+        ),
     ],
 )

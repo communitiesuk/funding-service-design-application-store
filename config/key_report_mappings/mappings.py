@@ -12,6 +12,9 @@ from config.key_report_mappings.cof_r2_key_report_mapping import (
 from config.key_report_mappings.cof_r3w2_key_report_mapping import (
     COF_R3W2_KEY_REPORT_MAPPING,
 )
+from config.key_report_mappings.cof_r4_key_report_mapping import (
+    COF_R4_KEY_REPORT_MAPPING,
+)
 from config.key_report_mappings.cyp_r1_key_report_mapping import (
     CYP_R1_KEY_REPORT_MAPPING,
 )
@@ -26,6 +29,7 @@ MAPPINGS = (
     CYP_R1_KEY_REPORT_MAPPING,
     DPIF_R2_KEY_REPORT_MAPPING,
     COF_EOI_KEY_REPORT_MAPPING,
+    COF_R4_KEY_REPORT_MAPPING,
 )
 
 ROUND_ID_TO_KEY_REPORT_MAPPING = defaultdict(

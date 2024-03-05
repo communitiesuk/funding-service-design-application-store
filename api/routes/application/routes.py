@@ -327,6 +327,6 @@ class ApplicationsView(MethodView):
             return {"code": 404, "message": str(e)}, 404
 
     def get_application_eoi_response(self, application):
-        eoi_schema = get_round_eoi_schema(application["fund_id"], application["round_id"])
+        eoi_schema = get_round_eoi_schema(application["fund_id"], application["round_id"], application["language"])
         result = evaluate_eoi_response(eoi_schema, application["forms"])
         return result

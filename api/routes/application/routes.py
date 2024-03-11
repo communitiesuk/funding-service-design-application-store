@@ -226,7 +226,7 @@ class ApplicationsView(MethodView):
                 Notification.send(
                     notify_template,
                     account.email,
-                    full_name.title(),
+                    full_name.title() if full_name else None,
                     contents,
                 )
             return {

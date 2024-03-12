@@ -33,8 +33,12 @@ on:
     # Only automatically deploy when something in the app or tests folder has changed
     paths:
       - '!**/README.md'
+      - 'api/**'
       - 'config/**'
       - 'db/**'
+      - 'external-services/**'
+      - 'openapi/**'
+      - 'scripts/**'
       - 'tests/**'
       - 'requirements-dev.in'
       - 'requirements-dev.txt'

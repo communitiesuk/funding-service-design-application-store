@@ -161,7 +161,6 @@ class ApplicationsView(MethodView):
         try:
             fund_id = get_fund_id(application_id)
             fund_data = get_fund(fund_id)
-
             application = submit_application(application_id)
             account = get_account(account_id=application.account_id)
             round_data = get_round(fund_id, application.round_id)

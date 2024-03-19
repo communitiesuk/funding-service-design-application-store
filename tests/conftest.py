@@ -319,6 +319,7 @@ def mock_get_fund_data(mocker):
             identifier="47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
             description="An example fund for testing the funding service",
             welsh_available=False,
+            name_json={"en": "English Fund Name", "cy": "Welsh Fund Name"},
         ),
     )
 
@@ -338,6 +339,7 @@ def mocked_get_fund(mocker):
                 " to the community."
             ),
             welsh_available=True,
+            name_json={"en": "English Fund Name", "cy": "Welsh Fund Name"},
             rounds=None,
         ),
     )

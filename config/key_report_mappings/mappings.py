@@ -19,19 +19,17 @@ from config.key_report_mappings.dpif_r2_key_report_mapping import (
     DPIF_R2_KEY_REPORT_MAPPING,
 )
 
-MAPPINGS = (
-    COF_R2_KEY_REPORT_MAPPING,
-    COF_R3W2_KEY_REPORT_MAPPING,
-    COF_KEY_REPORT_MAPPING,
-    CYP_R1_KEY_REPORT_MAPPING,
-    DPIF_R2_KEY_REPORT_MAPPING,
-    COF_EOI_KEY_REPORT_MAPPING,
-)
 
 ROUND_ID_TO_KEY_REPORT_MAPPING = defaultdict(
-    # default COF R2 as at the time of this refactor, that was used by default in existing code
     lambda: COF_R2_KEY_REPORT_MAPPING.mapping,
-    {m.round_id: m.mapping for m in MAPPINGS},
+    {
+        CYP_R1_KEY_REPORT_MAPPING.round_id: CYP_R1_KEY_REPORT_MAPPING.mapping,
+        DPIF_R2_KEY_REPORT_MAPPING.round_id: DPIF_R2_KEY_REPORT_MAPPING.mapping,
+        COF_EOI_KEY_REPORT_MAPPING.round_id: COF_EOI_KEY_REPORT_MAPPING.mapping,
+        COF_R2_KEY_REPORT_MAPPING.round_id: COF_R2_KEY_REPORT_MAPPING.mapping,
+        COF_R3W2_KEY_REPORT_MAPPING.round_id: COF_R3W2_KEY_REPORT_MAPPING.mapping,
+        **({key: COF_KEY_REPORT_MAPPING.mapping for key in COF_KEY_REPORT_MAPPING.round_id}),
+    },
 )
 
 

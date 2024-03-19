@@ -2,12 +2,15 @@ from unittest.mock import ANY
 from uuid import uuid4
 
 import pytest
+from config.key_report_mappings.cof_eoi_key_report_mapping import COF_EOI_KEY_REPORT_MAPPING
+from config.key_report_mappings.cof_key_report_mapping import COF_KEY_REPORT_MAPPING
 from config.key_report_mappings.cof_r2_key_report_mapping import (
     COF_R2_KEY_REPORT_MAPPING,
 )
 from config.key_report_mappings.cof_r3w2_key_report_mapping import (
     COF_R3W2_KEY_REPORT_MAPPING,
 )
+from config.key_report_mappings.mappings import ROUND_ID_TO_KEY_REPORT_MAPPING
 from config.key_report_mappings.model import extract_postcode
 from config.key_report_mappings.model import KeyReportMapping
 from db.models import Applications
@@ -459,3 +462,21 @@ def test_extract_postcode(input_str, expected_output):
 def test_map_application_key_fields(key_report_mapping: KeyReportMapping, application, expected_output):
     result = map_application_key_fields(application, key_report_mapping.mapping, key_report_mapping.round_id)
     assert result == expected_output
+
+
+@pytest.mark.parametrize(
+    "round_id, exp_mapping",
+    [
+        ("c603d114-5364-4474-a0c4-c41cbf4d3bbd", COF_R2_KEY_REPORT_MAPPING.mapping),  # COF R2W2
+        ("5cf439bf-ef6f-431e-92c5-a1d90a4dd32f", COF_R2_KEY_REPORT_MAPPING.mapping),  # COF R2W3
+        ("e85ad42f-73f5-4e1b-a1eb-6bc5d7f3d762", COF_R2_KEY_REPORT_MAPPING.mapping),  # COF R3W1
+        ("6af19a5e-9cae-4f00-9194-cf10d2d7c8a7", COF_R3W2_KEY_REPORT_MAPPING.mapping),  # COF R3W2
+        ("4efc3263-aefe-4071-b5f4-0910abec12d2", COF_KEY_REPORT_MAPPING.mapping),  # COF R3W3
+        ("33726b63-efce-4749-b149-20351346c76e", COF_KEY_REPORT_MAPPING.mapping),  # COF R4W1
+        ("6a47c649-7bac-4583-baed-9c4e7a35c8b3", COF_EOI_KEY_REPORT_MAPPING.mapping),  # COF EOI
+        ("asdf-wer-234-sdf-234", COF_R2_KEY_REPORT_MAPPING.mapping),  # any ID
+    ],
+)
+def test_map_round_id_to_report_fields(round_id, exp_mapping):
+    result = ROUND_ID_TO_KEY_REPORT_MAPPING[round_id]
+    assert result == exp_mapping

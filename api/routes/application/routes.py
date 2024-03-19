@@ -161,15 +161,18 @@ class ApplicationsView(MethodView):
         try:
             fund_id = get_fund_id(application_id)
             fund_data = get_fund(fund_id)
-            fund_name = fund_data.name
+
             application = submit_application(application_id)
             account = get_account(account_id=application.account_id)
             round_data = get_round(fund_id, application.round_id)
             application_with_form_json = get_application(application_id, as_json=True, include_forms=True)
-
+            language = application_with_form_json["language"]
+            fund_name = fund_data.name_json[language]
+            round_name = round_data.title_json[language]
             application_with_form_json_and_fund_name = {
                 **application_with_form_json,
                 "fund_name": fund_name,
+                "round_name": round_name,
             }
             application_attributes = {
                 "application_id": {"StringValue": application_id, "DataType": "String"},

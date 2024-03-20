@@ -170,7 +170,7 @@ pbr==5.11.1
     # via jsonpath-rw-ext
 ply==3.11
     # via jsonpath-rw
-prance==0.22.11.4.0
+prance==23.6.21.0
     # via -r requirements.in
 psycopg2-binary==2.9.6
     # via -r requirements.in
@@ -241,8 +241,6 @@ ruamel-yaml==0.17.21
     # via prance
 s3transfer==0.6.0
     # via boto3
-semver==2.13.0
-    # via prance
 sentry-sdk[flask]==1.32.0
     # via
     #   funding-service-design-utils

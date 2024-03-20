@@ -12,6 +12,7 @@ class Fund:
     short_name: str
     description: str
     welsh_available: bool
+    name_json: str
     rounds: Optional[list[Round]] = None
 
     @staticmethod
@@ -23,6 +24,7 @@ class Fund:
                 short_name=data["short_name"],
                 description=data["description"],
                 welsh_available=data["welsh_available"],
+                name_json=data["name_json"],
             )
         except AttributeError as e:
             current_app.logger.error("Empty data passed to Fund.from_json")

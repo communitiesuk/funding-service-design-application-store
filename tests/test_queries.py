@@ -39,6 +39,7 @@ def test_create_application_language_choice(mocker, fund_supports_welsh, request
         "TEST",
         "Testing fund",
         fund_supports_welsh,
+        {"en": "English Fund Name", "cy": "Welsh Fund Name"},
         [],
     )
     mocker.patch("db.queries.application.queries.get_fund", return_value=mock_fund)

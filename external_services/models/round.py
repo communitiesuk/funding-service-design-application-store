@@ -28,6 +28,7 @@ class Round:
     title: str
     short_name: str
     contact_email: str
+    title_json: str
     project_name_field_id: Optional[str] = None
     mark_as_complete_enabled: bool = False
     feedback_survey_config: FeedbackSurveyConfig = None
@@ -52,4 +53,5 @@ class Round:
             contact_email=data.get("contact_email", None),
             feedback_survey_config=data.get("feedback_survey_config") or FeedbackSurveyConfig(),
             mark_as_complete_enabled=data.get("mark_as_complete_enabled") or False,
+            title_json=data["title_json"],
         )

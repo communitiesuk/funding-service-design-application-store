@@ -48,6 +48,8 @@ click==8.1.7
     #   flask
 clickclick==20.10.2
     # via connexion
+colorama==0.4.6
+    # via click
 colored==1.4.4
     # via -r requirements.in
 commonmark==0.9.1
@@ -242,7 +244,9 @@ s3transfer==0.6.0
 semver==2.13.0
     # via prance
 sentry-sdk[flask]==1.32.0
-    # via funding-service-design-utils
+    # via
+    #   funding-service-design-utils
+    #   sentry-sdk
 six==1.16.0
     # via
     #   apscheduler
@@ -279,7 +283,9 @@ typing-extensions==4.4.0
     #   alembic
     #   sqlalchemy
 tzdata==2023.3
-    # via pandas
+    # via
+    #   pandas
+    #   tzlocal
 tzlocal==5.2
     # via apscheduler
 urllib3==1.26.18

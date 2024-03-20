@@ -63,6 +63,7 @@ def test_create_application_language_choice(mocker, client, fund_supports_welsh,
         "TEST",
         "Testing fund",
         fund_supports_welsh,
+        {"en": "English Fund Name", "cy": "Welsh Fund Name"},
         [],
     )
     mocker.patch("api.routes.application.routes.get_fund", return_value=mock_fund)

@@ -222,7 +222,9 @@ def mock_get_random_choices(population, weights=None, *, cum_weights=None, k=1):
 
 
 def generate_mock_fund(fund_id: str) -> Fund:
-    return Fund("Generated test fund", fund_id, "TEST", "Testing fund", True, [])
+    return Fund(
+        "Generated test fund", fund_id, "TEST", "Testing fund", True, {"en": "English title", "cy": "Welsh title"}, []
+    )
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -255,6 +257,7 @@ def generate_mock_round(fund_id: str, round_id: str) -> Round:
         assessment_deadline=datetime.strptime("2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
         project_name_field_id="TestFieldId",
         contact_email="test@outlook.com",
+        title_json={"en": "English title", "cy": "Welsh title"},
     )
 
 
@@ -316,6 +319,7 @@ def mock_get_fund_data(mocker):
             identifier="47aef2f5-3fcb-4d45-acb5-f0152b5f03c4",
             description="An example fund for testing the funding service",
             welsh_available=False,
+            name_json={"en": "English Fund Name", "cy": "Welsh Fund Name"},
         ),
     )
 
@@ -335,6 +339,7 @@ def mocked_get_fund(mocker):
                 " to the community."
             ),
             welsh_available=True,
+            name_json={"en": "English Fund Name", "cy": "Welsh Fund Name"},
             rounds=None,
         ),
     )

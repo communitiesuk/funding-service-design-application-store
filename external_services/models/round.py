@@ -31,6 +31,7 @@ class Round:
     title_json: str
     project_name_field_id: Optional[str] = None
     mark_as_complete_enabled: bool = False
+    is_expression_of_interest: bool = False
     feedback_survey_config: FeedbackSurveyConfig = None
 
     def __post_init__(self):
@@ -53,5 +54,6 @@ class Round:
             contact_email=data.get("contact_email", None),
             feedback_survey_config=data.get("feedback_survey_config") or FeedbackSurveyConfig(),
             mark_as_complete_enabled=data.get("mark_as_complete_enabled") or False,
+            is_expression_of_interest=data.get("is_expression_of_interest") or False,
             title_json=data["title_json"],
         )

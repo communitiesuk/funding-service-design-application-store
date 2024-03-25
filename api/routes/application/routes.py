@@ -190,7 +190,7 @@ class ApplicationsView(MethodView):
                 message_deduplication_id=str(uuid4()),  # ensures message uniqueness
             )
 
-            if fund_data.short_name in ("COF-EOI",):  # check if it's an EOI fund
+            if round_data.is_expression_of_interest:
                 full_name = (
                     account.full_name
                     if account.full_name

@@ -95,7 +95,7 @@ funding-service-design-utils==2.0.47
     # via -r requirements.in
 gunicorn==20.1.0
     # via funding-service-design-utils
-idna==3.4
+idna==3.7
     # via requests
 inflection==0.5.1
     # via connexion

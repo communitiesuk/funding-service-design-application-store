@@ -86,6 +86,9 @@ class DefaultConfig:
     FUND_ROUND_APPLICATION_REMINDER_STATUS = "/funds/{round_id}/application_reminder_status?status=true"
     FUND_ROUND_EOI_SCHEMA_ENDPOINT = FUND_STORE_API_HOST + "/funds/{fund_id}/rounds/{round_id}/eoi_decision_schema"
 
+    FRONTEND_HOST = os.getenv("FRONTEND_HOST", "http://localhost:3008")
+    ELIGIBILITY_RESULT_REDIRECT_URL = FRONTEND_HOST + "/eligibility_result"
+
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {"future": True}

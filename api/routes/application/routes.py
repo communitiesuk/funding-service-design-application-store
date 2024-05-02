@@ -141,6 +141,7 @@ class ApplicationsView(MethodView):
 
     def put(self):
         request_json = request.get_json(force=True)
+        print("hello")
         form_dict = {
             "application_id": request_json["metadata"]["application_id"],
             "form_name": request_json["metadata"].get("form_name"),

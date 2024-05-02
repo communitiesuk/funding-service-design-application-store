@@ -8,6 +8,25 @@ tags:
     description: Application store operations
 
 paths:
+  /eligibility:
+    put:
+      tags:
+        - eligibility
+      operationId: api.EligibilityView.put
+      requestBody:
+        description: Eligibility creation parameters
+        required: true
+        content:
+          application/json:
+              schema:
+                type: object
+      responses:
+        200:
+          description: SUCCESS - Application created
+          content:
+            application/json:
+              schema:
+                type: object
   /applications:
     get:
       tags:

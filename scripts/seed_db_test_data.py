@@ -43,6 +43,17 @@ FUND_CONFIG = {
             }
         },
     },
+    "HSRA": {
+        "id": UsefulConfig.HSRA_FUND_ID,
+        "short_code": "HSRA",
+        "rounds": {
+            "R1": {
+                "short_code": "R1",
+                "id": UsefulConfig.HSRA_ROUND_1_ID,
+                "project_name_form": "name-your-application-hsra",
+            }
+        },
+    },
 }
 
 
@@ -50,14 +61,14 @@ FUND_CONFIG = {
 @click.option(
     "--fund_short_code",
     default="COF",
-    type=click.Choice(["COF", "NSTF"]),
+    type=click.Choice(["COF", "NSTF", "HSRA"]),
     help="Fund to seed applications for",
     prompt=True,
 )
 @click.option(
     "--round_short_code",
     default="R3W2",
-    type=click.Choice(["R3W2", "R3W1", "R2"]),
+    type=click.Choice(["R3W2", "R3W1", "R2", "R1"]),
     help="Round to seed applications for",
     prompt=True,
 )

@@ -38,8 +38,8 @@ from flask import current_app
 from flask import request
 from flask import send_file
 from flask.views import MethodView
-from fsd_utils import Eoi_Decision
-from fsd_utils import evaluate_eoi_response
+from fsd_utils import Decision
+from fsd_utils import evaluate_response
 from fsd_utils.config.notify_constants import NotifyConstants
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -207,10 +207,10 @@ class ApplicationsView(MethodView):
                     NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: round_data.contact_email,
                     NotifyConstants.APPLICATION_CAVEATS: eoi_results["caveats"],
                 }
-                if Eoi_Decision(eoi_decision) == Eoi_Decision.PASS:  # EOI Full pass
+                if Decision(eoi_decision) == Decision.PASS:  # EOI Full pass
                     notify_template = Config.NOTIFY_TEMPLATE_EOI_PASS
 
-                elif Eoi_Decision(eoi_decision) == Eoi_Decision.PASS_WITH_CAVEATS:  # EOI Pass with caveats
+                elif Decision(eoi_decision) == Decision.PASS_WITH_CAVEATS:  # EOI Pass with caveats
                     notify_template = Config.NOTIFY_TEMPLATE_EOI_PASS_W_CAVEATS
                 else:
                     notify_template = None
@@ -330,5 +330,5 @@ class ApplicationsView(MethodView):
 
     def get_application_eoi_response(self, application):
         eoi_schema = get_round_eoi_schema(application["fund_id"], application["round_id"], application["language"])
-        result = evaluate_eoi_response(eoi_schema, application["forms"])
+        result = evaluate_response(eoi_schema, application["forms"])
         return result

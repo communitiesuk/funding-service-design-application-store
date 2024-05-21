@@ -162,6 +162,10 @@ flipper-client==1.3.1
     #   funding-service-design-utils
 funding-service-design-utils==2.0.47
     # via -r requirements.txt
+greenlet==3.0.3
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt
@@ -382,7 +386,7 @@ referencing==0.30.2
     #   jsonschema
     #   jsonschema-path
     #   jsonschema-specifications
-requests==2.31.0
+requests==2.32.0
     # via
     #   -r requirements.txt
     #   connexion
@@ -466,6 +470,7 @@ tomli==2.0.1
     #   black
     #   build
     #   flake8-pyproject
+    #   pep517
     #   pip-tools
     #   pytest
 typing-extensions==4.4.0

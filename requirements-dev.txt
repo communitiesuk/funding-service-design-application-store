@@ -151,7 +151,7 @@ flask-redis==0.4.0
     #   funding-service-design-utils
 flask-restx==1.0.3
     # via -r requirements.txt
-flask-sqlalchemy==3.0.3
+flask-sqlalchemy==3.1.1
     # via
     #   -r requirements.txt
     #   flask-migrate
@@ -162,6 +162,10 @@ flipper-client==1.3.1
     #   funding-service-design-utils
 funding-service-design-utils==2.0.47
     # via -r requirements.txt
+greenlet==3.0.3
+    # via
+    #   -r requirements.txt
+    #   sqlalchemy
 gunicorn==20.1.0
     # via
     #   -r requirements.txt
@@ -466,6 +470,7 @@ tomli==2.0.1
     #   black
     #   build
     #   flake8-pyproject
+    #   pep517
     #   pip-tools
     #   pytest
 typing-extensions==4.4.0

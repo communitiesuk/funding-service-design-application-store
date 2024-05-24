@@ -1,53 +1,6 @@
 [
     {
         "status": "COMPLETED",
-        "name": "auction-costs-hsra",
-        "questions": [
-            {
-                "category": "ebIBcm",
-                "question": "What is the total expected cost of the auction, in pounds?",
-                "fields": [
-                    {
-                        "key": "kNlEvn",
-                        "title": "What is the total expected cost of the auction, in pounds?",
-                        "type": "text",
-                        "answer": "20000"
-                    }
-                ],
-                "index": 0,
-                "status": "COMPLETED"
-            },
-            {
-                "category": "ebIBcm",
-                "question": "Upload quotes showing auction costs",
-                "fields": [
-                    {
-                        "key": "QXHlgU",
-                        "title": "Upload quotes showing auction costs",
-                        "type": "text",
-                        "answer": "Screenshot 2024-05-02 at 17.41.38.png"
-                    }
-                ],
-                "index": 0,
-                "status": "COMPLETED"
-            },
-            {
-                "category": null,
-                "question": "MarkAsComplete",
-                "fields": [
-                    {
-                        "key": "markAsComplete",
-                        "title": "Do you want to mark this section as complete?",
-                        "type": "boolean",
-                        "answer": true
-                    }
-                ],
-                "status": "COMPLETED"
-            }
-        ]
-    },
-    {
-        "status": "COMPLETED",
         "name": "name-your-application-hsra",
         "questions": [
             {
@@ -623,11 +576,11 @@
             },
             {
                 "category": "XDldxG",
-                "question": "Costs higher than \u00a372,000",
+                "question": "Costs are higher than the guided price",
                 "fields": [
                     {
                         "key": "OBXEXZ",
-                        "title": "Why are your costs higher than \u00a372,000?",
+                        "title": "Why are your costs higher than the guided price?",
                         "type": "freeText",
                         "answer": "<p>Because it is a big project with more expenses.</p>"
                     }
@@ -718,11 +671,11 @@
             },
             {
                 "category": "qvSwnW",
-                "question": "Upload quotes showing refurbishment costs",
+                "question": "Upload quotes showing refurbishment costs and if applicable project management costs for properties exceeding 200 sqm.",
                 "fields": [
                     {
                         "key": "xUgKLI",
-                        "title": "Upload quotes showing refurbishment costs",
+                        "title": "Upload quotes showing refurbishment costs and if applicable project management costs for properties exceeding 200 sqm.",
                         "type": "text",
                         "answer": "Screenshot 2024-05-02 at 16.53.59.png"
                     }

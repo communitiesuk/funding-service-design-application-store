@@ -37,7 +37,7 @@ count: 1
 exec: true
 
 network:
-  connect: false # Enable Service Connect for intra-environment traffic between services.
+  connect: true # Enable Service Connect for intra-environment traffic between services.
 
 # Optional fields for more advanced use-cases.
 #

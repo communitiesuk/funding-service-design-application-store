@@ -30,3 +30,8 @@ class UnitTestingConfig(DefaultConfig):
     USE_LOCAL_DATA = True
     AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = "fsd-queue-test"
     AWS_SQS_REGION = "eu-west-2"
+
+    # ---------------
+    # S3 Config
+    # ---------------
+    AWS_MSG_BUCKET_NAME = "fsd-notification-bucket"

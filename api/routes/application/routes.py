@@ -227,12 +227,13 @@ class ApplicationsView(MethodView):
                 }
 
             if should_send_email:
-                Notification.send(
+                message_id = Notification.send(
                     notify_template,
                     account.email,
                     full_name.title() if full_name else None,
                     contents,
                 )
+                current_app.logger.info(f"Message added to the queue msg_id: [{message_id}]")
             return {
                 "id": application_id,
                 "reference": application_with_form_json["reference"],

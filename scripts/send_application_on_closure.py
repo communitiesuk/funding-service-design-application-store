@@ -92,11 +92,12 @@ def send_incomplete_applications_after_deadline(
                         f"Sending application {count} of {total_applications} to {email.get('email')}"
                     )
                     application["contact_help_email"] = fund_rounds.get("contact_email")
-                    Notification.send(
+                    message_id = Notification.send(
                         template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,  # noqa
                         to_email=email.get("email"),
                         content=application,
                     )
+                    current_app.logger.info(f"Message added to the queue msg_id: [{message_id}]")
                 current_app.logger.info(f"Sent {count} {'emails' if count > 1 else 'email'}")
                 return count
             else:

@@ -5,6 +5,9 @@ from config import Config
 from external_services.exceptions import NotificationError
 from flask import current_app
 
+NOTIFICATION_CONST = "notification"
+NOTIFICATION_S3_KEY_CONST = "application/notification"
+
 
 class Notification:
     """
@@ -40,8 +43,14 @@ class Notification:
             message_id = sqs_extended_client.submit_single_message(
                 queue_url=Config.AWS_SQS_NOTIF_APP_PRIMARY_QUEUE_URL,
                 message=json.dumps(json_payload),
-                message_group_id="notification",
+                message_group_id=NOTIFICATION_CONST,
                 message_deduplication_id=str(uuid4()),  # ensures message uniqueness
+                extra_attributes={
+                    "S3Key": {
+                        "StringValue": NOTIFICATION_S3_KEY_CONST,
+                        "DataType": "String",
+                    },
+                },
             )
             current_app.logger.info(f"Message sent to SQS queue and message id is [{message_id}]")
             return message_id

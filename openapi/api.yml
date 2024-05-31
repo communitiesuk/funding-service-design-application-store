@@ -472,6 +472,57 @@ paths:
               schema:
                 $ref: 'components.yml#/components/schemas/Error'
 
+  /application/research:
+    post:
+      tags:
+        - survey
+      summary: Post contact details for research survey
+      operationId: api.ApplicationsView.post_research_survey_data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'components.yml#/components/schemas/PostResearchSurveyDataRequest'
+      responses:
+        201:
+          description: SUCCESS - Survey data saved
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/GetResearchSurveyDataResponse'
+        400:
+          description: ERROR - Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+    get:
+      tags:
+        - survey
+      summary: Get contact details for research survey
+      operationId: api.ApplicationsView.get_research_survey_data
+      parameters:
+        - in: query
+          name: application_id
+          required: true
+          schema:
+            type: string
+          description: ID of the application
+      responses:
+        200:
+          description: SUCCESS - Survey data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/GetResearchSurveyDataResponse'
+        404:
+          description: ERROR - Survey data not found
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+
   /applications/get_all_feedbacks_and_survey_report:
     get:
       tags:

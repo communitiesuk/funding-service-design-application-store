@@ -5,6 +5,7 @@ from db.queries import get_feedback
 from db.queries.application import get_application
 from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.form.queries import get_form
+from db.queries.research import retrieve_research_survey_data
 from external_services import get_round
 from external_services.data import get_application_sections
 from external_services.models.round import FeedbackSurveyConfig
@@ -20,6 +21,17 @@ def _is_all_sections_feedback_complete(application_id, fund_id, round_id, langua
 
 def _is_feedback_survey_complete(application_id):
     is_survey_completed = all(retrieve_end_of_application_survey_data(application_id, pn) for pn in "1234")
+    return is_survey_completed
+
+
+def _is_research_survey_complete(application_id):
+    research_survey = retrieve_research_survey_data(application_id)
+    is_survey_completed = False
+    if opt_in := research_survey.data.get("research_opt_in"):
+        if opt_in == "disagree" or (
+            research_survey.data.get("contact_name") and research_survey.data.get("contact_email")
+        ):
+            is_survey_completed = True
     return is_survey_completed
 
 
@@ -54,6 +66,12 @@ def update_application_status(
         all_feedback_and_survey_completed = all_feedback_and_survey_completed and (
             feedback_survey_config.is_feedback_survey_optional
             or _is_feedback_survey_complete(application_with_forms.id)
+        )
+
+    if feedback_survey_config.has_research_survey:
+        all_feedback_and_survey_completed = all_feedback_and_survey_completed and (
+            feedback_survey_config.is_research_survey_optional
+            or _is_research_survey_complete(application_with_forms.id)
         )
 
     form_statuses = [form.status.name for form in application_with_forms.forms]

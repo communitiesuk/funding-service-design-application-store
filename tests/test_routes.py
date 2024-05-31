@@ -6,6 +6,7 @@ from uuid import uuid4
 import pytest
 from db.exceptions import ApplicationError
 from db.models import Applications
+from db.models import ResearchSurvey
 from db.queries.application import get_all_applications
 from db.schemas import ApplicationSchema
 from external_services.models.fund import Fund
@@ -631,3 +632,84 @@ def test_stage_submitted_application_to_queue_fails(
 
     assert response.status_code == 201
     assert "Message queued, message_id is:" in response.text
+
+
+def test_post_research_survey_data(client, mocker):
+    request_data = {
+        "application_id": "123",
+        "fund_id": "fund456",
+        "round_id": "round789",
+        "data": {"research_opt_in": "agree", "contact_name": "John Doe", "contact_email": "john@example.com"},
+    }
+    expected_survey_data = {
+        **request_data,
+        "id": 1,
+        "date_submitted": "01-01-1000",
+    }
+    retrieved_survey_data = ResearchSurvey()
+    retrieved_survey_data.id = expected_survey_data["id"]
+    retrieved_survey_data.application_id = expected_survey_data["application_id"]
+    retrieved_survey_data.fund_id = expected_survey_data["fund_id"]
+    retrieved_survey_data.round_id = expected_survey_data["round_id"]
+    retrieved_survey_data.data = expected_survey_data["data"]
+    retrieved_survey_data.date_submitted = expected_survey_data["date_submitted"]
+
+    mock_upsert_research_survey_data = mocker.patch(
+        "api.routes.application.routes.upsert_research_survey_data", return_value=retrieved_survey_data
+    )
+    mock_update_statuses = mocker.patch("api.routes.application.routes.update_statuses")
+
+    response = client.post("/application/research", data=json.dumps(request_data), content_type="application/json")
+
+    assert response.status_code == 201
+    assert response.json == expected_survey_data
+    mock_upsert_research_survey_data.assert_called_once_with(
+        application_id=request_data["application_id"],
+        fund_id=request_data["fund_id"],
+        round_id=request_data["round_id"],
+        data=request_data["data"],
+    )
+    mock_update_statuses.assert_called_once_with(request_data["application_id"], form_name=None)
+
+
+def test_get_research_survey_data(client, mocker):
+    application_id = "123"
+    expected_survey_data = {
+        "id": 1,
+        "application_id": "123",
+        "fund_id": "fund456",
+        "round_id": "round789",
+        "data": {"research_opt_in": "agree", "contact_name": "John Doe", "contact_email": "john@example.com"},
+        "date_submitted": "01-01-1000",
+    }
+    retrieved_survey_data = ResearchSurvey()
+    retrieved_survey_data.id = expected_survey_data["id"]
+    retrieved_survey_data.application_id = expected_survey_data["application_id"]
+    retrieved_survey_data.fund_id = expected_survey_data["fund_id"]
+    retrieved_survey_data.round_id = expected_survey_data["round_id"]
+    retrieved_survey_data.data = expected_survey_data["data"]
+    retrieved_survey_data.date_submitted = expected_survey_data["date_submitted"]
+
+    mock_retrieve_research_survey_data = mocker.patch(
+        "api.routes.application.routes.retrieve_research_survey_data", return_value=retrieved_survey_data
+    )
+
+    response = client.get(f"/application/research?application_id={application_id}")
+
+    assert response.status_code == 200
+    assert response.json == expected_survey_data
+    mock_retrieve_research_survey_data.assert_called_once_with(application_id)
+
+
+def test_get_research_survey_data_not_found(client, mocker):
+    application_id = "app123"
+
+    mock_retrieve_research_survey_data = mocker.patch(
+        "api.routes.application.routes.retrieve_research_survey_data", return_value=None
+    )
+
+    response = client.get(f"/application/research?application_id={application_id}")
+
+    assert response.status_code == 404
+    assert response.json == {"code": 404, "message": f"Research survey data for {application_id} not found"}
+    mock_retrieve_research_survey_data.assert_called_once_with(application_id)

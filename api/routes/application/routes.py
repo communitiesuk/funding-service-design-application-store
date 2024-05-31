@@ -26,6 +26,8 @@ from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.feedback import upsert_end_of_application_survey_data
 from db.queries.reporting.queries import export_application_statuses_to_csv
 from db.queries.reporting.queries import map_application_key_fields
+from db.queries.research import retrieve_research_survey_data
+from db.queries.research import upsert_research_survey_data
 from db.queries.statuses import update_statuses
 from external_services import get_account
 from external_services import get_fund
@@ -310,7 +312,7 @@ class ApplicationsView(MethodView):
 
         return {
             "code": 404,
-            "message": f"Survey data for {application_id}, {page_number} not found",
+            "message": f"End of application feedback survey data for {application_id}, {page_number} not found",
         }, 404
 
     def get_all_feedbacks_and_survey_report(self, **params):
@@ -332,3 +334,31 @@ class ApplicationsView(MethodView):
         eoi_schema = get_round_eoi_schema(application["fund_id"], application["round_id"], application["language"])
         result = evaluate_response(eoi_schema, application["forms"])
         return result
+
+    def post_research_survey_data(self):
+        args = request.get_json()
+        application_id = args["application_id"]
+        fund_id = args["fund_id"]
+        round_id = args["round_id"]
+        data = args["data"]
+
+        survey_data = upsert_research_survey_data(
+            application_id=application_id,
+            fund_id=fund_id,
+            round_id=round_id,
+            data=data,
+        )
+
+        update_statuses(application_id, form_name=None)
+
+        return survey_data.as_dict(), 201
+
+    def get_research_survey_data(self, application_id):
+        survey_data = retrieve_research_survey_data(application_id)
+        if survey_data:
+            return survey_data.as_dict(), 200
+
+        return {
+            "code": 404,
+            "message": f"Research survey data for {application_id} not found",
+        }, 404

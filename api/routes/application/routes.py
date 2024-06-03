@@ -1,3 +1,4 @@
+import json
 import time
 from typing import Optional
 from uuid import uuid4
@@ -33,7 +34,7 @@ from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
 from external_services import get_round_eoi_schema
-from external_services.aws import _SQS_CLIENT
+from external_services.exceptions import AssessmentError
 from external_services.exceptions import NotificationError
 from external_services.models.notification import Notification
 from flask import current_app
@@ -44,6 +45,9 @@ from fsd_utils import Decision
 from fsd_utils import evaluate_response
 from fsd_utils.config.notify_constants import NotifyConstants
 from sqlalchemy.orm.exc import NoResultFound
+
+ASSESSMENT = "import_applications_group"
+ASSESSMENT_S3_KEY_CONST = "assessment"
 
 
 class ApplicationsView(MethodView):
@@ -175,22 +179,8 @@ class ApplicationsView(MethodView):
                 "fund_name": fund_name,
                 "round_name": round_name,
             }
-            application_attributes = {
-                "application_id": {"StringValue": application_id, "DataType": "String"},
-            }
 
-            # Submit message to queue, in a future state this can trigger the
-            # assessment service to import the application
-            #  (currently assessment is using a CRON timer to pick up messages,
-            # not a webhook for triggers)
-
-            _SQS_CLIENT.submit_single_message(
-                queue_url=Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
-                message=application_with_form_json,
-                extra_attributes=application_attributes,
-                message_group_id="import_applications_group",
-                message_deduplication_id=str(uuid4()),  # ensures message uniqueness
-            )
+            self._send_assessment_queue(application_id, application_with_form_json)
 
             if round_data.is_expression_of_interest:
                 full_name = (
@@ -250,9 +240,41 @@ class ApplicationsView(MethodView):
                 f"Notification error on sending SUBMIT notification for application {application_id}"
             )
             return str(e), 500, {"x-error": "notification error"}
+        except AssessmentError as e:
+            current_app.logger.exception(
+                f"Assessment error on sending SUBMIT assessment for application {application_id}"
+            )
+            return str(e), 500, {"x-error": "assessment error"}
         except Exception as e:
             current_app.logger.exception(f"Error on sending SUBMIT notification for application {application_id}")
             return str(e), 500, {"x-error": "Error"}
+
+    def _send_assessment_queue(self, application_id, application_with_form_json):
+        application_attributes = {
+            "application_id": {"StringValue": application_id, "DataType": "String"},
+            "S3Key": {
+                "StringValue": ASSESSMENT_S3_KEY_CONST,
+                "DataType": "String",
+            },
+        }
+        # Submit message to queue, in a future state this can trigger the
+        # assessment service to import the application
+        #  (currently assessment is using a CRON timer to pick up messages,
+        # not a webhook for triggers)
+        try:
+            sqs_extended_client = self._get_sqs_client()
+            message_id = sqs_extended_client.submit_single_message(
+                queue_url=Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
+                message=json.dumps(application_with_form_json),
+                message_group_id=ASSESSMENT,
+                message_deduplication_id=str(uuid4()),  # ensures message uniqueness
+                extra_attributes=application_attributes,
+            )
+            current_app.logger.info(f"Message sent to SQS queue and message id is [{message_id}]")
+        except Exception as e:
+            current_app.logger.error("An error occurred while sending message")
+            current_app.logger.error(e)
+            raise AssessmentError(message="Sorry, the assessment could not be sent")
 
     def post_feedback(self):
         args = request.get_json()
@@ -335,6 +357,12 @@ class ApplicationsView(MethodView):
         eoi_schema = get_round_eoi_schema(application["fund_id"], application["round_id"], application["language"])
         result = evaluate_response(eoi_schema, application["forms"])
         return result
+
+    def _get_sqs_client(self):
+        sqs_extended_client = current_app.extensions["sqs_extended_client"]
+        if sqs_extended_client is not None:
+            return sqs_extended_client
+        current_app.logger.error("An error occurred while sending message since client is not available")
 
     def post_research_survey_data(self):
         """

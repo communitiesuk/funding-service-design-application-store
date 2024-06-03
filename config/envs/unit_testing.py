@@ -25,8 +25,8 @@ class UnitTestingConfig(DefaultConfig):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    AWS_SQS_SECRET_ACCESS_KEY = ""
-    AWS_SQS_ACCESS_KEY_ID = ""
+    AWS_SECRET_ACCESS_KEY = AWS_SQS_SECRET_ACCESS_KEY = "test_secret_key"  # pragma: allowlist secret
+    AWS_ACCESS_KEY_ID = AWS_SQS_ACCESS_KEY_ID = "test_access_key"  # pragma: allowlist secret
     USE_LOCAL_DATA = True
     AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = "fsd-queue-test"
     AWS_SQS_REGION = "eu-west-2"

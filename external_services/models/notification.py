@@ -27,17 +27,13 @@ class Notification:
             content: (dict) A dictionary of content to send to
                 fill out the notification template
         """
-        url = Config.NOTIFICATION_SERVICE_HOST + Config.SEND_ENDPOINT
         json_payload = {
             "type": template_type,
             "to": to_email,
             "full_name": full_name,
             "content": content,
         }
-        current_app.logger.info(
-            f"Sending application to notification service. endpoint '{url}',"
-            f" json payload '{template_type}' to '{to_email}'."
-        )
+        current_app.logger.info(f" json payload '{template_type}' to '{to_email}'.")
         try:
             sqs_extended_client = Notification._get_sqs_client()
             message_id = sqs_extended_client.submit_single_message(

@@ -83,7 +83,6 @@ Details on how our pipelines work and the release process is available [here](ht
 Paketo is used to build the docker image which gets deployed to our test and production environments. Details available [here](https://github.com/communitiesuk/funding-service-design-workflows/blob/main/readmes/python-repos-paketo.md)
 
 When running the docker image generated with paketo, `envs` needs to contain a value for each of the following:
-- `NOTIFICATION_SERVICE_HOST`
 - `ACCOUNT_STORE_API_HOST`
 - `FUND_STORE_API_HOST`
 - `SENTRY_DSN`

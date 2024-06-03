@@ -1,10 +1,14 @@
 # from config import Config
+import json
 from uuid import uuid4
 
 from config import Config
 from db.queries import get_application
-from external_services.aws import _SQS_CLIENT
+from flask import current_app
 from flask.views import MethodView
+
+ASSESSMENT = "import_applications_group"
+ASSESSMENT_S3_KEY_CONST = "assessment"
 
 # from flask import request
 
@@ -16,24 +20,44 @@ class QueueView(MethodView):
         if application_with_form_json["status"] == "SUBMITTED":
             application_attributes = {
                 "application_id": {"StringValue": application_id, "DataType": "String"},
+                "S3Key": {
+                    "StringValue": ASSESSMENT_S3_KEY_CONST,
+                    "DataType": "String",
+                },
             }
 
-            # Submit message to queue, in a future state this can
-            # trigger the assessment service to import the application
-            #  (currently assessment is using a CRON timer to pick up messages,
-            # not a webhook for triggers)
-
-            message_submitted_id = _SQS_CLIENT.submit_single_message(
-                queue_url=Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
-                message=application_with_form_json,
-                extra_attributes=application_attributes,
-                message_group_id="import_applications_group",
-                message_deduplication_id=str(uuid4()),  # ensures message uniqueness
-            )
-
-            return f"Message queued, message_id is: {message_submitted_id}.", 201
+            """
+            Submit message to queue, in a future state this can
+            trigger the assessment service to import the application
+            (currently assessment is using a CRON timer to pick up messages,
+            not a webhook for triggers)
+            """
+            try:
+                sqs_extended_client = self._get_sqs_client()
+                message_id = sqs_extended_client.submit_single_message(
+                    queue_url=Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
+                    message=json.dumps(application_with_form_json),
+                    message_group_id=ASSESSMENT,
+                    message_deduplication_id=str(uuid4()),  # ensures message uniqueness
+                    extra_attributes=application_attributes,
+                )
+                current_app.logger.info(f"Message sent to SQS queue and message id is [{message_id}]")
+                return f"Message queued, message_id is: {message_id}.", 201
+            except Exception as e:
+                current_app.logger.error("An error occurred while sending message")
+                current_app.logger.error(e)
+                return {
+                    "code": 500,
+                    "message": "Message failed",
+                }, 500
         else:
             return {
                 "code": 400,
                 "message": "Application must be submitted before it can be assessed",
             }, 400
+
+    def _get_sqs_client(self):
+        sqs_extended_client = current_app.extensions["sqs_extended_client"]
+        if sqs_extended_client is not None:
+            return sqs_extended_client
+        current_app.logger.error("An error occurred while sending message since client is not available")

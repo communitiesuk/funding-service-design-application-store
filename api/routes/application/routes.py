@@ -336,6 +336,16 @@ class ApplicationsView(MethodView):
         return result
 
     def post_research_survey_data(self):
+        """
+        Endpoint to post research survey data.
+
+        This method retrieves application_id, fund_id, round_id, and (form) data and will either
+        create or update the research survey associated with that application. Finally the
+        application status is checked.
+
+        Returns:
+            Research survey data in dict form and HTTP status code 201 (Created).
+        """
         args = request.get_json()
         application_id = args["application_id"]
         fund_id = args["fund_id"]
@@ -354,6 +364,16 @@ class ApplicationsView(MethodView):
         return survey_data.as_dict(), 201
 
     def get_research_survey_data(self, application_id):
+        """
+        Endpoint to retrieve research survey data for a given application_id.
+
+        Args:
+            application_id (str): The ID of the application for which survey data is requested.
+
+        Returns:
+            If found, survey data in dict form is returned with 200 HTTP code
+            Else an error message with HTTP status code 404.
+        """
         survey_data = retrieve_research_survey_data(application_id)
         if survey_data:
             return survey_data.as_dict(), 200

@@ -19,17 +19,17 @@ def upsert_research_survey_data(application_id, fund_id, round_id, data) -> Rese
         existing_survey_data.date_submitted = datetime.now()
         db.session.commit()
         return existing_survey_data
-    else:
-        new_survey_data = ResearchSurvey(
-            application_id=application_id,
-            fund_id=fund_id,
-            round_id=round_id,
-            data=data,
-            date_submitted=datetime.now(),
-        )
-        db.session.add(new_survey_data)
-        db.session.commit()
-        return new_survey_data
+
+    new_survey_data = ResearchSurvey(
+        application_id=application_id,
+        fund_id=fund_id,
+        round_id=round_id,
+        data=data,
+        date_submitted=datetime.now(),
+    )
+    db.session.add(new_survey_data)
+    db.session.commit()
+    return new_survey_data
 
 
 def retrieve_research_survey_data(application_id) -> ResearchSurvey:

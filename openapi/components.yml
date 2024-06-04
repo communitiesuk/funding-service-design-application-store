@@ -237,3 +237,31 @@ components:
           additionalProperties: true
         date_submitted:
           type: string
+    PostResearchSurveyDataRequest:
+      type: object
+      properties:
+        application_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+    GetResearchSurveyDataResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        application_id:
+          type: string
+        fund_id:
+          type: string
+        round_id:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+        date_submitted:
+          type: string

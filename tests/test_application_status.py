@@ -5,6 +5,7 @@ from db.queries.statuses.queries import _determine_question_page_status_from_ans
 from db.queries.statuses.queries import _is_all_sections_feedback_complete
 from db.queries.statuses.queries import _is_feedback_survey_complete
 from db.queries.statuses.queries import _is_field_answered
+from db.queries.statuses.queries import _is_research_survey_complete
 from db.queries.statuses.queries import update_application_status
 from db.queries.statuses.queries import update_form_status
 from db.queries.statuses.queries import update_question_page_statuses
@@ -306,17 +307,56 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
 
 
 @pytest.mark.parametrize(
-    "form_statuses,feedback_complete,survey_complete,feedback_survey_config,exp_status",
+    "research_survey_data,exp_result",
+    [
+        (
+            MagicMock(data={"research_opt_in": "disagree"}),
+            True,
+        ),
+        (
+            MagicMock(
+                data={"research_opt_in": "agree", "contact_name": "John Doe", "contact_email": "john@example.com"}
+            ),
+            True,
+        ),
+        (
+            MagicMock(data={"research_opt_in": "agree", "contact_name": None, "contact_email": "john@example.com"}),
+            False,
+        ),
+        (
+            MagicMock(data={"research_opt_in": "agree", "contact_name": "John Doe", "contact_email": None}),
+            False,
+        ),
+        (
+            MagicMock(data={"research_opt_in": "agree", "contact_name": None, "contact_email": None}),
+            False,
+        ),
+    ],
+)
+def test_is_research_survey_complete(mocker, research_survey_data, exp_result):
+    mocker.patch(
+        "db.queries.statuses.queries.retrieve_research_survey_data",
+        new=lambda application_id: research_survey_data,
+    )
+    result = _is_research_survey_complete("123")
+    assert result == exp_result
+
+
+@pytest.mark.parametrize(
+    "form_statuses,feedback_complete,survey_complete,research_complete,feedback_survey_config,exp_status",
     [
         (
             ["NOT_STARTED"],
             False,
             False,
+            False,
             FeedbackSurveyConfig(
                 has_feedback_survey=False,
                 is_feedback_survey_optional=False,
                 has_section_feedback=False,
                 is_section_feedback_optional=False,
+                has_research_survey=False,
+                is_research_survey_optional=False,
             ),
             "NOT_STARTED",
         ),
@@ -324,11 +364,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["NOT_STARTED"],
             False,
             False,
+            False,
             FeedbackSurveyConfig(
                 has_feedback_survey=True,
                 is_feedback_survey_optional=False,
                 has_section_feedback=True,
                 is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
             ),
             "NOT_STARTED",
         ),
@@ -336,11 +379,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["NOT_STARTED"],
             True,
             True,
+            True,
             FeedbackSurveyConfig(
                 has_feedback_survey=True,
                 is_feedback_survey_optional=False,
                 has_section_feedback=True,
                 is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
             ),
             "NOT_STARTED",
         ),
@@ -348,11 +394,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["NOT_STARTED", "COMPLETED"],
             False,
             False,
+            False,
             FeedbackSurveyConfig(
                 has_feedback_survey=False,
                 is_feedback_survey_optional=False,
                 has_section_feedback=False,
                 is_section_feedback_optional=False,
+                has_research_survey=False,
+                is_research_survey_optional=False,
             ),
             "IN_PROGRESS",
         ),
@@ -360,11 +409,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["NOT_STARTED", "COMPLETED"],
             False,
             False,
+            False,
             FeedbackSurveyConfig(
                 has_feedback_survey=True,
                 is_feedback_survey_optional=False,
                 has_section_feedback=True,
                 is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
             ),
             "IN_PROGRESS",
         ),
@@ -372,11 +424,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["NOT_STARTED", "COMPLETED"],
             True,
             True,
+            True,
             FeedbackSurveyConfig(
                 has_feedback_survey=True,
                 is_feedback_survey_optional=False,
                 has_section_feedback=True,
                 is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
             ),
             "IN_PROGRESS",
         ),
@@ -384,11 +439,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["COMPLETED", "COMPLETED"],
             True,
             True,
+            True,
             FeedbackSurveyConfig(
                 has_feedback_survey=True,
                 is_feedback_survey_optional=False,
                 has_section_feedback=True,
                 is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
             ),
             "COMPLETED",
         ),
@@ -396,11 +454,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["COMPLETED", "COMPLETED"],
             False,
             False,
+            False,
             FeedbackSurveyConfig(
                 has_feedback_survey=True,
                 is_feedback_survey_optional=False,
                 has_section_feedback=True,
                 is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
             ),
             "IN_PROGRESS",
         ),
@@ -408,11 +469,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["COMPLETED", "COMPLETED"],
             False,
             False,
+            False,
             FeedbackSurveyConfig(
                 has_feedback_survey=False,
                 is_feedback_survey_optional=False,
                 has_section_feedback=False,
                 is_section_feedback_optional=False,
+                has_research_survey=False,
+                is_research_survey_optional=False,
             ),
             "COMPLETED",
         ),
@@ -420,11 +484,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["SUBMITTED"],
             True,
             True,
+            True,
             FeedbackSurveyConfig(
                 has_feedback_survey=True,
                 is_feedback_survey_optional=False,
                 has_section_feedback=True,
                 is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
             ),
             "SUBMITTED",
         ),
@@ -432,11 +499,14 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["SUBMITTED"],
             False,
             False,
+            False,
             FeedbackSurveyConfig(
                 has_feedback_survey=True,
                 is_feedback_survey_optional=False,
                 has_section_feedback=True,
                 is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
             ),
             "SUBMITTED",
         ),
@@ -444,11 +514,44 @@ def test_is_feedback_survey_complete(mocker, end_survey_data, exp_result):
             ["COMPLETED"],
             True,
             True,
+            True,
             FeedbackSurveyConfig(
                 has_feedback_survey=True,
                 is_feedback_survey_optional=False,
                 has_section_feedback=True,
                 is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
+            ),
+            "COMPLETED",
+        ),
+        (
+            ["COMPLETED"],
+            True,
+            True,
+            False,
+            FeedbackSurveyConfig(
+                has_feedback_survey=True,
+                is_feedback_survey_optional=False,
+                has_section_feedback=True,
+                is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=False,
+            ),
+            "IN_PROGRESS",
+        ),
+        (
+            ["COMPLETED"],
+            True,
+            True,
+            False,
+            FeedbackSurveyConfig(
+                has_feedback_survey=True,
+                is_feedback_survey_optional=False,
+                has_section_feedback=True,
+                is_section_feedback_optional=False,
+                has_research_survey=True,
+                is_research_survey_optional=True,
             ),
             "COMPLETED",
         ),
@@ -459,6 +562,7 @@ def test_update_application_status(
     form_statuses,
     feedback_complete,
     survey_complete,
+    research_complete,
     feedback_survey_config,
     exp_status,
 ):
@@ -469,6 +573,10 @@ def test_update_application_status(
     mocker.patch(
         "db.queries.statuses.queries._is_feedback_survey_complete",
         return_value=survey_complete,
+    )
+    mocker.patch(
+        "db.queries.statuses.queries._is_research_survey_complete",
+        return_value=research_complete,
     )
     app_with_forms = MagicMock()
     app_with_forms.forms = []

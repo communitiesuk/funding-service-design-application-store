@@ -7,11 +7,6 @@ from db.queries import get_application
 from flask import current_app
 from flask.views import MethodView
 
-ASSESSMENT = "import_applications_group"
-ASSESSMENT_S3_KEY_CONST = "assessment"
-
-# from flask import request
-
 
 class QueueView(MethodView):
     def post_submitted_application_to_assessment(self, application_id=None):
@@ -21,7 +16,7 @@ class QueueView(MethodView):
             application_attributes = {
                 "application_id": {"StringValue": application_id, "DataType": "String"},
                 "S3Key": {
-                    "StringValue": ASSESSMENT_S3_KEY_CONST,
+                    "StringValue": "assessment",
                     "DataType": "String",
                 },
             }
@@ -37,7 +32,7 @@ class QueueView(MethodView):
                 message_id = sqs_extended_client.submit_single_message(
                     queue_url=Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
                     message=json.dumps(application_with_form_json),
-                    message_group_id=ASSESSMENT,
+                    message_group_id="import_applications_group",
                     message_deduplication_id=str(uuid4()),  # ensures message uniqueness
                     extra_attributes=application_attributes,
                 )

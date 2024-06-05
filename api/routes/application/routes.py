@@ -46,9 +46,6 @@ from fsd_utils import evaluate_response
 from fsd_utils.config.notify_constants import NotifyConstants
 from sqlalchemy.orm.exc import NoResultFound
 
-ASSESSMENT = "import_applications_group"
-ASSESSMENT_S3_KEY_CONST = "assessment"
-
 
 class ApplicationsView(MethodView):
     def get(self, **kwargs):
@@ -250,23 +247,22 @@ class ApplicationsView(MethodView):
             return str(e), 500, {"x-error": "Error"}
 
     def _send_assessment_queue(self, application_id, application_with_form_json):
+        """
+        Send message to sqs queue once application is submitted
+        """
         application_attributes = {
             "application_id": {"StringValue": application_id, "DataType": "String"},
             "S3Key": {
-                "StringValue": ASSESSMENT_S3_KEY_CONST,
+                "StringValue": "assessment",
                 "DataType": "String",
             },
         }
-        # Submit message to queue, in a future state this can trigger the
-        # assessment service to import the application
-        #  (currently assessment is using a CRON timer to pick up messages,
-        # not a webhook for triggers)
         try:
             sqs_extended_client = self._get_sqs_client()
             message_id = sqs_extended_client.submit_single_message(
                 queue_url=Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL,
                 message=json.dumps(application_with_form_json),
-                message_group_id=ASSESSMENT,
+                message_group_id="import_applications_group",
                 message_deduplication_id=str(uuid4()),  # ensures message uniqueness
                 extra_attributes=application_attributes,
             )

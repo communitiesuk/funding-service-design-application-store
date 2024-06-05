@@ -13,7 +13,7 @@ class NotificationError(Exception):
         super().__init__(self.message)
 
 
-class AssessmentError(Exception):
+class SubmitError(Exception):
     """Exception raises an an error
 
     Attributes:

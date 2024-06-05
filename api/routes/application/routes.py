@@ -34,8 +34,8 @@ from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
 from external_services import get_round_eoi_schema
-from external_services.exceptions import AssessmentError
 from external_services.exceptions import NotificationError
+from external_services.exceptions import SubmitError
 from external_services.models.notification import Notification
 from flask import current_app
 from flask import request
@@ -177,7 +177,7 @@ class ApplicationsView(MethodView):
                 "round_name": round_name,
             }
 
-            self._send_assessment_queue(application_id, application_with_form_json)
+            self._send_submit_queue(application_id, application_with_form_json)
 
             if round_data.is_expression_of_interest:
                 full_name = (
@@ -237,23 +237,21 @@ class ApplicationsView(MethodView):
                 f"Notification error on sending SUBMIT notification for application {application_id}"
             )
             return str(e), 500, {"x-error": "notification error"}
-        except AssessmentError as e:
-            current_app.logger.exception(
-                f"Assessment error on sending SUBMIT assessment for application {application_id}"
-            )
-            return str(e), 500, {"x-error": "assessment error"}
+        except SubmitError as e:
+            current_app.logger.exception(f"Submit error on sending SUBMIT application {application_id}")
+            return str(e), 500, {"x-error": "Submit error"}
         except Exception as e:
             current_app.logger.exception(f"Error on sending SUBMIT notification for application {application_id}")
             return str(e), 500, {"x-error": "Error"}
 
-    def _send_assessment_queue(self, application_id, application_with_form_json):
+    def _send_submit_queue(self, application_id, application_with_form_json):
         """
         Send message to sqs queue once application is submitted
         """
         application_attributes = {
             "application_id": {"StringValue": application_id, "DataType": "String"},
             "S3Key": {
-                "StringValue": "assessment",
+                "StringValue": "submit",
                 "DataType": "String",
             },
         }
@@ -270,7 +268,7 @@ class ApplicationsView(MethodView):
         except Exception as e:
             current_app.logger.error("An error occurred while sending message")
             current_app.logger.error(e)
-            raise AssessmentError(message="Sorry, the assessment could not be sent")
+            raise SubmitError(message="Sorry, cannot submit the message")
 
     def post_feedback(self):
         args = request.get_json()

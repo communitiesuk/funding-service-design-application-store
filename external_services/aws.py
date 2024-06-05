@@ -3,7 +3,6 @@ from os import getenv
 
 import boto3
 from config import Config
-from fsd_utils.services.aws import SQSClient
 
 _KEY_PARTS = ("application_id", "form", "path", "component_id", "filename")
 
@@ -15,19 +14,9 @@ if getenv("PRIMARY_QUEUE_URL", "Primary Queue URL Not Set") == "Primary Queue UR
         region_name=Config.AWS_REGION,
         endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
     )
-    _SQS_CLIENT = SQSClient(
-        aws_access_key_id=Config.AWS_SQS_ACCESS_KEY_ID,
-        aws_secret_access_key=Config.AWS_SQS_SECRET_ACCESS_KEY,
-        region_name=Config.AWS_SQS_REGION,
-        endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
-    )
 else:
     _S3_CLIENT = boto3.client(
         "s3",
-        region_name=Config.AWS_REGION,
-        endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
-    )
-    _SQS_CLIENT = SQSClient(
         region_name=Config.AWS_REGION,
         endpoint_url=getenv("AWS_ENDPOINT_OVERRIDE", None),
     )

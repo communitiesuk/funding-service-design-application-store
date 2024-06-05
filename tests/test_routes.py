@@ -1,15 +1,20 @@
 import json
+from unittest import mock
 from unittest.mock import ANY
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+import boto3
 import pytest
+from config import Config
 from db.exceptions import ApplicationError
 from db.models import Applications
 from db.models import ResearchSurvey
 from db.queries.application import get_all_applications
 from db.schemas import ApplicationSchema
 from external_services.models.fund import Fund
+from fsd_utils.services.aws_extended_client import SQSExtendedClient
+from moto import mock_aws
 from tests.helpers import application_expected_data
 from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
@@ -538,7 +543,7 @@ def test_put_returns_400_on_submitted_application(client, _db, seed_application_
     assert b"Not allowed to edit a submitted application." in response.data
 
 
-@pytest.mark.function_calls_to_mock(["api.routes.application.routes._SQS_CLIENT.submit_single_message"])
+@mock_aws
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_successful_submitted_application(
     client,
@@ -547,7 +552,6 @@ def test_successful_submitted_application(
     seed_application_records,
     mocker,
     mock_get_fund_data,
-    mock_submit_message_to_queue,
     mock_get_round,
 ):
     """
@@ -555,31 +559,27 @@ def test_successful_submitted_application(
     WHEN an application is submitted
     THEN a 201 response is received in the correct format
     """
-    mocker.patch("db.queries.application.queries.list_files_by_prefix", new=lambda _: [])
-    seed_application_records[0].status = "SUBMITTED"
+    with mock.patch("api.routes.application.routes.ApplicationsView._get_sqs_client") as mock_get_sqs_client:
+        mock_get_sqs_client.return_value = _mock_aws_client()
+        mocker.patch("db.queries.application.queries.list_files_by_prefix", new=lambda _: [])
+        seed_application_records[0].status = "SUBMITTED"
 
-    _db.session.add(seed_application_records[0])
-    _db.session.commit()
+        _db.session.add(seed_application_records[0])
+        _db.session.commit()
 
-    # mock successful notification
-    response = client.post(
-        f"/applications/{seed_application_records[0].id}/submit",
-        follow_redirects=True,
-    )
+        # mock successful notification
+        response = client.post(
+            f"/applications/{seed_application_records[0].id}/submit",
+            follow_redirects=True,
+        )
 
-    assert response.status_code == 201
-    assert all(k in response.json for k in ("id", "email", "reference", "eoi_decision"))
+        assert response.status_code == 201
+        assert all(k in response.json for k in ("id", "email", "reference", "eoi_decision"))
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_stage_unsubmitted_application_to_queue_fails(
-    client,
-    mock_successful_submit_notification,
-    _db,
-    seed_application_records,
-    mocker,
-    mock_get_fund_data,
-    mock_submit_message_to_queue,
+    client, mock_successful_submit_notification, _db, seed_application_records, mocker, mock_get_fund_data
 ):
     """
     GIVEN We request to stage an unsubmitted application to the assessment queue
@@ -602,36 +602,62 @@ def test_stage_unsubmitted_application_to_queue_fails(
     assert "Application must be submitted before it can be assessed" in response.text
 
 
-@pytest.mark.function_calls_to_mock(["api.routes.queues.routes._SQS_CLIENT.submit_single_message"])
+@mock_aws
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_stage_submitted_application_to_queue_fails(
-    client,
-    mock_successful_submit_notification,
-    _db,
-    seed_application_records,
-    mocker,
-    mock_get_fund_data,
-    mock_submit_message_to_queue,
+    client, mock_successful_submit_notification, _db, seed_application_records, mocker, mock_get_fund_data
 ):
     """
     GIVEN We request to stage an submitted application to the assessment queue
     WHEN an application is submitted
     THEN a 201 response is received in the correct format
     """
-    mocker.patch("db.queries.application.queries.list_files_by_prefix", new=lambda _: [])
-    seed_application_records[0].status = "SUBMITTED"
+    with mock.patch("api.routes.queues.routes.QueueView._get_sqs_client") as mock_get_sqs_client:
+        mock_get_sqs_client.return_value = _mock_aws_client()
+        mocker.patch("db.queries.application.queries.list_files_by_prefix", new=lambda _: [])
+        seed_application_records[0].status = "SUBMITTED"
 
-    _db.session.add(seed_application_records[0])
-    _db.session.commit()
+        _db.session.add(seed_application_records[0])
+        _db.session.commit()
 
-    # mock successful notification
-    response = client.post(
-        f"/queue_for_assessment/{seed_application_records[0].id}",
-        follow_redirects=True,
+        # mock successful notification
+        response = client.post(
+            f"/queue_for_assessment/{seed_application_records[0].id}",
+            follow_redirects=True,
+        )
+
+        assert response.status_code == 201
+        assert "Message queued, message_id is:" in response.text
+
+
+def _mock_aws_client():
+    sqs_extended_client = SQSExtendedClient(
+        aws_access_key_id="test_accesstoken",  # pragma: allowlist secret
+        aws_secret_access_key="secret_key",  # pragma: allowlist secret
+        region_name="us-east-1",
+        large_payload_support=Config.AWS_MSG_BUCKET_NAME,
+        always_through_s3=True,
+        delete_payload_from_s3=True,
+        logger=MagicMock(),
     )
-
-    assert response.status_code == 201
-    assert "Message queued, message_id is:" in response.text
+    s3_connection = boto3.client(
+        "s3",
+        region_name="us-east-1",
+        aws_access_key_id="test_accesstoken",  # pragma: allowlist secret
+        aws_secret_access_key="secret_key",  # pragma: allowlist secret
+    )
+    sqs_connection = boto3.client(
+        "sqs",
+        region_name="us-east-1",
+        aws_access_key_id="test_accesstoken",  # pragma: allowlist secret
+        aws_secret_access_key="secret_key",  # pragma: allowlist secret
+    )
+    s3_connection.create_bucket(Bucket=Config.AWS_MSG_BUCKET_NAME)
+    queue_response = sqs_connection.create_queue(QueueName="import-queue.fifo", Attributes={"FifoQueue": "true"})
+    sqs_extended_client.sqs_client = sqs_connection
+    sqs_extended_client.s3_client = s3_connection
+    Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = queue_response["QueueUrl"]
+    return sqs_extended_client
 
 
 def test_post_research_survey_data(client, mocker):

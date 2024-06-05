@@ -82,11 +82,12 @@ def application_deadline_reminder(flask_app):
                             current_app.logger.info(f"Sending reminder {count} of {len(unique_email_account)}")
 
                             try:
-                                Notification.send(
+                                message_id = Notification.send(
                                     template_type=Config.NOTIFY_TEMPLATE_APPLICATION_DEADLINE_REMINDER,  # noqa: E501
                                     to_email=email.get("email"),
                                     content=application,
                                 )
+                                current_app.logger.info(f"Message added to the queue msg_id: [{message_id}]")
                                 if len(unique_application_email_addresses) == count:
                                     try:
                                         application_reminder_endpoint = (

@@ -153,6 +153,13 @@ paths:
           schema:
             type: string
             format: path
+        - in: query
+          name: with_questions_file
+          style: form
+          schema:
+            type: boolean
+          required: false
+          explode: false
 
   /applications/forms:
     put:

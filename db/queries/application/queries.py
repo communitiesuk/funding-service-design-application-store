@@ -1,7 +1,9 @@
+import base64
 import random
 import string
 from datetime import datetime
 from datetime import timezone
+from io import BytesIO
 from itertools import groupby
 from typing import Optional
 
@@ -15,12 +17,16 @@ from external_services import get_round
 from external_services.aws import FileData
 from external_services.aws import list_files_by_prefix
 from flask import current_app
+from fsd_utils import extract_questions_and_answers
+from fsd_utils import generate_text_of_application
 from sqlalchemy import func
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import noload
 from sqlalchemy.sql.expression import Select
+
+DOCUMENT_UPLOAD_SIZE_LIMIT = 2 * 1024 * 1024
 
 
 def get_application(app_id, include_forms=False, as_json=False) -> dict | Applications:
@@ -176,6 +182,24 @@ def get_count_by_status(round_ids: Optional[list] = [], fund_ids: Optional[list]
             )
         results.append({"fund_id": fund_id, "rounds": rounds})
     return results
+
+
+def create_qa_base64file(application_data: dict, **params):
+    with_file = params.get("with_questions_file", None)
+    if with_file:
+        fund_details = get_fund(application_data["fund_id"])
+        q_and_a = extract_questions_and_answers(application_data["forms"], application_data["language"])
+        contents = BytesIO(
+            bytes(generate_text_of_application(q_and_a, fund_details.name, application_data["language"]), "utf-8")
+        ).read()
+        if len(contents) > DOCUMENT_UPLOAD_SIZE_LIMIT:
+            raise ValueError("File is larger than 2MB")
+        application_data = {
+            **application_data,
+            "questions_file": base64.b64encode(contents).decode("ascii"),
+        }
+        current_app.logger.info("Sending the Q and A base64 encoded file with the response")
+    return application_data
 
 
 def search_applications(**params):

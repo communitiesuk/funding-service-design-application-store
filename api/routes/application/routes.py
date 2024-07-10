@@ -79,10 +79,9 @@ class ApplicationsView(MethodView):
         add_new_forms(forms=empty_forms, application_id=application.id)
         return application.as_dict(), 201
 
-    def get_by_id(self, application_id, **kwargs):
+    def get_by_id(self, application_id, with_questions_file=None):
         try:
             return_dict = get_application(application_id, as_json=True, include_forms=True)
-            with_questions_file = kwargs.get("with_questions_file", None)
             return_dict = create_qa_base64file(return_dict, with_questions_file)
             return return_dict, 200
         except ValueError as e:

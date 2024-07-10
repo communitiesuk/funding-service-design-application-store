@@ -22,6 +22,7 @@ from db.queries import search_applications
 from db.queries import submit_application
 from db.queries import update_form
 from db.queries import upsert_feedback
+from db.queries.application import create_qa_base64file
 from db.queries.feedback import retrieve_all_feedbacks_and_surveys
 from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.feedback import upsert_end_of_application_survey_data
@@ -78,9 +79,10 @@ class ApplicationsView(MethodView):
         add_new_forms(forms=empty_forms, application_id=application.id)
         return application.as_dict(), 201
 
-    def get_by_id(self, application_id):
+    def get_by_id(self, application_id, with_questions_file=False):
         try:
             return_dict = get_application(application_id, as_json=True, include_forms=True)
+            return_dict = create_qa_base64file(return_dict, with_questions_file)
             return return_dict, 200
         except ValueError as e:
             current_app.logger.error("Value error getting application ID: {application_id}")

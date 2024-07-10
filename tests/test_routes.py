@@ -335,6 +335,31 @@ def test_get_application_by_application_id(client, seed_application_records):
     )
 
 
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_get_application_by_application_id_and_with_qa_file(client, seed_application_records):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a GET /applications/<application_id> request is sent
+    THEN the response should contain the application object
+    """
+
+    id = seed_application_records[0].id
+    serialiser = ApplicationSchema()
+    expected_data = serialiser.dump(seed_application_records[0])
+    expected_data = {**expected_data, "questions_file": "KioqKioqKioqIEdlbmVyYXRlZCB0ZXN0IGZ1bmQgKioqKioqKioqKgo="}
+    expected_data_within_response(
+        client,
+        f"/applications/{id}?with_questions_file=true",
+        expected_data,
+        exclude_regex_paths=key_list_to_regex(["reference", "started_at", "project_name", "forms"]),
+        # Lists are annoying to deal with in deepdiff
+        # especially when they contain dicts...so in this
+        # instance we ignore them rather then write some
+        # regex. (this recursively ignores 'forms')
+        exclude_types=[list],
+    )
+
+
 @pytest.mark.apps_to_insert(
     # element 1 has no lang set
     [test_application_data[1]]
@@ -354,6 +379,29 @@ def test_get_application_by_application_id_when_db_record_has_no_language_set(cl
     )
     response_data = json.loads(response.data)
     assert response_data["language"] == "en"
+
+
+@pytest.mark.apps_to_insert(
+    # element 1 has no lang set
+    [test_application_data[1]]
+)
+def test_get_application_by_application_id_when_db_record_has_no_language_set_and_with_qa_file(
+    client, seed_application_records
+):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN a GET /applications/<application_id> request is sent for an
+        application with no language set (such as a pre-language
+        functionality application)
+    THEN the response should contain the application object with a default
+        language of english ('en')
+    """
+    response = client.get(
+        f"/applications/{seed_application_records[0].id}?with_questions_file=true",
+        follow_redirects=True,
+    )
+    response_data = json.loads(response.data)
+    assert response_data["questions_file"] is not None
 
 
 def testHealthcheckRoute(client):

@@ -79,7 +79,7 @@ class ApplicationsView(MethodView):
         add_new_forms(forms=empty_forms, application_id=application.id)
         return application.as_dict(), 201
 
-    def get_by_id(self, application_id, with_questions_file=None):
+    def get_by_id(self, application_id, with_questions_file=False):
         try:
             return_dict = get_application(application_id, as_json=True, include_forms=True)
             return_dict = create_qa_base64file(return_dict, with_questions_file)

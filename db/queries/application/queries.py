@@ -183,8 +183,13 @@ def get_count_by_status(round_ids: Optional[list] = [], fund_ids: Optional[list]
     return results
 
 
-def create_qa_base64file(application_data: dict, with_questions_file):
-    if with_questions_file is not None and with_questions_file:
+def create_qa_base64file(application_data: dict, with_questions_file: bool):
+    """
+    If the query param with_questions_file is True then it will get the application questions ans answers,
+    and then it will generate a formatted text document for an application with questions and answers.
+    and this file will be base64 encoded.
+    """
+    if with_questions_file:
         fund_details = get_fund(application_data["fund_id"])
         q_and_a = extract_questions_and_answers(application_data["forms"], application_data["language"])
         contents = BytesIO(

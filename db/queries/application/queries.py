@@ -7,6 +7,7 @@ from io import BytesIO
 from itertools import groupby
 from typing import Optional
 
+from config import Config
 from db import db
 from db.exceptions import ApplicationError
 from db.models import Applications
@@ -25,8 +26,6 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import noload
 from sqlalchemy.sql.expression import Select
-
-DOCUMENT_UPLOAD_SIZE_LIMIT = 2 * 1024 * 1024
 
 
 def get_application(app_id, include_forms=False, as_json=False) -> dict | Applications:
@@ -184,15 +183,14 @@ def get_count_by_status(round_ids: Optional[list] = [], fund_ids: Optional[list]
     return results
 
 
-def create_qa_base64file(application_data: dict, **params):
-    with_file = params.get("with_questions_file", None)
-    if with_file:
+def create_qa_base64file(application_data: dict, with_questions_file):
+    if with_questions_file is not None and with_questions_file:
         fund_details = get_fund(application_data["fund_id"])
         q_and_a = extract_questions_and_answers(application_data["forms"], application_data["language"])
         contents = BytesIO(
             bytes(generate_text_of_application(q_and_a, fund_details.name, application_data["language"]), "utf-8")
         ).read()
-        if len(contents) > DOCUMENT_UPLOAD_SIZE_LIMIT:
+        if len(contents) > Config.DOCUMENT_UPLOAD_SIZE_LIMIT:
             raise ValueError("File is larger than 2MB")
         application_data = {
             **application_data,

@@ -82,7 +82,8 @@ class ApplicationsView(MethodView):
     def get_by_id(self, application_id, **kwargs):
         try:
             return_dict = get_application(application_id, as_json=True, include_forms=True)
-            return_dict = create_qa_base64file(return_dict, **kwargs)
+            with_questions_file = kwargs.get("with_questions_file", None)
+            return_dict = create_qa_base64file(return_dict, with_questions_file)
             return return_dict, 200
         except ValueError as e:
             current_app.logger.error("Value error getting application ID: {application_id}")

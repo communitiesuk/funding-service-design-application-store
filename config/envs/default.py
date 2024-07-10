@@ -68,6 +68,7 @@ class DefaultConfig:
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {"future": True}
+    DOCUMENT_UPLOAD_SIZE_LIMIT = 2 * 1024 * 1024
 
     # ---------------
     # AWS Overall Config

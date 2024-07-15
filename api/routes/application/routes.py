@@ -216,6 +216,8 @@ class ApplicationsView(MethodView):
                 }
 
             if should_send_email:
+                contents["application"] = create_qa_base64file(contents.get("application"), True)
+                del contents["application"]["forms"]
                 message_id = Notification.send(
                     notify_template,
                     account.email,

@@ -1,3 +1,4 @@
+import base64
 from unittest.mock import ANY
 from uuid import uuid4
 
@@ -16,11 +17,13 @@ from config.key_report_mappings.model import KeyReportMapping
 from db.models import Applications
 from db.models import Forms
 from db.queries.application import create_application
+from db.queries.application import create_qa_base64file
 from db.queries.application import process_files
 from db.queries.reporting.queries import export_application_statuses_to_csv
 from db.queries.reporting.queries import map_application_key_fields
 from external_services.aws import FileData
 from external_services.models.fund import Fund
+from tests.seed_data.application_data import expected_application_json
 
 
 @pytest.mark.parametrize(
@@ -58,6 +61,32 @@ def test_create_application_language_choice(mocker, fund_supports_welsh, request
         reference=ANY,
         attempt=0,
     )
+
+
+def test_application_map_contents_and_base64_convertor(mocker, app):
+    """
+    GIVEN: our service running with app_context fixture.
+    WHEN: two separate methods on different classes chained together with given
+     expected incoming JSON.
+    THEN: we check if expected output is returned.
+    """
+    with app.app_context():
+        expected_json = expected_application_json
+        mock_fund = Fund(
+            "Community Ownership Fund",
+            str(uuid4()),
+            "TEST",
+            "Testing fund",
+            False,
+            {"en": "English Fund Name"},
+            [],
+        )
+        mocker.patch("db.queries.application.queries.get_fund", return_value=mock_fund)
+        expected_json = create_qa_base64file(expected_json["content"]["application"], True)
+
+        assert "Jack-Simon" in base64.b64decode(expected_json["questions_file"]).decode()
+        assert "Yes" in base64.b64decode(expected_json["questions_file"]).decode()
+        assert "No" in base64.b64decode(expected_json["questions_file"]).decode()
 
 
 @pytest.mark.parametrize(

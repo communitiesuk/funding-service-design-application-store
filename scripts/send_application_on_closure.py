@@ -173,5 +173,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    with app.app_context():
+    with app.app.app_context():
         main()

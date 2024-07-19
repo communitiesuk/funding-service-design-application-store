@@ -59,8 +59,8 @@ class ApplicationsView(MethodView):
         sorted_applications = order_applications(matching_applications, order_by, order_rev)
         return sorted_applications, 200, response_headers
 
-    def post(self):
-        args = request.get_json()
+    def post(self, **kwargs):
+        args = request.json
         account_id = args["account_id"]
         round_id = args["round_id"]
         fund_id = args["fund_id"]
@@ -142,8 +142,9 @@ class ApplicationsView(MethodView):
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}, 404
 
-    def put(self):
-        request_json = request.get_json(force=True)
+    def put(self, **kwargs):
+
+        request_json = request.json
         form_dict = {
             "application_id": request_json["metadata"]["application_id"],
             "form_name": request_json["metadata"].get("form_name"),
@@ -271,7 +272,7 @@ class ApplicationsView(MethodView):
             raise SubmitError(message="Sorry, cannot submit the message")
 
     def post_feedback(self):
-        args = request.get_json()
+        args = request.get_json
         application_id = args["application_id"]
         fund_id = args["fund_id"]
         round_id = args["round_id"]
@@ -303,7 +304,7 @@ class ApplicationsView(MethodView):
         }, 404
 
     def post_end_of_application_survey_data(self):
-        args = request.get_json()
+        args = request.get_json
         application_id = args["application_id"]
         fund_id = args["fund_id"]
         round_id = args["round_id"]
@@ -369,7 +370,7 @@ class ApplicationsView(MethodView):
         Returns:
             Research survey data in dict form and HTTP status code 201 (Created).
         """
-        args = request.get_json()
+        args = request.json
         application_id = args["application_id"]
         fund_id = args["fund_id"]
         round_id = args["round_id"]

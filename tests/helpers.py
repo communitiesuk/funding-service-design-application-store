@@ -75,7 +75,7 @@ def expected_data_within_response(
         response = test_client.post(endpoint, data=data, follow_redirects=True)
     else:
         response = test_client.get(endpoint, follow_redirects=True)
-    response_data = json.loads(response.data)
+    response_data =response.json()
     diff = DeepDiff(
         expected_data,
         response_data,
@@ -109,8 +109,7 @@ def post_data(test_client, endpoint: str, data: dict):
     """
     return test_client.post(
         endpoint,
-        data=json.dumps(data),
-        content_type="application/json",
+        json=data,
         follow_redirects=True,
     )
 
@@ -123,10 +122,9 @@ def put_data(test_client, endpoint: str, data: dict):
         endpoint (str): The POST request endpoint
         data (dict): The content to post to the endpoint provided
     """
-    test_client.put(
+    return test_client.put(
         endpoint,
-        data=json.dumps(data),
-        content_type="application/json",
+        data={},
         follow_redirects=True,
     )
 
@@ -144,7 +142,7 @@ def count_fund_applications(test_client, fund_id: str, expected_application_coun
     """
     fund_applications_endpoint = f"/applications?fund_id={fund_id}"
     response = test_client.get(fund_applications_endpoint, follow_redirects=True)
-    response_data = json.loads(response.data)
+    response_data = response.json()
     error_message = (
         "Response from "
         + fund_applications_endpoint

@@ -20,13 +20,13 @@ from tests.helpers import count_fund_applications
 from tests.helpers import expected_data_within_response
 from tests.helpers import get_row_by_pk
 from tests.helpers import key_list_to_regex
-from tests.helpers import post_data
+from tests.helpers import post_data, put_data
 from tests.helpers import test_application_data
 from tests.helpers import test_question_data
 
 
 @pytest.mark.unique_fund_round(True)
-def test_create_application_is_successful(client, unique_fund_round, mock_get_application_display_config):
+def test_create_application_is_successful(flask_test_client, unique_fund_round, mock_get_application_display_config):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -45,12 +45,12 @@ def test_create_application_is_successful(client, unique_fund_round, mock_get_ap
         "round_id": unique_fund_round[0],
         "language": "cy",
     }
-    response = post_data(client, "/applications", application_data_a1)
-    assert response.json["language"] == "en"
-    count_fund_applications(client, unique_fund_round[0], 1)
-    response = post_data(client, "/applications", application_data_a2)
-    assert response.json["language"] == "cy"
-    count_fund_applications(client, unique_fund_round[0], 2)
+    response = post_data(flask_test_client, "/applications", application_data_a1)
+    assert response.json()["language"] == "en"
+    count_fund_applications(flask_test_client, unique_fund_round[0], 1)
+    response = post_data(flask_test_client, "/applications", application_data_a2)
+    assert response.json()["language"] == "cy"
+    count_fund_applications(flask_test_client, unique_fund_round[0], 2)
 
 
 @pytest.mark.parametrize(
@@ -62,7 +62,7 @@ def test_create_application_is_successful(client, unique_fund_round, mock_get_ap
         ("cy", False, "en"),
     ],
 )
-def test_create_application_language_choice(mocker, client, fund_supports_welsh, requested_language, exp_language):
+def test_create_application_language_choice(mocker, flask_test_client, fund_supports_welsh, requested_language, exp_language):
     mock_fund = Fund(
         "Generated test fund no welsh",
         str(uuid4()),
@@ -91,7 +91,7 @@ def test_create_application_language_choice(mocker, client, fund_supports_welsh,
         "round_id": "",
         "language": requested_language,
     }
-    response = post_data(client, "/applications", application_data_a1)
+    response = post_data(flask_test_client, "/applications", application_data_a1)
     assert response.status_code == 201
 
     blank_forms_mock.assert_called_once_with(
@@ -107,7 +107,7 @@ def test_create_application_language_choice(mocker, client, fund_supports_welsh,
     )
 
 
-def test_create_application_creates_formatted_reference(client, clear_test_data, mock_get_application_display_config):
+def test_create_application_creates_formatted_reference(flask_test_client, clear_test_data, mock_get_application_display_config):
     """
     GIVEN We have a functioning Application Store API
     WHEN we try to create an application
@@ -119,20 +119,19 @@ def test_create_application_creates_formatted_reference(client, clear_test_data,
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
         "language": "en",
     }
-    response = client.post(
+    response = flask_test_client.post(
         "/applications",
-        data=json.dumps(create_application_json),
-        content_type="application/json",
+        json=create_application_json,
         follow_redirects=True,
     )
-    application = response.json
+    application = response.json()
     assert application["reference"].startswith("TEST-TEST")
     assert application["reference"][-6:].isupper()
     assert application["reference"][-6:].isalpha()
 
 
 def test_create_application_creates_unique_reference(
-    client,
+    flask_test_client,
     mock_random_choices,
     clear_test_data,
     mock_get_application_display_config,
@@ -148,27 +147,26 @@ def test_create_application_creates_unique_reference(
         "round_id": "c603d114-5364-4474-a0c4-c41cbf4d3bbd",
         "language": "en",
     }
-    response = client.post(
-        "/applications",
-        data=json.dumps(create_application_json),
-        content_type="application/json",
-        follow_redirects=True,
-    )
-    application = response.json
+    response = post_data(flask_test_client, "/applications", create_application_json)
+    # response = flask_test_client.post(
+    #     "/applications",
+    #     json=create_application_json,
+    #     follow_redirects=True,
+    # )
+    application = response.json()
     assert application["reference"] == "TEST-TEST-ABCDEF"
 
     with pytest.raises(ApplicationError) as ex_info:
-        client.post(
+        flask_test_client.post(
             "/applications",
-            data=json.dumps(create_application_json),
-            content_type="application/json",
+            json=create_application_json,
             follow_redirects=True,
         )
     assert str(ex_info.value).startswith("Max (10) tries exceeded for create application with application key ABCDEF")
 
 
 @pytest.mark.apps_to_insert(test_application_data)
-def test_get_all_applications(client):
+def test_get_all_applications(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications with no set params
@@ -177,7 +175,7 @@ def test_get_all_applications(client):
     serialiser = ApplicationSchema(exclude=["forms"])
     expected_data = [serialiser.dump(row) for row in get_all_applications()]
     expected_data_within_response(
-        client,
+        flask_test_client,
         "/applications",
         expected_data,
         exclude_regex_paths=key_list_to_regex(["round_name", "date_submitted", "last_edited"]),
@@ -186,14 +184,14 @@ def test_get_all_applications(client):
 
 @pytest.mark.apps_to_insert([{"account_id": "unique_user", "language": "en"}])
 @pytest.mark.unique_fund_round(True)
-def test_get_applications_of_account_id(client, seed_application_records, unique_fund_round):
+def test_get_applications_of_account_id(flask_test_client, seed_application_records, unique_fund_round):
     """
     GIVEN We have a functioning Application Store API
     WHEN a request for applications of account_id
     THEN the response should return applications of the account_id
     """
     expected_data_within_response(
-        client,
+        flask_test_client,
         "/applications?account_id=unique_user",
         [seed_application_records[0].as_dict()],
         exclude_regex_paths=key_list_to_regex(
@@ -209,7 +207,7 @@ def test_get_applications_of_account_id(client, seed_application_records, unique
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_section_of_application(client, seed_application_records):
+def test_update_section_of_application(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -224,20 +222,20 @@ def test_update_section_of_application(client, seed_application_records):
             "is_summary_page_submit": False,
         },
     }
-    response = client.put(
+    response = flask_test_client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
     )
     assert 201 == response.status_code
-    answer_found_list = [field["answer"] not in [None, ""] for field in response.json["questions"][0]["fields"]]
-    section_status = response.json["status"]
+    answer_found_list = [field["answer"] not in [None, ""] for field in response.json()["questions"][0]["fields"]]
+    section_status = response.json()["status"]
     assert all(answer_found_list)
     assert section_status == "IN_PROGRESS"
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_section_of_application_with_optional_field(client, seed_application_records):
+def test_update_section_of_application_with_optional_field(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -269,18 +267,18 @@ def test_update_section_of_application_with_optional_field(client, seed_applicat
             "is_summary_page_submit": False,
         },
     }
-    response = client.put(
+    response = flask_test_client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
     )
     assert 201 == response.status_code
-    section_status = response.json["status"]
+    section_status = response.json()["status"]
     assert section_status == "IN_PROGRESS"
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_section_of_application_with_incomplete_answers(client, seed_application_records):
+def test_update_section_of_application_with_incomplete_answers(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -301,18 +299,18 @@ def test_update_section_of_application_with_incomplete_answers(client, seed_appl
     # COMPLETE not IN_PROGRESS
     expected_data.update({"status": "IN_PROGRESS"})
     # exclude_question_keys = ["category", "index", "id"]
-    response = client.put(
+    response = flask_test_client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
     )
     assert 201 == response.status_code
-    section_status = response.json["status"]
+    section_status = response.json()["status"]
     assert section_status == "IN_PROGRESS"
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_get_application_by_application_id(client, seed_application_records):
+def test_get_application_by_application_id(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN a GET /applications/<application_id> request is sent
@@ -323,7 +321,7 @@ def test_get_application_by_application_id(client, seed_application_records):
     serialiser = ApplicationSchema()
     expected_data = serialiser.dump(seed_application_records[0])
     expected_data_within_response(
-        client,
+        flask_test_client,
         f"/applications/{id}",
         expected_data,
         exclude_regex_paths=key_list_to_regex(["reference", "started_at", "project_name", "forms"]),
@@ -339,7 +337,7 @@ def test_get_application_by_application_id(client, seed_application_records):
     # element 1 has no lang set
     [test_application_data[1]]
 )
-def test_get_application_by_application_id_when_db_record_has_no_language_set(client, seed_application_records):
+def test_get_application_by_application_id_when_db_record_has_no_language_set(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN a GET /applications/<application_id> request is sent for an
@@ -348,26 +346,26 @@ def test_get_application_by_application_id_when_db_record_has_no_language_set(cl
     THEN the response should contain the application object with a default
         language of english ('en')
     """
-    response = client.get(
+    response = flask_test_client.get(
         f"/applications/{seed_application_records[0].id}",
         follow_redirects=True,
     )
-    response_data = json.loads(response.data)
+    response_data = response.json()
     assert response_data["language"] == "en"
 
 
-def testHealthcheckRoute(client):
+def testHealthcheckRoute(flask_test_client):
     expected_result = {
         "checks": [{"check_flask_running": "OK"}, {"check_db": "OK"}],
         "version": "abc123",
     }
-    result = client.get("/healthcheck")
+    result = flask_test_client.get("/healthcheck")
     assert result.status_code == 200, "Unexpected status code"
     assert result.json == expected_result, "Unexpected json body"
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_section_of_application_changes_last_edited_field(client, seed_application_records):
+def test_update_section_of_application_changes_last_edited_field(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -413,7 +411,7 @@ def test_update_section_of_application_changes_last_edited_field(client, seed_ap
             "form_name": form_name,
         },
     }
-    response = client.put(
+    response = flask_test_client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
@@ -425,7 +423,7 @@ def test_update_section_of_application_changes_last_edited_field(client, seed_ap
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_section_of_application_does_not_change_last_edited_field(client, seed_application_records):
+def test_update_section_of_application_does_not_change_last_edited_field(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -439,7 +437,7 @@ def test_update_section_of_application_does_not_change_last_edited_field(client,
             "form_name": "declarations",
         },
     }
-    client.put(
+    flask_test_client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
@@ -450,7 +448,7 @@ def test_update_section_of_application_does_not_change_last_edited_field(client,
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_update_project_name_of_application(client, seed_application_records):
+def test_update_project_name_of_application(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN a put is made into the 'project information' section
@@ -479,7 +477,7 @@ def test_update_project_name_of_application(client, seed_application_records):
             "form_name": form_name,
         },
     }
-    client.put(
+    flask_test_client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
@@ -490,7 +488,7 @@ def test_update_project_name_of_application(client, seed_application_records):
 
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
-def test_complete_form(client, seed_application_records):
+def test_complete_form(flask_test_client, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A put is made with a completed section
@@ -505,17 +503,17 @@ def test_complete_form(client, seed_application_records):
             "isSummaryPageSubmit": True,
         },
     }
-    response = client.put(
+    response = flask_test_client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
     )
-    section_status = response.json["status"]
+    section_status = response.json()["status"]
     assert section_status == "COMPLETED"
 
 
 @pytest.mark.apps_to_insert([test_application_data[2]])
-def test_put_returns_400_on_submitted_application(client, _db, seed_application_records):
+def test_put_returns_400_on_submitted_application(flask_test_client, _db, seed_application_records):
     """
     GIVEN We have a functioning Application Store API
     WHEN A there is an application with a status of SUBMITTED
@@ -533,7 +531,7 @@ def test_put_returns_400_on_submitted_application(client, _db, seed_application_
         "questions": test_question_data,
     }
 
-    response = client.put(
+    response = flask_test_client.put(
         "/applications/forms",
         json=section_put,
         follow_redirects=True,
@@ -546,7 +544,7 @@ def test_put_returns_400_on_submitted_application(client, _db, seed_application_
 @mock_aws
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_successful_submitted_application(
-    client,
+    flask_test_client,
     mock_successful_submit_notification,
     _db,
     seed_application_records,
@@ -568,7 +566,7 @@ def test_successful_submitted_application(
         _db.session.commit()
 
         # mock successful notification
-        response = client.post(
+        response = flask_test_client.post(
             f"/applications/{seed_application_records[0].id}/submit",
             follow_redirects=True,
         )
@@ -579,7 +577,7 @@ def test_successful_submitted_application(
 
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_stage_unsubmitted_application_to_queue_fails(
-    client, mock_successful_submit_notification, _db, seed_application_records, mocker, mock_get_fund_data
+    flask_test_client, mock_successful_submit_notification, _db, seed_application_records, mocker, mock_get_fund_data
 ):
     """
     GIVEN We request to stage an unsubmitted application to the assessment queue
@@ -593,7 +591,7 @@ def test_stage_unsubmitted_application_to_queue_fails(
     _db.session.commit()
 
     # mock successful notification
-    response = client.post(
+    response = flask_test_client.post(
         f"/queue_for_assessment/{seed_application_records[0].id}",
         follow_redirects=True,
     )
@@ -605,7 +603,7 @@ def test_stage_unsubmitted_application_to_queue_fails(
 @mock_aws
 @pytest.mark.apps_to_insert([test_application_data[0]])
 def test_stage_submitted_application_to_queue_fails(
-    client, mock_successful_submit_notification, _db, seed_application_records, mocker, mock_get_fund_data
+    flask_test_client, mock_successful_submit_notification, _db, seed_application_records, mocker, mock_get_fund_data
 ):
     """
     GIVEN We request to stage an submitted application to the assessment queue
@@ -621,7 +619,7 @@ def test_stage_submitted_application_to_queue_fails(
         _db.session.commit()
 
         # mock successful notification
-        response = client.post(
+        response = flask_test_client.post(
             f"/queue_for_assessment/{seed_application_records[0].id}",
             follow_redirects=True,
         )
@@ -660,7 +658,7 @@ def _mock_aws_client():
     return sqs_extended_client
 
 
-def test_post_research_survey_data(client, mocker):
+def test_post_research_survey_data(flask_test_client, mocker):
     request_data = {
         "application_id": "123",
         "fund_id": "fund456",
@@ -685,7 +683,7 @@ def test_post_research_survey_data(client, mocker):
     )
     mock_update_statuses = mocker.patch("api.routes.application.routes.update_statuses")
 
-    response = client.post("/application/research", data=json.dumps(request_data), content_type="application/json")
+    response = flask_test_client.post("/application/research", data=json.dumps(request_data))
 
     assert response.status_code == 201
     assert response.json == expected_survey_data
@@ -698,7 +696,7 @@ def test_post_research_survey_data(client, mocker):
     mock_update_statuses.assert_called_once_with(request_data["application_id"], form_name=None)
 
 
-def test_get_research_survey_data(client, mocker):
+def test_get_research_survey_data(flask_test_client, mocker):
     application_id = "123"
     expected_survey_data = {
         "id": 1,
@@ -720,22 +718,22 @@ def test_get_research_survey_data(client, mocker):
         "api.routes.application.routes.retrieve_research_survey_data", return_value=retrieved_survey_data
     )
 
-    response = client.get(f"/application/research?application_id={application_id}")
+    response = flask_test_client.get(f"/application/research?application_id={application_id}")
 
     assert response.status_code == 200
-    assert response.json == expected_survey_data
+    assert response.json() == expected_survey_data
     mock_retrieve_research_survey_data.assert_called_once_with(application_id)
 
 
-def test_get_research_survey_data_not_found(client, mocker):
+def test_get_research_survey_data_not_found(flask_test_client, mocker):
     application_id = "app123"
 
     mock_retrieve_research_survey_data = mocker.patch(
         "api.routes.application.routes.retrieve_research_survey_data", return_value=None
     )
 
-    response = client.get(f"/application/research?application_id={application_id}")
+    response = flask_test_client.get(f"/application/research?application_id={application_id}")
 
     assert response.status_code == 404
-    assert response.json == {"code": 404, "message": f"Research survey data for {application_id} not found"}
+    assert response.json() == {"code": 404, "message": f"Research survey data for {application_id} not found"}
     mock_retrieve_research_survey_data.assert_called_once_with(application_id)

@@ -11,15 +11,16 @@ from fsd_utils.healthchecks.healthcheck import Healthcheck
 from fsd_utils.logging import logging
 from fsd_utils.services.aws_extended_client import SQSExtendedClient
 from openapi.utils import get_bundled_specs
+from connexion import FlaskApp
 
 
-def create_app() -> Flask:
+def create_app() -> FlaskApp:
     init_sentry()
 
-    connexion_options = {
-        "swagger_url": "/",
-    }
-    connexion_app = connexion.FlaskApp(__name__, specification_dir="openapi/", options=connexion_options)
+    # connexion_options = {
+    #     "swagger_url": "/",
+    # }
+    connexion_app = connexion.FlaskApp(__name__, specification_dir="openapi/")
     connexion_app.add_api(
         get_bundled_specs("/openapi/api.yml"),
         validate_responses=True,
@@ -46,7 +47,7 @@ def create_app() -> Flask:
     health.add_check(FlaskRunningChecker())
     health.add_check(DbChecker(db))
 
-    return flask_app
+    return connexion_app
 
 
 def create_sqs_extended_client(flask_app):
@@ -76,3 +77,4 @@ def create_sqs_extended_client(flask_app):
 
 
 app = create_app()
+application = app.app

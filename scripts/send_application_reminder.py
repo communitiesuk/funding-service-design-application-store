@@ -17,7 +17,7 @@ import pytz  # noqa: E402
 
 
 def application_deadline_reminder(flask_app):
-    with flask_app.app_context():
+    with flask_app.app.app_context():
         uk_timezone = pytz.timezone("Europe/London")
         current_datetime = datetime.now(uk_timezone).replace(tzinfo=None)
         funds = external_services.get_data(Config.FUND_STORE_API_HOST + Config.FUNDS_ENDPOINT)

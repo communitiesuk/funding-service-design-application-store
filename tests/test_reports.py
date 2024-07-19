@@ -6,12 +6,11 @@ from tests.helpers import test_application_data
 
 
 @pytest.mark.apps_to_insert(test_application_data)
-def test_get_application_statuses_csv(client, seed_application_records, _db):
-    response = client.get(
+def test_get_application_statuses_csv(flask_test_client, seed_application_records, _db):
+    response = flask_test_client.get(
         "/applications/reporting/applications_statuses_data",
         follow_redirects=True,
     )
-
     lines = response.data.decode("utf-8").split("\r\n")
     assert lines[0] == "fund_id,round_id,NOT_STARTED,IN_PROGRESS,COMPLETED,SUBMITTED"
     assert f"{test_application_data[0]['fund_id']},{test_application_data[0]['round_id']},1,0,0,0" in lines
@@ -23,7 +22,7 @@ def test_get_application_statuses_csv(client, seed_application_records, _db):
     _db.session.add(app)
     _db.session.commit()
 
-    response = client.get(
+    response = flask_test_client.get(
         "/applications/reporting/applications_statuses_data",
         follow_redirects=True,
     )
@@ -97,7 +96,7 @@ def test_get_application_statuses_json_multi_fund(
     exp_in_progress,
     exp_submitted,
     exp_completed,
-    client,
+    flask_test_client,
     seed_data_multiple_funds_rounds,
     _db,
     mock_get_round,
@@ -114,9 +113,9 @@ def test_get_application_statuses_json_multi_fund(
         "/applications/reporting/applications_statuses_data?"
         + f"format=json&{'&'.join(fund_params)}&{'&'.join(round_params)}"
     )
-    response = client.get(url, follow_redirects=True)
+    response = flask_test_client.get(url, follow_redirects=True)
     assert response.status_code == 200
-    result = response.json
+    result = response.json()
     assert result
     funds = result["metrics"]
     for fund_id in fund_ids:
@@ -152,7 +151,7 @@ def test_get_application_statuses_json_multi_fund(
     }
 )
 def test_get_applications_report(
-    client,
+    flask_test_client,
     include_application_id,
     language,
     expected_org_name,
@@ -179,7 +178,7 @@ def test_get_applications_report(
             + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}"
         )
     )
-    response = client.get(
+    response = flask_test_client.get(
         url,
         follow_redirects=True,
     )
@@ -190,7 +189,7 @@ def test_get_applications_report(
         "eoi_reference,organisation_name,organisation_type,asset_type,"
         + "geography,capital,revenue,organisation_name_nstf"
     ) == lines[0].decode("utf-8")
-    fields = lines[1].decode("utf-8").split(",")
+    fields = lines[1].decode("utf-8").split(",  ")
     assert expected_org_name == fields[1]
     assert ref_number == fields[0]
     assert expected_address == fields[4]
@@ -203,8 +202,8 @@ def test_get_applications_report(
         ]
     }
 )
-def test_get_applications_report_query_param(client, seed_data_multiple_funds_rounds, mock_get_round):
-    response = client.get(
+def test_get_applications_report_query_param(flask_test_client, seed_data_multiple_funds_rounds, mock_get_round):
+    response = flask_test_client.get(
         "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
         + f"fund_id={seed_data_multiple_funds_rounds[0].fund_id}&round_id="
         + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}",

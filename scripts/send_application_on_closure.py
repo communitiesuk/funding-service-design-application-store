@@ -61,6 +61,7 @@ def send_incomplete_applications_after_deadline(
                 try:
                     account_id = external_services.get_account(account_id=application.get("account_id"))
                     application["account_email"] = account_id.email
+                    application["account_name"] = account_id.full_name
                     applications_to_send.append({"application": application})
                 except Exception:
                     handle_error(
@@ -94,6 +95,7 @@ def send_incomplete_applications_after_deadline(
                     application["contact_help_email"] = fund_rounds.get("contact_email")
                     message_id = Notification.send(
                         template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,  # noqa
+                        full_name=application["account_name"],
                         to_email=email.get("email"),
                         content=application,
                     )

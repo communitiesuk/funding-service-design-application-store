@@ -12,6 +12,7 @@ from app import app  # noqa: E402
 from config import Config  # noqa: E402
 from db.queries import search_applications  # noqa: E402
 from db.queries import get_forms_by_app_id  # noqa: E402
+from db.queries.application import create_qa_base64file  # noqa: E402
 from external_services.models.notification import Notification  # noqa: E402
 from external_services.data import get_fund  # noqa: E402
 from flask import current_app  # noqa: E402
@@ -97,7 +98,7 @@ def send_incomplete_applications_after_deadline(
                         template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,  # noqa
                         full_name=application["application"]["account_name"],
                         to_email=email.get("email"),
-                        content=application,
+                        content=create_qa_base64file(application, True),
                     )
                     current_app.logger.info(f"Message added to the queue msg_id: [{message_id}]")
                 current_app.logger.info(f"Sent {count} {'emails' if count > 1 else 'email'}")

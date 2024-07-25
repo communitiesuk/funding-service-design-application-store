@@ -58,6 +58,7 @@ def send_incomplete_applications_after_deadline(
             application = {**application, "fund_name": fund_data.name}
             try:
                 application["forms"] = get_forms_by_app_id(application.get("id"))
+                application["fund_id"] = fund_id
                 application["round_name"] = fund_rounds.get("title")
                 try:
                     account_id = external_services.get_account(account_id=application.get("account_id"))
@@ -98,7 +99,7 @@ def send_incomplete_applications_after_deadline(
                         template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,  # noqa
                         full_name=application["application"]["account_name"],
                         to_email=email.get("email"),
-                        content=create_qa_base64file(application, True),
+                        content=create_qa_base64file(application["application"], True),
                     )
                     current_app.logger.info(f"Message added to the queue msg_id: [{message_id}]")
                 current_app.logger.info(f"Sent {count} {'emails' if count > 1 else 'email'}")

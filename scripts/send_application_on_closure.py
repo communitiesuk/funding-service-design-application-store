@@ -97,9 +97,12 @@ def send_incomplete_applications_after_deadline(
                     application["contact_help_email"] = fund_rounds.get("contact_email")
                     message_id = Notification.send(
                         template_type=Config.NOTIFY_TEMPLATE_INCOMPLETE_APPLICATION,  # noqa
-                        full_name=application["application"]["account_name"],
                         to_email=email.get("email"),
-                        content=create_qa_base64file(application["application"], True),
+                        full_name=application["application"]["account_name"],
+                        content={
+                            "application": create_qa_base64file(application["application"], True),
+                            "contact_help_email": application["contact_help_email"],
+                        },
                     )
                     current_app.logger.info(f"Message added to the queue msg_id: [{message_id}]")
                 current_app.logger.info(f"Sent {count} {'emails' if count > 1 else 'email'}")

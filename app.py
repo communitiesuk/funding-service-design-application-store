@@ -1,9 +1,12 @@
 from os import getenv
 
 import connexion
+from api.routes.application.routes import ApplicationsView  # noqa
 from config import Config
-from connexion.resolver import MethodViewResolver
-from flask import Flask
+from connexion import FlaskApp
+from connexion.resolver import MethodResolver
+from db.exceptions.application import ApplicationError
+from flask import jsonify
 from fsd_utils import init_sentry
 from fsd_utils.healthchecks.checkers import DbChecker
 from fsd_utils.healthchecks.checkers import FlaskRunningChecker
@@ -13,19 +16,21 @@ from fsd_utils.services.aws_extended_client import SQSExtendedClient
 from openapi.utils import get_bundled_specs
 
 
-def create_app() -> Flask:
+def create_app() -> FlaskApp:
     init_sentry()
 
-    connexion_options = {
-        "swagger_url": "/",
-    }
-    connexion_app = connexion.FlaskApp(__name__, specification_dir="openapi/", options=connexion_options)
+    connexion_app = connexion.App(
+        __name__,
+    )
+
     connexion_app.add_api(
         get_bundled_specs("/openapi/api.yml"),
         validate_responses=True,
-        resolver=MethodViewResolver("api"),
+        resolver_error=501,
+        resolver=MethodResolver("api"),
     )
 
+    # Configure Flask App
     flask_app = connexion_app.app
     flask_app.config.from_object("config.Config")
 
@@ -42,11 +47,18 @@ def create_app() -> Flask:
     # Bind Flask-Migrate db utilities to Flask app
     migrate.init_app(flask_app, db, directory="db/migrations", render_as_batch=True)
 
+    # Add healthchecks to flask_app
     health = Healthcheck(flask_app)
     health.add_check(FlaskRunningChecker())
     health.add_check(DbChecker(db))
 
-    return flask_app
+    @flask_app.errorhandler(ApplicationError)
+    def handle_application_error(error):
+        response = jsonify({"detail": str(error)})
+        response.status_code = 500
+        return response
+
+    return connexion_app
 
 
 def create_sqs_extended_client(flask_app):
@@ -76,3 +88,4 @@ def create_sqs_extended_client(flask_app):
 
 
 app = create_app()
+application = app.app

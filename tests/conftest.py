@@ -27,7 +27,13 @@ def app():
     :return: A flask test client.
     """
     app = create_app()
-    yield app
+    yield app.app
+
+
+@pytest.fixture(scope="function")
+def flask_test_client():
+    with create_app().test_client() as test_client:
+        yield test_client
 
 
 @pytest.fixture(scope="function")
@@ -129,7 +135,7 @@ def add_org_data_for_reports(application, unique_append, client):
         {
             "questions": question_data,
             "metadata": {
-                "application_id": application.id,
+                "application_id": str(application.id),
                 "form_name": form_names[0],
                 "is_summary_page_submit": False,
             },
@@ -149,7 +155,7 @@ def add_org_data_for_reports(application, unique_append, client):
                 },
             ],
             "metadata": {
-                "application_id": application.id,
+                "application_id": str(application.id),
                 "form_name": form_names[1],
                 "is_summary_page_submit": False,
             },
@@ -167,7 +173,9 @@ def add_org_data_for_reports(application, unique_append, client):
 
 
 @pytest.fixture(scope="function")
-def seed_data_multiple_funds_rounds(request, mocker, app, clear_test_data, enable_preserve_test_data, client):
+def seed_data_multiple_funds_rounds(
+    request, mocker, app, clear_test_data, enable_preserve_test_data, flask_test_client
+):
     """
     Alternative to seed_application_records above that allows you to specify
     a set of funds/rounds and how many applications per round to allow
@@ -202,7 +210,7 @@ def seed_data_multiple_funds_rounds(request, mocker, app, clear_test_data, enabl
                 appl["fund_id"] = fund_id
                 appl["round_id"] = round_id
                 created_app = create_app_with_blank_forms(appl)
-                add_org_data_for_reports(created_app, i, client)
+                add_org_data_for_reports(created_app, i, flask_test_client)
                 application_ids.append(created_app.id)
             round_ids.append(RoundApps(round_id, application_ids))
         funds_rounds.append(FundRound(fund_id, round_ids))

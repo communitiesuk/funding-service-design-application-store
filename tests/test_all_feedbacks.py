@@ -116,7 +116,7 @@ def test_retrieve_all_feedbacks_and_surveys(mocker, app_sections, applications, 
 )
 def test_api_get_all_feedbacks_and_survey_report(
     mocker,
-    client,
+    flask_test_client,
     app_sections,
     applications,
 ):
@@ -128,11 +128,12 @@ def test_api_get_all_feedbacks_and_survey_report(
         "db.queries.feedback.queries.get_applications",
         return_value=applications,
     )
-    response = client.get(
+    response = flask_test_client.get(
         "/applications/get_all_feedbacks_and_survey_report?fund_id=test_fund&round_id=test_round&status_only=SUBMITTED",
+        headers={"Content-Type": "application/vnd.ms-excel"},
         follow_redirects=True,
     )
 
     assert response.status_code == 200
     assert "application/vnd.ms-excel" == response.headers["Content-Type"]
-    assert isinstance(response.data, bytes)
+    assert isinstance(response.content, bytes)

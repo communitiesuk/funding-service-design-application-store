@@ -6,13 +6,13 @@ from tests.helpers import test_application_data
 
 
 @pytest.mark.apps_to_insert(test_application_data)
-def test_get_application_statuses_csv(client, seed_application_records, _db):
-    response = client.get(
+def test_get_application_statuses_csv(flask_test_client, seed_application_records, _db):
+    response = flask_test_client.get(
         "/applications/reporting/applications_statuses_data",
         follow_redirects=True,
     )
 
-    lines = response.data.decode("utf-8").split("\r\n")
+    lines = response.content.decode("utf-8").split("\r\n")
     assert lines[0] == "fund_id,round_id,NOT_STARTED,IN_PROGRESS,COMPLETED,SUBMITTED"
     assert f"{test_application_data[0]['fund_id']},{test_application_data[0]['round_id']},1,0,0,0" in lines
     assert f"{test_application_data[1]['fund_id']},{test_application_data[1]['round_id']},1,0,0,0" in lines
@@ -23,12 +23,12 @@ def test_get_application_statuses_csv(client, seed_application_records, _db):
     _db.session.add(app)
     _db.session.commit()
 
-    response = client.get(
+    response = flask_test_client.get(
         "/applications/reporting/applications_statuses_data",
         follow_redirects=True,
     )
 
-    lines = response.data.decode("utf-8").split("\r\n")
+    lines = response.content.decode("utf-8").split("\r\n")
     assert lines[0] == "fund_id,round_id,NOT_STARTED,IN_PROGRESS,COMPLETED,SUBMITTED"
     assert f"{test_application_data[0]['fund_id']},{test_application_data[0]['round_id']},0,1,0,0" in lines
     assert f"{test_application_data[1]['fund_id']},{test_application_data[1]['round_id']},1,0,0,0" in lines
@@ -97,7 +97,7 @@ def test_get_application_statuses_json_multi_fund(
     exp_in_progress,
     exp_submitted,
     exp_completed,
-    client,
+    flask_test_client,
     seed_data_multiple_funds_rounds,
     _db,
     mock_get_round,
@@ -114,9 +114,9 @@ def test_get_application_statuses_json_multi_fund(
         "/applications/reporting/applications_statuses_data?"
         + f"format=json&{'&'.join(fund_params)}&{'&'.join(round_params)}"
     )
-    response = client.get(url, follow_redirects=True)
+    response = flask_test_client.get(url, follow_redirects=True)
     assert response.status_code == 200
-    result = response.json
+    result = response.json()
     assert result
     funds = result["metrics"]
     for fund_id in fund_ids:
@@ -143,7 +143,6 @@ def test_get_application_statuses_json_multi_fund(
         ("cy", "Test Org Name 2cy", "CF10 3NQ", "Test Reference Number Welsh"),
     ],
 )
-@pytest.mark.parametrize("include_application_id", (True, False))
 @pytest.mark.fund_round_config(
     {
         "funds": [
@@ -151,9 +150,8 @@ def test_get_application_statuses_json_multi_fund(
         ]
     }
 )
-def test_get_applications_report(
-    client,
-    include_application_id,
+def test_get_applications_report_by_application_id(
+    flask_test_client,
     language,
     expected_org_name,
     expected_address,
@@ -169,22 +167,14 @@ def test_get_applications_report(
         Applications,
         application_id,
     )
-    application.status = Status.SUBMITTED
-    url = "/applications/reporting/key_application_metrics" + (
-        f"/{str(application.id)}"
-        if include_application_id
-        else (
-            f"?fund_id={seed_data_multiple_funds_rounds[0].fund_id}"
-            + "&round_id="
-            + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}"
-        )
-    )
-    response = client.get(
+    application.status = Status.IN_PROGRESS
+    url = "/applications/reporting/key_application_metrics" + f"/{str(application.id)}"
+    response = flask_test_client.get(
         url,
         follow_redirects=True,
     )
     assert 200 == response.status_code
-    lines = response.data.splitlines()
+    lines = response.content.splitlines()
     assert 2 == len(lines)
     assert (
         "eoi_reference,organisation_name,organisation_type,asset_type,"
@@ -203,18 +193,56 @@ def test_get_applications_report(
         ]
     }
 )
-def test_get_applications_report_query_param(client, seed_data_multiple_funds_rounds, mock_get_round):
-    response = client.get(
+def test_get_applications_report_by_round_is_and_fund_id(
+    flask_test_client,
+    seed_data_multiple_funds_rounds,
+):
+    url = "/applications/reporting/key_application_metrics" + (
+        f"?fund_id={seed_data_multiple_funds_rounds[0].fund_id}"
+        + "&status=IN_PROGRESS"
+        + "&round_id="
+        + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}"
+    )
+    response = flask_test_client.get(
+        url,
+        follow_redirects=True,
+    )
+    assert 200 == response.status_code
+    lines = response.content.splitlines()
+    assert 3 == len(lines)
+    assert (
+        "eoi_reference,organisation_name,organisation_type,asset_type,"
+        + "geography,capital,revenue,organisation_name_nstf"
+    ) == lines[0].decode("utf-8")
+    row1 = lines[1].decode("utf-8").split(",")
+    assert row1[1] == "Test Org Name 1"
+    assert row1[0] == "Test Reference Number"
+    assert row1[4] == "W1A 1AA"
+    row2 = lines[2].decode("utf-8").split(",")
+    assert row2[1] == "Test Org Name 2cy"
+    assert row2[0] == "Test Reference Number Welsh"
+    assert row2[4] == "CF10 3NQ"
+
+
+@pytest.mark.fund_round_config(
+    {
+        "funds": [
+            {"rounds": [{"applications": [{**user_lang}, {**user_lang_cy}]}]},
+        ]
+    }
+)
+def test_get_applications_report_query_param(flask_test_client, seed_data_multiple_funds_rounds, mock_get_round):
+    response = flask_test_client.get(
         "/applications/reporting/key_application_metrics?status=IN_PROGRESS&"
         + f"fund_id={seed_data_multiple_funds_rounds[0].fund_id}&round_id="
         + f"{seed_data_multiple_funds_rounds[0].round_ids[0].round_id}",
         follow_redirects=True,
     )
 
-    raw_lines = response.data.splitlines()
+    raw_lines = response.content.splitlines()
     assert len(raw_lines) == 3
 
-    lines = [line.decode("utf-8") for line in response.data.splitlines()]
+    lines = [line.decode("utf-8") for line in response.content.splitlines()]
     assert (
         lines[0]
         == "eoi_reference,organisation_name,organisation_type,asset_type,"

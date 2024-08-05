@@ -39,6 +39,7 @@ from external_services.exceptions import NotificationError
 from external_services.exceptions import SubmitError
 from external_services.models.notification import Notification
 from flask import current_app
+from flask import jsonify
 from flask import request
 from flask import send_file
 from flask.views import MethodView
@@ -116,7 +117,9 @@ class ApplicationsView(MethodView):
             return {"code": 404, "message": str(e)}, 404
 
         if format.lower() == "json":
-            return {"metrics": report_data}
+            response = jsonify({"metrics": report_data})
+            response.headers["Content-Type"] = "application/json"
+            return response
         else:
             return send_file(
                 export_application_statuses_to_csv(report_data),

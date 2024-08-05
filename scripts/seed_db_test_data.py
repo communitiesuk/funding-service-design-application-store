@@ -134,5 +134,5 @@ def seed_applications(fund_short_code, round_short_code, account_id, status, cou
 
 
 if __name__ == "__main__":
-    with app.app_context():
+    with app.app.app_context():
         seed_applications()

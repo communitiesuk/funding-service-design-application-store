@@ -8,6 +8,184 @@ tags:
     description: Application store operations
 
 paths:
+  /applications/reporting/applications_statuses_data:
+    get:
+      tags:
+        - reporting
+      summary: Get report on started and submitted applications
+      description: Get report on started and submitted applications
+      operationId: api.ApplicationsView.get_applications_statuses_report
+      parameters:
+        - name: round_id
+          in: query
+          description: Optional round ID to filter by
+          schema:
+            type: array
+            items:
+              type: string
+        - name: fund_id
+          in: query
+          description: Optional fund ID to filter by
+          schema:
+            type: array
+            items:
+              type: string
+        - name: format
+          in: query
+          description: Optional format specifier, csv or json
+          schema:
+            type: string
+            enum: [csv,json]
+      responses:
+        200:
+          description: SUCCESS - Here is the status report on applications
+          content:
+            text/csv: {}
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/StatusReport'
+        404:
+          description: ERROR - Could not get report
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+
+  /applications/reporting/key_application_metrics/{application_id}:
+    get:
+      tags:
+        - reporting
+      summary: Get the key data report on an application
+      description: Get the key data report on an application
+      operationId: api.ApplicationsView.get_key_application_data_report
+      responses:
+        200:
+          description: SUCCESS - Here is the report on requested application
+          content:
+            text/csv: {}
+        404:
+          description: ERROR - Could not get report
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path
+
+  /applications/reporting/key_application_metrics:
+    get:
+      tags:
+        - reporting
+      summary: Get the key data report on applications
+      description: Get the key data report on applications
+      operationId: api.ApplicationsView.get_key_applications_data_report
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: round_id
+          in: query
+          description: Optional round ID to filter by
+          schema:
+            type: string
+        - name: fund_id
+          in: query
+          description: Optional fund ID to filter by
+          schema:
+            type: string
+      responses:
+        200:
+          description: SUCCESS - Here is the report on applications
+          content:
+            text/csv: {}
+        404:
+          description: ERROR - Could not get report
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+
+  /applications/forms:
+    put:
+      requestBody:
+        description: Update application with new forms state
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'components.yml#/components/schemas/PutForms'
+      tags:
+        - applications
+      summary: Update an application with new forms state
+      description: Updates the form state of an application
+      operationId: api.ApplicationsView.put
+      responses:
+        201:
+          description: SUCCESS - Application updated
+          content:
+              application/json:
+                schema:
+                  $ref: 'components.yml#/components/schemas/UpdatedForms'
+        404:
+          description: ERROR - Form cannot be updated
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+              example:
+                code: 404
+                status: 'error'
+                message: 'Form is not updated'
+
+  /applications/get_all_feedbacks_and_survey_report:
+    get:
+      tags:
+        - feedback
+        - survey
+      summary: Retrive all section feedbacks & survey
+      description: Retrive all section feedbacks & survey
+      operationId: api.ApplicationsView.get_all_feedbacks_and_survey_report
+      responses:
+        200:
+          description: SUCCESS - Here is the report on requested applicants feedback & survey
+          content:
+            application/vnd.ms-excel: {}
+        404:
+          description: ERROR - Could not get report
+          content:
+            application/json:
+              schema:
+                $ref: 'components.yml#/components/schemas/Error'
+      parameters:
+        - in: query
+          name: fund_id
+          style: form
+          schema:
+            type: string
+          required: true
+          explode: false
+        - in: query
+          name: round_id
+          style: form
+          schema:
+            type: string
+          required: true
+          explode: false
+        - in: query
+          name: status_only
+          style: form
+          schema:
+            type: string
+          required: false
+          explode: false
+
   /applications:
     get:
       tags:
@@ -161,38 +339,6 @@ paths:
           required: false
           explode: false
 
-  /applications/forms:
-    put:
-      requestBody:
-        description: Update application with new forms state
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: 'components.yml#/components/schemas/PutForms'
-      tags:
-        - applications
-      summary: Update an application with new forms state
-      description: Updates the form state of an application
-      operationId: api.ApplicationsView.put
-      responses:
-        201:
-          description: SUCCESS - Application updated
-          content:
-              application/json:
-                schema:
-                  $ref: 'components.yml#/components/schemas/UpdatedForms'
-        404:
-          description: ERROR - Form cannot be updated
-          content:
-            application/json:
-              schema:
-                $ref: 'components.yml#/components/schemas/Error'
-              example:
-                code: 404
-                status: 'error'
-                message: 'Form is not updated'
-
   /applications/{application_id}/submit:
     post:
       tags:
@@ -232,110 +378,6 @@ paths:
                 code: 404
                 status: 'error'
                 message: 'Application corresponding to id not found.'
-
-  /applications/reporting/applications_statuses_data:
-    get:
-      tags:
-        - reporting
-      summary: Get report on started and submitted applications
-      description: Get report on started and submitted applications
-      operationId: api.ApplicationsView.get_applications_statuses_report
-      parameters:
-        - name: round_id
-          in: query
-          description: Optional round ID to filter by
-          schema:
-            type: array
-            items:
-              type: string
-        - name: fund_id
-          in: query
-          description: Optional fund ID to filter by
-          schema:
-            type: array
-            items:
-              type: string
-        - name: format
-          in: query
-          description: Optional format specifier, csv or json
-          schema:
-            type: string
-            enum: [csv,json]
-      responses:
-        200:
-          description: SUCCESS - Here is the status report on applications
-          content:
-            text/csv: {}
-            application/json:
-              schema:
-                $ref: 'components.yml#/components/schemas/StatusReport'
-        404:
-          description: ERROR - Could not get report
-          content:
-            application/json:
-              schema:
-                $ref: 'components.yml#/components/schemas/Error'
-
-  /applications/reporting/key_application_metrics:
-    get:
-      tags:
-        - reporting
-      summary: Get the key data report on applications
-      description: Get the key data report on applications
-      operationId: api.ApplicationsView.get_key_applications_data_report
-      parameters:
-        - name: status
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: round_id
-          in: query
-          description: Optional round ID to filter by
-          schema:
-            type: string
-        - name: fund_id
-          in: query
-          description: Optional fund ID to filter by
-          schema:
-            type: string
-      responses:
-        200:
-          description: SUCCESS - Here is the report on applications
-          content:
-            text/csv: {}
-        404:
-          description: ERROR - Could not get report
-          content:
-            application/json:
-              schema:
-                $ref: 'components.yml#/components/schemas/Error'
-
-  /applications/reporting/key_application_metrics/{application_id}:
-    get:
-      tags:
-        - reporting
-      summary: Get the key data report on an application
-      description: Get the key data report on an application
-      operationId: api.ApplicationsView.get_key_application_data_report
-      responses:
-        200:
-          description: SUCCESS - Here is the report on requested application
-          content:
-            text/csv: {}
-        404:
-          description: ERROR - Could not get report
-          content:
-            application/json:
-              schema:
-                $ref: 'components.yml#/components/schemas/Error'
-      parameters:
-        - name: application_id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: path
 
   /application/feedback:
     post:
@@ -529,48 +571,6 @@ paths:
             application/json:
               schema:
                 $ref: 'components.yml#/components/schemas/Error'
-
-  /applications/get_all_feedbacks_and_survey_report:
-    get:
-      tags:
-        - feedback
-        - survey
-      summary: Retrive all section feedbacks & survey
-      description: Retrive all section feedbacks & survey
-      operationId: api.ApplicationsView.get_all_feedbacks_and_survey_report
-      responses:
-        200:
-          description: SUCCESS - Here is the report on requested applicants feedback & survey
-          content:
-            application/vnd.ms-excel: {}
-        404:
-          description: ERROR - Could not get report
-          content:
-            application/json:
-              schema:
-                $ref: 'components.yml#/components/schemas/Error'
-      parameters:
-        - in: query
-          name: fund_id
-          style: form
-          schema:
-            type: string
-          required: true
-          explode: false
-        - in: query
-          name: round_id
-          style: form
-          schema:
-            type: string
-          required: true
-          explode: false
-        - in: query
-          name: status_only
-          style: form
-          schema:
-            type: string
-          required: false
-          explode: false
 
   /queue_for_assessment/{application_id}:
     post:

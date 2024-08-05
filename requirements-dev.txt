@@ -4,7 +4,11 @@
 #
 #    pip-compile requirements-dev.in
 #
-alembic==1.12.1
+a2wsgi==1.10.6
+    # via
+    #   -r requirements.txt
+    #   connexion
+alembic==1.13.2
     # via
     #   -r requirements.txt
     #   flask-migrate
@@ -12,67 +16,80 @@ aniso8601==9.0.1
     # via
     #   -r requirements.txt
     #   flask-restx
+anyio==4.4.0
+    # via
+    #   -r requirements.txt
+    #   httpx
+    #   starlette
+    #   watchfiles
 apscheduler==3.10.4
     # via
     #   -r requirements.txt
     #   flask-apscheduler
-asserts==0.12.0
+asgiref==3.8.1
+    # via
+    #   -r requirements.txt
+    #   connexion
+    #   flask
+asserts==0.13.1
     # via -r requirements-dev.in
 async-timeout==4.0.3
     # via
     #   -r requirements.txt
     #   redis
-attrs==23.1.0
+attrs==23.2.0
     # via
     #   -r requirements.txt
     #   jsonschema
-    #   pytest
     #   referencing
-babel==2.11.0
+babel==2.15.0
     # via
     #   -r requirements.txt
     #   flask-babel
-beautifulsoup4==4.12.2
+beautifulsoup4==4.12.3
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-black==22.10.0
+black==24.4.2
     # via -r requirements-dev.in
-blinker==1.5
+blinker==1.8.2
     # via
     #   -r requirements.txt
+    #   flask
     #   sentry-sdk
-boto3==1.26.131
+boto3==1.34.147
     # via
     #   -r requirements.txt
     #   flipper-client
-botocore==1.29.131
+botocore==1.34.147
     # via
     #   -r requirements.txt
     #   boto3
     #   s3transfer
-build==0.9.0
+build==1.2.1
     # via pip-tools
-cachetools==4.2.4
+cachetools==5.4.0
     # via
     #   -r requirements.txt
     #   flipper-client
-certifi==2023.7.22
+certifi==2024.7.4
     # via
     #   -r requirements.txt
+    #   httpcore
+    #   httpx
     #   requests
     #   sentry-sdk
-cffi==1.15.1
+cffi==1.16.0
     # via
     #   -r requirements.txt
     #   cryptography
-cfgv==3.3.1
+cfgv==3.4.0
     # via pre-commit
-chardet==4.0.0
+chardet==5.2.0
     # via
     #   -r requirements.txt
     #   prance
-charset-normalizer==2.1.1
+charset-normalizer==3.3.2
     # via
     #   -r requirements.txt
     #   requests
@@ -81,51 +98,53 @@ click==8.1.7
     #   -r requirements-dev.in
     #   -r requirements.txt
     #   black
-    #   clickclick
     #   flask
     #   pip-tools
-clickclick==20.10.2
-    # via
-    #   -r requirements.txt
-    #   connexion
-colored==1.4.4
+    #   uvicorn
+colored==2.2.4
     # via -r requirements.txt
 commonmark==0.9.1
     # via
     #   -r requirements.txt
     #   rich
-connexion==2.14.1
-    # via -r requirements.txt
-cryptography==42.0.4
+connexion[flask,swagger-ui,uvicorn]==3.1.0
+    # via
+    #   -r requirements.txt
+    #   connexion
+cryptography==43.0.0
     # via
     #   -r requirements.txt
     #   pyjwt
-debugpy==1.8.0
+debugpy==1.8.2
     # via -r requirements-dev.in
 decorator==5.1.1
     # via
     #   -r requirements.txt
     #   jsonpath-rw
-deepdiff==6.2.1
+deepdiff==7.0.1
     # via -r requirements-dev.in
-distlib==0.3.6
+distlib==0.3.8
     # via virtualenv
 et-xmlfile==1.1.0
     # via
     #   -r requirements.txt
     #   openpyxl
-exceptiongroup==1.2.1
-    # via pytest
-filelock==3.8.0
+exceptiongroup==1.2.2
+    # via
+    #   -r requirements.txt
+    #   anyio
+    #   pytest
+filelock==3.15.4
     # via virtualenv
-flake8==7.0.0
+flake8==7.1.0
     # via flake8-pyproject
 flake8-pyproject==1.2.3
     # via -r requirements-dev.in
-flask==2.2.5
+flask[async]==3.0.3
     # via
     #   -r requirements.txt
     #   connexion
+    #   flask
     #   flask-apscheduler
     #   flask-babel
     #   flask-migrate
@@ -137,11 +156,11 @@ flask==2.2.5
     #   sentry-sdk
 flask-apscheduler==1.13.1
     # via -r requirements.txt
-flask-babel==2.0.0
+flask-babel==4.0.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-flask-migrate==4.0.5
+flask-migrate==4.0.7
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
@@ -149,45 +168,70 @@ flask-redis==0.4.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-flask-restx==1.0.3
+flask-restx==1.3.0
     # via -r requirements.txt
-flask-sqlalchemy==3.0.3
+flask-sqlalchemy==3.1.1
     # via
     #   -r requirements.txt
     #   flask-migrate
     #   funding-service-design-utils
-flipper-client==1.3.1
+flipper-client==1.3.2
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-funding-service-design-utils==2.0.52
+funding-service-design-utils==4.0.0
     # via -r requirements.txt
-gunicorn==20.1.0
+gunicorn==22.0.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-identify==2.5.9
+h11==0.14.0
+    # via
+    #   -r requirements.txt
+    #   httpcore
+    #   uvicorn
+httpcore==1.0.5
+    # via
+    #   -r requirements.txt
+    #   httpx
+httptools==0.6.1
+    # via
+    #   -r requirements.txt
+    #   uvicorn
+httpx==0.27.0
+    # via
+    #   -r requirements.txt
+    #   connexion
+identify==2.6.0
     # via pre-commit
 idna==3.7
     # via
     #   -r requirements.txt
+    #   anyio
+    #   httpx
     #   requests
+importlib-metadata==8.1.0
+    # via build
+importlib-resources==6.4.0
+    # via
+    #   -r requirements.txt
+    #   flask-restx
 inflection==0.5.1
     # via
     #   -r requirements.txt
     #   connexion
-iniconfig==1.1.1
+iniconfig==2.0.0
     # via pytest
 invoke==2.2.0
     # via -r requirements.txt
-itsdangerous==2.1.2
+itsdangerous==2.2.0
     # via
     #   -r requirements.txt
-    #   connexion
     #   flask
 jinja2==3.1.4
     # via
     #   -r requirements.txt
+    #   connexion
     #   flask
     #   flask-babel
     #   swagger-ui-bundle
@@ -202,50 +246,50 @@ jsonpath-rw==1.4.0
     #   jsonpath-rw-ext
 jsonpath-rw-ext==1.2.2
     # via -r requirements.txt
-jsonschema==4.19.2
+jsonschema==4.23.0
     # via
     #   -r requirements.txt
     #   connexion
     #   flask-restx
     #   openapi-schema-validator
     #   openapi-spec-validator
-jsonschema-path==0.3.1
+jsonschema-path==0.3.3
     # via
     #   -r requirements.txt
     #   openapi-spec-validator
-jsonschema-specifications==2023.7.1
+jsonschema-specifications==2023.12.1
     # via
     #   -r requirements.txt
     #   jsonschema
     #   openapi-schema-validator
-lazy-object-proxy==1.8.0
+lazy-object-proxy==1.10.0
     # via
     #   -r requirements.txt
     #   openapi-spec-validator
-mako==1.2.4
+mako==1.3.5
     # via
     #   -r requirements.txt
     #   alembic
-markupsafe==2.1.1
+markupsafe==2.1.5
     # via
     #   -r requirements.txt
     #   jinja2
     #   mako
     #   sentry-sdk
     #   werkzeug
-marshmallow==3.19.0
+marshmallow==3.21.3
     # via
     #   -r requirements.txt
     #   marshmallow-sqlalchemy
-marshmallow-sqlalchemy==0.29.0
+marshmallow-sqlalchemy==1.0.0
     # via -r requirements.txt
 mccabe==0.7.0
     # via flake8
 mypy-extensions==1.0.0
     # via black
-nodeenv==1.7.0
+nodeenv==1.9.1
     # via pre-commit
-numpy==1.26.0
+numpy==2.0.1
     # via
     #   -r requirements.txt
     #   pandas
@@ -255,54 +299,52 @@ openapi-schema-validator==0.6.2
     #   openapi-spec-validator
 openapi-spec-validator==0.7.1
     # via -r requirements.txt
-openpyxl==3.1.2
+openpyxl==3.1.5
     # via -r requirements.txt
 ordered-set==4.1.0
     # via deepdiff
-packaging==21.3
+packaging==24.1
     # via
     #   -r requirements.txt
+    #   black
     #   build
-    #   connexion
+    #   gunicorn
     #   marshmallow
-    #   marshmallow-sqlalchemy
     #   prance
     #   pytest
-pandas==2.1.3
+pandas==2.2.2
     # via -r requirements.txt
 pathable==0.4.3
     # via
     #   -r requirements.txt
     #   jsonschema-path
-pathspec==0.10.2
+pathspec==0.12.1
     # via black
-pbr==5.11.1
+pbr==6.0.0
     # via
     #   -r requirements.txt
     #   jsonpath-rw-ext
-pep517==0.13.0
-    # via build
-pip-tools==7.3.0
+pip-tools==7.4.1
     # via -r requirements-dev.in
-platformdirs==2.5.4
+platformdirs==4.2.2
     # via
     #   black
     #   virtualenv
-pluggy==1.0.0
+pluggy==1.5.0
     # via pytest
 ply==3.11
     # via
     #   -r requirements.txt
     #   jsonpath-rw
-prance==0.22.11.4.0
+prance==23.6.21.0
     # via -r requirements.txt
-pre-commit==2.20.0
+pre-commit==3.7.1
     # via -r requirements-dev.in
-psycopg2-binary==2.9.6
+psycopg2-binary==2.9.9
     # via -r requirements.txt
-pycodestyle==2.11.1
+pycodestyle==2.12.0
     # via flake8
-pycparser==2.21
+pycparser==2.22
     # via
     #   -r requirements.txt
     #   cffi
@@ -312,36 +354,37 @@ pyee==6.0.0
     #   flipper-client
 pyflakes==3.2.0
     # via flake8
-pygments==2.15.0
+pygments==2.18.0
     # via
     #   -r requirements.txt
     #   rich
-pyjwt[crypto]==2.6.0
+pyjwt[crypto]==2.8.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-pyparsing==3.0.9
+    #   pyjwt
+pyproject-hooks==1.1.0
     # via
-    #   -r requirements.txt
-    #   packaging
-pytest==7.2.0
+    #   build
+    #   pip-tools
+pytest==8.3.1
     # via
     #   -r requirements-dev.in
     #   pytest-env
     #   pytest-flask
     #   pytest-mock
 moto[s3,sqs]==5.0.7
-pytest-env==0.8.1
+pytest-env==1.1.3
     # via -r requirements-dev.in
 pytest-flask==1.3.0
     # via -r requirements-dev.in
-pytest-mock==3.10.0
+pytest-mock==3.14.0
     # via -r requirements-dev.in
 python-consul==1.1.0
     # via
     #   -r requirements.txt
     #   flipper-client
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
     # via
     #   -r requirements.txt
     #   botocore
@@ -351,39 +394,43 @@ python-dotenv==0.20.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   uvicorn
 python-json-logger==2.0.7
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-pytz==2022.6
+python-multipart==0.0.9
+    # via
+    #   -r requirements.txt
+    #   connexion
+pytz==2024.1
     # via
     #   -r requirements.txt
     #   apscheduler
-    #   babel
     #   flask-babel
     #   flask-restx
     #   funding-service-design-utils
     #   pandas
-pyyaml==6.0
+pyyaml==6.0.1
     # via
     #   -r requirements.txt
-    #   clickclick
     #   connexion
     #   funding-service-design-utils
     #   jsonschema-path
     #   pre-commit
-redis==4.5.4
+    #   uvicorn
+redis==4.6.0
     # via
     #   -r requirements.txt
     #   flask-redis
     #   flipper-client
-referencing==0.30.2
+referencing==0.35.1
     # via
     #   -r requirements.txt
     #   jsonschema
     #   jsonschema-path
     #   jsonschema-specifications
-requests==2.32.0
+requests==2.32.3
     # via
     #   -r requirements.txt
     #   connexion
@@ -399,12 +446,12 @@ rich==12.6.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-rpds-py==0.12.0
+rpds-py==0.19.0
     # via
     #   -r requirements.txt
     #   jsonschema
     #   referencing
-ruamel-yaml==0.17.21
+ruamel-yaml==0.18.6
     # via
     #   -r requirements.txt
     #   prance
@@ -412,18 +459,15 @@ ruamel-yaml-clib==0.2.8
     # via
     #   -r requirements.txt
     #   ruamel-yaml
-s3transfer==0.6.0
+s3transfer==0.10.2
     # via
     #   -r requirements.txt
     #   boto3
-semver==2.13.0
-    # via
-    #   -r requirements.txt
-    #   prance
-sentry-sdk[flask]==1.32.0
+sentry-sdk[flask]==2.11.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
+    #   sentry-sdk
 six==1.16.0
     # via
     #   -r requirements.txt
@@ -436,11 +480,16 @@ six==1.16.0
     #   thrift
 slugify==0.0.1
     # via -r requirements.txt
-soupsieve==2.4.1
+sniffio==1.3.1
+    # via
+    #   -r requirements.txt
+    #   anyio
+    #   httpx
+soupsieve==2.5
     # via
     #   -r requirements.txt
     #   beautifulsoup4
-sqlalchemy==2.0.23
+sqlalchemy==2.0.31
     # via
     #   -r requirements.txt
     #   alembic
@@ -450,18 +499,22 @@ sqlalchemy==2.0.23
     #   sqlalchemy-utils
 sqlalchemy-json==0.7.0
     # via -r requirements.txt
-sqlalchemy-utils==0.41.1
+sqlalchemy-utils==0.41.2
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-swagger-ui-bundle==0.0.9
-    # via -r requirements.txt
-thrift==0.16.0
+starlette==0.38.1
+    # via
+    #   -r requirements.txt
+    #   connexion
+swagger-ui-bundle==1.1.0
+    # via
+    #   -r requirements.txt
+    #   connexion
+thrift==0.20.0
     # via
     #   -r requirements.txt
     #   flipper-client
-toml==0.10.2
-    # via pre-commit
 tomli==2.0.1
     # via
     #   black
@@ -469,12 +522,20 @@ tomli==2.0.1
     #   flake8-pyproject
     #   pip-tools
     #   pytest
-typing-extensions==4.4.0
+    #   pytest-env
+typing-extensions==4.12.2
     # via
     #   -r requirements.txt
+    #   a2wsgi
     #   alembic
+    #   anyio
+    #   asgiref
+    #   asserts
+    #   black
+    #   connexion
     #   sqlalchemy
-tzdata==2023.3
+    #   uvicorn
+tzdata==2024.1
     # via
     #   -r requirements.txt
     #   pandas
@@ -482,23 +543,42 @@ tzlocal==5.2
     # via
     #   -r requirements.txt
     #   apscheduler
-urllib3==1.26.18
+urllib3==2.2.2
     # via
     #   -r requirements.txt
     #   botocore
     #   requests
     #   sentry-sdk
-virtualenv==20.16.7
+uvicorn[standard]==0.30.3
+    # via
+    #   -r requirements.txt
+    #   connexion
+    #   uvicorn
+uvloop==0.19.0
+    # via
+    #   -r requirements.txt
+    #   uvicorn
+virtualenv==20.26.3
     # via pre-commit
-werkzeug==2.2.3
+watchfiles==0.22.0
+    # via
+    #   -r requirements.txt
+    #   uvicorn
+websockets==12.0
+    # via
+    #   -r requirements.txt
+    #   uvicorn
+werkzeug==3.0.3
     # via
     #   -r requirements.txt
     #   connexion
     #   flask
     #   flask-restx
     #   pytest-flask
-wheel==0.38.4
+wheel==0.43.0
     # via pip-tools
+zipp==3.19.2
+    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

@@ -74,11 +74,11 @@ def expected_data_within_response(
     elif method == "post":
         response = test_client.post(endpoint, data=data, follow_redirects=True)
     else:
-        response = test_client.get(endpoint, follow_redirects=True)
-    response_data = json.loads(response.data)
+        response = test_client.get(endpoint, follow_redirects=True, headers={"Content-Type": "application/json"})
+    response_content = json.loads(response.content)
     diff = DeepDiff(
         expected_data,
-        response_data,
+        response_content,
         exclude_regex_paths=exclude_regex_paths,
         **kwargs,
     )
@@ -110,7 +110,7 @@ def post_data(test_client, endpoint: str, data: dict):
     return test_client.post(
         endpoint,
         data=json.dumps(data),
-        content_type="application/json",
+        headers={"Content-Type": "application/json"},
         follow_redirects=True,
     )
 
@@ -144,16 +144,16 @@ def count_fund_applications(test_client, fund_id: str, expected_application_coun
     """
     fund_applications_endpoint = f"/applications?fund_id={fund_id}"
     response = test_client.get(fund_applications_endpoint, follow_redirects=True)
-    response_data = json.loads(response.data)
+    response_content = json.loads(response.content)
     error_message = (
         "Response from "
         + fund_applications_endpoint
         + " found "
-        + str(len(response_data))
+        + str(len(response_content))
         + " items, but expected "
         + str(expected_application_count)
     )
-    assert len(response_data) == expected_application_count, error_message
+    assert len(response_content) == expected_application_count, error_message
 
 
 test_application_data = [

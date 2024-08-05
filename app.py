@@ -23,8 +23,6 @@ def create_app() -> FlaskApp:
         __name__,
     )
 
-    # connexion_app.add_error_handler(ApplicationError, application_error_handler)
-
     connexion_app.add_api(
         get_bundled_specs("/openapi/api.yml"),
         validate_responses=True,

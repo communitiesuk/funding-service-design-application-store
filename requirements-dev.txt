@@ -171,7 +171,7 @@ flask-sqlalchemy==3.1.1
     #   -r requirements.txt
     #   flask-migrate
     #   funding-service-design-utils
-git+https://github.com/communitiesuk/funding-service-design-utils.git@fs-4647
+git+https://github.com/communitiesuk/funding-service-design-utils.git@fs-4647-a
     # via -r requirements.txt
 gunicorn==22.0.0
     # via

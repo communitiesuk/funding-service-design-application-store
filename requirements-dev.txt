@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements-dev.in
 #
-a2wsgi==1.10.6
+a2wsgi==1.10.7
     # via
     #   -r requirements.txt
     #   connexion
@@ -57,21 +57,17 @@ blinker==1.8.2
     #   -r requirements.txt
     #   flask
     #   sentry-sdk
-boto3==1.34.147
+boto3==1.34.152
     # via
     #   -r requirements.txt
-    #   flipper-client
-botocore==1.34.147
+    #   funding-service-design-utils
+botocore==1.34.152
     # via
     #   -r requirements.txt
     #   boto3
     #   s3transfer
 build==1.2.1
     # via pip-tools
-cachetools==5.4.0
-    # via
-    #   -r requirements.txt
-    #   flipper-client
 certifi==2024.7.4
     # via
     #   -r requirements.txt
@@ -175,11 +171,7 @@ flask-sqlalchemy==3.1.1
     #   -r requirements.txt
     #   flask-migrate
     #   funding-service-design-utils
-flipper-client==1.3.2
-    # via
-    #   -r requirements.txt
-    #   funding-service-design-utils
-funding-service-design-utils==4.0.0
+funding-service-design-utils==5.0.7
     # via -r requirements.txt
 gunicorn==22.0.0
     # via
@@ -210,8 +202,6 @@ idna==3.7
     #   anyio
     #   httpx
     #   requests
-importlib-metadata==8.1.0
-    # via build
 importlib-resources==6.4.0
     # via
     #   -r requirements.txt
@@ -348,17 +338,13 @@ pycparser==2.22
     # via
     #   -r requirements.txt
     #   cffi
-pyee==6.0.0
-    # via
-    #   -r requirements.txt
-    #   flipper-client
 pyflakes==3.2.0
     # via flake8
 pygments==2.18.0
     # via
     #   -r requirements.txt
     #   rich
-pyjwt[crypto]==2.8.0
+pyjwt[crypto]==2.9.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
@@ -373,24 +359,19 @@ pytest==8.3.1
     #   pytest-env
     #   pytest-flask
     #   pytest-mock
-moto[s3,sqs]==5.0.7
 pytest-env==1.1.3
     # via -r requirements-dev.in
 pytest-flask==1.3.0
     # via -r requirements-dev.in
 pytest-mock==3.14.0
     # via -r requirements-dev.in
-python-consul==1.1.0
-    # via
-    #   -r requirements.txt
-    #   flipper-client
 python-dateutil==2.9.0.post0
     # via
     #   -r requirements.txt
     #   botocore
     #   flask-apscheduler
     #   pandas
-python-dotenv==0.20.0
+python-dotenv==1.0.1
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
@@ -423,7 +404,6 @@ redis==4.6.0
     # via
     #   -r requirements.txt
     #   flask-redis
-    #   flipper-client
 referencing==0.35.1
     # via
     #   -r requirements.txt
@@ -437,7 +417,6 @@ requests==2.32.3
     #   funding-service-design-utils
     #   jsonschema-path
     #   prance
-    #   python-consul
 rfc3339-validator==0.1.4
     # via
     #   -r requirements.txt
@@ -446,7 +425,7 @@ rich==12.6.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-rpds-py==0.19.0
+rpds-py==0.19.1
     # via
     #   -r requirements.txt
     #   jsonschema
@@ -463,7 +442,7 @@ s3transfer==0.10.2
     # via
     #   -r requirements.txt
     #   boto3
-sentry-sdk[flask]==2.11.0
+sentry-sdk[flask]==2.12.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
@@ -474,10 +453,8 @@ six==1.16.0
     #   apscheduler
     #   jsonpath-rw
     #   prance
-    #   python-consul
     #   python-dateutil
     #   rfc3339-validator
-    #   thrift
 slugify==0.0.1
     # via -r requirements.txt
 sniffio==1.3.1
@@ -503,7 +480,7 @@ sqlalchemy-utils==0.41.2
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-starlette==0.38.1
+starlette==0.38.2
     # via
     #   -r requirements.txt
     #   connexion
@@ -511,10 +488,6 @@ swagger-ui-bundle==1.1.0
     # via
     #   -r requirements.txt
     #   connexion
-thrift==0.20.0
-    # via
-    #   -r requirements.txt
-    #   flipper-client
 tomli==2.0.1
     # via
     #   black
@@ -577,8 +550,6 @@ werkzeug==3.0.3
     #   pytest-flask
 wheel==0.43.0
     # via pip-tools
-zipp==3.19.2
-    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

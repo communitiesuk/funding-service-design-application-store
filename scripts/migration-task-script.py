@@ -28,11 +28,14 @@ except subprocess.CalledProcessError as e:
 
 # Remove final line break and append arguments
 try:
+    new_env = {**os.environ}
+    new_env["FLASK_ENV"] = "db_migrate"
+
     subprocess.run(
         args=command_with_image_removed[:-1] + f" \\\n--follow \\\n--command '{command_to_run}'",
         shell=True,
         check=True,
-        env={**os.environ, "FLASK_ENV": "db_migrate"},
+        env=new_env,
     )
 except subprocess.CalledProcessError as e:
     # Don't want to leak the command output here so just exit with the command's return code

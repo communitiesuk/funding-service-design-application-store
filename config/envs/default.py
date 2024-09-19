@@ -12,7 +12,7 @@ from fsd_utils import configclass
 @configclass
 class DefaultConfig:
     #  Application Config
-    SECRET_KEY = environ.get("SECRET_KEY") or "dev"
+    SECRET_KEY = CommonConfig.SECRET_KEY
     SESSION_COOKIE_NAME = environ.get("SESSION_COOKIE_NAME", "session_cookie")
     FLASK_ROOT = str(Path(__file__).parent.parent.parent)
     FLASK_ENV = environ.get("FLASK_ENV") or "development"

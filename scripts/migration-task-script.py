@@ -6,6 +6,8 @@ import sys
 
 command_to_run = "flask db upgrade"
 environment = sys.argv[1]
+new_env = {**os.environ}
+new_env["FLASK_ENV"] = "db_migrate"
 
 try:
     command = subprocess.run(
@@ -19,6 +21,7 @@ try:
         capture_output=True,
         check=True,
         text=True,
+        env=new_env,
     )
     # Strip image argument as we want to build a new image to pick up new migrations
     command_with_image_removed = re.sub(r"--image \S+", "", command.stderr)
@@ -28,9 +31,6 @@ except subprocess.CalledProcessError as e:
 
 # Remove final line break and append arguments
 try:
-    new_env = {**os.environ}
-    new_env["FLASK_ENV"] = "db_migrate"
-
     subprocess.run(
         args=command_with_image_removed[:-1] + f" \\\n--follow \\\n--command '{command_to_run}'",
         shell=True,

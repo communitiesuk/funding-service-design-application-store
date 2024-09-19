@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import re
 import subprocess
 import sys
@@ -31,6 +32,7 @@ try:
         args=command_with_image_removed[:-1] + f" \\\n--follow \\\n--command '{command_to_run}'",
         shell=True,
         check=True,
+        env={**os.environ, "FLASK_ENV": "db_migrate"},
     )
 except subprocess.CalledProcessError as e:
     # Don't want to leak the command output here so just exit with the command's return code

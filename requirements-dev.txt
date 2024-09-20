@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements-dev.in
 #
-a2wsgi==1.10.6
+a2wsgi==1.10.7
     # via
     #   -r requirements.txt
     #   connexion
@@ -57,18 +57,20 @@ blinker==1.8.2
     #   -r requirements.txt
     #   flask
     #   sentry-sdk
-boto3==1.34.147
+boto3==1.34.152
     # via
     #   -r requirements.txt
     #   flipper-client
-botocore==1.34.147
+    #   moto
+botocore==1.34.152
     # via
     #   -r requirements.txt
     #   boto3
+    #   moto
     #   s3transfer
 build==1.2.1
     # via pip-tools
-cachetools==5.4.0
+cachetools==5.5.0
     # via
     #   -r requirements.txt
     #   flipper-client
@@ -108,12 +110,11 @@ commonmark==0.9.1
     #   -r requirements.txt
     #   rich
 connexion[flask,swagger-ui,uvicorn]==3.1.0
-    # via
-    #   -r requirements.txt
-    #   connexion
+    # via -r requirements.txt
 cryptography==43.0.0
     # via
     #   -r requirements.txt
+    #   moto
     #   pyjwt
 debugpy==1.8.2
     # via -r requirements-dev.in
@@ -144,7 +145,6 @@ flask[async]==3.0.3
     # via
     #   -r requirements.txt
     #   connexion
-    #   flask
     #   flask-apscheduler
     #   flask-babel
     #   flask-migrate
@@ -210,8 +210,6 @@ idna==3.7
     #   anyio
     #   httpx
     #   requests
-importlib-metadata==8.1.0
-    # via build
 importlib-resources==6.4.0
     # via
     #   -r requirements.txt
@@ -234,6 +232,7 @@ jinja2==3.1.4
     #   connexion
     #   flask
     #   flask-babel
+    #   moto
     #   swagger-ui-bundle
 jmespath==1.0.1
     # via
@@ -285,6 +284,8 @@ marshmallow-sqlalchemy==1.0.0
     # via -r requirements.txt
 mccabe==0.7.0
     # via flake8
+moto[s3,sqs]==5.0.14
+    # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via black
 nodeenv==1.9.1
@@ -342,6 +343,8 @@ pre-commit==3.7.1
     # via -r requirements-dev.in
 psycopg2-binary==2.9.9
     # via -r requirements.txt
+py-partiql-parser==0.5.6
+    # via moto
 pycodestyle==2.12.0
     # via flake8
 pycparser==2.22
@@ -358,11 +361,10 @@ pygments==2.18.0
     # via
     #   -r requirements.txt
     #   rich
-pyjwt[crypto]==2.8.0
+pyjwt[crypto]==2.9.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-    #   pyjwt
 pyproject-hooks==1.1.0
     # via
     #   build
@@ -373,7 +375,6 @@ pytest==8.3.1
     #   pytest-env
     #   pytest-flask
     #   pytest-mock
-moto[s3,sqs]==5.0.7
 pytest-env==1.1.3
     # via -r requirements-dev.in
 pytest-flask==1.3.0
@@ -389,6 +390,7 @@ python-dateutil==2.9.0.post0
     #   -r requirements.txt
     #   botocore
     #   flask-apscheduler
+    #   moto
     #   pandas
 python-dotenv==0.20.0
     # via
@@ -417,7 +419,9 @@ pyyaml==6.0.1
     #   connexion
     #   funding-service-design-utils
     #   jsonschema-path
+    #   moto
     #   pre-commit
+    #   responses
     #   uvicorn
 redis==4.6.0
     # via
@@ -436,8 +440,12 @@ requests==2.32.3
     #   connexion
     #   funding-service-design-utils
     #   jsonschema-path
+    #   moto
     #   prance
     #   python-consul
+    #   responses
+responses==0.25.3
+    # via moto
 rfc3339-validator==0.1.4
     # via
     #   -r requirements.txt
@@ -446,7 +454,7 @@ rich==12.6.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-rpds-py==0.19.0
+rpds-py==0.19.1
     # via
     #   -r requirements.txt
     #   jsonschema
@@ -463,11 +471,10 @@ s3transfer==0.10.2
     # via
     #   -r requirements.txt
     #   boto3
-sentry-sdk[flask]==2.11.0
+sentry-sdk[flask]==2.12.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-    #   sentry-sdk
 six==1.16.0
     # via
     #   -r requirements.txt
@@ -503,7 +510,7 @@ sqlalchemy-utils==0.41.2
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
-starlette==0.38.1
+starlette==0.38.2
     # via
     #   -r requirements.txt
     #   connexion
@@ -548,12 +555,12 @@ urllib3==2.2.2
     #   -r requirements.txt
     #   botocore
     #   requests
+    #   responses
     #   sentry-sdk
 uvicorn[standard]==0.30.3
     # via
     #   -r requirements.txt
     #   connexion
-    #   uvicorn
 uvloop==0.19.0
     # via
     #   -r requirements.txt
@@ -574,11 +581,12 @@ werkzeug==3.0.3
     #   connexion
     #   flask
     #   flask-restx
+    #   moto
     #   pytest-flask
 wheel==0.43.0
     # via pip-tools
-zipp==3.19.2
-    # via importlib-metadata
+xmltodict==0.13.0
+    # via moto
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

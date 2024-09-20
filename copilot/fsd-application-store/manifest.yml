@@ -61,6 +61,9 @@ variables:
   ACCOUNT_STORE_API_HOST: http://fsd-account-store:8080
   FUND_STORE_API_HOST: http://fsd-fund-store:8080
 
+secrets:
+  SECRET_KEY: /copilot/${COPILOT_APPLICATION_NAME}/${COPILOT_ENVIRONMENT_NAME}/secrets/SECRET_KEY
+
 # You can override any of the values defined above by environment.
 environments:
   dev:

@@ -13,11 +13,7 @@ from fsd_utils import configclass
 class DefaultConfig:
     #  Application Config
     FLASK_ENV = environ.get("FLASK_ENV", None)
-    SECRET_KEY = environ.get("SECRET_KEY", None)
-    if not SECRET_KEY:
-        if FLASK_ENV in ["dev", "test", "uat", "production"]:
-            raise KeyError("SECRET_KEY is not present in environment")
-        SECRET_KEY = "dev-secret"  # pragma: allowlist secret
+    SECRET_KEY = CommonConfig.SECRET_KEY
     SESSION_COOKIE_NAME = environ.get("SESSION_COOKIE_NAME", "session_cookie")
     FLASK_ROOT = str(Path(__file__).parent.parent.parent)
 

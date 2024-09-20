@@ -60,7 +60,7 @@ blinker==1.8.2
 boto3==1.34.152
     # via
     #   -r requirements.txt
-    #   funding-service-design-utils
+    #   flipper-client
     #   moto
 botocore==1.34.152
     # via
@@ -70,6 +70,10 @@ botocore==1.34.152
     #   s3transfer
 build==1.2.1
     # via pip-tools
+cachetools==5.5.0
+    # via
+    #   -r requirements.txt
+    #   flipper-client
 certifi==2024.7.4
     # via
     #   -r requirements.txt
@@ -171,7 +175,11 @@ flask-sqlalchemy==3.1.1
     #   -r requirements.txt
     #   flask-migrate
     #   funding-service-design-utils
-git+https://github.com/communitiesuk/funding-service-design-utils.git@fs-4647-a
+flipper-client==1.3.2
+    # via
+    #   -r requirements.txt
+    #   funding-service-design-utils
+funding-service-design-utils==4.0.0
     # via -r requirements.txt
 gunicorn==22.0.0
     # via
@@ -343,6 +351,10 @@ pycparser==2.22
     # via
     #   -r requirements.txt
     #   cffi
+pyee==6.0.0
+    # via
+    #   -r requirements.txt
+    #   flipper-client
 pyflakes==3.2.0
     # via flake8
 pygments==2.18.0
@@ -369,6 +381,10 @@ pytest-flask==1.3.0
     # via -r requirements-dev.in
 pytest-mock==3.14.0
     # via -r requirements-dev.in
+python-consul==1.1.0
+    # via
+    #   -r requirements.txt
+    #   flipper-client
 python-dateutil==2.9.0.post0
     # via
     #   -r requirements.txt
@@ -376,7 +392,7 @@ python-dateutil==2.9.0.post0
     #   flask-apscheduler
     #   moto
     #   pandas
-python-dotenv==1.0.1
+python-dotenv==0.20.0
     # via
     #   -r requirements.txt
     #   funding-service-design-utils
@@ -411,6 +427,7 @@ redis==4.6.0
     # via
     #   -r requirements.txt
     #   flask-redis
+    #   flipper-client
 referencing==0.35.1
     # via
     #   -r requirements.txt
@@ -425,6 +442,7 @@ requests==2.32.3
     #   jsonschema-path
     #   moto
     #   prance
+    #   python-consul
     #   responses
 responses==0.25.3
     # via moto
@@ -463,8 +481,10 @@ six==1.16.0
     #   apscheduler
     #   jsonpath-rw
     #   prance
+    #   python-consul
     #   python-dateutil
     #   rfc3339-validator
+    #   thrift
 slugify==0.0.1
     # via -r requirements.txt
 sniffio==1.3.1
@@ -498,6 +518,10 @@ swagger-ui-bundle==1.1.0
     # via
     #   -r requirements.txt
     #   connexion
+thrift==0.20.0
+    # via
+    #   -r requirements.txt
+    #   flipper-client
 tomli==2.0.1
     # via
     #   black

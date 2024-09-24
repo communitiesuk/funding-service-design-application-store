@@ -1,7 +1,7 @@
 #-----------------------------------
 #   FSD Utils
 #-----------------------------------
-funding-service-design-utils>=2.0.51,<=4.0.0
+funding-service-design-utils>=5.0.8,<6.0.0
 
 requests==2.32.3
 slugify

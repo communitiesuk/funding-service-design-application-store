@@ -38,13 +38,11 @@ blinker==1.8.2
     #   flask
     #   sentry-sdk
 boto3==1.34.152
-    # via flipper-client
+    # via funding-service-design-utils
 botocore==1.34.152
     # via
     #   boto3
     #   s3transfer
-cachetools==5.5.0
-    # via flipper-client
 certifi==2024.7.4
     # via
     #   httpcore
@@ -104,9 +102,7 @@ flask-sqlalchemy==3.1.1
     #   -r requirements.in
     #   flask-migrate
     #   funding-service-design-utils
-flipper-client==1.3.2
-    # via funding-service-design-utils
-funding-service-design-utils==4.0.0
+funding-service-design-utils==5.0.8
     # via -r requirements.in
 gunicorn==22.0.0
     # via funding-service-design-utils
@@ -200,23 +196,19 @@ psycopg2-binary==2.9.9
     # via -r requirements.in
 pycparser==2.22
     # via cffi
-pyee==6.0.0
-    # via flipper-client
 pygments==2.18.0
     # via rich
 pyjwt[crypto]==2.9.0
     # via
     #   funding-service-design-utils
     #   pyjwt
-python-consul==1.1.0
-    # via flipper-client
 python-dateutil==2.9.0.post0
     # via
     #   -r requirements.in
     #   botocore
     #   flask-apscheduler
     #   pandas
-python-dotenv==0.20.0
+python-dotenv==1.0.1
     # via
     #   funding-service-design-utils
     #   uvicorn
@@ -238,9 +230,7 @@ pyyaml==6.0.1
     #   jsonschema-path
     #   uvicorn
 redis==4.6.0
-    # via
-    #   flask-redis
-    #   flipper-client
+    # via flask-redis
 referencing==0.35.1
     # via
     #   jsonschema
@@ -253,7 +243,6 @@ requests==2.32.3
     #   funding-service-design-utils
     #   jsonschema-path
     #   prance
-    #   python-consul
 rfc3339-validator==0.1.4
     # via openapi-schema-validator
 rich==12.6.0
@@ -275,10 +264,8 @@ six==1.16.0
     #   apscheduler
     #   jsonpath-rw
     #   prance
-    #   python-consul
     #   python-dateutil
     #   rfc3339-validator
-    #   thrift
 slugify==0.0.1
     # via -r requirements.in
 sniffio==1.3.1
@@ -307,8 +294,6 @@ swagger-ui-bundle==1.1.0
     # via
     #   -r requirements.in
     #   connexion
-thrift==0.20.0
-    # via flipper-client
 typing-extensions==4.12.2
     # via
     #   a2wsgi

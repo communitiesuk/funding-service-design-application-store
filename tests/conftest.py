@@ -261,11 +261,9 @@ def generate_mock_round(fund_id: str, round_id: str) -> Round:
         id=round_id,
         fund_id=fund_id,
         short_name="TEST",
-        opens=datetime.strptime("2023-01-01 12:00:00", "%Y-%m-%d %H:%M:%S"),
-        deadline=datetime.strptime(
-            (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"
-        ),
-        assessment_deadline=datetime.strptime("2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
+        opens=(datetime.now() - timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%S"),
+        deadline=(datetime.now() + timedelta(days=5)).strftime("%Y-%m-%dT%H:%M:%S"),
+        assessment_deadline=(datetime.now() + timedelta(days=10)).strftime("%Y-%m-%dT%H:%M:%S"),
         project_name_field_id="TestFieldId",
         contact_email="test@outlook.com",
         title_json={"en": "English title", "cy": "Welsh title"},

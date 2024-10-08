@@ -23,19 +23,17 @@ def update_application_and_related_form(application_id, question_json, form_name
     if (project_name := attempt_to_find_and_update_project_name(question_json, application)) is not None:
         application.project_name = project_name
     form_sql_row.json = question_json
-    round_status = update_statuses(application_id, form_name, is_summary_page_submit)
+    update_statuses(application_id, form_name, is_summary_page_submit)
     db.session.commit()
     current_app.logger.info(f"Application updated for application_id: '{application_id}.")
-    return round_status
 
 
 def update_form(application_id, form_name, question_json, is_summary_page_submit):
     try:
-        round_status = None
         form_sql_row = get_form(application_id, form_name)
         # Running update form for the first time
         if question_json and not form_sql_row.json:
-            round_status = update_application_and_related_form(
+            update_application_and_related_form(
                 application_id,
                 question_json,
                 form_name,
@@ -49,7 +47,7 @@ def update_form(application_id, form_name, question_json, is_summary_page_submit
             raise Exception("ABORTING UPDATE, INVALID DATA GIVEN")
         # Updating form subsequent times
         elif form_sql_row.json and form_sql_row.json != question_json:
-            round_status = update_application_and_related_form(
+            update_application_and_related_form(
                 application_id,
                 question_json,
                 form_name,
@@ -58,4 +56,4 @@ def update_form(application_id, form_name, question_json, is_summary_page_submit
     except sqlalchemy.orm.exc.NoResultFound as e:
         raise e
     db.session.commit()
-    return form_sql_row.as_json(), round_status
+    return form_sql_row.as_json()

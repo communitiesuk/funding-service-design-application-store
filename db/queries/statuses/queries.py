@@ -245,10 +245,17 @@ def update_statuses(application_id: str, form_name: str, is_summary_page_submitt
 
     update_application_status(application, round.feedback_survey_config)
     db.session.commit()
-    if isinstance(round.deadline, datetime):
-        deadline = datetime.strptime(round.deadline.strftime("%Y-%m-%dT%H:%M:%S"), "%Y-%m-%dT%H:%M:%S")
-    else:
-        deadline = datetime.strptime(round.deadline, "%Y-%m-%dT%H:%M:%S")
+
+
+def check_is_fund_round_open(application_id: str):
+    """
+    Check is given fund round is closed for the following application id
+    Parameters:
+       application_id (`str`): ID of the application to update the status
+    """
+    application = get_application(application_id, include_forms=True)
+    round_obj = get_round(application.fund_id, application.round_id)
+    deadline = datetime.strptime(round_obj.deadline, "%Y-%m-%dT%H:%M:%S")
     if datetime.now() > deadline:
         return False
     return True

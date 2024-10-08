@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from db import db
 from db.models import Applications
 from db.models.forms.forms import Forms
@@ -243,3 +245,10 @@ def update_statuses(application_id: str, form_name: str, is_summary_page_submitt
 
     update_application_status(application, round.feedback_survey_config)
     db.session.commit()
+    if isinstance(round.deadline, datetime):
+        deadline = datetime.strptime(round.deadline.strftime("%Y-%m-%dT%H:%M:%S"), "%Y-%m-%dT%H:%M:%S")
+    else:
+        deadline = datetime.strptime(round.deadline, "%Y-%m-%dT%H:%M:%S")
+    if datetime.now() > deadline:
+        return False
+    return True

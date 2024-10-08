@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+from datetime import timedelta
 from unittest import mock
 from unittest.mock import ANY
 from unittest.mock import MagicMock
@@ -13,6 +15,7 @@ from db.models import ResearchSurvey
 from db.queries.application import get_all_applications
 from db.schemas import ApplicationSchema
 from external_services.models.fund import Fund
+from external_services.models.round import Round
 from fsd_utils.services.aws_extended_client import SQSExtendedClient
 from moto import mock_aws
 from tests.helpers import application_expected_data
@@ -580,6 +583,33 @@ def test_complete_form(flask_test_client, seed_application_records):
     assert section_status == "COMPLETED"
 
 
+@pytest.mark.apps_to_insert([test_application_data[0]])
+def test_form_data_save_with_closed_round(flask_test_client, seed_application_records, mocker):
+    """
+    GIVEN We have a functioning Application Store API
+    WHEN A put is made with a completed section,
+    THEN The section JSON should be updated to
+    match the PUT'ed JSON and be marked as in-progress.
+    and if the round is closed then it will give a 301 to redirect the user to fund closure notification page
+    """
+    mocker.patch("db.queries.application.queries.get_round", new=generate_mock_round_closed)
+    mocker.patch("db.queries.statuses.queries.get_round", new=generate_mock_round_closed)
+    section_put = {
+        "questions": test_question_data,
+        "metadata": {
+            "application_id": str(seed_application_records[0].id),
+            "form_name": "declarations",
+            "isSummaryPageSubmit": True,
+        },
+    }
+    response = flask_test_client.put(
+        "/applications/forms",
+        json=section_put,
+        follow_redirects=True,
+    )
+    assert response.status_code == 301
+
+
 @pytest.mark.apps_to_insert([test_application_data[2]])
 def test_put_returns_400_on_submitted_application(flask_test_client, _db, seed_application_records):
     """
@@ -724,6 +754,23 @@ def _mock_aws_client():
     sqs_extended_client.s3_client = s3_connection
     Config.AWS_SQS_IMPORT_APP_PRIMARY_QUEUE_URL = queue_response["QueueUrl"]
     return sqs_extended_client
+
+
+def generate_mock_round_closed(fund_id: str, round_id: str) -> Round:
+    return Round(
+        title="Generated test round",
+        id=round_id,
+        fund_id=fund_id,
+        short_name="TEST",
+        opens=datetime.strptime("2023-01-01 12:00:00", "%Y-%m-%d %H:%M:%S"),
+        deadline=datetime.strptime(
+            (datetime.now() - timedelta(days=10)).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"
+        ),
+        assessment_deadline=datetime.strptime("2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
+        project_name_field_id="TestFieldId",
+        contact_email="test@outlook.com",
+        title_json={"en": "English title", "cy": "Welsh title"},
+    )
 
 
 def test_post_research_survey_data(flask_test_client, mocker):

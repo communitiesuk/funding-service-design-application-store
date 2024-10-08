@@ -156,7 +156,10 @@ class ApplicationsView(MethodView):
             "is_summary_page_submit": request_json["metadata"].get("isSummaryPageSubmit", False),
         }
         try:
-            updated_form = update_form(**form_dict)
+            updated_form, round_status = update_form(**form_dict)
+            if not round_status:
+                current_app.logger.info("Round is closed so user will be redirected")
+                return {}, 301
             return updated_form, 201
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}, 404

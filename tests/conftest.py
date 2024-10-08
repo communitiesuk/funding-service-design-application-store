@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timedelta
 from uuid import uuid4
 
 import pytest
@@ -261,7 +262,9 @@ def generate_mock_round(fund_id: str, round_id: str) -> Round:
         fund_id=fund_id,
         short_name="TEST",
         opens=datetime.strptime("2023-01-01 12:00:00", "%Y-%m-%d %H:%M:%S"),
-        deadline=datetime.strptime("2023-01-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
+        deadline=datetime.strptime(
+            (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"
+        ),
         assessment_deadline=datetime.strptime("2023-03-31 12:00:00", "%Y-%m-%d %H:%M:%S"),
         project_name_field_id="TestFieldId",
         contact_email="test@outlook.com",

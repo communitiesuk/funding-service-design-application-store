@@ -30,6 +30,7 @@ from db.queries.reporting.queries import export_application_statuses_to_csv
 from db.queries.reporting.queries import map_application_key_fields
 from db.queries.research import retrieve_research_survey_data
 from db.queries.research import upsert_research_survey_data
+from db.queries.statuses import check_is_fund_round_open
 from db.queries.statuses import update_statuses
 from external_services import get_account
 from external_services import get_fund
@@ -157,6 +158,10 @@ class ApplicationsView(MethodView):
         }
         try:
             updated_form = update_form(**form_dict)
+            is_round_open = check_is_fund_round_open(form_dict["application_id"])
+            if not is_round_open:
+                current_app.logger.info("Round is closed so user will be redirected")
+                return {}, 301
             return updated_form, 201
         except NoResultFound as e:
             return {"code": 404, "message": str(e)}, 404

@@ -4,7 +4,7 @@ expected_application_json = {
     NotifyConstants.FIELD_TYPE: NotifyConstants.TEMPLATE_TYPE_APPLICATION,
     NotifyConstants.FIELD_TO: "test_application@example.com",
     NotifyConstants.FIELD_CONTENT: {
-        NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: "COF@levellingup.gov.uk",
+        NotifyConstants.MAGIC_LINK_CONTACT_HELP_EMAIL_FIELD: "COF@communities.gov.uk",
         NotifyConstants.APPLICATION_FIELD: {
             "id": "123456789",
             "reference": "1564564564-56-4-54-4654",

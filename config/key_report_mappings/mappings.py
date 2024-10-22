@@ -25,10 +25,10 @@ ROUND_ID_TO_KEY_REPORT_MAPPING = defaultdict(
     {
         CYP_R1_KEY_REPORT_MAPPING.round_id: CYP_R1_KEY_REPORT_MAPPING.mapping,
         DPIF_R2_KEY_REPORT_MAPPING.round_id: DPIF_R2_KEY_REPORT_MAPPING.mapping,
-        COF_EOI_KEY_REPORT_MAPPING.round_id: COF_EOI_KEY_REPORT_MAPPING.mapping,
         COF_R2_KEY_REPORT_MAPPING.round_id: COF_R2_KEY_REPORT_MAPPING.mapping,
         COF_R3W2_KEY_REPORT_MAPPING.round_id: COF_R3W2_KEY_REPORT_MAPPING.mapping,
         **({key: COF_KEY_REPORT_MAPPING.mapping for key in COF_KEY_REPORT_MAPPING.round_id}),
+        **({key: COF_EOI_KEY_REPORT_MAPPING.mapping for key in COF_EOI_KEY_REPORT_MAPPING.round_id}),
     },
 )
 

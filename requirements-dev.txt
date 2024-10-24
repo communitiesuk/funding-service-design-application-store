@@ -331,7 +331,7 @@ ply==3.11
     #   jsonpath-rw
 prance==23.6.21.0
     # via -r requirements.txt
-pre-commit==3.7.1
+pre-commit==4.0.1
     # via -r requirements-dev.in
 psycopg2-binary==2.9.9
     # via -r requirements.txt

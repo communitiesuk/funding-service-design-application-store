@@ -3,7 +3,7 @@ black
 click
 debugpy
 deepdiff
-pre-commit
+pre-commit~=4.0.0
 pytest
 pytest-env
 pytest-flask

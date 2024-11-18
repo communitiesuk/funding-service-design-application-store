@@ -34,6 +34,8 @@ dependencies = [
     "uvicorn==0.30.3",
 ]
 
+[tool.ruff]
+line-length = 120
 
 [tool.ruff.lint]
 select = [

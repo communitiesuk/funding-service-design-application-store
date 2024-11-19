@@ -33,6 +33,7 @@ def patch_form(application_id: str, name, patch_fields: dict) -> Forms:
     form.json = patch_fields.get("json", form.json)
     form.status = patch_fields.get("status", form.status)
     form.has_completed = patch_fields.get("has_completed", form.has_completed)
+    form.feedback_message = patch_fields.get("feedback_message", form.feedback_message)
 
     db.session.commit()
 

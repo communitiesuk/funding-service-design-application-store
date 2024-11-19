@@ -6,3 +6,4 @@ class Status(Enum):
     IN_PROGRESS = 1
     SUBMITTED = 2
     COMPLETED = 3
+    CHANGES_REQUESTED = 4

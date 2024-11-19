@@ -25,10 +25,12 @@ class Forms(BaseModel):
     status = db.Column("status", db.Enum(Status), default="NOT_STARTED", nullable=False)
     name = db.Column("name", db.String(), nullable=False)
     has_completed = db.Column("has_completed", db.Boolean(), default=False)
+    feedback_message = db.Column("feedback_message", db.String(), nullable=True)
 
     def as_json(self):
         return {
             "status": self.status.name,
             "name": self.name,
             "questions": self.json,
+            "feedback_message": self.feedback_message,
         }

@@ -427,7 +427,6 @@ class ApplicationsView(MethodView):
                 as_json=True,
                 include_forms=True,
             )
-
         except NoResultFound:
             return {
                 "code": 404,
@@ -436,10 +435,7 @@ class ApplicationsView(MethodView):
 
         args = request.get_json()
         field_ids = args["field_ids"]
-        # column needs adding
-        # feedback_message = args["feedback_message"]
-
-        print("Fields needing status update: ", field_ids)
+        feedback_message = args["feedback_message"]
 
         application_requires_changes = False
         for application_form in application["forms"]:
@@ -452,7 +448,7 @@ class ApplicationsView(MethodView):
                     if field["key"] in field_ids:
                         from_requires_changes = True
                         application_requires_changes = True
-                        forms_json_queston["status"] = "NOT_STARTED"
+                        forms_json_queston["status"] = "CHANGES_REQUESTED"
 
                     forms_json_queston["fields"] = [field]
                     forms_json.append(forms_json_queston)
@@ -460,15 +456,16 @@ class ApplicationsView(MethodView):
             if from_requires_changes:
                 form_patch_fields = {
                     "json": forms_json,
-                    "status": "NOT_STARTED",
+                    "status": "CHANGES_REQUESTED",
                     "has_completed": False,
+                    "feedback_message": feedback_message,
                 }
 
                 patch_form(application_id, application_form["name"], form_patch_fields)
 
         if application_requires_changes:
             application_patch_fields = {
-                "status": "NOT_STARTED",
+                "status": "CHANGES_REQUESTED",
             }
 
             patch_application(application_id, application_patch_fields)

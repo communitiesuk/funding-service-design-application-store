@@ -379,6 +379,48 @@ paths:
                 status: 'error'
                 message: 'Application corresponding to id not found.'
 
+  /application/{application_id}/request_changes:
+    post:
+      tags:
+        - applications
+      summary: Endpoint to request changes to an application
+      description: Request changes to an application by application id
+      operationId: api.ApplicationsView.post_request_changes
+      parameters:
+        - name: application_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path
+      requestBody:
+        description: Request changes request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'components.yml#/components/schemas/ChangesRequired'
+            example:
+              field_ids: ["field_1", "field_2"]
+              feedback_message: 'There are some changes required'
+      responses:
+          200:
+            description: Success - Application changes requested
+            content:
+              application/json: {}
+          404:
+            description: Error - Application with id not found
+            content:
+              application/json:
+                schema:
+                  $ref: 'components.yml#/components/schemas/Error'
+          500:
+            description: Error - Application changes could not be requested
+            content:
+              application/json:
+                schema:
+                  $ref: 'components.yml#/components/schemas/Error'
+
   /application/feedback:
     post:
       tags:

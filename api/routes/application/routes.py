@@ -20,18 +20,20 @@ from db.queries import get_key_report_field_headers
 from db.queries import get_report_for_applications
 from db.queries import search_applications
 from db.queries import submit_application
-from db.queries import update_form
 from db.queries import upsert_feedback
 from db.queries.application import create_qa_base64file
+from db.queries.application.queries import patch_application
 from db.queries.feedback import retrieve_all_feedbacks_and_surveys
 from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.feedback import upsert_end_of_application_survey_data
+from db.queries.form.queries import patch_form
 from db.queries.reporting.queries import export_application_statuses_to_csv
 from db.queries.reporting.queries import map_application_key_fields
 from db.queries.research import retrieve_research_survey_data
 from db.queries.research import upsert_research_survey_data
 from db.queries.statuses import check_is_fund_round_open
 from db.queries.statuses import update_statuses
+from db.queries.updating.queries import update_form
 from external_services import get_account
 from external_services import get_fund
 from external_services import get_round
@@ -417,3 +419,56 @@ class ApplicationsView(MethodView):
             "code": 404,
             "message": f"Research survey data for {application_id} not found",
         }, 404
+
+    def post_request_changes(self, application_id: str):
+        try:
+            application = get_application(
+                application_id,
+                as_json=True,
+                include_forms=True,
+            )
+
+        except NoResultFound:
+            return {
+                "code": 404,
+                "message": f"Application {application_id} not found",
+            }, 404
+
+        args = request.get_json()
+        field_ids = args["field_ids"]
+        # column needs adding
+        # feedback_message = args["feedback_message"]
+
+        print("Fields needing status update: ", field_ids)
+
+        application_requires_changes = False
+        for application_form in application["forms"]:
+            from_requires_changes = False
+            forms_json = []
+
+            for question in application_form["questions"]:
+                forms_json_queston = question
+                for field in question["fields"]:
+                    if field["key"] in field_ids:
+                        from_requires_changes = True
+                        application_requires_changes = True
+                        forms_json_queston["status"] = "NOT_STARTED"
+
+                    forms_json_queston["fields"] = [field]
+                    forms_json.append(forms_json_queston)
+
+            if from_requires_changes:
+                form_patch_fields = {
+                    "json": forms_json,
+                    "status": "NOT_STARTED",
+                    "has_completed": False,
+                }
+
+                patch_form(application_id, application_form["name"], form_patch_fields)
+
+        if application_requires_changes:
+            application_patch_fields = {
+                "status": "NOT_STARTED",
+            }
+
+            patch_application(application_id, application_patch_fields)

@@ -300,3 +300,14 @@ def attempt_to_find_and_update_project_name(question_json, application) -> None:
         for field in question["fields"]:
             if field["key"] == project_name_field_id and "answer" in field.keys():
                 return field["answer"]
+
+
+def patch_application(application_id: str, patch_fields: dict) -> Applications:
+    application = get_application(application_id)
+
+    application.status = patch_fields.get("status", application.status)
+    application.project_name = patch_fields.get("project_name", application.project_name)
+
+    db.session.commit()
+
+    return application

@@ -180,6 +180,15 @@ components:
           type: string
         date_submitted:
           type: string
+    ChangesRequired:
+      type: object
+      properties:
+        status:
+          type: array
+          items:
+            type: string
+        feedback_message:
+          type: string
     PostFeedback:
       type: object
       properties:

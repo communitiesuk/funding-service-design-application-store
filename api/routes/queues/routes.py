@@ -2,10 +2,11 @@
 import json
 from uuid import uuid4
 
-from config import Config
-from db.queries import get_application
 from flask import current_app
 from flask.views import MethodView
+
+from config import Config
+from db.queries import get_application
 
 
 class QueueView(MethodView):
@@ -36,7 +37,10 @@ class QueueView(MethodView):
                     message_deduplication_id=str(uuid4()),  # ensures message uniqueness
                     extra_attributes=application_attributes,
                 )
-                current_app.logger.info(f"Message sent to SQS queue and message id is [{message_id}]")
+                current_app.logger.info(
+                    "Message sent to SQS queue and message id is [{message_id}]",
+                    extra=dict(message_id=message_id),
+                )
                 return f"Message queued, message_id is: {message_id}.", 201
             except Exception as e:
                 current_app.logger.error("An error occurred while sending message")

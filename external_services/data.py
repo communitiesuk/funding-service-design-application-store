@@ -5,9 +5,9 @@ from typing import Optional
 from urllib.parse import urlencode
 
 import requests
+from flask import abort, current_app
+
 from config import Config
-from flask import abort
-from flask import current_app
 
 from .models.account import Account
 from .models.fund import Fund
@@ -27,13 +27,22 @@ def get_data(endpoint: str, params: Optional[dict] = None):
     """
 
     if Config.USE_LOCAL_DATA:
-        current_app.logger.info(f"Fetching local data from '{endpoint}'" + f" with params {params}.")
+        current_app.logger.info(
+            "Fetching local data from '{endpoint}' with params {params}.",
+            extra=dict(endpoint=endpoint, params=params),
+        )
         data = get_local_data(endpoint, params)
     else:
-        current_app.logger.info(f"Fetching data from '{endpoint}'" + f" with params {params}.")
+        current_app.logger.info(
+            "Fetching data from '{endpoint}' with params {params}.",
+            extra=dict(endpoint=endpoint, params=params),
+        )
         data = get_remote_data(endpoint, params)
     if data is None:
-        current_app.logger.error(f"Data request failed, unable to recover: {endpoint}")
+        current_app.logger.error(
+            "Data request failed, unable to recover: {endpoint}",
+            extra=dict(endpoint=endpoint),
+        )
         return abort(500)
     return data
 
@@ -51,7 +60,10 @@ def get_remote_data(endpoint, params: Optional[dict] = None):
         data = response.json()
         return data
     else:
-        current_app.logger.warn(f"GET remote data call was unsuccessful with status code: {response.status_code}.")
+        current_app.logger.warning(
+            "GET remote data call was unsuccessful with status code: {status_code}.",
+            extra=dict(status_code=response.status_code),
+        )
         return None
 
 
@@ -93,7 +105,7 @@ def get_funds() -> list[Fund] | None:
 
 def get_fund(fund_id: str) -> Fund | None:
     endpoint = Config.FUND_STORE_API_HOST + Config.FUND_ENDPOINT.format(fund_id=fund_id)
-    current_app.logger.info(f"Request made to {endpoint}")
+    current_app.logger.info("Request made to {endpoint}", extra=dict(endpoint=endpoint))
     response = get_data(endpoint)
     if response is None:
         current_app.logger.info("Request to fund store returned None")

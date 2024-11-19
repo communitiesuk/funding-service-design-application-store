@@ -1,11 +1,9 @@
 import pytest
+
 from config.key_report_mappings.cof_r3w2_key_report_mapping import (
     COF_R3W2_KEY_REPORT_MAPPING,
 )
-from db.models import Applications
-from db.models import EndOfApplicationSurveyFeedback
-from db.models import Feedback
-from db.models import Forms
+from db.models import Applications, EndOfApplicationSurveyFeedback, Feedback, Forms
 from db.queries.feedback import retrieve_all_feedbacks_and_surveys
 
 app_sections = [

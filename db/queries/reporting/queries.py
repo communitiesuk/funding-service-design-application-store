@@ -1,13 +1,11 @@
 import csv
 import io
-from typing import Any
-from typing import Optional
+from typing import Any, Optional
 
 import pandas as pd
+
 from config.key_report_mappings.mappings import ROUND_ID_TO_KEY_REPORT_MAPPING
-from config.key_report_mappings.model import ApplicationColumnMappingItem
-from config.key_report_mappings.model import FormMappingItem
-from config.key_report_mappings.model import MappingItem
+from config.key_report_mappings.model import ApplicationColumnMappingItem, FormMappingItem, MappingItem
 from db.models import Applications
 from db.queries import get_applications
 from db.queries.application import get_count_by_status

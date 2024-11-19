@@ -1,6 +1,6 @@
+from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
+
 from db.models import EndOfApplicationSurveyFeedback
-from marshmallow_sqlalchemy import auto_field
-from marshmallow_sqlalchemy import SQLAlchemySchema
 
 
 class EndOfApplicationSurveyFeedbackSchema(SQLAlchemySchema):

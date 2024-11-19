@@ -4,12 +4,13 @@ from unittest.mock import MagicMock
 
 import boto3
 import pytest
-from config import Config
-from external_services.exceptions import NotificationError
-from external_services.models.notification import Notification
 from fsd_utils import NotifyConstants
 from fsd_utils.services.aws_extended_client import SQSExtendedClient
 from moto import mock_aws
+
+from config import Config
+from external_services.exceptions import NotificationError
+from external_services.models.notification import Notification
 
 
 class NotificationTest(unittest.TestCase):

@@ -1,20 +1,23 @@
 import sqlalchemy
+from flask import abort, current_app
+from sqlalchemy import func
+
 from db import db
 from db.models.application.enums import Status as ApplicationStatus
-from db.queries.application import attempt_to_find_and_update_project_name
-from db.queries.application import get_application
+from db.queries.application import (
+    attempt_to_find_and_update_project_name,
+    get_application,
+)
 from db.queries.form import get_form
 from db.queries.statuses import update_statuses
-from flask import abort
-from flask import current_app
-from sqlalchemy import func
 
 
 def update_application_and_related_form(application_id, question_json, form_name, is_summary_page_submit):
     application = get_application(application_id)
     if application.status == ApplicationStatus.SUBMITTED:
         current_app.logger.error(
-            f"Not allowed. Attempted to PUT data into a SUBMITTED application with an application_id: {application_id}."
+            "Not allowed. Attempted to PUT data into a SUBMITTED application with an application_id: {application_id}.",
+            extra=dict(application_id=application_id),
         )
         abort(400, "Not allowed to edit a submitted application.")
 
@@ -25,7 +28,10 @@ def update_application_and_related_form(application_id, question_json, form_name
     form_sql_row.json = question_json
     update_statuses(application_id, form_name, is_summary_page_submit)
     db.session.commit()
-    current_app.logger.info(f"Application updated for application_id: '{application_id}.")
+    current_app.logger.info(
+        "Application updated for application_id: '{application_id}.",
+        extra=dict(application_id=application_id),
+    )
 
 
 def update_form(application_id, form_name, question_json, is_summary_page_submit):
@@ -42,7 +48,8 @@ def update_form(application_id, form_name, question_json, is_summary_page_submit
         # Removing all data in the form (should not be allowed)
         elif form_sql_row.json and not question_json:
             current_app.logger.error(
-                f"Application update aborted for application_id: '{application_id}. Invalid data supplied"
+                "Application update aborted for application_id: '{application_id}. Invalid data supplied",
+                extra=dict(application_id=application_id),
             )
             raise Exception("ABORTING UPDATE, INVALID DATA GIVEN")
         # Updating form subsequent times

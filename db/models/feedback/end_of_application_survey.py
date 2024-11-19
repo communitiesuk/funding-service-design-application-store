@@ -1,9 +1,9 @@
-from db import db
 from flask_sqlalchemy.model import DefaultMeta
 from sqlalchemy import DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 
+from db import db
 
 BaseModel: DefaultMeta = db.Model
 

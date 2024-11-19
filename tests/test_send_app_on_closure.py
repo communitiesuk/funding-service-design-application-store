@@ -1,5 +1,6 @@
 import pytest
 from pytest import raises
+
 from scripts.send_application_on_closure import (
     send_incomplete_applications_after_deadline,
 )

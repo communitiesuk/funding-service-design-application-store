@@ -12,7 +12,7 @@ def print_data():
 
 
 executor = ThreadPoolExecutor(max_workers=5, thread_name_prefix="TestingExecutor")
-for x in range(4):
+for _x in range(4):
     executor.submit(print_data)
 
 print_data()

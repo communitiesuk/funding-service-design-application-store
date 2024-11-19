@@ -1,6 +1,5 @@
 from _helpers.form import get_forms_from_sections
 
-
 section_config = [
     {
         "form_name": None,

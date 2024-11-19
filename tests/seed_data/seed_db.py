@@ -3,8 +3,7 @@ import json
 from _helpers import get_blank_forms
 from db.models.application import Applications
 from db.queries import add_new_forms
-from db.queries.application import create_application
-from db.queries.application import submit_application
+from db.queries.application import create_application, submit_application
 from db.queries.updating.queries import update_form
 
 

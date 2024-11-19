@@ -1,6 +1,7 @@
 from typing import Any
 
 import prance
+
 from config import Config
 
 

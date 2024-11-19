@@ -3,6 +3,7 @@ from unittest.mock import ANY
 from uuid import uuid4
 
 import pytest
+
 from config.key_report_mappings.cof_eoi_key_report_mapping import COF_EOI_KEY_REPORT_MAPPING
 from config.key_report_mappings.cof_key_report_mapping import COF_KEY_REPORT_MAPPING
 from config.key_report_mappings.cof_r2_key_report_mapping import (
@@ -12,15 +13,10 @@ from config.key_report_mappings.cof_r3w2_key_report_mapping import (
     COF_R3W2_KEY_REPORT_MAPPING,
 )
 from config.key_report_mappings.mappings import ROUND_ID_TO_KEY_REPORT_MAPPING
-from config.key_report_mappings.model import extract_postcode
-from config.key_report_mappings.model import KeyReportMapping
-from db.models import Applications
-from db.models import Forms
-from db.queries.application import create_application
-from db.queries.application import create_qa_base64file
-from db.queries.application import process_files
-from db.queries.reporting.queries import export_application_statuses_to_csv
-from db.queries.reporting.queries import map_application_key_fields
+from config.key_report_mappings.model import KeyReportMapping, extract_postcode
+from db.models import Applications, Forms
+from db.queries.application import create_application, create_qa_base64file, process_files
+from db.queries.reporting.queries import export_application_statuses_to_csv, map_application_key_fields
 from external_services.aws import FileData
 from external_services.models.fund import Fund
 from tests.seed_data.application_data import expected_application_json
@@ -196,7 +192,7 @@ def test_process_files(application, all_application_files, expected):
     THEN the application object is expected to be updated with the relevant file information
     """
     result = process_files(application, all_application_files)
-    for form, expected_form in zip(result.forms, expected.forms):
+    for form, expected_form in zip(result.forms, expected.forms, strict=False):
         assert form.json == pytest.approx(expected_form.json)
 
 

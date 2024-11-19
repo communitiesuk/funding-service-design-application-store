@@ -1,14 +1,17 @@
 from unittest.mock import MagicMock
 
 import pytest
-from db.queries.statuses.queries import _determine_question_page_status_from_answers
-from db.queries.statuses.queries import _is_all_sections_feedback_complete
-from db.queries.statuses.queries import _is_feedback_survey_complete
-from db.queries.statuses.queries import _is_field_answered
-from db.queries.statuses.queries import _is_research_survey_complete
-from db.queries.statuses.queries import update_application_status
-from db.queries.statuses.queries import update_form_status
-from db.queries.statuses.queries import update_question_page_statuses
+
+from db.queries.statuses.queries import (
+    _determine_question_page_status_from_answers,
+    _is_all_sections_feedback_complete,
+    _is_feedback_survey_complete,
+    _is_field_answered,
+    _is_research_survey_complete,
+    update_application_status,
+    update_form_status,
+    update_question_page_statuses,
+)
 from external_services.models.round import FeedbackSurveyConfig
 
 
@@ -57,8 +60,8 @@ def test_update_question_statuses_with_mocks(mocker):
 
     assert test_json[0]["status"] == "NOT_STARTED"
     assert test_json[1]["status"] == "NOT_STARTED"
-    mock_question_status.call_count == 2
-    mock_answer_status.call_count == 2
+    assert mock_question_status.call_count == 2
+    assert mock_answer_status.call_count == 2
 
 
 @pytest.mark.parametrize(

@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from external_services.models.round import Round
 from flask import current_app
+
+from external_services.models.round import Round
 
 
 @dataclass

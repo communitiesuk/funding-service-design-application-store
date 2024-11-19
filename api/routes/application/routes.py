@@ -3,51 +3,50 @@ import time
 from typing import Optional
 from uuid import uuid4
 
-from _helpers import get_blank_forms
-from _helpers import order_applications
+from flask import current_app, jsonify, request, send_file
+from flask.views import MethodView
+from fsd_utils import Decision, evaluate_response
+from fsd_utils.config.notify_constants import NotifyConstants
+from sqlalchemy.orm.exc import NoResultFound
+
+from _helpers import get_blank_forms, order_applications
 from config import Config
 from config.key_report_mappings.mappings import ROUND_ID_TO_KEY_REPORT_MAPPING
 from db.models.application.enums import Status
-from db.queries import add_new_forms
-from db.queries import create_application
-from db.queries import export_json_to_csv
-from db.queries import export_json_to_excel
-from db.queries import get_application
-from db.queries import get_feedback
-from db.queries import get_fund_id
-from db.queries import get_general_status_applications_report
-from db.queries import get_key_report_field_headers
-from db.queries import get_report_for_applications
-from db.queries import search_applications
-from db.queries import submit_application
-from db.queries import update_form
-from db.queries import upsert_feedback
+from db.queries import (
+    add_new_forms,
+    create_application,
+    export_json_to_csv,
+    export_json_to_excel,
+    get_application,
+    get_feedback,
+    get_fund_id,
+    get_general_status_applications_report,
+    get_key_report_field_headers,
+    get_report_for_applications,
+    search_applications,
+    submit_application,
+    update_form,
+    upsert_feedback,
+)
 from db.queries.application import create_qa_base64file
-from db.queries.feedback import retrieve_all_feedbacks_and_surveys
-from db.queries.feedback import retrieve_end_of_application_survey_data
-from db.queries.feedback import upsert_end_of_application_survey_data
-from db.queries.reporting.queries import export_application_statuses_to_csv
-from db.queries.reporting.queries import map_application_key_fields
-from db.queries.research import retrieve_research_survey_data
-from db.queries.research import upsert_research_survey_data
-from db.queries.statuses import check_is_fund_round_open
-from db.queries.statuses import update_statuses
-from external_services import get_account
-from external_services import get_fund
-from external_services import get_round
-from external_services import get_round_eoi_schema
-from external_services.exceptions import NotificationError
-from external_services.exceptions import SubmitError
+from db.queries.feedback import (
+    retrieve_all_feedbacks_and_surveys,
+    retrieve_end_of_application_survey_data,
+    upsert_end_of_application_survey_data,
+)
+from db.queries.reporting.queries import (
+    export_application_statuses_to_csv,
+    map_application_key_fields,
+)
+from db.queries.research import (
+    retrieve_research_survey_data,
+    upsert_research_survey_data,
+)
+from db.queries.statuses import check_is_fund_round_open, update_statuses
+from external_services import get_account, get_fund, get_round, get_round_eoi_schema
+from external_services.exceptions import NotificationError, SubmitError
 from external_services.models.notification import Notification
-from flask import current_app
-from flask import jsonify
-from flask import request
-from flask import send_file
-from flask.views import MethodView
-from fsd_utils import Decision
-from fsd_utils import evaluate_response
-from fsd_utils.config.notify_constants import NotifyConstants
-from sqlalchemy.orm.exc import NoResultFound
 
 
 class ApplicationsView(MethodView):
@@ -105,8 +104,8 @@ class ApplicationsView(MethodView):
 
     def get_applications_statuses_report(
         self,
-        round_id: Optional[list] = [],
-        fund_id: Optional[list] = [],
+        round_id: Optional[list] = None,
+        fund_id: Optional[list] = None,
         format: Optional[str] = "csv",
     ):
         try:
@@ -232,7 +231,10 @@ class ApplicationsView(MethodView):
                     full_name.title() if full_name else None,
                     contents,
                 )
-                current_app.logger.info(f"Message added to the queue msg_id: [{message_id}]")
+                current_app.logger.info(
+                    "Message added to the queue msg_id: [{message_id}]",
+                    extra=dict(message_id=message_id),
+                )
             return {
                 "id": application_id,
                 "reference": application_with_form_json["reference"],
@@ -241,19 +243,27 @@ class ApplicationsView(MethodView):
             }, 201
         except KeyError as e:
             current_app.logger.exception(
-                f"Key error on processing application submissionfor application: '{application_id}'"
+                "Key error on processing application submissionfor application: '{application_id}'",
+                extra=dict(application_id=application_id),
             )
             return str(e), 500, {"x-error": "key error"}
         except NotificationError as e:
             current_app.logger.exception(
-                f"Notification error on sending SUBMIT notification for application {application_id}"
+                "Notification error on sending SUBMIT notification for application {application_id}",
+                extra=dict(application_id=application_id),
             )
             return str(e), 500, {"x-error": "notification error"}
         except SubmitError as e:
-            current_app.logger.exception(f"Submit error on sending SUBMIT application {application_id}")
+            current_app.logger.exception(
+                "Submit error on sending SUBMIT application {application_id}",
+                extra=dict(application_id=application_id),
+            )
             return str(e), 500, {"x-error": "Submit error"}
         except Exception as e:
-            current_app.logger.exception(f"Error on sending SUBMIT notification for application {application_id}")
+            current_app.logger.exception(
+                "Error on sending SUBMIT notification for application {application_id}",
+                extra=dict(application_id=application_id),
+            )
             return str(e), 500, {"x-error": "Error"}
 
     def _send_submit_queue(self, application_id, application_with_form_json):
@@ -276,11 +286,14 @@ class ApplicationsView(MethodView):
                 message_deduplication_id=str(uuid4()),  # ensures message uniqueness
                 extra_attributes=application_attributes,
             )
-            current_app.logger.info(f"Message sent to SQS queue and message id is [{message_id}]")
+            current_app.logger.info(
+                "Message sent to SQS queue and message id is [{message_id}]",
+                extra=dict(message_id=message_id),
+            )
         except Exception as e:
             current_app.logger.error("An error occurred while sending message")
             current_app.logger.error(e)
-            raise SubmitError(message="Sorry, cannot submit the message")
+            raise SubmitError(message="Sorry, cannot submit the message") from e
 
     def post_feedback(self):
         args = request.get_json()

@@ -1,8 +1,8 @@
 import pytest
+
 from db.models import Applications
 from db.models.application.enums import Status
-from tests.helpers import get_row_by_pk
-from tests.helpers import test_application_data
+from tests.helpers import get_row_by_pk, test_application_data
 
 
 @pytest.mark.apps_to_insert(test_application_data)
@@ -244,8 +244,7 @@ def test_get_applications_report_query_param(flask_test_client, seed_data_multip
 
     lines = [line.decode("utf-8") for line in response.content.splitlines()]
     assert (
-        lines[0]
-        == "eoi_reference,organisation_name,organisation_type,asset_type,"
+        lines[0] == "eoi_reference,organisation_name,organisation_type,asset_type,"
         "geography,capital,revenue,organisation_name_nstf"
     )
 

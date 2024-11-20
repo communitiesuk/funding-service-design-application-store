@@ -1,18 +1,18 @@
 from os import getenv
 
 import connexion
-from api.routes.application.routes import ApplicationsView  # noqa
-from config import Config
 from connexion import FlaskApp
 from connexion.resolver import MethodResolver
-from db.exceptions.application import ApplicationError
 from flask import jsonify
 from fsd_utils import init_sentry
-from fsd_utils.healthchecks.checkers import DbChecker
-from fsd_utils.healthchecks.checkers import FlaskRunningChecker
+from fsd_utils.healthchecks.checkers import DbChecker, FlaskRunningChecker
 from fsd_utils.healthchecks.healthcheck import Healthcheck
 from fsd_utils.logging import logging
 from fsd_utils.services.aws_extended_client import SQSExtendedClient
+
+from api.routes.application.routes import ApplicationsView  # noqa
+from config import Config
+from db.exceptions.application import ApplicationError
 from openapi.utils import get_bundled_specs
 
 

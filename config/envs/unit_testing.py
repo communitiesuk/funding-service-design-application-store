@@ -1,5 +1,6 @@
 # flake8 : noqa
 """Flask Unit Testing Environment Configuration."""
+
 from os import environ
 
 from config.envs.default import DefaultConfig

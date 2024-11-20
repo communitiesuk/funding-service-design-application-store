@@ -1,6 +1,4 @@
-from config.key_report_mappings.model import extract_postcode
-from config.key_report_mappings.model import FormMappingItem
-from config.key_report_mappings.model import KeyReportMapping
+from config.key_report_mappings.model import FormMappingItem, KeyReportMapping, extract_postcode
 
 COF_R2_KEY_REPORT_MAPPING = KeyReportMapping(
     round_id="c603d114-5364-4474-a0c4-c41cbf4d3bbd",

@@ -2,20 +2,22 @@
 import argparse
 import sys
 from datetime import datetime
-
 from distutils.util import strtobool
 
 sys.path.insert(1, ".")
 
+from flask import current_app  # noqa: E402
+
 import external_services  # noqa: E402
 from app import app  # noqa: E402
 from config import Config  # noqa: E402
-from db.queries import search_applications  # noqa: E402
-from db.queries import get_forms_by_app_id  # noqa: E402
+from db.queries import (
+    get_forms_by_app_id,  # noqa: E402
+    search_applications,  # noqa: E402
+)
 from db.queries.application import create_qa_base64file  # noqa: E402
-from external_services.models.notification import Notification  # noqa: E402
 from external_services.data import get_fund  # noqa: E402
-from flask import current_app  # noqa: E402
+from external_services.models.notification import Notification  # noqa: E402
 
 
 def send_incomplete_applications_after_deadline(
@@ -78,21 +80,36 @@ def send_incomplete_applications_after_deadline(
                 )
 
         current_app.logger.info(
-            f"Found {len(matching_applications)} applications with matching"
-            f" statuses. Retrieved all data for {len(applications_to_send)} of"
-            " them."
+            "Found {matching_app_count} applications with matching"
+            " statuses. Retrieved all data for {apps_to_send_count} of"
+            " them.",
+            extra=dict(
+                matching_app_count=len(matching_applications),
+                apps_to_send_count=len(applications_to_send),
+            ),
         )
         if send_email:
             total_applications = len(applications_to_send)
             current_app.logger.info(
-                "Send email set to true, will now send"
-                f" {total_applications} {'emails' if total_applications > 1 else 'email'}."
+                "Send email set to true, will now send" " {total_applications} {emails}.",
+                extra=dict(
+                    total_applications=total_applications,
+                    emails="emails" if total_applications > 1 else "email",
+                ),
             )
             if total_applications > 0:
                 for count, application in enumerate(applications_to_send, start=1):
-                    email = {"email": application.get("account_email") for application in application.values()}
+                    email = {
+                        "email": application.get("account_email")  # noqa: B035 needs refactor
+                        for application in application.values()
+                    }
                     current_app.logger.info(
-                        f"Sending application {count} of {total_applications} to {email.get('email')}"
+                        "Sending application {count} of {total_applications} to {email}",
+                        extra=dict(
+                            count=count,
+                            total_applications=total_applications,
+                            email=email.get("email"),
+                        ),
                     )
                     application["contact_help_email"] = fund_rounds.get("contact_email")
                     message_id = Notification.send(
@@ -104,8 +121,14 @@ def send_incomplete_applications_after_deadline(
                             "contact_help_email": application["contact_help_email"],
                         },
                     )
-                    current_app.logger.info(f"Message added to the queue msg_id: [{message_id}]")
-                current_app.logger.info(f"Sent {count} {'emails' if count > 1 else 'email'}")
+                    current_app.logger.info(
+                        "Message added to the queue msg_id: [{message_id}]",
+                        extra=dict(message_id=message_id),
+                    )
+                current_app.logger.info(
+                    "Sent {count} {emails}",
+                    extra=dict(count=count, emails="emails" if count > 1 else "email"),
+                )
                 return count
             else:
                 current_app.logger.warning("There are no applications to be sent.")
@@ -113,7 +136,8 @@ def send_incomplete_applications_after_deadline(
         else:
             count = len(applications_to_send)
             current_app.logger.warning(
-                f"Send email set to false, will not send {count} {'emails' if count > 1 else 'email'}."
+                "Send email set to false, will not send {count} {emails}.",
+                extra=dict(count=count, emails="emails" if count > 1 else "email"),
             )
             return len(applications_to_send)
     else:

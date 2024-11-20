@@ -1,9 +1,10 @@
 import json
 from uuid import uuid4
 
+from flask import current_app
+
 from config import Config
 from external_services.exceptions import NotificationError
-from flask import current_app
 
 NOTIFICATION_CONST = "notification"
 NOTIFICATION_S3_KEY_CONST = "application/notification"
@@ -33,7 +34,10 @@ class Notification:
             "full_name": full_name,
             "content": content,
         }
-        current_app.logger.info(f" json payload '{template_type}' to '{to_email}'.")
+        current_app.logger.info(
+            " json payload '{template_type}' to '{to_email}'.",
+            extra=dict(template_type=template_type, to_email=to_email),
+        )
         try:
             sqs_extended_client = Notification._get_sqs_client()
             message_id = sqs_extended_client.submit_single_message(
@@ -48,12 +52,15 @@ class Notification:
                     },
                 },
             )
-            current_app.logger.info(f"Message sent to SQS queue and message id is [{message_id}]")
+            current_app.logger.info(
+                "Message sent to SQS queue and message id is [{message_id}]",
+                extra=dict(message_id=message_id),
+            )
             return message_id
         except Exception as e:
             current_app.logger.error("An error occurred while sending message")
             current_app.logger.error(e)
-            raise NotificationError(message="Sorry, the notification could not be sent")
+            raise NotificationError(message="Sorry, the notification could not be sent") from e
 
     @staticmethod
     def _get_sqs_client():

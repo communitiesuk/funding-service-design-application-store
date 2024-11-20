@@ -1,16 +1,13 @@
 import uuid
 
-from db import db
-from db.models.application.enums import Language
-from db.models.application.enums import Status
 from flask_sqlalchemy.model import DefaultMeta
-from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy.dialects.postgresql import ENUM
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, DateTime
+from sqlalchemy.dialects.postgresql import ENUM, UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
+from db import db
+from db.models.application.enums import Language, Status
 
 BaseModel: DefaultMeta = db.Model
 

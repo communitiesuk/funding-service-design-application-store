@@ -3,20 +3,20 @@ import sys
 
 sys.path.insert(1, ".")
 
-from external_services.exceptions import NotificationError  # noqa: E402
-import external_services  # noqa: E402
-from config import Config  # noqa: E402
-from external_services.models.notification import Notification  # noqa: E402
-from flask import current_app  # noqa: E402
-from db.queries import search_applications  # noqa: E402
-
 from datetime import datetime  # noqa: E402
-import requests  # noqa: E402
 
 import pytz  # noqa: E402
+import requests  # noqa: E402
+from flask import current_app  # noqa: E402
+
+import external_services  # noqa: E402
+from config import Config  # noqa: E402
+from db.queries import search_applications  # noqa: E402
+from external_services.exceptions import NotificationError  # noqa: E402
+from external_services.models.notification import Notification  # noqa: E402
 
 
-def application_deadline_reminder(flask_app):
+def application_deadline_reminder(flask_app):  # noqa:C901 from before ruff
     with flask_app.app_context():
         uk_timezone = pytz.timezone("Europe/London")
         current_datetime = datetime.now(uk_timezone).replace(tzinfo=None)
@@ -33,7 +33,10 @@ def application_deadline_reminder(flask_app):
                 reminder_date_str = round.get("reminder_date")
 
                 if not reminder_date_str:
-                    current_app.logger.info(f"No reminder is set for the round {round.get('title')}")
+                    current_app.logger.info(
+                        "No reminder is set for the round {round_title}",
+                        extra=round.get("title"),
+                    )
                     continue
 
                 application_reminder_sent = round.get("application_reminder_sent")
@@ -79,7 +82,10 @@ def application_deadline_reminder(flask_app):
                         for count, application in enumerate(unique_application_email_addresses, start=1):
                             email = {"email": application["application"]["account_email"]}
 
-                            current_app.logger.info(f"Sending reminder {count} of {len(unique_email_account)}")
+                            current_app.logger.info(
+                                "Sending reminder {count} of {total}",
+                                extra=dict(count=count, total=len(unique_email_account)),
+                            )
 
                             try:
                                 message_id = Notification.send(
@@ -87,7 +93,10 @@ def application_deadline_reminder(flask_app):
                                     to_email=email.get("email"),
                                     content=application,
                                 )
-                                current_app.logger.info(f"Message added to the queue msg_id: [{message_id}]")
+                                current_app.logger.info(
+                                    "Message added to the queue msg_id: [{message_id}]",
+                                    extra=dict(message_id=message_id),
+                                )
                                 if len(unique_application_email_addresses) == count:
                                     try:
                                         application_reminder_endpoint = (
@@ -99,13 +108,15 @@ def application_deadline_reminder(flask_app):
                                             current_app.logger.info(
                                                 "The application reminder has been"
                                                 " sent successfully for round_id"
-                                                f" {round_id}"
+                                                " {round_id}",
+                                                extra=dict(found_id=round_id),
                                             )
                                     except Exception as e:
                                         current_app.logger.info(
                                             "There was an issue updating the"
                                             " application_reminder_sent column in the"
-                                            f" Round store for {round_id}. Errro {e}"
+                                            " Round store for {round_id}. Errro {errno}",
+                                            extra=dict(round_id=round_id, errno=e),
                                         )
 
                             except NotificationError as e:

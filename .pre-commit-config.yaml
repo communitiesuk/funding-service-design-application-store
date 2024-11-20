@@ -1,36 +1,22 @@
 repos:
--   repo: https://github.com/psf/black
-    rev: 23.12.1
-    hooks:
-    - id: black
-      language_version: python3
-      args:
-        - --experimental-string-processing
--   repo: https://github.com/PyCQA/flake8
-    rev: 7.1.1
-    hooks:
-    - id: flake8
-      additional_dependencies: [Flake8-pyproject]
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-ast
--   repo: https://github.com/asottile/reorder-python-imports
-    rev: v3.14.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version. If bumping this, please also bump requirements-dev.in
+    rev: v0.6.7
     hooks:
-      - id: reorder-python-imports
-        name: Reorder Python imports (src, tests)
-        args: ["--application-directories", "src"]
--   repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.0
+      # Run the linter.
+      - id: ruff
+        args: [--fix]
+      # Run the formatter.
+      - id: ruff-format
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
     hooks:
-    -   id: pyupgrade
-        args: ["--py39-plus"]
-- repo: https://github.com/Yelp/detect-secrets
-  rev: v1.5.0
-  hooks:
-  -   id: detect-secrets
-      args: ['--disable-plugin', 'HexHighEntropyString']
-      exclude: .env.development
+    -   id: detect-secrets
+        args: ['--disable-plugin', 'HexHighEntropyString']
+        exclude: .env.development

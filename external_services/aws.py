@@ -2,6 +2,7 @@ from collections import namedtuple
 from os import getenv
 
 import boto3
+
 from config import Config
 
 _KEY_PARTS = ("application_id", "form", "path", "component_id", "filename")

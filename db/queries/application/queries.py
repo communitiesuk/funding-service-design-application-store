@@ -1,11 +1,17 @@
 import base64
 import random
 import string
-from datetime import datetime
-from datetime import timezone
+from datetime import datetime, timezone
 from io import BytesIO
 from itertools import groupby
 from typing import Optional
+
+from flask import current_app
+from fsd_utils import extract_questions_and_answers, generate_text_of_application
+from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import joinedload, noload
+from sqlalchemy.sql.expression import Select
 
 from config import Config
 from db import db
@@ -13,19 +19,8 @@ from db.exceptions import ApplicationError
 from db.models import Applications
 from db.models.application.enums import Status as ApplicationStatus
 from db.schemas import ApplicationSchema
-from external_services import get_fund
-from external_services import get_round
-from external_services.aws import FileData
-from external_services.aws import list_files_by_prefix
-from flask import current_app
-from fsd_utils import extract_questions_and_answers
-from fsd_utils import generate_text_of_application
-from sqlalchemy import func
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import joinedload
-from sqlalchemy.orm import noload
-from sqlalchemy.sql.expression import Select
+from external_services import get_fund, get_round
+from external_services.aws import FileData, list_files_by_prefix
 
 
 def get_application(app_id, include_forms=False, as_json=False) -> dict | Applications:
@@ -97,9 +92,10 @@ def _create_application_try(account_id, fund_id, round_id, key, language, refere
     except IntegrityError:
         db.session.remove()
         current_app.logger.error(
-            f"Failed {attempt} attempt(s) to create application with"
-            f" application reference {reference}, for fund_id"
-            f" {fund_id} and round_id {round_id}"
+            "Failed {attempt} attempt(s) to create application with"
+            " application reference {reference}, for fund_id"
+            " {fund_id} and round_id {round_id}",
+            extra=dict(attempt=attempt, reference=reference, fund_id=fund_id, round_id=round_id),
         )
 
 
@@ -145,7 +141,7 @@ def get_all_applications() -> list:
     return application_list
 
 
-def get_count_by_status(round_ids: Optional[list] = [], fund_ids: Optional[list] = []) -> dict[str, int]:
+def get_count_by_status(round_ids: Optional[list] = None, fund_ids: Optional[list] = None) -> dict[str, int]:
     query = db.session.query(
         Applications.fund_id,
         Applications.round_id,
@@ -193,7 +189,10 @@ def create_qa_base64file(application_data: dict, with_questions_file: bool):
         fund_details = get_fund(application_data["fund_id"])
         q_and_a = extract_questions_and_answers(application_data["forms"], application_data["language"])
         contents = BytesIO(
-            bytes(generate_text_of_application(q_and_a, fund_details.name, application_data["language"]), "utf-8")
+            bytes(
+                generate_text_of_application(q_and_a, fund_details.name, application_data["language"]),
+                "utf-8",
+            )
         ).read()
         if len(contents) > Config.DOCUMENT_UPLOAD_SIZE_LIMIT:
             raise ValueError("File is larger than 2MB")
@@ -239,7 +238,10 @@ def search_applications(**params):
 
 
 def submit_application(application_id) -> Applications:
-    current_app.logger.info(f"Processing database submission for application_id: '{application_id}.")
+    current_app.logger.info(
+        "Processing database submission for application_id: '{application_id}.",
+        extra=dict(application_id=application_id),
+    )
     application = get_application(application_id)
     application.date_submitted = datetime.now(timezone.utc).isoformat()
 
@@ -284,7 +286,10 @@ def get_fund_id(application_id):
         else:
             return None
     except Exception:
-        current_app.logger.error(f"Incorrect application id: {application_id}")
+        current_app.logger.error(
+            "Incorrect application id: {application_id}",
+            extra=dict(application_id=application_id),
+        )
         return None
 
 

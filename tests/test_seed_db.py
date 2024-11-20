@@ -3,16 +3,18 @@ from unittest.mock import MagicMock
 from uuid import uuid4
 
 import pytest
+
 from config import Config
 from db.models.application.applications import Status
 from db.queries.application import get_application_status
 from db.queries.form import get_forms_by_app_id
 from scripts.seed_db_test_data import FUND_CONFIG
-from tests.seed_data.seed_db import seed_completed_application
-from tests.seed_data.seed_db import seed_in_progress_application
-from tests.seed_data.seed_db import seed_not_started_application
-from tests.seed_data.seed_db import seed_submitted_application
-
+from tests.seed_data.seed_db import (
+    seed_completed_application,
+    seed_in_progress_application,
+    seed_not_started_application,
+    seed_submitted_application,
+)
 
 LANG_EN = "en"
 COF = FUND_CONFIG["COF"]

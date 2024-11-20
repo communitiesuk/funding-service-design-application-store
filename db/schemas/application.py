@@ -1,14 +1,11 @@
-from db.models import Applications
-from db.models.application.enums import Language
-from db.models.application.enums import Status
-from external_services import get_round_name
 from marshmallow import post_dump
-from marshmallow.fields import DateTime
-from marshmallow.fields import Enum
-from marshmallow.fields import Method
-from marshmallow_sqlalchemy import auto_field
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow.fields import DateTime, Enum, Method
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 from marshmallow_sqlalchemy.fields import Nested
+
+from db.models import Applications
+from db.models.application.enums import Language, Status
+from external_services import get_round_name
 
 from .form import FormsRunnerSchema
 

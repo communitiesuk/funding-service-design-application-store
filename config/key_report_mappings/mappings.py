@@ -22,7 +22,6 @@ from config.key_report_mappings.dpif_r2_key_report_mapping import (
     DPIF_R2_KEY_REPORT_MAPPING,
 )
 
-
 ROUND_ID_TO_KEY_REPORT_MAPPING = defaultdict(
     lambda: COF_R2_KEY_REPORT_MAPPING.mapping,
     {

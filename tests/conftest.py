@@ -1,20 +1,21 @@
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 import pytest
+from flask import Response
+
 from app import create_app
 from db.models.application.applications import Applications
 from db.queries.application import create_application
 from db.queries.form import add_new_forms
-from external_services.models.fund import Fund
-from external_services.models.fund import Round
-from flask import Response
-from tests.helpers import APPLICATION_DISPLAY_CONFIG
-from tests.helpers import local_api_call
-from tests.helpers import test_application_data
-from tests.helpers import test_question_data
-from tests.helpers import test_question_data_cy
+from external_services.models.fund import Fund, Round
+from tests.helpers import (
+    APPLICATION_DISPLAY_CONFIG,
+    local_api_call,
+    test_application_data,
+    test_question_data,
+    test_question_data_cy,
+)
 
 # Make the utils fixtures available, used in seed_application_records
 pytest_plugins = ["fsd_test_utils.fixtures.db_fixtures"]

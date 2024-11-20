@@ -1,13 +1,12 @@
 import uuid
 
-from db import db
-from db.models.application.applications import Applications
 from flask_sqlalchemy.model import DefaultMeta
-from sqlalchemy import Column
-from sqlalchemy import DateTime
+from sqlalchemy import Column, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy_json import NestedMutableJson
 
+from db import db
+from db.models.application.applications import Applications
 
 BaseModel: DefaultMeta = db.Model
 

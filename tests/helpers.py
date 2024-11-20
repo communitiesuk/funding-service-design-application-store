@@ -4,9 +4,10 @@ import re
 import urllib
 from datetime import datetime
 
+from deepdiff import DeepDiff
+
 from config import Config
 from db.models.application.enums import Language
-from deepdiff import DeepDiff
 
 
 def get_row_by_pk(table, primary_key):
@@ -317,14 +318,14 @@ def post_test_applications(client):
 
 
 def key_list_to_regex(
-    exclude_keys: list[str] = [
+    exclude_keys: list[str] = (
         "id",
         "reference",
         "started_at",
         "project_name",
         "last_edited",
         "date_submitted",
-    ]
+    ),
 ):
     exclude_regex_path_strings = [rf"root\[\d+\]\['{key}'\]" for key in exclude_keys]
 

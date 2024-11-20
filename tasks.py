@@ -2,11 +2,8 @@ import os
 import venv
 from pathlib import Path
 
-from colored import attr
-from colored import fg
-from colored import stylize
+from colored import attr, fg, stylize
 from invoke import task
-
 
 ECHO_STYLE = fg("light_gray") + attr("bold")
 

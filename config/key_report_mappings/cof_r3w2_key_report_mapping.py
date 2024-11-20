@@ -1,7 +1,9 @@
-from config.key_report_mappings.model import ApplicationColumnMappingItem
-from config.key_report_mappings.model import extract_postcode
-from config.key_report_mappings.model import FormMappingItem
-from config.key_report_mappings.model import KeyReportMapping
+from config.key_report_mappings.model import (
+    ApplicationColumnMappingItem,
+    FormMappingItem,
+    KeyReportMapping,
+    extract_postcode,
+)
 
 COF_R3W2_KEY_REPORT_MAPPING = KeyReportMapping(
     round_id="6af19a5e-9cae-4f00-9194-cf10d2d7c8a7",

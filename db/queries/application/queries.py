@@ -12,6 +12,7 @@ from db import db
 from db.exceptions import ApplicationError
 from db.models import Applications
 from db.models.application.enums import Status as ApplicationStatus
+from db.models.forms.enums import Status
 from db.schemas import ApplicationSchema
 from external_services import get_fund
 from external_services import get_round
@@ -246,6 +247,9 @@ def submit_application(application_id) -> Applications:
     all_application_files = list_files_by_prefix(application_id)
     application = process_files(application, all_application_files)
 
+    for form in application.forms:
+        form.feedback_message = None
+
     application.status = "SUBMITTED"
     db.session.commit()
     return application
@@ -311,3 +315,26 @@ def patch_application(application_id: str, patch_fields: dict) -> Applications:
     db.session.commit()
 
     return application
+
+
+def patch(application_id: str, field_ids: list, message: str):
+    application = get_application(application_id, include_forms=True)
+
+    application_should_update = False
+    for form in application.forms:
+        form_should_update = False
+        for category in form.json:
+            for field in category["fields"]:
+                if field["key"] in field_ids:
+                    form.status = Status.CHANGES_REQUESTED
+                    form.has_completed = False
+                    form.feedback_message = message
+                    form_should_update = True
+                    application_should_update = True
+
+                if field["key"] == "markAsComplete" and form_should_update:
+                    field["answer"] = False
+
+    if application_should_update:
+        application.status = ApplicationStatus.CHANGES_REQUESTED
+    db.session.commit()

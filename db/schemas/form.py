@@ -12,3 +12,5 @@ class FormsRunnerSchema(SQLAlchemySchema):
     status = Enum(Status)
     name = auto_field()
     questions = auto_field("json")
+    feedback_message = auto_field()
+    has_completed = auto_field()

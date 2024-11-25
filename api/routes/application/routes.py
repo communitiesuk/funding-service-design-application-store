@@ -22,11 +22,10 @@ from db.queries import search_applications
 from db.queries import submit_application
 from db.queries import upsert_feedback
 from db.queries.application import create_qa_base64file
-from db.queries.application.queries import patch_application
+from db.queries.application.queries import patch
 from db.queries.feedback import retrieve_all_feedbacks_and_surveys
 from db.queries.feedback import retrieve_end_of_application_survey_data
 from db.queries.feedback import upsert_end_of_application_survey_data
-from db.queries.form.queries import patch_form
 from db.queries.reporting.queries import export_application_statuses_to_csv
 from db.queries.reporting.queries import map_application_key_fields
 from db.queries.research import retrieve_research_survey_data
@@ -422,7 +421,7 @@ class ApplicationsView(MethodView):
 
     def post_request_changes(self, application_id: str):
         try:
-            application = get_application(
+            get_application(
                 application_id,
                 as_json=True,
                 include_forms=True,
@@ -437,35 +436,4 @@ class ApplicationsView(MethodView):
         field_ids = args["field_ids"]
         feedback_message = args["feedback_message"]
 
-        application_requires_changes = False
-        for application_form in application["forms"]:
-            from_requires_changes = False
-            forms_json = []
-
-            for question in application_form["questions"]:
-                forms_json_queston = question
-                for field in question["fields"]:
-                    if field["key"] in field_ids:
-                        from_requires_changes = True
-                        application_requires_changes = True
-                        forms_json_queston["status"] = "CHANGES_REQUESTED"
-
-                    forms_json_queston["fields"] = [field]
-                    forms_json.append(forms_json_queston)
-
-            if from_requires_changes:
-                form_patch_fields = {
-                    "json": forms_json,
-                    "status": "CHANGES_REQUESTED",
-                    "has_completed": False,
-                    "feedback_message": feedback_message,
-                }
-
-                patch_form(application_id, application_form["name"], form_patch_fields)
-
-        if application_requires_changes:
-            application_patch_fields = {
-                "status": "CHANGES_REQUESTED",
-            }
-
-            patch_application(application_id, application_patch_fields)
+        patch(application_id=application_id, field_ids=field_ids, message=feedback_message)

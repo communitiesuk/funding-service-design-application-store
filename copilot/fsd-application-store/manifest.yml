@@ -69,8 +69,6 @@ environments:
     count:
       spot: 1
   test:
-    deployment:
-      rolling: 'recreate'
     count:
       spot: 2
   uat:

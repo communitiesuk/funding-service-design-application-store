@@ -63,7 +63,7 @@ dev = [
     "asserts==0.13.1",
     "black==24.4.2",
     "click==8.1.7",
-    "debugpy==1.8.2",
+    "debugpy==1.8.9",
     "deepdiff==7.0.1",
     "flake8-pyproject==1.2.3",
     "moto[s3,sqs]==5.0.14",
